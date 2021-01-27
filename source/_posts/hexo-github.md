@@ -1,7 +1,8 @@
 ---
 title: hexo+github
 date: 2021-01-27 19:15:38
-tags:
+tags: hexo
+cataloges: hexo
 ---
 
 ### 安装nodejs，git
