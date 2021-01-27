@@ -90,7 +90,7 @@ vim ～/blog/_config.yml
 deploy:
 type: git
 repository: git@github.com:xxinran/xxinran.github.io.git
-branch: master
+branch: main # 原来是master
 ```
 
 #### 生成静态文件，并部署到gihub上去。
