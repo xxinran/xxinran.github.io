@@ -5,7 +5,7 @@ tags: markdown
 categories: language
 ---
 
-# makedown学习
+# 一级标题
 
 ## 二级
 
@@ -19,13 +19,21 @@ categories: language
 
 ## 字体
 
-**hello world**    CTRL + B 或者 两边加**
+**hello world**
 
-*hello world*    CTRL + I 或者两边加* 
+CTRL + B 或者 两边加**
 
-***hello world***   CTRL + B + I 或者 两边加***
+*hello world*
 
-~hello world~~  ALT + SHIFT + 5  或者~~ 
+CTRL + I 或者两边加* 
+
+***hello world***
+
+CTRL + B + I 或者 两边加***
+
+~~hello world~~
+
+ALT + SHIFT + 5  或者~~ 
 
 
 
@@ -47,7 +55,9 @@ categories: language
 
 ## 图片
 
-![图片名字]()
+![图片名字](https://www.w3schools.com/images/w3schools_green.jpg)
+
+感叹号[图片名字](图片地址)
 
 
 
@@ -55,7 +65,7 @@ categories: language
 
 [超级链接](https://kubernetes.io/docs/concepts/services-networking/service/#ips-and-vips)
 
-
+方括号里面写链接名字，后面加()写图片路径。
 
 ## 列表
 
@@ -86,7 +96,7 @@ categories: language
 
 xx|xx|xx|
 
-进入源代码模式，删除行间空行，就可以生成表格了。
+进入源代码模式(CTRL + /)，删除行间空行，就可以生成表格了。
 
 ## 代码
 
