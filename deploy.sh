@@ -18,5 +18,4 @@ git commit -m "Blog updated: $current_date"
 
 sleep 2
 git push -f origin hexo
-git checkout main
 echo "=====>Finish!<====="
