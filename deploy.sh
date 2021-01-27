@@ -11,11 +11,12 @@ sleep 10
 
 # Push hexo code
 echo "Push hexo code"
+git checkout hexo
 git add .
 current_date=`date "+%Y-%m-%d %H:%M:%S"`
 git commit -m "Blog updated: $current_date"
 
 sleep 2
 git push -f origin hexo
-
+git checkout main
 echo "=====>Finish!<====="
