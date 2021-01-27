@@ -57,7 +57,7 @@ ALT + SHIFT + 5  或者~~
 
 ![图片名字](https://www.w3schools.com/images/w3schools_green.jpg)
 
-感叹号[图片名字](图片地址)
+感叹号[图片名字]+ (图片地址)
 
 
 
@@ -65,7 +65,7 @@ ALT + SHIFT + 5  或者~~
 
 [超级链接](https://kubernetes.io/docs/concepts/services-networking/service/#ips-and-vips)
 
-方括号里面写链接名字，后面加()写图片路径。
+方括号里面写链接名字，后面加()写链接地址。
 
 ## 列表
 
@@ -81,6 +81,9 @@ ALT + SHIFT + 5  或者~~
 
 - A
 - B
+
+CTRL + [  回到上一级
+CTRL + ]  回到下一级
 
 
 
