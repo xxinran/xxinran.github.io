@@ -24,7 +24,15 @@ typora-root-url: ../_posts
 3. #表示注释
 4. 每一个指令都会创建提交一个新的镜像层。
 
-
+#### DockerFile指令
 
 ![image-20210128174810881](docker-image/image-20210128174810881-1611828531908.png)
+
+
+#### CMD  和 ENTRYPOINT的区别
+
+```shell
+# docker run image-id 
+CMD ["ls","-a"]
+```
 
