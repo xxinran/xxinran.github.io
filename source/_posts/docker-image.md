@@ -1,3 +1,10 @@
+---
+title: 如何构建docker image
+date: 2021-01-27 20:31:29
+tags: docker
+categories: docker
+---
+
 ## 如何构建docker image
 
 步骤：
