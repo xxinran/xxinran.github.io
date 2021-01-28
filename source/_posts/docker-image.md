@@ -1,6 +1,6 @@
 ---
 title: 如何构建docker image
-date: 2021-01-27 20:31:29
+date: 2021-01-28 22:31:29
 tags: docker
 categories: docker
 typora-root-url: ../_posts
