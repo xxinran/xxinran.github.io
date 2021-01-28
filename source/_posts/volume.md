@@ -25,9 +25,9 @@ local               juming-nginx
 # 查看volume在host上的路径
 ```
 
-![image-20210128164757688](容器volume\image-20210128164757688.png)
+![image-20210128164757688](volume\image-20210128164757688.png)
 
-![image-20210128164837865](容器volume\image-20210128164837865.png)
+![image-20210128164837865](volume\image-20210128164837865.png)
 
 所有docker 容器内的卷，没有指定目录的情况下，都是在`/var/lib/docker/volumes/xxxx/_data`
 
@@ -59,11 +59,11 @@ CMD /bin/bash
 
 ```
 
-<img src="容器volume\image-20210128170911709.png" alt="image-20210128170911709" style="zoom:80%;" />
+<img src="volume\image-20210128170911709.png" alt="image-20210128170911709" style="zoom:80%;" />
 
 可以通过在`var/lib/docker/volumes/`路径下查看对应的目录：
 
-![image-20210128171143827](容器volume\image-20210128171143827.png)
+![image-20210128171143827](volume\image-20210128171143827.png)
 
 
 
@@ -73,7 +73,7 @@ CMD /bin/bash
 
 
 
-<img src="容器volume\image-20210128171813726.png" alt="image-20210128171813726" style="zoom:60%;" />
+<img src="volume\image-20210128171813726.png" alt="image-20210128171813726" style="zoom:60%;" />
 
 ```shell
 # 启动数据卷容器docker01
@@ -89,7 +89,7 @@ docker run -it --name docker03  --volumes-from docker02 xinran/centos:1.0
 
 
 
-![image-20210128172515580](容器volume\image-20210128172515580.png)
+![image-20210128172515580](volume\image-20210128172515580.png)
 
 结论：容器之间配置信息的传递，数据卷容器的生命周期一直持续到没有容器使用为止。
 
