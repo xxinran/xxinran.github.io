@@ -42,6 +42,11 @@ ssh -T git@github.com  #失败
 需要修改`.ssh/config`文件：
 
 ```shell
+# linux
+Host *
+   ProxyCommand nc -X 5 -x proxy-xxx.intel.com:1080 %h %p
+
+# windows上需要把nc命令改成connect，参数-S表示是socks代理。
 $ cat ~/.ssh/config | tail -5
 Host github.com
    HostName github.com
@@ -52,3 +57,4 @@ Host github.com
 
 之后就可以成功ssh连接github了。
 
+但是`ping proxy-xxx.intel.com`是ping不通的，应该是公司关闭了。
