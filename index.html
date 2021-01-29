@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"8.0.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Suche...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
+  </script>
+
+  <meta name="description" content="Keep calm and coding">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Xinran&#39;s Blog">
+<meta property="og:url" content="http://example.com/index.html">
+<meta property="og:site_name" content="Xinran&#39;s Blog">
+<meta property="og:description" content="Keep calm and coding">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="Xinran Wang">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : true,
+    isPost : false,
+    lang   : 'zh_CN'
+  };
+</script>
+
+  <title>Xinran's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Navigationsleiste an/ausschalten">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Xinran's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Startseite</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>Über</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Schlagwörter</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Kategorien</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archiv</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Inhaltsverzeichnis
+        </li>
+        <li class="sidebar-nav-overview">
+          Übersicht
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Xinran Wang</p>
+  <div class="site-description" itemprop="description">Keep calm and coding</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">Artikel</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">Kategorien</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">schlagwörter</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xxinran" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xxinran" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:xxinran.wang@gmail.com" title="E-Mail → mailto:xxinran.wang@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner index posts-expand">
+      
+
+      
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh_CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/28/docker-image/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Xinran Wang">
+      <meta itemprop="description" content="Keep calm and coding">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xinran's Blog">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/01/28/docker-image/" class="post-title-link" itemprop="url">如何构建docker image</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Veröffentlicht am</span>
+
+      <time title="Erstellt: 2021-01-28 22:31:29" itemprop="dateCreated datePublished" datetime="2021-01-28T22:31:29+08:00">2021-01-28</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Bearbeitet am</span>
+        <time title="Geändert am: 2021-01-29 12:35:01" itemprop="dateModified" datetime="2021-01-29T12:35:01+08:00">2021-01-29</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">in</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/docker/" itemprop="url" rel="index"><span itemprop="name">docker</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="如何构建docker-image"><a href="#如何构建docker-image" class="headerlink" title="如何构建docker image"></a>如何构建docker image</h2><p>步骤：</p>
+<ol>
+<li>编写一个dockerfile</li>
+<li>docker build构建镜像</li>
+<li>docker run运行镜像</li>
+<li>docker push发布镜像</li>
+</ol>
+<h3 id="DockerFile构建过程"><a href="#DockerFile构建过程" class="headerlink" title="DockerFile构建过程"></a>DockerFile构建过程</h3><h4 id="基础知识："><a href="#基础知识：" class="headerlink" title="基础知识："></a><strong>基础知识：</strong></h4><ol>
+<li>每个保留关键字都是大写</li>
+<li>顺序执行</li>
+<li>#表示注释</li>
+<li>每一个指令都会创建提交一个新的镜像层。</li>
+</ol>
+<h4 id="DockerFile指令"><a href="#DockerFile指令" class="headerlink" title="DockerFile指令"></a>DockerFile指令</h4><p><img src="/2021/01/28/docker-image/image-20210128174810881-1611828531908.png" alt="image-20210128174810881"></p>
+<h4 id="CMD-和-ENTRYPOINT的区别"><a href="#CMD-和-ENTRYPOINT的区别" class="headerlink" title="CMD  和 ENTRYPOINT的区别"></a>CMD  和 ENTRYPOINT的区别</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> docker run image-id</span> </span><br><span class="line">CMD [&quot;ls&quot;,&quot;-a&quot;]</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh_CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/28/vagrant-intro/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Xinran Wang">
+      <meta itemprop="description" content="Keep calm and coding">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xinran's Blog">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/01/28/vagrant-intro/" class="post-title-link" itemprop="url">在mac上用vagrant和virtualbox创建虚拟机</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Veröffentlicht am</span>
+
+      <time title="Erstellt: 2021-01-28 22:23:48" itemprop="dateCreated datePublished" datetime="2021-01-28T22:23:48+08:00">2021-01-28</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Bearbeitet am</span>
+        <time title="Geändert am: 2021-01-29 12:35:01" itemprop="dateModified" datetime="2021-01-29T12:35:01+08:00">2021-01-29</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="vagrant介绍"><a href="#vagrant介绍" class="headerlink" title="vagrant介绍"></a>vagrant介绍</h2><p>基于ruby，用于创建和部署虚拟化开发环境。它 使用Oracle的开源<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/VirtualBox">VirtualBox</a>虚拟化系统，使用 Chef创建自动化虚拟环境。我们可以使用它来干如下这些事：</p>
+<ul>
+<li><p>建立和删除虚拟机</p>
+</li>
+<li><p>配置虚拟机运行参数</p>
+</li>
+<li><p>管理虚拟机运行状态</p>
+</li>
+<li><p>自动配置和安装开发环境ß</p>
+</li>
+<li><p>打包和分发虚拟机运行环境</p>
+</li>
+</ul>
+<p>　　Vagrant的运行，需要<strong>依赖</strong>某项具体的<strong>虚拟化技术</strong>，最常见的有VirtualBox以及VMWare两款，早期，Vagrant只支持VirtualBox，后来才加入了VMWare的支持。现在vagrant支持更多的虚拟化系统，包括kvm，qemu，vmware，甚至docker。但还是以virtualbox为主。</p>
+<img src="/2021/01/28/vagrant-intro/image-20210128223212650.png" alt="image-20210128223212650" style="zoom:50%;">
+
+<h3 id="vagrant和virtualbox"><a href="#vagrant和virtualbox" class="headerlink" title="vagrant和virtualbox"></a>vagrant和virtualbox</h3><p>virtualbox本身也可以创建vm，只是相对麻烦，vagrant可以调用virtualbox的接口更加方便的创建vm。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh_CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/28/docker-volume/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Xinran Wang">
+      <meta itemprop="description" content="Keep calm and coding">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xinran's Blog">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/01/28/docker-volume/" class="post-title-link" itemprop="url">容器volume基本介绍</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Veröffentlicht am</span>
+
+      <time title="Erstellt: 2021-01-28 02:31:29" itemprop="dateCreated datePublished" datetime="2021-01-28T02:31:29+08:00">2021-01-28</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Bearbeitet am</span>
+        <time title="Geändert am: 2021-01-29 12:35:01" itemprop="dateModified" datetime="2021-01-29T12:35:01+08:00">2021-01-29</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">in</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/docker/" itemprop="url" rel="index"><span itemprop="name">docker</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="容器volume"><a href="#容器volume" class="headerlink" title="容器volume"></a>容器volume</h2><h3 id="匿名挂载，具名挂载和指定路径挂载"><a href="#匿名挂载，具名挂载和指定路径挂载" class="headerlink" title="匿名挂载，具名挂载和指定路径挂载"></a>匿名挂载，具名挂载和指定路径挂载</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 匿名挂载</span></span><br><span class="line">-v 容器内路径</span><br><span class="line">docker run -d -P --name nginx01 -v /etc/nginx nginx</span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看node 上的volume</span></span><br><span class="line">ubuntu@xinrantest01:~$ docker volume ls</span><br><span class="line">DRIVER              VOLUME NAME</span><br><span class="line">local               cf411242c0f1d323d2d2ab8a81d144caa6d536d992954231f426c35221adf2e3</span><br><span class="line"><span class="meta">#</span><span class="bash"> 可以发现，匿名挂载只写容器里的路径，没有写host上的路径</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 具名挂载</span></span><br><span class="line">-v host路径：容器内路径 （与-p相似）</span><br><span class="line">ubuntu@xinrantest01:~$ docker run -d -P --name nginx02 -v juming-nginx:/etc/nginx nginx</span><br><span class="line">5f61a3a6d01cd8db3bd99fa1738d0b6cfc74df366dc8ba8b1f4cbe0c97b2cc72</span><br><span class="line">ubuntu@xinrantest01:~$ docker volume ls</span><br><span class="line">DRIVER              VOLUME NAME</span><br><span class="line">local               cf411242c0f1d323d2d2ab8a81d144caa6d536d992954231f426c35221adf2e3</span><br><span class="line">local               juming-nginx</span><br><span class="line"><span class="meta">#</span><span class="bash">这里指定了juming-nginx为host上要挂载的目录，这个目录在docker run时被创建</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看volume在host上的路径</span></span><br></pre></td></tr></table></figure>
+<p><img src="/2021/01/28/docker-volume/image-20210128164757688.png" alt="image-20210128164757688"></p>
+<p><img src="/2021/01/28/docker-volume/image-20210128164837865.png" alt="image-20210128164837865"></p>
+<p>所有docker 容器内的卷，没有指定目录的情况下，都是在<code>/var/lib/docker/volumes/xxxx/_data</code></p>
+<p>大多数情况都是使用具名挂载，方便在host上查找volumes</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 如何确定挂载方式</span></span><br><span class="line">-v container-path    # 匿名挂载</span><br><span class="line">-v host-path：container-path # 指定路径挂载</span><br><span class="line">-v volume-name（临时起的）：container-path #具名挂载</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 限定容器的权限</span></span><br><span class="line">docker run -d -P --name nginx02 -v juming-nginx:/etc/nginx:ro   nginx</span><br><span class="line">docker run -d -P --name nginx02 -v juming-nginx:/etc/nginx:rw   nginx</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> ro 这个volume只能通过host来操作，container里只有<span class="built_in">read</span> only的权限</span></span><br></pre></td></tr></table></figure>
+<h3 id="用DockerFile实现volume"><a href="#用DockerFile实现volume" class="headerlink" title="用DockerFile实现volume"></a>用DockerFile实现volume</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> create a dockerfile</span></span><br><span class="line">FROM centos</span><br><span class="line"></span><br><span class="line">VOLUME [&quot;volume01&quot;,&quot;volume02&quot;&quot;]</span><br><span class="line"></span><br><span class="line">CMD echo &quot;===end===&quot;</span><br><span class="line">CMD /bin/bash</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<img src="/2021/01/28/docker-volume/image-20210128170911709.png" alt="image-20210128170911709" style="zoom:80%;">
+
+<p>可以通过在<code>var/lib/docker/volumes/</code>路径下查看对应的目录：</p>
+<p><img src="/2021/01/28/docker-volume/image-20210128171143827.png" alt="image-20210128171143827"></p>
+<h3 id="数据卷容器"><a href="#数据卷容器" class="headerlink" title="数据卷容器"></a>数据卷容器</h3><p>要容器与容器之间同步数据。</p>
+<img src="/2021/01/28/docker-volume/image-20210128171813726.png" alt="image-20210128171813726" style="zoom:60%;">
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 启动数据卷容器docker01</span></span><br><span class="line">docker run -it --name docker01 xinran/centos:1.0</span><br><span class="line"><span class="meta">#</span><span class="bash"> 启动多个“父容器”docker02，docker03，用--volumes-from指定数据卷容器</span></span><br><span class="line">docker run -it --name docker02  --volumes-from docker01 xinran/centos:1.0</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 可以指定docker02或者docker01为数据卷容器，这几个容器中volumes都是同步的</span></span><br><span class="line">docker run -it --name docker03  --volumes-from docker02 xinran/centos:1.0</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 删除docker01，也不会影响docker02，docker03的volume</span></span><br></pre></td></tr></table></figure>
+
+
+<p><img src="/2021/01/28/docker-volume/image-20210128172515580.png" alt="image-20210128172515580"></p>
+<p>结论：容器之间配置信息的传递，数据卷容器的生命周期一直持续到没有容器使用为止。</p>
+<p>但是一旦持久话到了本地，即使删除了所有有这个volume的容器，本地的数据是不会删除的。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh_CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/28/multi-device-try/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Xinran Wang">
+      <meta itemprop="description" content="Keep calm and coding">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xinran's Blog">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/01/28/multi-device-try/" class="post-title-link" itemprop="url">多设备同步hexoy</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Veröffentlicht am</span>
+
+      <time title="Erstellt: 2021-01-28 00:13:01" itemprop="dateCreated datePublished" datetime="2021-01-28T00:13:01+08:00">2021-01-28</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Bearbeitet am</span>
+        <time title="Geändert am: 2021-01-29 12:35:01" itemprop="dateModified" datetime="2021-01-29T12:35:01+08:00">2021-01-29</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">in</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/hexo/" itemprop="url" rel="index"><span itemprop="name">hexo</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="多个设备之间同步hexo"><a href="#多个设备之间同步hexo" class="headerlink" title="多个设备之间同步hexo"></a>多个设备之间同步hexo</h1><p><strong>原理</strong></p>
+<p>hexo deploy会将本地创建好的目录blog里面的文件生成对应的静态文件（html等），并且将它上传到xxx.github.com repo中。<br>在_config.yml中设置了deploy要操作的repo和branch，这里我使用的是xxinran.github.io的main branch。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh_CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/27/markdown101/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Xinran Wang">
+      <meta itemprop="description" content="Keep calm and coding">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xinran's Blog">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/01/27/markdown101/" class="post-title-link" itemprop="url">markdown基本语法</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Veröffentlicht am</span>
+
+      <time title="Erstellt: 2021-01-27 20:32:45" itemprop="dateCreated datePublished" datetime="2021-01-27T20:32:45+08:00">2021-01-27</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Bearbeitet am</span>
+        <time title="Geändert am: 2021-01-29 12:35:01" itemprop="dateModified" datetime="2021-01-29T12:35:01+08:00">2021-01-29</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">in</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/language/" itemprop="url" rel="index"><span itemprop="name">language</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="一级标题"><a href="#一级标题" class="headerlink" title="一级标题"></a>一级标题</h1><h2 id="二级"><a href="#二级" class="headerlink" title="二级"></a>二级</h2><h3 id="三级-（CTRL-3-或者-）"><a href="#三级-（CTRL-3-或者-）" class="headerlink" title="三级 （CTRL +3 或者 ### ）"></a>三级 （CTRL +3 或者 ### ）</h3><h4 id="四级"><a href="#四级" class="headerlink" title="四级"></a>四级</h4><h6 id="最多支持到六级"><a href="#最多支持到六级" class="headerlink" title="最多支持到六级"></a>最多支持到六级</h6><h2 id="字体"><a href="#字体" class="headerlink" title="字体"></a>字体</h2><p><strong>hello world</strong></p>
+<p>CTRL + B 或者 两边加**</p>
+<p><em>hello world</em></p>
+<p>CTRL + I 或者两边加* </p>
+<p><strong><em>hello world</em></strong></p>
+<p>CTRL + B + I 或者 两边加***</p>
+<p><del>hello world</del></p>
+<p>ALT + SHIFT + 5  或者~~ </p>
+<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><blockquote>
+<p>这是一个引用， 用&gt;开始 </p>
+</blockquote>
+<h2 id="分割线"><a href="#分割线" class="headerlink" title="分割线"></a>分割线</h2><hr>
+<hr>
+<p>三个-， 或者三个*</p>
+<h2 id="图片"><a href="#图片" class="headerlink" title="图片"></a>图片</h2><p><img src="https://www.w3schools.com/images/w3schools_green.jpg" alt="图片名字"></p>
+<p>感叹号[图片名字]+ (图片地址)</p>
+<h2 id="超链接"><a href="#超链接" class="headerlink" title="超链接"></a>超链接</h2><p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/services-networking/service/#ips-and-vips">超级链接</a></p>
+<p>方括号里面写链接名字，后面加()写链接地址。</p>
+<h2 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h2><h3 id="有序列表"><a href="#有序列表" class="headerlink" title="有序列表"></a>有序列表</h3><ol>
+<li>A</li>
+<li>B</li>
+<li>C</li>
+</ol>
+<h3 id="无序列表"><a href="#无序列表" class="headerlink" title="无序列表"></a>无序列表</h3><p>减号 + space</p>
+<ul>
+<li>A</li>
+<li>B</li>
+</ul>
+<p>CTRL + [  回到上一级<br>CTRL + ]  回到下一级</p>
+<h2 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h2><table>
+<thead>
+<tr>
+<th>名字</th>
+<th>性别</th>
+<th>生日</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>张三</td>
+<td>男</td>
+<td>1997.1</td>
+</tr>
+</tbody></table>
+<p>名字 | 性别| 生日|</p>
+<p>–|–|–</p>
+<p>xx|xx|xx|</p>
+<p>进入源代码模式(CTRL + /)，删除行间空行，就可以生成表格了。</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh_CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/27/qat-deply/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Xinran Wang">
+      <meta itemprop="description" content="Keep calm and coding">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xinran's Blog">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/01/27/qat-deply/" class="post-title-link" itemprop="url">QAT在Ubuntu18.04上的安装和虚拟化</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Veröffentlicht am</span>
+
+      <time title="Erstellt: 2021-01-27 20:31:29" itemprop="dateCreated datePublished" datetime="2021-01-27T20:31:29+08:00">2021-01-27</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Bearbeitet am</span>
+        <time title="Geändert am: 2021-01-29 12:35:01" itemprop="dateModified" datetime="2021-01-29T12:35:01+08:00">2021-01-29</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">in</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/deploy/" itemprop="url" rel="index"><span itemprop="name">deploy</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>本文将介绍QAT c62xx设备在Ubuntu 18.04上的安装部署和虚拟化。</p>
+<blockquote>
+<p>参考网站：<a target="_blank" rel="noopener" href="https://01.org/intel-quickassist-technology">https://01.org/intel-quickassist-technology</a></p>
+</blockquote>
+<h3 id="Prerequisite"><a href="#Prerequisite" class="headerlink" title="Prerequisite"></a>Prerequisite</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> uname -a</span></span><br><span class="line">Linux tme-prc002 5.3.0-53-generic #47~18.04.1-Ubuntu SMP Thu May 7 13:10:50 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux</span><br></pre></td></tr></table></figure>
+<h3 id="Updating-grub-Configuration-File"><a href="#Updating-grub-Configuration-File" class="headerlink" title="Updating grub Configuration File"></a>Updating grub Configuration File</h3><p>To enable IOMMU and SRIOV</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/default/grub</span><br></pre></td></tr></table></figure>
+<p>Modify <code>GRUB_CMDLINE_LINUX_DEFAULT=&quot;quiet splash&quot;</code> to <code>&quot;quiet splash intel_iommu=on&quot;</code></p>
+<p>Update grub and reboot:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">update-grub</span><br><span class="line">sudo reboot</span><br></pre></td></tr></table></figure>
+<h3 id="Building-and-Installing-Software"><a href="#Building-and-Installing-Software" class="headerlink" title="Building and Installing Software"></a>Building and Installing Software</h3><h4 id="Create-a-working-directory-for-the-software-This-directory-can-be-user-defined-but"><a href="#Create-a-working-directory-for-the-software-This-directory-can-be-user-defined-but" class="headerlink" title="Create a working directory for the software. This directory can be user defined, but"></a>Create a working directory for the software. This directory can be user defined, but</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ cd $HOME </span><br><span class="line">$ mkdir &#x2F;QAT</span><br><span class="line">$ cd &#x2F;QAT</span><br></pre></td></tr></table></figure>
+<h4 id="Download-the-software"><a href="#Download-the-software" class="headerlink" title="Download the software."></a>Download the software.</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -O https:&#x2F;&#x2F;01.org&#x2F;sites&#x2F;default&#x2F;files&#x2F;downloads&#x2F;intelr-quickassist-technology&#x2F;qat1.7.l.4.3.0-00033.tar.gz</span><br></pre></td></tr></table></figure>
+<h4 id="Unpack-the-software"><a href="#Unpack-the-software" class="headerlink" title="Unpack the software."></a>Unpack the software.</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ tar -zxof &lt;QAT tarball name&gt;  </span><br><span class="line">$ chmod -R o-rwx *</span><br></pre></td></tr></table></figure>
+<h4 id="Install-dependencies-if-needed"><a href="#Install-dependencies-if-needed" class="headerlink" title="Install dependencies if needed."></a>Install dependencies if needed.</h4><p>For CentOS:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ yum -y groupinstall &quot;Development Tools&quot;</span><br><span class="line">$ yum -y install pciutils</span><br><span class="line">$ yum -y install libudev-devel</span><br><span class="line">$ yum -y install kernel-devel-$(uname -r)</span><br><span class="line">$ yum -y install gcc</span><br><span class="line">$ yum -y install openssl-devel</span><br></pre></td></tr></table></figure>
+<p>For Ubuntu:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ apt-get update</span><br><span class="line">$ apt-get install pciutils-dev</span><br><span class="line">$ apt-get install g++</span><br><span class="line">$ apt-get install pkg-config</span><br><span class="line">$ apt-get install libssl-dev</span><br></pre></td></tr></table></figure>
+<h4 id="configure-make-and-make-install-the-software-packages"><a href="#configure-make-and-make-install-the-software-packages" class="headerlink" title="configure, make and make install the software packages."></a>configure, make and make install the software packages.</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># suggest to clear up the env if there is a previous or modified version installed</span><br><span class="line">$ make uninstall</span><br><span class="line">$ .&#x2F;configure --enable-icp-sriov&#x3D;host  # It fails if missing dependency package.</span><br><span class="line">$ make</span><br><span class="line">$ make install  </span><br><span class="line">$ service qat_service start  </span><br><span class="line">$ service qat_service_vfs start</span><br></pre></td></tr></table></figure>
+<p>NOTE: in Guest OS, enable the SR-IOV build on the host by using:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ .&#x2F;configure --enable-icp-sriov&#x3D;guest</span><br></pre></td></tr></table></figure>
+<h4 id="Verifying-SR-IOV-On-The-Host"><a href="#Verifying-SR-IOV-On-The-Host" class="headerlink" title="Verifying SR-IOV On The Host"></a>Verifying SR-IOV On The Host</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">$ lspci | grep 37c9  </span><br><span class="line"># or </span><br><span class="line">$ lspci -d 8086:37c9</span><br><span class="line">$ lspci -d:37c9</span><br><span class="line">...</span><br><span class="line">01:01.0 Co-processor: Intel Corporation Device 37c9</span><br><span class="line">01:01.1 Co-processor: Intel Corporation Device 37c9</span><br><span class="line">01:01.2 Co-processor: Intel Corporation Device 37c9</span><br><span class="line">...</span><br><span class="line">01:01.7 Co-processor: Intel Corporation Device 37c9</span><br><span class="line">01:02.0 Co-processor: Intel Corporation Device 37c9</span><br><span class="line">01:02.1 Co-processor: Intel Corporation Device 37c9</span><br><span class="line">...</span><br><span class="line">01:02.6 Co-processor: Intel Corporation Device 37c9</span><br><span class="line">01:02.7 Co-processor: Intel Corporation Device 37c9</span><br></pre></td></tr></table></figure>
+<p>Or using <code>adf_ctl</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ adf_ctl status</span><br></pre></td></tr></table></figure>
+<p>This utility can bring up/down device by ourselves.</p>
+<h4 id="Detailed-SR-IOV-enabling-please-refer-to-the-guide"><a href="#Detailed-SR-IOV-enabling-please-refer-to-the-guide" class="headerlink" title="Detailed SR-IOV enabling please refer to the guide."></a>Detailed SR-IOV enabling please refer to the guide.</h4><p>Please refer to:<br><a target="_blank" rel="noopener" href="https://01.org/sites/default/files/downloads/330689qatvirtualizationappnoterev008us.pdf">https://01.org/sites/default/files/downloads/330689qatvirtualizationappnoterev008us.pdf</a></p>
+<h4 id="Note"><a href="#Note" class="headerlink" title="Note"></a>Note</h4><ul>
+<li>虚拟化之后的QAT PF不能被host使用，host和guest都应该使用VF来加速应用。</li>
+<li>在QAT software安装好后，我们可以通过lsmod|grep qat来检查，同时qat各个device的配置文件会被拷贝到/etc目录下。</li>
+<li>每一次修改了/etc下的配置文件后，都需要restart qat_service和qat_service_vfs.</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh_CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/27/hexo-github/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Xinran Wang">
+      <meta itemprop="description" content="Keep calm and coding">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xinran's Blog">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/01/27/hexo-github/" class="post-title-link" itemprop="url">hexo+github</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Veröffentlicht am</span>
+
+      <time title="Erstellt: 2021-01-27 19:15:38" itemprop="dateCreated datePublished" datetime="2021-01-27T19:15:38+08:00">2021-01-27</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Bearbeitet am</span>
+        <time title="Geändert am: 2021-01-29 12:35:01" itemprop="dateModified" datetime="2021-01-29T12:35:01+08:00">2021-01-29</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">in</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/hexo/" itemprop="url" rel="index"><span itemprop="name">hexo</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="安装nodejs，git"><a href="#安装nodejs，git" class="headerlink" title="安装nodejs，git"></a>安装nodejs，git</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install npm</span><br><span class="line">sudo apt install nodejs</span><br><span class="line">sudo apt install git</span><br></pre></td></tr></table></figure>
+<h3 id="注册github帐号，创建github-repo，命名为xxinran-github-io"><a href="#注册github帐号，创建github-repo，命名为xxinran-github-io" class="headerlink" title="注册github帐号，创建github repo，命名为xxinran.github.io"></a>注册github帐号，创建github repo，命名为<code>xxinran.github.io</code></h3><h3 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo npm install -g hexo-cli</span><br></pre></td></tr></table></figure>
+<p>检查各项都已经成功安装：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">node -v</span><br><span class="line">hexo -v</span><br></pre></td></tr></table></figure>
+<h3 id="创建本地博客的repo"><a href="#创建本地博客的repo" class="headerlink" title="创建本地博客的repo"></a>创建本地博客的repo</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo init blog</span><br></pre></td></tr></table></figure>
+<p>运行后在当前目录下会生成一个blog目录。未来所有的博客主题，博文，配置都在这个目录里。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd blog</span><br></pre></td></tr></table></figure>
+<p>会发现目录结构如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">├── _config.yml  # hexo的配置文件，主题，标题，格式等都在这里指定</span><br><span class="line">├── db.json</span><br><span class="line">├── node_modules&#x2F;</span><br><span class="line">├── package.json</span><br><span class="line">├── package-lock.json</span><br><span class="line">├── public&#x2F;</span><br><span class="line">├── scaffolds&#x2F;</span><br><span class="line">├── source&#x2F; # 博客的静态页面的源文件，博文的md文件就存放在这里</span><br><span class="line">└── themes&#x2F; # 存放各种主题的源码</span><br></pre></td></tr></table></figure>
+<p>接下来在<code>blog</code>目录下运行<code>npm install</code> 来安装hexo所需的依赖。</p>
+<p>在<code>blog/source/_posts/hello-world.md</code>里有一个例子，我们先用这个例子，看看效果，运行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo server </span><br><span class="line">or</span><br><span class="line">hexo s</span><br></pre></td></tr></table></figure>
+<p>可以看到Hexo运行在本地的4000端口，在浏览器中访问<code>localhost:4000</code>，就会看到上述hello-world的示例页面。</p>
+<p>我们也可以通过 <code>hexo new first-try</code>去创建一个新的md文件，可以在这个md文件里写博文，这时在4000端口我们就可以看到新的博文。（应该是需要重新运行<code>hexo s</code>，这里没有验证）</p>
+<h3 id="连接gihub和hexo"><a href="#连接gihub和hexo" class="headerlink" title="连接gihub和hexo"></a>连接gihub和hexo</h3><h4 id="上传SSH公钥"><a href="#上传SSH公钥" class="headerlink" title="上传SSH公钥"></a>上传SSH公钥</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen</span><br><span class="line"># copy ssh public to Github Account</span><br></pre></td></tr></table></figure>
+<p>输入<code>ssh -T git@github.com</code>，测试添加ssh是否成功。如果看到Hi后面是你的用户名，就说明成功了.</p>
+<h4 id="在Hexo的配置文件中指定向Github-Page部署"><a href="#在Hexo的配置文件中指定向Github-Page部署" class="headerlink" title="在Hexo的配置文件中指定向Github Page部署"></a>在Hexo的配置文件中指定向Github Page部署</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ～&#x2F;blog&#x2F;_config.yml</span><br></pre></td></tr></table></figure>
+<p>在deploy选项中填写Github信息， 例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">deploy:</span><br><span class="line">type: git</span><br><span class="line">repository: git@github.com:xxinran&#x2F;xxinran.github.io.git</span><br><span class="line">branch: main # 原来是master</span><br></pre></td></tr></table></figure>
+<h4 id="生成静态文件，并部署到gihub上去。"><a href="#生成静态文件，并部署到gihub上去。" class="headerlink" title="生成静态文件，并部署到gihub上去。"></a>生成静态文件，并部署到gihub上去。</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># generate static files</span><br><span class="line">hexo generate</span><br><span class="line">or </span><br><span class="line">hexo g</span><br><span class="line"></span><br><span class="line"># deploy to Github</span><br><span class="line">hexo deploy</span><br><span class="line">or</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
+<p>这一步有可能会报错<code>Deployer not found: git</code>：</p>
+<ul>
+<li>需要安装<code>npm install hexo-deployer-git --save</code>。</li>
+<li>需要配置gitconfig。</li>
+</ul>
+<h4 id="打开Github-Page验证。"><a href="#打开Github-Page验证。" class="headerlink" title="打开Github Page验证。"></a>打开<a target="_blank" rel="noopener" href="https://xxinran.github.io/">Github Page</a>验证。</h4><h3 id="Notes"><a href="#Notes" class="headerlink" title="Notes"></a>Notes</h3><ul>
+<li>每次修改完blog的配置，或者新建删除post，draft等，都需要先<code>hexo clean</code>，在重新<code>hexo g &amp; hexo d</code>。</li>
+</ul>
+<blockquote>
+<p> 参考文档： <a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/configuration.html">https://hexo.io/zh-cn/docs/configuration.html</a><br> <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/71164003">https://zhuanlan.zhihu.com/p/71164003</a></p>
+</blockquote>
+<h1 id="主题配置"><a href="#主题配置" class="headerlink" title="主题配置"></a>主题配置</h1><ul>
+<li>在blog目录下拉取想要应用的主题</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/iissnan/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>打开站点配置文件 _config.yml，找到 theme 字段，并将其值更改为 next。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">theme: next</span><br></pre></td></tr></table></figure></li>
+<li><p>切换Schema</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scheme: Pisces</span><br></pre></td></tr></table></figure></li>
+<li><p>更新github上的主题</p>
+<p>改完配置之后都要运行hexo clean &amp; hexo generate &amp; hexo deploy，为了方便，可以在blog目录下加入一个新的脚本deploy.sh：</p>
+<blockquote>
+<p>这里涉及到 “push hexo code”, 在多设备管理中会讲到 ）</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">DIR=`dirname $0`</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Generate blog</span></span><br><span class="line">echo &quot;Generate and deploy...&quot;</span><br><span class="line">hexo clean</span><br><span class="line">hexo generate &amp; hexo deploy</span><br><span class="line"><span class="meta">#</span><span class="bash"> hexo d -g</span></span><br><span class="line"></span><br><span class="line">sleep 10</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Push hexo code</span></span><br><span class="line">echo &quot;Push hexo code&quot;</span><br><span class="line">git add .</span><br><span class="line">current_date=`date &quot;+%Y-%m-%d %H:%M:%S&quot;`</span><br><span class="line">git commit -m &quot;Blog updated: $current_date&quot;</span><br><span class="line"></span><br><span class="line">sleep 2</span><br><span class="line">git push origin hexo</span><br><span class="line"></span><br><span class="line">echo &quot;=====&gt;Finish!&lt;=====&quot;</span><br></pre></td></tr></table></figure></li>
+<li><p>更新脚本权限：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod 755 deploy.sh</span><br></pre></td></tr></table></figure>
+<p>以后每次推送只要运行./deploy.sh即可。</p>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+  
+  
+  
+
+
+  
+
+
+
+      
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      
+
+      
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xinran Wang</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Alle Besucher">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Alle Aufrufe">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Erstellt mit  <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
+"></script>
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
