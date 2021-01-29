@@ -286,7 +286,7 @@
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2021-01-29 14:40:50 / Modified: 15:00:42" itemprop="dateCreated datePublished" datetime="2021-01-29T14:40:50+08:00">2021-01-29</time>
+      <time title="Created: 2021-01-29 14:40:50 / Modified: 15:06:41" itemprop="dateCreated datePublished" datetime="2021-01-29T14:40:50+08:00">2021-01-29</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -323,8 +323,9 @@
 </ol>
 <h4 id="如何设置socks代理"><a href="#如何设置socks代理" class="headerlink" title="如何设置socks代理"></a>如何设置socks代理</h4><p>在<a target="_blank" rel="noopener" href="https://intelpedia.intel.com/Proxy_at_Intel#Using_openssh_to_connect_out_via_SOCKS_proxy">公司文档</a>中看到，可以通过设置socks代理，建立对外部的ssh连接。</p>
 <p>需要修改<code>.ssh/config</code>文件：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> cat ~/.ssh/config | tail -5</span></span><br><span class="line">Host github.com</span><br><span class="line">   HostName github.com</span><br><span class="line">   User git</span><br><span class="line">   ProxyCommand connect -S proxy-xxx.intel.com:1080 %h %p</span><br><span class="line">   ForwardAgent yes</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> linux</span></span><br><span class="line">Host *</span><br><span class="line">   ProxyCommand nc -X 5 -x proxy-xxx.intel.com:1080 %h %p</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> windows上需要把nc命令改成connect，参数-S表示是socks代理。</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat ~/.ssh/config | tail -5</span></span><br><span class="line">Host github.com</span><br><span class="line">   HostName github.com</span><br><span class="line">   User git</span><br><span class="line">   ProxyCommand connect -S proxy-xxx.intel.com:1080 %h %p</span><br><span class="line">   ForwardAgent yes</span><br></pre></td></tr></table></figure>
 <p>之后就可以成功ssh连接github了。</p>
+<p>但是<code>ping proxy-xxx.intel.com</code>是ping不通的，应该是公司关闭了。</p>
 
       
     </div>
