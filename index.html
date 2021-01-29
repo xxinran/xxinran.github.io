@@ -201,20 +201,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-count">8</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -253,6 +253,95 @@
       
 
       
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/29/ssh-via-socks/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Xinran Wang">
+      <meta itemprop="description" content="Keep calm and coding">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xinran's Blog">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/01/29/ssh-via-socks/" class="post-title-link" itemprop="url">公司内部ssh设置socks代理</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2021-01-29 14:40:50 / Modified: 15:00:42" itemprop="dateCreated datePublished" datetime="2021-01-29T14:40:50+08:00">2021-01-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/deploy-network-intel/" itemprop="url" rel="index"><span itemprop="name">deploy, network, intel</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <blockquote>
+<p><a target="_blank" rel="noopener" href="https://intelpedia.intel.com/Proxy_at_Intel">Proxy at Intel - Intelpedia</a></p>
+<p>因为公司设置了vpn，所以通过公司电脑访问外网时需要通过代理（http, https, socks等）。</p>
+</blockquote>
+<h4 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h4><p>在部署hexo时，用到了git deployer。这个deployer在每次<code>hexo deploy</code>的时候会通过ssh链接我的github账号的xxx.github.io项目，连接报错。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 看一下hexo的_config.yml文件</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat _config.yml  | grep -A10 deploy</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># Docs: https://hexo.io/docs/one-command-deployment</span></span></span><br><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repository: git@github.com:xxinran/xxinran.github.io.git</span><br><span class="line">  branch: main</span><br></pre></td></tr></table></figure>
+<p>在sshkey上传成功的情况下，测试ssh连接github</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -T git@github.com  #失败</span><br></pre></td></tr></table></figure>
+<p>后来发现是ssh没有配置代理，有两个方案：</p>
+<ol>
+<li>设置http代理（失败了）</li>
+<li>设置socks代理（成功）</li>
+</ol>
+<h4 id="如何设置socks代理"><a href="#如何设置socks代理" class="headerlink" title="如何设置socks代理"></a>如何设置socks代理</h4><p>在<a target="_blank" rel="noopener" href="https://intelpedia.intel.com/Proxy_at_Intel#Using_openssh_to_connect_out_via_SOCKS_proxy">公司文档</a>中看到，可以通过设置socks代理，建立对外部的ssh连接。</p>
+<p>需要修改<code>.ssh/config</code>文件：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> cat ~/.ssh/config | tail -5</span></span><br><span class="line">Host github.com</span><br><span class="line">   HostName github.com</span><br><span class="line">   User git</span><br><span class="line">   ProxyCommand connect -S proxy-xxx.intel.com:1080 %h %p</span><br><span class="line">   ForwardAgent yes</span><br></pre></td></tr></table></figure>
+<p>之后就可以成功ssh连接github了。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+  
+  
+  
+
       
   
   
