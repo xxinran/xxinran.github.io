@@ -105,7 +105,8 @@ Bringing machine 'default' up with 'virtualbox' provider...
     default: Adapter 1: nat
     default: Adapter 2: hostonly
 ==> default: Forwarding ports...
-    default: 22 (guest) => 2222 (host) (adapter 1)
+    default: 22 (guest) => 2222 (host) (adapter 1)  # 端口映射, 如果起了多个vagrant vm，那么各个
+    																								# vm 会映射到host的不同端口
 ==> default: Booting VM...
 ==> default: Waiting for machine to boot. This may take a few minutes...
     default: SSH address: 127.0.0.1:2222
@@ -138,6 +139,13 @@ Last login: Sat Jan 30 04:28:57 2021 from 10.0.2.2
 logout
 Shared connection to 127.0.0.1 closed.
 
-
+# 查看host上的2222端口
+$ lsof -i:2222
+COMMAND     PID   USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+VBoxHeadl 13238 xinran   16u  IPv4 0x294cd01b85b191f5      0t0  TCP localhost:rockwell-csp2 (LISTEN)
+VBoxHeadl 13238 xinran   20u  IPv4 0x294cd01b95fd8815      0t0  TCP localhost:rockwell-csp2->localhost:63021 (ESTABLISHED)
+ssh       13880 xinran    3u  IPv4 0x294cd01b94ae9e35      0t0  TCP localhost:63021->localhost:rockwell-csp2 (ESTABLISHED)
+ssh       13894 xinran    3u  IPv4 0x294cd01b94ae9e35      0t0  TCP localhost:63021->localhost:rockwell-csp2 (ESTABLISHE
 ```
 
+> Note: 在下载box image时，要找到对应provider的box。我第一次下载成了libvirt provider的box，然后vagrant init就失败了，因为我的host上装的是virtualbox作为provider。
