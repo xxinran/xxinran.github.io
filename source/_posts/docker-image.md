@@ -33,6 +33,8 @@ typora-root-url: ../_posts
 
 ```shell
 # docker run image-id 
-CMD ["ls","-a"]
+CMD ["ls","-a"]  # 指定容器启动时要运行的命令，最后一个有效，可被替代。在docker run时不能被追加参数
+ENTRYPOINT ["ls", ["-a"]] # 指定容器启动时要运行的命令，可以在docker run的时候追加参数
+ 													# 比如 docker run xxx "-l"
 ```
 
