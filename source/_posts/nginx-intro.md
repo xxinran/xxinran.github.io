@@ -1,5 +1,5 @@
 ---
-title: nginx-intro
+title: Nginx简介
 date: 2021-02-01 23:04:57
 tags:
 categories:
