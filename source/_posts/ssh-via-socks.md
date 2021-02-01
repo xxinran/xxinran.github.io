@@ -1,7 +1,10 @@
 ---
 title: 公司内部ssh设置socks代理
 date: 2021-01-29 14:40:50
-tags: ssh，socks, network
+tags:
+- ssh
+- socks
+- network
 categories: deploy, network, intel
 ---
 
