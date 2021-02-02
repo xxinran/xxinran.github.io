@@ -147,3 +147,13 @@ newgrp docker
 ```shell 
 docker ps
 ```
+
+
+
+
+
+# docker graph是什么东西啊
+
+
+
+The `-g` or `--graph` flag for the `dockerd` or `docker daemon` command was used to indicate the directory in which to store persistent data and resource configuration and has been replaced with the more descriptive `--data-root` flag.
