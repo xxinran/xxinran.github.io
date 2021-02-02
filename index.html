@@ -201,20 +201,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-count">14</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -257,6 +257,717 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/02/vca-intro/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Xinran Wang">
+      <meta itemprop="description" content="Keep calm and coding">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xinran's Blog">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/02/02/vca-intro/" class="post-title-link" itemprop="url">在centos8上使能vca-a卡</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2021-02-02 15:59:19 / Modified: 23:48:13" itemprop="dateCreated datePublished" datetime="2021-02-02T15:59:19+08:00">2021-02-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/devices/" itemprop="url" rel="index"><span itemprop="name">devices</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="vca卡的内部结构"><a href="#vca卡的内部结构" class="headerlink" title="vca卡的内部结构"></a>vca卡的内部结构</h2><p><img src="/2021/02/02/vca-intro/image-20210202160154068.png" alt="image-20210202160154068"></p>
+<ul>
+<li><p>一块kabylake CPU，上面带一个Intel GFX 610集成显卡。</p>
+</li>
+<li><p>12个movidius VPU：</p>
+<ul>
+<li>其中两个通过USB连接到CPU上</li>
+<li>剩下的10个通过PCI-USB bridge和CPU通信<ul>
+<li>PCI-USB bridge ：The <strong>ASM1042A</strong> is ASMedia’s new generation of Universal Serial Bus 3.0 extended host controller, bridging PCI Express to two ports of USB3.0</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>一个PCIe switch：为host提供NTB</p>
+<ul>
+<li>NTB（Non-Transparent-Bridge）</li>
+</ul>
+</li>
+</ul>
+<h2 id="Host上vca-software安装"><a href="#Host上vca-software安装" class="headerlink" title="Host上vca software安装"></a>Host上vca software安装</h2><p><img src="/2021/02/02/vca-intro/image-20210202162348217.png" alt="image-20210202162348217"></p>
+<p>service跑在host上，agent和其他的workload都跑在vca卡上，卡上有个单独的os，ubuntu1804。</p>
+<h3 id="下载software-packages源码"><a href="#下载software-packages源码" class="headerlink" title="下载software packages源码"></a>下载software packages源码</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> https://github.com/OpenVisualCloud/VCAC-SW-Analytics.git -b release/VCAC-A/R6</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> tree -L 2</span></span><br><span class="line">.</span><br><span class="line">├── Documents                   # 平平无奇的文档</span><br><span class="line">│   ├── VCAC-Analytics-releasenotes-rev6-0.pdf</span><br><span class="line">│   └── VCAC-Analytics-software-installation-guide-rev6-0.pdf</span><br><span class="line">├── Intel_Media_Analytics_Host  # Host files</span><br><span class="line">│   ├── scripts                 # scripts to build kernel and vca driver module</span><br><span class="line">│   └── tar                     # kernel patch, vca driver patch and utilities</span><br><span class="line">└── Intel_Media_Analytics_Node  # Software packages</span><br><span class="line">    ├── scripts                 # scripte to build ubunut1804 image and dockerfiles </span><br><span class="line">    └── tar                     # patch for kernel on card, install pkg for VPU metrics</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="使用docker在容器里build安装包"><a href="#使用docker在容器里build安装包" class="headerlink" title="使用docker在容器里build安装包"></a>使用docker在容器里build安装包</h3><p>在host上 用docker启动容器，去build一些软件包，等等。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker info | grep Dir</span></span><br><span class="line">Docker Root Dir: /var/lib/docker</span><br></pre></td></tr></table></figure>
+<p>这个docker目录最多只有50GB，不够去build vcad，可能会报错<code>&quot;no space left on device&quot; </code>, 所以我们需要换一个Docker Root Dir。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vim /usr/lib/systemd/system/docker.service<span class="string">&quot;</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> add <span class="string">&quot;--graph /home/docker&quot;</span> after <span class="string">&quot;ExecStart=/user/bin/dockerd</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat /usr/lib/systemd/system/docker.service | grep graph</span></span><br><span class="line">ExecStart=/usr/bin/dockerd --graph /home/docker -H fd:// --containerd=/run/containerd/containerd.sock</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 重启</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> systemctl daemon-reload</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> systemctl restart docker</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 再查看一下，已经改好了</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker info  | grep Dir</span></span><br><span class="line">Docker Root Dir: /home/docker</span><br></pre></td></tr></table></figure>
+
+
+<p>拉取centos8的image</p>
+<p><img src="/2021/02/02/vca-intro/image-20210202170918413.png" alt="image-20210202170918413"></p>
+<p>安装一些需要的pkg</p>
+<p><img src="/2021/02/02/vca-intro/image-20210202171007593.png" alt="image-20210202171007593"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[space@inspurserver CentOS8]$ docker ps</span><br><span class="line">CONTAINER ID   IMAGE                      COMMAND                  CREATED              STATUS              PORTS     NAMES</span><br><span class="line">d4ecdebab101   vcaa/centos-8.1-test:1.0   &quot;/home/space/VCAC-SW…&quot;   About a minute ago   Up About a minute             sleepy_ride</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="安装新kernel，vca软件等"><a href="#安装新kernel，vca软件等" class="headerlink" title="安装新kernel，vca软件等"></a>安装新kernel，vca软件等</h3><p>用生成的包，去换kernel，安装host上的vca daemon，vca cli， kernel， kernel-devel等等。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 安装kernel包</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo yum -y localinstall kernel-4.18.0-147_1.fb4dfe2.VCA+-1.x86_64.rpm</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo yum -y localinstall kernel-devel-4.18.0-147_1.fb4dfe2.VCA+-1.x86_64.rpm</span></span><br><span class="line"><span class="meta">#</span><span class="bash">安装vca driver module</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo yum -y localinstall vcass-modules-4.18.0-147_1.fb4dfe2.VCA</span></span><br><span class="line">+-1.690990a-0.x86_64.rpm</span><br><span class="line"><span class="meta">#</span><span class="bash"> 安装vca daemon</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo yum -y localinstall daemon-vca-2.7.3-centos8-x86_64.rpm</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo yum -y localinstall ../../tar/Centos8/vca_query-1.0_centos8-1.x86_64.rpm</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 换default kernel，参考 https://www.golinuxcloud.com/change-default-kernel-version-rhel-centos-8/</span></span><br><span class="line">sudo grubby --set-default &quot;/boot/vmlinuz-4.18.0.0e222f9.VCA+&quot; </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> reboot</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo reboot</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 开机之后验证kernel更换成功</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> uname -r</span></span><br><span class="line">4.18.0.0e222f9.VCA+</span><br></pre></td></tr></table></figure>
+<h3 id="enable-iommu"><a href="#enable-iommu" class="headerlink" title="enable iommu"></a>enable iommu</h3><p>其实我之前设置了<code>intel_iommu=on </code>，但是由于换了kernel，之前那个kernel的cmdline不起作用了。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 在这里重新设置一下</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat /boot/grub2/grubenv</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> GRUB Environment Block</span></span><br><span class="line">saved_entry=4f71b0d5929445139ae33f60b7e05767-4.18.0.0e222f9.VCA+</span><br><span class="line">kernelopts=root=LABEL=cloudimg-rootfs ro console=ttyS0,115200n8 no_timer_check net.ifnames=0 crashkernel=auto rd.auto=1 intel_iommu=on</span><br><span class="line">boot_success=1</span><br><span class="line">boot_indeterminate=0</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo reboot</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 然后就可以看到使能好的iommu groups了！</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ls /sys/kernel/iommu_groups/</span></span><br><span class="line">0   11  14  17  2   22  25  28  30  33  36  39  41  44  47  5   52  55  58  60  63  66 </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">check cmdline</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat /proc/cmdline</span></span><br><span class="line">BOOT_IMAGE=(hd0,gpt1)/boot/vmlinuz-4.18.0.0e222f9.VCA+ root=LABEL=cloudimg-rootfs ro console=ttyS0,115200n8 no_timer_check net.ifnames=0 crashkernel=auto rd.auto=1 intel_iommu=on</span><br></pre></td></tr></table></figure>
+<h3 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 报错！因为不是root权限</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl info BIOS 0 0</span></span><br><span class="line">ERROR: could not parse vca configuration file!</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo su</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 成功！</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl status</span></span><br><span class="line">Card: 0 Cpu: 0  STATE: bios_up</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 报错，这个时候ubuntu1804和host的网络还没有配置好</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo vcactl network ip</span></span><br><span class="line">ERROR: Card: 0 Cpu: 0 - Card needs to be in &quot;os_ready&quot;, &quot;net_device_ready&quot;, &quot;dhcp_error&quot;, &quot;net_device_no_ip&quot;, &quot;dhcp_in_progress&quot; or &quot;dhcp_done&quot; state!</span><br></pre></td></tr></table></figure>
+<h3 id="在vca卡上载入ubuntu-os"><a href="#在vca卡上载入ubuntu-os" class="headerlink" title="在vca卡上载入ubuntu os"></a>在vca卡上载入ubuntu os</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 关闭已打开的块设备</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl blockio close 0 0 vcablk0</span></span><br><span class="line">WARNING: Card: 0 Cpu: 0 - Block device vcablk0 is not open. You do not need to close it.</span><br><span class="line"><span class="meta">#</span><span class="bash"> 在build好的ubuntu的image加载进vca卡中</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl blockio open 0 0 vcablk0 RW vca_disk48_k5.3_ubuntu18.04_1.0.1.vcad</span></span><br><span class="line"><span class="meta">#</span><span class="bash">查看</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl status</span></span><br><span class="line">Card: 0 Cpu: 0  STATE: bios_ready</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 在bios_ready之后，需要重启一下vca卡，使其生效</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 关机</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl pwrbtn-long 0 0</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl status</span></span><br><span class="line">Card: 0 Cpu: 0  STATE: power_off</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 开机</span></span><br><span class="line"><span class="meta">$</span><span class="bash">vcactl pwrbtn-short 0 0</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl reset 0 0 --force</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl boot 0 0 vcablk0 --force</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl status</span></span><br><span class="line">Card: 0 Cpu: 0  STATE: booting</span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl status</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl network ip</span></span><br><span class="line">Card 0 Cpu 0:</span><br><span class="line">172.32.1.1</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 密码是vista1</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ssh root@172.32.1.1</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 到这里，vca卡的os也安装完毕了！</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>vca卡上os，可以和host相互ping通，</p>
+<p>但连接不上internet。dns也没有设置好。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">root@vca_node_00:~# wget www.baidu.com</span><br><span class="line">--2021-02-02 15:06:13--  http://www.baidu.com/</span><br><span class="line">Resolving www.baidu.com (www.baidu.com)... failed: Temporary failure in name resolution.</span><br><span class="line">wget: unable to resolve host address &#x27;www.baidu.com&#x27;</span><br><span class="line">root@vca_node_00:~# ping baidu.com</span><br><span class="line">ping: baidu.com: Temporary failure in name resolution</span><br></pre></td></tr></table></figure>
+<h3 id="vca-amp-host-网络配置"><a href="#vca-amp-host-网络配置" class="headerlink" title="vca &amp; host 网络配置"></a>vca &amp; host 网络配置</h3><p><strong>在host上</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> config proxy</span></span><br><span class="line">touch /etc/yum.repos.d/10proxy</span><br><span class="line">vim 10proxy</span><br><span class="line">Acquire::http::Proxy &quot; local network http proxy &quot;;</span><br><span class="line">scp /etc/yum.repos.d/10proxy root@172.32.1.1:/etc/apt/apt.conf.d/10proxy  </span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> config dns</span></span><br><span class="line">scp /etc/resolv.conf root@172.32.1.1:/etc</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">disable</span> firewall</span></span><br><span class="line">systemctl stop firewalld.service</span><br><span class="line">systemctl disable firewalld.service</span><br><span class="line">systemctl status firewalld.service</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">enable</span> ip forwarding <span class="keyword">in</span> host kernel</span></span><br><span class="line">echo 1 &gt; /proc/sys/net/ipv4/ip_forward</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> add rules to NAT</span></span><br><span class="line">iptables -t nat -A POSTROUTING -s 172.32.1.1 -d 0/0 -j MASQUERADE</span><br></pre></td></tr></table></figure>
+<p><strong>在VCA卡上</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ssh root@172.32.1.1</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> configure proxy</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vim ~/.bashrc</span></span><br><span class="line">export https_proxy=&quot; local network https proxy</span><br><span class="line">export http_proxy=&quot; local network http proxy&quot;</span><br><span class="line">export ftp_proxy=&quot; local network ftp proxy&quot;</span><br></pre></td></tr></table></figure>
+<h4 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget www.baidu.com</span><br><span class="line">wget www.google.com</span><br></pre></td></tr></table></figure>
+<p>VCA卡应该和host有一样的网络连通能力。</p>
+<h2 id="在vca卡上安装software"><a href="#在vca卡上安装software" class="headerlink" title="在vca卡上安装software"></a>在vca卡上安装software</h2><p><strong>Load SMBus driver</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> modprobe i2c-i801</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> modprobe i2c-dev</span>  </span><br></pre></td></tr></table></figure>
+<p><strong>Load HDDL driver</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> insmod /lib/modules/5.3.18-1.9bf7f75.vca+/kernel/drivers/ion/myd_ion.ko</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> insmod /lib/modules/5.3.18-1.9bf7f75.vca+/kernel/drivers/usb/myd/myd_vsc.ko</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> lsmod | grep myd</span></span><br><span class="line">myd_vsc                24576  0</span><br><span class="line">myd_ion                49152  0</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/01/nginx-intro/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Xinran Wang">
+      <meta itemprop="description" content="Keep calm and coding">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xinran's Blog">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/02/01/nginx-intro/" class="post-title-link" itemprop="url">Nginx简介</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-02-01 23:04:57" itemprop="dateCreated datePublished" datetime="2021-02-01T23:04:57+08:00">2021-02-01</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-02-02 15:43:53" itemprop="dateModified" datetime="2021-02-02T15:43:53+08:00">2021-02-02</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><ul>
+<li>反向代理</li>
+<li>负载均衡</li>
+<li>动静分离</li>
+</ul>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo yum install nginx</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo systemctl start nginx.service</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 访问成功</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> curl localhost:80</span></span><br></pre></td></tr></table></figure>
+<p><strong>测试安装成功</strong></p>
+<p>因为我的测试环境是vagrant vm，所以需要做一个端口映射，这样我们可以在host上访问。</p>
+<img src="/2021/02/01/nginx-intro/image-20210201230936553.png" alt="image-20210201230936553" style="zoom:50%;">
+
+<p>成功！</p>
+<img src="/2021/02/01/nginx-intro/image-20210201231043622.png" alt="image-20210201231043622" style="zoom:50%;">
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> nginx -h</span></span><br><span class="line">nginx version: nginx/1.14.1</span><br><span class="line">Usage: nginx [-?hvVtTq] [-s signal] [-c filename] [-p prefix] [-g directives]</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">...</span><br><span class="line">  -s signal     : send signal to a master process: stop, quit, reopen, reload</span><br><span class="line">  -p prefix     : set prefix path (default: /usr/share/nginx/)</span><br><span class="line">  -c filename   : set configuration file (default: /etc/nginx/nginx.conf)</span><br><span class="line">  -g directives : set global directives out of configuration file</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> nginx -s stop 停止</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> nginx -s quit 安全退出</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> nginx -s reload 重新加载配置文件</span></span><br></pre></td></tr></table></figure>
+<h3 id="nginx配置文件"><a href="#nginx配置文件" class="headerlink" title="nginx配置文件"></a>nginx配置文件</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vim /etc/nginx/nginx.conf</span></span><br></pre></td></tr></table></figure>
+<p>可以看到nginx server是监听在80端口的，我们可以修改端口，然后用<code>nginx -s reload</code>来生效。</p>
+<img src="/2021/02/01/nginx-intro/image-20210201231634344.png" alt="image-20210201231634344" style="zoom:50%;">
+
+
+
+<h3 id="详解nginx-conf"><a href="#详解nginx-conf" class="headerlink" title="详解nginx.conf"></a>详解nginx.conf</h3><p> 三部分</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">user  www;# 工作进程的属主</span><br><span class="line"> worker_processes  4;# 工作进程数，一般与 CPU 核数等同</span><br><span class="line"> </span><br><span class="line"><span class="meta"> #</span><span class="bash">error_log  logs/error.log;</span></span><br><span class="line"><span class="meta"> #</span><span class="bash">error_log  logs/error.log  notice;</span></span><br><span class="line"><span class="meta"> #</span><span class="bash">error_log  logs/error.log  info;</span></span><br><span class="line"> </span><br><span class="line"><span class="meta"> #</span><span class="bash">pid        logs/nginx.pid;</span></span><br><span class="line"> </span><br><span class="line"> events &#123;</span><br><span class="line">    use epoll;#Linux 下性能最好的 event 模式</span><br><span class="line">    worker_connections  2048;# 每个工作进程允许最大的同时连接数</span><br><span class="line"> &#125;</span><br><span class="line"> </span><br><span class="line"> http &#123;</span><br><span class="line">		upstream xxx&#123;</span><br><span class="line">				server1:port1</span><br><span class="line">				server2:port3</span><br><span class="line">		&#125; </span><br><span class="line">		</span><br><span class="line">		server &#123;</span><br><span class="line">				location / &#123;</span><br><span class="line">						proxy_pass xxx</span><br><span class="line">				&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/fengzhongzhuzu/p/8848115.html">https://www.cnblogs.com/fengzhongzhuzu/p/8848115.html</a></p>
+<h3 id="Nginx的负载均衡调度算法"><a href="#Nginx的负载均衡调度算法" class="headerlink" title="Nginx的负载均衡调度算法"></a>Nginx的负载均衡调度算法</h3><h4 id="weight轮询-默认，常用"><a href="#weight轮询-默认，常用" class="headerlink" title="weight轮询(默认，常用)"></a>weight轮询(默认，常用)</h4><p>收到的请求<strong>按照权重分配</strong>到不同的后端服务器，即使在使用过程中，某一台后端服务器宕机，Nginx会自动将该服务器剔除出队列，请求受理情况不会受到任何影响。这种方式下，可以给不同的后端服务器设置一个权重值(weight)，用于调整不同的服务器上请求的分配率；权重数据越大，被分配到请求的几率越大；该权重值，主要是针对实际工作环境中不同的后端服务器硬件配置进行调整的。</p>
+<h4 id="ip-hash（常用）"><a href="#ip-hash（常用）" class="headerlink" title="ip_hash（常用）"></a>ip_hash（常用）</h4><p>每个请求按照发起客户端的ip的hash结果进行匹配，这样的算法下一个固定ip地址的客户端总会访问到同一个后端服务器，这也在一定程度上解决了集群部署环境下<strong>session共享的</strong>问题。</p>
+<h4 id="fair智能调整调度算法"><a href="#fair智能调整调度算法" class="headerlink" title="fair智能调整调度算法"></a>fair智能调整调度算法</h4><p>动态的根据后端服务器的请求处理到响应的时间进行均衡分配，响应时间短处理效率高的服务器分配到请求的概率高，响应时间长处理效率低的服务器分配到的请求少；结合了前两者的优点的一种调度算法。但是需要注意的是Nginx默认不支持fair算法，如果要使用这种调度算法，请安装upstream_fair模块。</p>
+<h4 id="url-hash"><a href="#url-hash" class="headerlink" title="url_hash"></a>url_hash</h4><p>按照访问的url的hash结果分配请求，每个请求的url会指向后端固定的某个服务器，可以在Nginx作为静态服务器的情况下提高缓存效率。同样要注意Nginx默认不支持这种调度算法，要使用的话需要安装Nginx的hash软件包。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/01/network-virtualization/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Xinran Wang">
+      <meta itemprop="description" content="Keep calm and coding">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xinran's Blog">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/02/01/network-virtualization/" class="post-title-link" itemprop="url">网络虚拟化简介</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-02-01 21:47:17" itemprop="dateCreated datePublished" datetime="2021-02-01T21:47:17+08:00">2021-02-01</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-02-02 14:03:59" itemprop="dateModified" datetime="2021-02-02T14:03:59+08:00">2021-02-02</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%99%9A%E6%8B%9F%E5%8C%96/" itemprop="url" rel="index"><span itemprop="name">虚拟化</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <img src="/2021/02/01/network-virtualization/image-20210201221242667.png" alt="image-20210201221242667" style="zoom:70%;">
+
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/01/docker-network/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Xinran Wang">
+      <meta itemprop="description" content="Keep calm and coding">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xinran's Blog">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/02/01/docker-network/" class="post-title-link" itemprop="url">浅析docker网络</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-02-01 12:18:56" itemprop="dateCreated datePublished" datetime="2021-02-01T12:18:56+08:00">2021-02-01</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-02-02 14:03:59" itemprop="dateModified" datetime="2021-02-02T14:03:59+08:00">2021-02-02</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/docker/" itemprop="url" rel="index"><span itemprop="name">docker</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="docker0"><a href="#docker0" class="headerlink" title="docker0"></a>docker0</h3><p>先来查看一下host的网络：</p>
+<img src="/2021/02/01/docker-network/image-20210201164717688.png" alt="image-20210201164717688" style="zoom:50%;">
+
+
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 启动一个tomcat容器</span></span><br><span class="line">[vagrant@localhost ~]$ docker run -d -P --name tomcat01 tomcat</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看容器里的网络，发现有一个 eth0@if37（172.17.0.2）和host上的docker0（172.17.0.1）在同一个网段。</span></span><br><span class="line">[vagrant@localhost dockerfile]$ docker exec -it ef59e03b0b34 ip a</span><br><span class="line">1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000</span><br><span class="line">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</span><br><span class="line">    inet 127.0.0.1/8 scope host lo</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">36: eth0@if37: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default</span><br><span class="line">    link/ether 02:42:ac:11:00:02 brd ff:ff:ff:ff:ff:ff link-netnsid 0</span><br><span class="line">    inet 172.17.0.2/16 brd 172.17.255.255 scope global eth0</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">     </span><br><span class="line"><span class="meta">#</span><span class="bash"> 从host上ping容器的eth0@if37，可以ping通。</span></span><br><span class="line">[vagrant@localhost dockerfile]$ ping 172.17.0.2</span><br><span class="line">PING 172.17.0.2 (172.17.0.2) 56(84) bytes of data.</span><br><span class="line">64 bytes from 172.17.0.2: icmp_seq=1 ttl=64 time=0.083 ms</span><br><span class="line">64 bytes from 172.17.0.2: icmp_seq=2 ttl=64 time=0.061 ms</span><br></pre></td></tr></table></figure>
+<p>我们每启动一个docker容器，docker就会给容器分配一个ip，我们只要安装的docker，就会有一个docker0网卡，这个网卡是桥接模式，使用的技术是ve th-pair技术。</p>
+<p>启动完tomcat容器后，再在host上查看网络接口，会发现多了一个接口：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[vagrant@localhost ~]$ ip a</span><br><span class="line">...</span><br><span class="line"><span class="meta">#</span><span class="bash"> </span></span><br><span class="line">37: veth9f8a1b7@if36: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue master docker0 state UP group default</span><br><span class="line">    link/ether 0a:6f:15:99:d0:b8 brd ff:ff:ff:ff:ff:ff link-netnsid 0</span><br><span class="line">    inet6 fe80::86f:15ff:fe99:d0b8/64 scope link</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br></pre></td></tr></table></figure>
+<h3 id="veth-pair技术"><a href="#veth-pair技术" class="headerlink" title="veth-pair技术"></a>veth-pair技术</h3><p>是一对虚拟设备接口，都是成对出现的。</p>
+<p>我们再起一个tomcat，现在有两个容器，tomcat01和tomcat02。看一下他们的网络接口和host的网络。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> -it tomcat01 ip a</span></span><br><span class="line">1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000</span><br><span class="line">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</span><br><span class="line">    inet 127.0.0.1/8 scope host lo</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">36: eth0@if37: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default</span><br><span class="line">    link/ether 02:42:ac:11:00:02 brd ff:ff:ff:ff:ff:ff link-netnsid 0</span><br><span class="line">    inet 172.17.0.2/16 brd 172.17.255.255 scope global eth0</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">       </span><br><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> -it tomcat02 ip a</span></span><br><span class="line">1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000</span><br><span class="line">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</span><br><span class="line">    inet 127.0.0.1/8 scope host lo</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">38: eth0@if39: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default</span><br><span class="line">    link/ether 02:42:ac:11:00:03 brd ff:ff:ff:ff:ff:ff link-netnsid 0</span><br><span class="line">    inet 172.17.0.3/16 brd 172.17.255.255 scope global eth0</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    </span><br><span class="line"><span class="meta">$</span><span class="bash"> ip a</span></span><br><span class="line">...</span><br><span class="line">3: docker0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default</span><br><span class="line">    link/ether 02:42:95:5a:03:dc brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 fe80::42:95ff:fe5a:3dc/64 scope link</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">37: veth9f8a1b7@if36: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue master docker0 state UP group default</span><br><span class="line">    link/ether 0a:6f:15:99:d0:b8 brd ff:ff:ff:ff:ff:ff link-netnsid 0</span><br><span class="line">    inet6 fe80::86f:15ff:fe99:d0b8/64 scope link</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">39: veth11e4e0f@if38: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue master docker0 state UP group default</span><br><span class="line">    link/ether ba:3b:43:24:29:92 brd ff:ff:ff:ff:ff:ff link-netnsid 1</span><br><span class="line">    inet6 fe80::b83b:43ff:fe24:2992/64 scope link</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br></pre></td></tr></table></figure>
+<p>网络模型如下，每个容器在创建的时候会建立一对veth pair，用于和docker0通信，不同容器间的通信也是通过docker0网桥。</p>
+<img src="/2021/02/01/docker-network/image-20210201170031892.png" alt="image-20210201170031892" style="zoom:50%;">
+
+<h3 id="limitation"><a href="#limitation" class="headerlink" title="limitation"></a>limitation</h3><p>测试两个容器的连通性</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> ping容器名是ping不通的</span></span><br><span class="line">vagrant@localhost ~]$ docker exec -it tomcat01 ping tomcat02</span><br><span class="line">ping: tomcat02: No address associated with hostname</span><br><span class="line"><span class="meta">#</span><span class="bash"> ping ip可以ping通</span></span><br><span class="line">[vagrant@localhost ~]$ docker exec -it tomcat01 ping 172.17.0.3</span><br><span class="line">PING 172.17.0.3 (172.17.0.3) 56(84) bytes of data.</span><br><span class="line">64 bytes from 172.17.0.3: icmp_seq=1 ttl=64 time=0.058 ms</span><br><span class="line">64 bytes from 172.17.0.3: icmp_seq=2 ttl=64 time=0.066 ms</span><br></pre></td></tr></table></figure>
+<p>这就是docker0网桥的局限性，<strong>不支持容器名访问</strong>。这里我们可以通过<code>--link</code>来实现通过容器名来连通。</p>
+<h4 id="–link"><a href="#–link" class="headerlink" title="–link"></a>–link</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 删除tomcat02，并且重新创建</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker run -d -P --name tomcat02 --link tomcat01 tomcat</span></span><br><span class="line">a9a926b40eb97a28d39ec67418efaa05b362b9917f7375620da18e8f13607282</span><br><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> -it tomcat02 ping tomcat01</span></span><br><span class="line">PING tomcat01 (172.17.0.2) 56(84) bytes of data.</span><br><span class="line">64 bytes from tomcat01 (172.17.0.2): icmp_seq=1 ttl=64 time=0.090 ms</span><br><span class="line">64 bytes from tomcat01 (172.17.0.2): icmp_seq=2 ttl=64 time=0.060 ms</span><br><span class="line">^C</span><br><span class="line">--- tomcat01 ping statistics ---</span><br><span class="line">2 packets transmitted, 2 received, 0% packet loss, time 11ms</span><br><span class="line">rtt min/avg/max/mdev = 0.060/0.075/0.090/0.015 ms</span><br></pre></td></tr></table></figure>
+<p>发现可以通过容器名ping通了，但是反向ping还是不通。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> -it tomcat01 ping tomcat02</span></span><br><span class="line">ping: tomcat02: No address associated with hostname</span><br></pre></td></tr></table></figure>
+<p>原因是因为我们只是在docker run tomcat02的时候加了<code>--link</code>,相当于只对tomcat02设置了针对tomcat01的连通性，反之则没有，所以tomcat01并不知道如何处理tomcat02这个域名。</p>
+<p>那么，<code>--link</code>  到底在tomcat02里配置了什么呢？ 下面是<code>docker inspect tomcat02</code>的输出，可以看到在HostConfig中有一个关于tomcat01的设置。</p>
+<img src="/2021/02/01/docker-network/image-20210201171348699.png" alt="image-20210201171348699" style="zoom:50%;">
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> --link主要干了两件事</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 1. 设置tomcat01（被link容器）的环境变量</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span>  -it tomcat02 env | grep -i tomcat01</span></span><br><span class="line">TOMCAT01_PORT=tcp://172.17.0.2:8080</span><br><span class="line">TOMCAT01_PORT_8080_TCP=tcp://172.17.0.2:8080</span><br><span class="line">TOMCAT01_PORT_8080_TCP_ADDR=172.17.0.2</span><br><span class="line">TOMCAT01_PORT_8080_TCP_PORT=8080</span><br><span class="line">TOMCAT01_PORT_8080_TCP_PROTO=tcp</span><br><span class="line">TOMCAT01_NAME=/tomcat02/tomcat01</span><br><span class="line">TOMCAT01_ENV_LANG=C.UTF-8</span><br><span class="line">TOMCAT01_ENV_JAVA_HOME=/usr/local/openjdk-11</span><br><span class="line">TOMCAT01_ENV_JAVA_VERSION=11.0.9.1</span><br><span class="line">TOMCAT01_ENV_CATALINA_HOME=/usr/local/tomcat</span><br><span class="line">TOMCAT01_ENV_TOMCAT_NATIVE_LIBDIR=/usr/local/tomcat/native-jni-lib</span><br><span class="line">TOMCAT01_ENV_LD_LIBRARY_PATH=/usr/local/tomcat/native-jni-lib</span><br><span class="line">TOMCAT01_ENV_GPG_KEYS=05AB33110949707C93A279E3D3EFE6B686867BA6 07E48665A34DCAFAE522E5E6266191C37C037D42 47309207D818FFD8DCD3F83F1931D684307A10A5 541FBE7D8F78B25E055DDEE13C370389288584E7 61B832AC2F1C5A90F0F9B00A1C506407564C17A3 79F7026C690BAA50B92CD8B66A3AD3F4F22C4FED 9BA44C2621385CB966EBA586F72C284D731FABEE A27677289986DB50844682F8ACB77FC2E86E29AC A9C5DF4D22E99998D9875A5110C01C5A2F6059E7 DCFD35E0BF8CA7344752DE8B6FB21E8933C60243 F3A04C595DB5B6A5F1ECA43E3B7BBB100D811BBE F7DA48BB64BCB84ECBA7EE6935CD23C10D498E23</span><br><span class="line">TOMCAT01_ENV_TOMCAT_MAJOR=9</span><br><span class="line">TOMCAT01_ENV_TOMCAT_VERSION=9.0.41</span><br><span class="line">TOMCAT01_ENV_TOMCAT_SHA512=b6450e590a37c5bccf049b1176c441f0964796995e80d4c7c7d9fb74f9ad817107c303b6b83ed3d71c9251b2b8acf334b90a4abdf9deea122e338643cece0766</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 2. 设置/etc/hosts</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span>  -it tomcat02 cat /etc/hosts</span></span><br><span class="line">127.0.0.1       localhost</span><br><span class="line">::1     localhost ip6-localhost ip6-loopback</span><br><span class="line">fe00::0 ip6-localnet</span><br><span class="line">ff00::0 ip6-mcastprefix</span><br><span class="line">ff02::1 ip6-allnodes</span><br><span class="line">ff02::2 ip6-allrouters</span><br><span class="line">172.17.0.2      tomcat01 ef59e03b0b34  # 这里设置了tomcat01的IP映射关系</span><br><span class="line">172.17.0.3      a9a926b40eb9</span><br></pre></td></tr></table></figure>
+<h3 id="自定义网络"><a href="#自定义网络" class="headerlink" title="自定义网络"></a>自定义网络</h3><p>在docker 安装的时候，有</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker network ls</span></span><br><span class="line">NETWORK ID     NAME      DRIVER    SCOPE</span><br><span class="line">b3d482ea68aa   bridge    bridge    local  # veth pair - &gt; docker0 桥接模式（缺省模式）</span><br><span class="line">70901896d6a3   host      host      local  # 和host共享网络</span><br><span class="line">51ec536b7953   none      null      local  # 不配置网络，一般不用</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 还有一种container模式，容器内网络连通（不常用）。</span></span><br></pre></td></tr></table></figure>
+<p>bridge网络里面配置了gateway， subnet，并且可以看到连接在这个网络上的容器。</p>
+<p>这里的gateway就说doker0网桥（172.17.0.1）</p>
+<img src="/2021/02/01/docker-network/image-20210201164519343.png" alt="image-20210201164519343" style="zoom:50%;">
+
+<h4 id="创建一个新的网络"><a href="#创建一个新的网络" class="headerlink" title="创建一个新的网络"></a>创建一个新的网络</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 默认driver就是bridge</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> --driver bridge</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> --subnet 192.168.0.0/16 (192.168.0.1- 192.168.255.255)</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker network create -d bridge --gateway 192.168.0.1 --subnet 192.168.0.0/16 mynet</span></span><br><span class="line">49025b4d0eaa1303c112bbec9290a306fac466b9bc56aa81237d823476d86ada</span><br><span class="line"><span class="meta">$</span><span class="bash"> docker network ls</span></span><br><span class="line">NETWORK ID     NAME      DRIVER    SCOPE</span><br><span class="line">b3d482ea68aa   bridge    bridge    local</span><br><span class="line">70901896d6a3   host      host      local</span><br><span class="line">49025b4d0eaa   mynet     bridge    local</span><br><span class="line">51ec536b7953   none      null      local</span><br></pre></td></tr></table></figure>
+<h4 id="在mynet网络里创建两个新的tomcat"><a href="#在mynet网络里创建两个新的tomcat" class="headerlink" title="在mynet网络里创建两个新的tomcat"></a>在mynet网络里创建两个新的tomcat</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 起两个在mynet里的tomcat</span></span><br><span class="line">[vagrant@localhost ~]$ docker run -d -P --name tomcat-net-01 --net mynet tomcat</span><br><span class="line">8151712ef76b6315018f969b6c0b8116b297a8391793736f7d7825c88a89cc8c</span><br><span class="line">[vagrant@localhost ~]$ docker run -d -P --name tomcat-net-02 --net mynet tomcat</span><br><span class="line">8dada8500e5c3c7993b649984f64c0bb8266a52d6e38256a73807a8e99d901cd</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 发现这两个容器可以通过容器名互通。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 这就是自定义网络比docker默认的bridge网络（docker0）更高级的地方。</span></span><br><span class="line">[vagrant@localhost ~]$ docker exec -it tomcat-net-01 ping tomcat-net-02</span><br><span class="line">PING tomcat-net-02 (192.168.0.3) 56(84) bytes of data.</span><br><span class="line">64 bytes from tomcat-net-02.mynet (192.168.0.3): icmp_seq=1 ttl=64 time=0.082 ms</span><br><span class="line">64 bytes from tomcat-net-02.mynet (192.168.0.3): icmp_seq=2 ttl=64 time=0.078 ms</span><br><span class="line">^C</span><br><span class="line">--- tomcat-net-02 ping statistics ---</span><br><span class="line">2 packets transmitted, 2 received, 0% packet loss, time 2ms</span><br><span class="line">rtt min/avg/max/mdev = 0.078/0.080/0.082/0.002 ms</span><br><span class="line">[vagrant@localhost ~]$ docker exec -it tomcat-net-02 ping tomcat-net-01</span><br><span class="line">PING tomcat-net-01 (192.168.0.2) 56(84) bytes of data.</span><br><span class="line">64 bytes from tomcat-net-01.mynet (192.168.0.2): icmp_seq=1 ttl=64 time=0.059 ms</span><br><span class="line">64 bytes from tomcat-net-01.mynet (192.168.0.2): icmp_seq=2 ttl=64 time=0.068 ms</span><br><span class="line"></span><br><span class="line">64 bytes from tomcat-net-01.mynet (192.168.0.2): icmp_seq=3 ttl=64 time=0.216 ms</span><br><span class="line">^C</span><br><span class="line">--- tomcat-net-01 ping statistics ---</span><br><span class="line">3 packets transmitted, 3 received, 0% packet loss, time 90ms</span><br><span class="line">rtt min/avg/max/mdev = 0.059/0.114/0.216/0.072 ms</span><br></pre></td></tr></table></figure>
+<h4 id="不同docker网络里的容器连通（跨网络）"><a href="#不同docker网络里的容器连通（跨网络）" class="headerlink" title="不同docker网络里的容器连通（跨网络）"></a>不同docker网络里的容器连通（跨网络）</h4><p>这时又有一个问题。现在我的host上的容器如图所示。</p>
+<img src="/2021/02/01/docker-network/image-20210201173721626.png" alt="image-20210201173721626" style="zoom:50%;">
+
+<p>tomcat01和tomcat02是在默认的docker0的网络里，tomcat-net-01和tomcat-net-02在我新创建的mynet里。如果我需要tomcat01和tomcat-net-0连通，应该怎么做呢。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker network connect mynet tomcat01</span> </span><br><span class="line"><span class="meta">#</span><span class="bash"> 把tomcat容器连接到mynet网络中</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 现在就可以ping通了</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> -it tomcat01 ping tomcat-net-02</span> </span><br><span class="line">PING tomcat-net-02 (192.168.0.3) 56(84) bytes of data.</span><br><span class="line">64 bytes from tomcat-net-02.mynet (192.168.0.3): icmp_seq=1 ttl=64 time=0.235 ms</span><br><span class="line">64 bytes from tomcat-net-02.mynet (192.168.0.3): icmp_seq=2 ttl=64 time=0.160 ms</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 看一下tomcat01的网卡，发现多了一个eth1@if48，对应IP是 192.168.0.4，在mynet网段中。</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> -it tomcat01 ip a</span></span><br><span class="line">1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000</span><br><span class="line">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</span><br><span class="line">    inet 127.0.0.1/8 scope host lo</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">36: eth0@if37: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default</span><br><span class="line">    link/ether 02:42:ac:11:00:02 brd ff:ff:ff:ff:ff:ff link-netnsid 0</span><br><span class="line">    inet 172.17.0.2/16 brd 172.17.255.255 scope global eth0</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">47: eth1@if48: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default</span><br><span class="line">    link/ether 02:42:c0:a8:00:04 brd ff:ff:ff:ff:ff:ff link-netnsid 0</span><br><span class="line">    inet 192.168.0.4/16 brd 192.168.255.255 scope global eth1</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="docker的几种网络模式"><a href="#docker的几种网络模式" class="headerlink" title="docker的几种网络模式"></a>docker的几种网络模式</h3><h4 id="host模式"><a href="#host模式" class="headerlink" title="host模式"></a>host模式</h4><p>当我们在容器中执行任何类似ifconfig命令查看网络环境时，看到的都是宿主机上的信息。而外界访问容器中的应用，则直接使用10.10.101.105:80即可，不用任何NAT转换，就如直接跑在宿主机中一样。但是，容器的其他方面，如文件系统、进程列表等还是和宿主机隔离的。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 和host一样，共享</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> -it bb-host ip ad</span></span><br><span class="line">1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue qlen 1000</span><br><span class="line">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</span><br><span class="line">    inet 127.0.0.1/8 scope host lo</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 ::1/128 scope host</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">2: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc fq_codel qlen 1000</span><br><span class="line">    link/ether 52:54:00:27:8b:50 brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 10.0.2.15/24 brd 10.0.2.255 scope global dynamic eth0</span><br><span class="line">       valid_lft 44372sec preferred_lft 44372sec</span><br><span class="line">    inet6 fe80::5054:ff:fe27:8b50/64 scope link</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">3: docker0: &lt;NO-CARRIER,BROADCAST,MULTICAST,UP&gt; mtu 1500 qdisc noqueue</span><br><span class="line">    link/ether 02:42:95:5a:03:dc brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 fe80::42:95ff:fe5a:3dc/64 scope link</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">42: br-49025b4d0eaa: &lt;NO-CARRIER,BROADCAST,MULTICAST,UP&gt; mtu 1500 qdisc noqueue</span><br><span class="line">    link/ether 02:42:ad:cf:bc:6f brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 192.168.0.1/16 brd 192.168.255.255 scope global br-49025b4d0eaa</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 fe80::42:adff:fecf:bc6f/64 scope link</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br></pre></td></tr></table></figure>
+<h4 id="container模式"><a href="#container模式" class="headerlink" title="container模式"></a>container模式</h4><p>这个模式指定新创建的容器和已经存在的一个容器共享一个Network Namespace，而不是和宿主机共享。新创建的容器不会创建自己的网卡，配置自己的IP，而是和一个指定的容器共享IP、端口范围等。同样，两个容器除了网络方面，其他的如文件系统、进程列表等还是隔离的。两个容器的进程可以通过lo网卡设备通信。</p>
+<h4 id="none模式"><a href="#none模式" class="headerlink" title="none模式"></a>none模式</h4><p>这个模式和前两个不同。在这种模式下，Docker容器拥有自己的Network Namespace，但是，并不为Docker容器进行任何网络配置。也就是说，这个Docker容器没有网卡、IP、路由等信息。需要我们自己为Docker容器添加网卡、配置IP等。</p>
+<h4 id="bridge模式"><a href="#bridge模式" class="headerlink" title="bridge模式"></a>bridge模式</h4><p>bridge模式是Docker默认的网络设置，就是docker0的模式。此模式会为每一个容器分配Network Namespace、设置IP等，并将一个主机上的Docker容器连接到一个虚拟网桥上。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
+<li><p>Docker0：默认网络，缺点是不能通过容器名访问。</p>
+</li>
+<li><p>–link可以解决，但是太麻烦，是单向的。</p>
+</li>
+<li><p>一般需要自定义网络，这个可以通过容器名访问。</p>
+</li>
+<li><p>如果不同网络里的容器需要互联，则需要<code>docker network connect</code>，这个命令可以把network1中的容器连接到network2中，此时容器有两个IP，分别对应network1和2。</p>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/30/yum-config/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Xinran Wang">
+      <meta itemprop="description" content="Keep calm and coding">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xinran's Blog">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/01/30/yum-config/" class="post-title-link" itemprop="url">在centos上修改源并安装docker</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-01-30 18:05:57" itemprop="dateCreated datePublished" datetime="2021-01-30T18:05:57+08:00">2021-01-30</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-02-02 17:00:08" itemprop="dateModified" datetime="2021-02-02T17:00:08+08:00">2021-02-02</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/deploy/" itemprop="url" rel="index"><span itemprop="name">deploy</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h3><p>在mac上用vagrant起了一个centos8的vm。</p>
+<h3 id="换系统yum源"><a href="#换系统yum源" class="headerlink" title="换系统yum源"></a>换系统yum源</h3><blockquote>
+<p>这里换的是清华的源。</p>
+<p> 参考：<a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/help/centos/">https://mirrors.tuna.tsinghua.edu.cn/help/centos/</a></p>
+</blockquote>
+<p>建议先备份 <code>/etc/yum.repos.d/</code> 内的文件（CentOS 7 及之前为 <code>CentOS-Base.repo</code>，CentOS 8 为<code>CentOS-Linux-*.repo</code>）</p>
+<p>然后编辑 <code>/etc/yum.repos.d/</code> 中的相应文件，在 <code>mirrorlist=</code> 开头行前面加 <code>#</code> 注释掉；并将 <code>baseurl=</code> 开头行取消注释（如果被注释的话），把该行内的域名（例如<code>mirror.centos.org</code>）替换为 <code>mirrors.tuna.tsinghua.edu.cn</code>。</p>
+<p>以上步骤可以被下方的命令一步完成</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo sed -e &#39;s|^mirrorlist&#x3D;|#mirrorlist&#x3D;|g&#39; \</span><br><span class="line">         -e &#39;s|^#baseurl&#x3D;http:&#x2F;&#x2F;mirror.centos.org|baseurl&#x3D;https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn|g&#39; \</span><br><span class="line">         -i.bak \</span><br><span class="line">         &#x2F;etc&#x2F;yum.repos.d&#x2F;CentOS-*.repo</span><br></pre></td></tr></table></figure>
+<p>注意其中的<code>*</code>通配符，如果只需要替换一些文件中的源，请自行增删。</p>
+<p>注意，如果需要启用其中一些 repo，需要将其中的 <code>enabled=0</code> 改为 <code>enabled=1</code>。</p>
+<p>最后，更新软件包缓存</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum makecache</span><br></pre></td></tr></table></figure>
+<p>这时下载常用的软件包就已经变快了。</p>
+<h3 id="换下载docker的源"><a href="#换下载docker的源" class="headerlink" title="换下载docker的源"></a>换下载docker的源</h3><blockquote>
+<p>参考：<a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/help/docker-ce/">https://mirrors.tuna.tsinghua.edu.cn/help/docker-ce/</a></p>
+</blockquote>
+<p>然后我根据docker的官方文档安装docker，发现yum install docker-ce的时候特别慢。原因是官方文档配置的docker源repo是国外的，国外访问很慢。于是去网上找了清华的源。</p>
+<p>如果你之前安装过 docker，请先删掉</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum remove docker docker-common docker-selinux docker-engine</span><br></pre></td></tr></table></figure>
+<p>安装一些依赖</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install -y yum-utils device-mapper-persistent-data lvm2</span><br></pre></td></tr></table></figure>
+<p>根据你的发行版下载repo文件: CentOS/RHEL Fedora</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -O &#x2F;etc&#x2F;yum.repos.d&#x2F;docker-ce.repo https:&#x2F;&#x2F;download.docker.com&#x2F;linux&#x2F;centos&#x2F;docker-ce.repo</span><br></pre></td></tr></table></figure>
+<p>把软件仓库地址替换为 TUNA，这一步很关键，大部分网上的博客都没有提到，如果没有这一步，其实还是使用的国外的docker官方的源:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo sed -i &#39;s+download.docker.com+mirrors.tuna.tsinghua.edu.cn&#x2F;docker-ce+&#39; &#x2F;etc&#x2F;yum.repos.d&#x2F;docker-ce.repo</span><br></pre></td></tr></table></figure>
+<p>最后安装:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo yum makecache</span><br><span class="line">sudo yum install docker-ce</span><br></pre></td></tr></table></figure>
+<h3 id="换docker镜像源"><a href="#换docker镜像源" class="headerlink" title="换docker镜像源"></a>换docker镜像源</h3><p>docker默认源在国外，同样很慢。我们可以通过修改docker配置更改docker image的源。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 查看docker daemon config</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ls /etc/docker/daemon.json</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 如果文件不存在就创建一个</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo touch /etc/docker/daemon.json</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vi /etc/docker/daemon.json</span></span><br><span class="line">&#123;</span><br><span class="line">    &quot;registry-mirrors&quot; : [</span><br><span class="line">    &quot;https://registry.docker-cn.com&quot;,</span><br><span class="line">    &quot;https://docker.mirrors.ustc.edu.cn&quot;,</span><br><span class="line">    &quot;http://hub-mirror.c.163.com&quot;,</span><br><span class="line">    &quot;https://cr.console.aliyun.com/&quot;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo systemctl restart docker.service</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="docker-permission-denied"><a href="#docker-permission-denied" class="headerlink" title="docker permission denied"></a>docker permission denied</h3><p>这个问题特别常见，就是我们在安装完docker之后，发现docker指令必须在root权限下运行，这时因为我们当前的用户没有被加入到docker组里。</p>
+<h4 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h4><p>2.1、添加docker用户组</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">groupadd docker </span><br><span class="line"><span class="meta">#</span><span class="bash"> 一般都会提示docker用户组存在了。</span></span><br></pre></td></tr></table></figure>
+<p>2.2、把当前用户加入docker用户组</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gpasswd -a $&#123;USER&#125; docker</span><br><span class="line"><span class="meta">#</span><span class="bash"> 或者 sudo usermod -aG docker <span class="variable">$&#123;USER&#125;</span> (未验证)</span></span><br></pre></td></tr></table></figure>
+<p>3、查看是否添加成功：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/group | grep ^docker</span><br></pre></td></tr></table></figure>
+<p>4、重启docker</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">serivce docker restart</span><br></pre></td></tr></table></figure>
+<p>5、更新用户组</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">newgrp docker </span><br></pre></td></tr></table></figure>
+<p>6、测试docker命令是否可以使用sudo正常使用</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps</span><br></pre></td></tr></table></figure>
+
+
+
+
+<h1 id="docker-graph是什么东西啊"><a href="#docker-graph是什么东西啊" class="headerlink" title="docker graph是什么东西啊"></a>docker graph是什么东西啊</h1><p>The <code>-g</code> or <code>--graph</code> flag for the <code>dockerd</code> or <code>docker daemon</code> command was used to indicate the directory in which to store persistent data and resource configuration and has been replaced with the more descriptive <code>--data-root</code> flag.</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/29/proxy-intro/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Xinran Wang">
+      <meta itemprop="description" content="Keep calm and coding">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xinran's Blog">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/01/29/proxy-intro/" class="post-title-link" itemprop="url">代理服务器基本介绍</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-01-29 15:56:09" itemprop="dateCreated datePublished" datetime="2021-01-29T15:56:09+08:00">2021-01-29</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-02-02 15:32:49" itemprop="dateModified" datetime="2021-02-02T15:32:49+08:00">2021-02-02</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/network/" itemprop="url" rel="index"><span itemprop="name">network</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="为什么需要proxy-server"><a href="#为什么需要proxy-server" class="headerlink" title="为什么需要proxy server?"></a>为什么需要proxy server?</h2><ol>
+<li><p>监控，内容过滤</p>
+<ul>
+<li>公司的proxy server可以清楚的知道，你的流量要访问什么网站。proxy server可以禁掉一些网址，或者redirect到一些提示页面。</li>
+<li>公司的proxy server可以监控你每天都在访问什么网站，花了多长时间。</li>
+</ul>
+</li>
+<li><p>节约带宽，节省成本</p>
+<ul>
+<li>在proxy server上会有一些cache，里面存放了最近访问的website的数据，如果有1000个request通过同一个proxy server访问website A，这时如果proxy server上有website A的最新数据在cache里，就可以直接返回给这1000个client。如果proxy server上没有，也只需要发一个website A的请求，然后把返回数据放在cache里。</li>
+</ul>
+</li>
+<li><p>提高性能</p>
+<ul>
+<li>通过代理服务器的缓存（比如 CDN）和负载均衡（比如 nginx lb）功能，服务器端可以加速请求的访问，在更快的时间内返回结果）</li>
+</ul>
+</li>
+<li><p>安全和隐私</p>
+<ul>
+<li><p>有一些proxy server可以隐藏掉client的IP等个人信息，这样通过proxy访问网站，web server并不能知道是谁在真正的访问它。</p>
+</li>
+<li><p>公司可以在内网和外网之间通过代理进行转发，这样不仅对外隐藏了实现的细节，而且可以在代理层对爬虫、病毒性请求进行过滤，保护内部服务。</p>
+</li>
+<li><p>还可以加密数据</p>
+</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>风险：</p>
+<p>因为所有client的请求都要通过proxy server访问internet，所以有数据泄露的风险。也有一些技术可以实现数据加密，规避这种risk，后面会讲到。</p>
+</blockquote>
+<h2 id="代理服务器的分类："><a href="#代理服务器的分类：" class="headerlink" title="代理服务器的分类："></a>代理服务器的分类：</h2><ol>
+<li><h4 id="按照匿名功能分类（是否具有隐藏IP的功能）"><a href="#按照匿名功能分类（是否具有隐藏IP的功能）" class="headerlink" title="按照匿名功能分类（是否具有隐藏IP的功能）"></a>按照匿名功能分类（是否具有隐藏IP的功能）</h4><ul>
+<li><p>非匿名（和透明代理的区别？？？）</p>
+</li>
+<li><p>匿名：使用此种代理时，虽然被访问的网站不能知道你的 IP 地址，但仍然可 以知道你在使用代理，有些侦测 IP 的网页也仍然可以查到你的 IP。</p>
+</li>
+<li><p>高度匿名：使用此种代理时，被访问的网站不知道你的 IP 地址，也不知道你在使用代理进行访问。此种代理的隐藏 IP 地址的功能最强。</p>
+</li>
+<li><p>透明代理（简单代理）：透明代理的意思是客户端根本不需要知道有代理服务器的存在，它改编你的 request fields（报文），并会传送真实 IP。web server会直接获得client的IP，并且知道client是通过proxy访问的它。</p>
+</li>
+</ul>
+</li>
+<li><h4 id="按代理服务器的用途分类"><a href="#按代理服务器的用途分类" class="headerlink" title="按代理服务器的用途分类"></a>按代理服务器的用途分类</h4><ul>
+<li>HTTP代理</li>
+<li>SSL代理</li>
+<li>HTTP CONNECT代理</li>
+<li>FTP代理</li>
+<li>POP3代理</li>
+<li>Telnet代理</li>
+<li>Socks代理</li>
+<li>等等等等</li>
+</ul>
+</li>
+<li><h4 id="按照相对于client-server的角色分类"><a href="#按照相对于client-server的角色分类" class="headerlink" title="按照相对于client-server的角色分类"></a>按照相对于client-server的角色分类</h4><h5 id="正向代理"><a href="#正向代理" class="headerlink" title="正向代理"></a>正向代理</h5><p>代理对客户端不是透明的，客户端需要知道代理的地址并且手动配置。配置了代理，浏览器在发送请求的时候会对报文做特殊的修改。</p>
+<h5 id="反向代理"><a href="#反向代理" class="headerlink" title="反向代理"></a>反向代理</h5><p>说客户端一般不知道代理的存在，认为自己是直接和服务器通信。我们大部分访问的网站就是反向代理服务器，反向代理服务器会转发到真正的服务器，一般在反向代理这一层实现<strong>负载均衡</strong>和<strong>高可用</strong>的功能。而且这里也可以看到，客户端是不会知道真正服务器端的 ip 地址和端口的，这在一定程度上起到了安全保护的作用。</p>
+<img src="/2021/01/29/proxy-intro/image-20210129182705751.png" alt="image-20210129182705751" style="zoom:60%;">
+
+</li>
+</ol>
+<h2 id="代理具体做什么？"><a href="#代理具体做什么？" class="headerlink" title="代理具体做什么？"></a>代理具体做什么？</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">- 修改 HTTP 请求：url、header、body  </span><br><span class="line">- 过滤请求：根据一定的规则丢弃、过滤请求 </span><br><span class="line">- 决定转发到哪个后端（可以是静态定义的，也可以是动态决定） #nginx etc.</span><br><span class="line">- 保存服务器的应答，后续的请求可以直接使用保存的应答 # cache on proxy server</span><br><span class="line">- 修改应答：对应答做一些格式的转换，修改数据，甚至返回完全不一样的应答数据  #security issue?</span><br><span class="line">- 重试机制，如果后端服务器暂时无法响应，隔一段时间重试</span><br><span class="line">- ……</span><br></pre></td></tr></table></figure>
+
+
+
+<p>普通代理</p>
+<p>隧道代理</p>
+<h2 id="代理和网关的区别"><a href="#代理和网关的区别" class="headerlink" title="代理和网关的区别"></a>代理和网关的区别</h2>
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/29/ssh-via-socks/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -284,10 +995,16 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
-      
 
-      <time title="Created: 2021-01-29 14:40:50 / Modified: 15:06:41" itemprop="dateCreated datePublished" datetime="2021-01-29T14:40:50+08:00">2021-01-29</time>
+      <time title="Created: 2021-01-29 14:40:50" itemprop="dateCreated datePublished" datetime="2021-01-29T14:40:50+08:00">2021-01-29</time>
     </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-02-02 14:03:59" itemprop="dateModified" datetime="2021-02-02T14:03:59+08:00">2021-02-02</time>
+      </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
@@ -382,7 +1099,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-01-29 12:35:01" itemprop="dateModified" datetime="2021-01-29T12:35:01+08:00">2021-01-29</time>
+        <time title="Modified: 2021-02-02 16:58:12" itemprop="dateModified" datetime="2021-02-02T16:58:12+08:00">2021-02-02</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -418,7 +1135,22 @@
 <li>每一个指令都会创建提交一个新的镜像层。</li>
 </ol>
 <h4 id="DockerFile指令"><a href="#DockerFile指令" class="headerlink" title="DockerFile指令"></a>DockerFile指令</h4><p><img src="/2021/01/28/docker-image/image-20210128174810881-1611828531908.png" alt="image-20210128174810881"></p>
-<h4 id="CMD-和-ENTRYPOINT的区别"><a href="#CMD-和-ENTRYPOINT的区别" class="headerlink" title="CMD  和 ENTRYPOINT的区别"></a>CMD  和 ENTRYPOINT的区别</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> docker run image-id</span> </span><br><span class="line">CMD [&quot;ls&quot;,&quot;-a&quot;]</span><br></pre></td></tr></table></figure>
+<h4 id="CMD-和-ENTRYPOINT的区别"><a href="#CMD-和-ENTRYPOINT的区别" class="headerlink" title="CMD  和 ENTRYPOINT的区别"></a>CMD  和 ENTRYPOINT的区别</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> docker run image-id</span> </span><br><span class="line">CMD [&quot;ls&quot;,&quot;-a&quot;]  # 指定容器启动时要运行的命令，最后一个有效，可被替代。在docker run时不能被追加参数</span><br><span class="line">ENTRYPOINT [&quot;ls&quot;, [&quot;-a&quot;]] # 指定容器启动时要运行的命令，可以在docker run的时候追加参数</span><br><span class="line"> 													# 比如 docker run xxx &quot;-l&quot;</span><br></pre></td></tr></table></figure>
+<h5 id="测试CMD"><a href="#测试CMD" class="headerlink" title="测试CMD"></a>测试CMD</h5><p>写了两个CMD，在docker run的时候，发现只执行了最后一个，并没有echo出”Hello”，也不能追加参数，会报错。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">[vagrant@localhost dockerfile]$ cat docker-cmd-test</span><br><span class="line">FROM centos</span><br><span class="line">CMD [&quot;echo&quot;, &quot;Hello&quot;]</span><br><span class="line">CMD [&quot;ls&quot;, &quot;-a&quot;]</span><br><span class="line"></span><br><span class="line">[vagrant@localhost dockerfile]$ docker run cmdtest</span><br><span class="line">.</span><br><span class="line">..</span><br><span class="line">.dockerenv</span><br><span class="line">bin</span><br><span class="line">dev</span><br><span class="line">etc</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 尝试追加一个参数，想达到ls -al的效果，失败。</span></span><br><span class="line">[vagrant@localhost dockerfile]$ docker run cmdtest -l</span><br><span class="line">docker: Error response from daemon: OCI runtime create failed: container_linux.go:370: starting container process caused: exec: &quot;-l&quot;: executable file not found in $PATH: unknown.</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 但是可以在docker run的后面直接加命令。</span></span><br><span class="line">[vagrant@localhost dockerfile]$ docker run cmdtest ls -al</span><br><span class="line">total 0</span><br><span class="line">drwxr-xr-x.   1 root root   6 Jan 30 11:26 .</span><br><span class="line">drwxr-xr-x.   1 root root   6 Jan 30 11:26 ..</span><br><span class="line">-rwxr-xr-x.   1 root root   0 Jan 30 11:26 .dockerenv</span><br><span class="line">lrwxrwxrwx.   1 root root   7 Nov  3 15:22 bin -&gt; usr/bin</span><br><span class="line">drwxr-xr-x.   5 root root 340 Jan 30 11:26 dev</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<h5 id="测试ENTRYPOINT"><a href="#测试ENTRYPOINT" class="headerlink" title="测试ENTRYPOINT"></a>测试ENTRYPOINT</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">[vagrant@localhost dockerfile]$ cat  docker-cmd-entrypoint</span><br><span class="line">FROM centos</span><br><span class="line">ENTRYPOINT [&quot;echo&quot;,&quot;Hello&quot;]</span><br><span class="line">ENTRYPOINT [&quot;ls&quot;,&quot;-a&quot;]</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 发现ENTRYPOINT也是只执行最后一个</span></span><br><span class="line">[vagrant@localhost dockerfile]$ docker run entrypoint</span><br><span class="line">.</span><br><span class="line">..</span><br><span class="line">.dockerenv</span><br><span class="line">bin</span><br><span class="line">dev</span><br><span class="line">etc</span><br><span class="line">home</span><br><span class="line">lib</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 但是ENTRYPOINT可以追加参数</span></span><br><span class="line">[vagrant@localhost dockerfile]$ docker run entrypoint -l</span><br><span class="line">total 0</span><br><span class="line">drwxr-xr-x.   1 root root   6 Jan 30 11:31 .</span><br><span class="line">drwxr-xr-x.   1 root root   6 Jan 30 11:31 ..</span><br><span class="line">-rwxr-xr-x.   1 root root   0 Jan 30 11:31 .dockerenv</span><br><span class="line">lrwxrwxrwx.   1 root root   7 Nov  3 15:22 bin -&gt; usr/bin</span><br><span class="line">drwxr-xr-x.   5 root root 340 Jan 30 11:31 dev</span><br><span class="line">drwxr-xr-x.   1 root root  66 Jan 30 11:31 etc</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="COPY和ADD的区别"><a href="#COPY和ADD的区别" class="headerlink" title="COPY和ADD的区别"></a>COPY和ADD的区别</h4><p>add会自动解压</p>
+<h5 id="COPY测试"><a href="#COPY测试" class="headerlink" title="COPY测试"></a>COPY测试</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">[vagrant@localhost dockerfile]$ tree .</span><br><span class="line">.</span><br><span class="line">|-- copy01</span><br><span class="line">|-- copy02</span><br><span class="line">|-- test-dir/</span><br><span class="line">    |-- sub-dir/</span><br><span class="line">    |   |-- test3</span><br><span class="line">    |-- test1</span><br><span class="line">    |-- test2</span><br><span class="line">[vagrant@localhost dockerfile]$ cat docker-copy</span><br><span class="line">FROM centos</span><br><span class="line">COPY copy01 .</span><br><span class="line">COPY copy02 /home</span><br><span class="line">COPY test-dir .  # 不会拷贝目录，只拷贝目录下的文件和目录</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 如果不指定WORKDIR，默认是在跟目录下面</span></span><br><span class="line">[root@e4a55c64ff8f /]# ls</span><br><span class="line">bin  copy01  dev  etc  home  lib  lib64  lost+found  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> COPY可以指定目的路径</span></span><br><span class="line">[root@e4a55c64ff8f home]# ls</span><br><span class="line">copy02</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 不会拷贝目录，只拷贝目录下的文件和目录</span></span><br><span class="line">[root@e8be2eb3f129 /]# ls</span><br><span class="line">bin  copy01  dev  etc  home  lib  lib64  lost+found  media  mnt  opt  proc  root  run  sbin  srv  sub-dir  sys  test1  test2  tmp  usr  var</span><br><span class="line">[root@e8be2eb3f129 /]# cd sub-dir/</span><br><span class="line">[root@e8be2eb3f129 sub-dir]# ls</span><br><span class="line">test3</span><br></pre></td></tr></table></figure>
+<p>此外，COPY还可以用来实现<a target="_blank" rel="noopener" href="https://www.cnblogs.com/sparkdev/p/8508435.html">multi-stage(多阶段构建)</a>，就是一个dockerfile里有多个FROM，每个 FROM 指令代表一个 stage 的开始部分。我们可以把一个 stage 的产物拷贝到另一个 stage 中。</p>
+<h5 id="ADD测试"><a href="#ADD测试" class="headerlink" title="ADD测试"></a>ADD测试</h5><p>除了不能用在 multistage 的场景下，ADD 命令可以完成 COPY 命令的所有功能，并且还可以完成两类超酷的功能：</p>
+<ul>
+<li>解压压缩文件并把它们添加到镜像中</li>
+<li>从 url 拷贝文件到镜像中</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">WORKDIR /app</span><br><span class="line">ADD nickdir.tar.gz .  </span><br><span class="line"><span class="meta">#</span><span class="bash"> 可以把压缩包自动解压到/app目录下</span></span><br><span class="line">ADD http://example.com/big.tar.xz /usr/src/things/ </span><br><span class="line"><span class="meta">#</span><span class="bash"> 会直接把tar包加入镜像中，不会自动解压，实则增加了镜像的大小，不建议这么做！</span></span><br></pre></td></tr></table></figure>
+<h5 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h5><p>COPY 命令是为最基本的用法设计的，概念清晰，操作简单。而 ADD 命令基本上是 COPY 命令的超集(除了 multistage 场景)，可以实现一些方便、酷炫的拷贝操作。ADD 命令在增加了功能的同时也增加了使用它的复杂度，比如从 url 拷贝压缩文件时弊大于利。</p>
 
       
     </div>
@@ -475,7 +1207,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-01-29 12:35:01" itemprop="dateModified" datetime="2021-01-29T12:35:01+08:00">2021-01-29</time>
+        <time title="Modified: 2021-02-02 14:03:59" itemprop="dateModified" datetime="2021-02-02T14:03:59+08:00">2021-02-02</time>
       </span>
 
   
@@ -501,10 +1233,28 @@
 <li><p>打包和分发虚拟机运行环境</p>
 </li>
 </ul>
-<p>　　Vagrant的运行，需要<strong>依赖</strong>某项具体的<strong>虚拟化技术</strong>，最常见的有VirtualBox以及VMWare两款，早期，Vagrant只支持VirtualBox，后来才加入了VMWare的支持。现在vagrant支持更多的虚拟化系统，包括kvm，qemu，vmware，甚至docker。但还是以virtualbox为主。</p>
+<p>　　Vagrant的运行，需要<strong>依赖</strong>某项具体的<strong>虚拟化技术</strong>，最常见的有VirtualBox以及VMWare两款，早期，Vagrant只支持VirtualBox，后来才加入了VMWare的支持。现在vagrant支持更多的虚拟化系统，包括libvirt，kvm，qemu，vmware，甚至docker。但还是以virtualbox为主。</p>
 <img src="/2021/01/28/vagrant-intro/image-20210128223212650.png" alt="image-20210128223212650" style="zoom:50%;">
 
 <h3 id="vagrant和virtualbox"><a href="#vagrant和virtualbox" class="headerlink" title="vagrant和virtualbox"></a>vagrant和virtualbox</h3><p>virtualbox本身也可以创建vm，只是相对麻烦，vagrant可以调用virtualbox的接口更加方便的创建vm。</p>
+<h3 id="在mac上安装vagrant-virtualbox"><a href="#在mac上安装vagrant-virtualbox" class="headerlink" title="在mac上安装vagrant+virtualbox"></a>在mac上安装vagrant+virtualbox</h3><h4 id="安装vagrant"><a href="#安装vagrant" class="headerlink" title="安装vagrant"></a>安装vagrant</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">brew install vagrant</span><br><span class="line">vagrant -v</span><br></pre></td></tr></table></figure>
+<h4 id="安装virtualbox"><a href="#安装virtualbox" class="headerlink" title="安装virtualbox"></a>安装virtualbox</h4><p>国外的dmg文件下载很慢，我是国内随便找了一个<a target="_blank" rel="noopener" href="https://ftp-new-pc.pconline.com.cn/pub/download/201909/pconline1567810102832.dmg?md5=dLIvaxUfMIGWrr-oloz2Jg&expires=1611979478">源</a>。</p>
+<img src="/2021/01/28/vagrant-intro/image-20210130123540411.png" alt="image-20210130123540411" style="zoom:50%;">
+
+<p>virtualbox本身也可以创建vm，但是比较复杂。</p>
+<h4 id="下载box"><a href="#下载box" class="headerlink" title="下载box"></a>下载box</h4><p>vagrant中box的概念，类似于docker image。我们可以通过指定box来启动一个vagrant vm。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 先下载box file到本地，再add</span></span><br><span class="line">vagrant box add centos8 /path/to/boxfile</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 直接从网上下载box file，并且add</span></span><br><span class="line">vagrant box add centos8 url_to_box_file</span><br></pre></td></tr></table></figure>
+<p>vagrantbox的官方下载地址从国内连接很慢，我找到了一些国内的源。</p>
+<blockquote>
+<p>centos 8</p>
+<p><a target="_blank" rel="noopener" href="http://mirrors.ustc.edu.cn/centos-cloud/centos/8/vagrant/x86_64/images/CentOS-8-Vagrant-8.3.2011-20201204.2.x86_64.vagrant-virtualbox.box">http://mirrors.ustc.edu.cn/centos-cloud/centos/8/vagrant/x86_64/images/CentOS-8-Vagrant-8.3.2011-20201204.2.x86_64.vagrant-virtualbox.box</a></p>
+<p>ubuntu1804</p>
+<p><a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/ubuntu-cloud-images/bionic/current/bionic-server-cloudimg-amd64-vagrant.box">https://mirrors.tuna.tsinghua.edu.cn/ubuntu-cloud-images/bionic/current/bionic-server-cloudimg-amd64-vagrant.box</a></p>
+</blockquote>
+<h4 id="启动虚拟机"><a href="#启动虚拟机" class="headerlink" title="启动虚拟机"></a>启动虚拟机</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vagrant box add centos8 http://mirrors.ustc.edu.cn/centos-cloud/centos/8/vagrant/x86_64/images/CentOS-8-Vagrant-8.3.2011-20201204.2.x86_64.vagrant-virtualbox.box</span></span><br><span class="line">==&gt; box: Box file was not detected as metadata. Adding it directly...</span><br><span class="line">==&gt; box: Adding box &#x27;centos8&#x27; (v0) for provider:</span><br><span class="line">    box: Downloading: http://mirrors.ustc.edu.cn/centos-cloud/centos/8/vagrant/x86_64/images/CentOS-8-Vagrant-8.3.2011-20201204.2.x86_64.vagrant-virtualbox.box</span><br><span class="line">==&gt; box: Successfully added box &#x27;centos8&#x27; (v0) for &#x27;virtualbox&#x27;!</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> vagrant box list</span></span><br><span class="line">centos8    (virtualbox, 0)</span><br><span class="line">ubuntu1804 (virtualbox, 0)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 创建本地vagrant目录</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> vagrant</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 这一步会创建一个vm的Vagrantfile，所有关于vm的配置都在这个文件里。</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vagrant init centos8</span></span><br><span class="line">A `Vagrantfile` has been placed in this directory. You are now</span><br><span class="line">ready to `vagrant up` your first virtual environment! Please read</span><br><span class="line">the comments in the Vagrantfile as well as documentation on</span><br><span class="line">`vagrantup.com` for more information on using Vagrant.</span><br><span class="line"> </span><br><span class="line"><span class="meta"> #</span><span class="bash"> 启动vm</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vagrant up</span></span><br><span class="line">Bringing machine &#x27;default&#x27; up with &#x27;virtualbox&#x27; provider...</span><br><span class="line">==&gt; default: Importing base box &#x27;centos8&#x27;...</span><br><span class="line">==&gt; default: Matching MAC address for NAT networking...</span><br><span class="line">==&gt; default: Setting the name of the VM: vagrant_default_1611980890156_41411</span><br><span class="line">==&gt; default: Clearing any previously set network interfaces...</span><br><span class="line">==&gt; default: Preparing network interfaces based on configuration...</span><br><span class="line">    default: Adapter 1: nat</span><br><span class="line">    default: Adapter 2: hostonly</span><br><span class="line">==&gt; default: Forwarding ports...</span><br><span class="line">    default: 22 (guest) =&gt; 2222 (host) (adapter 1)  # 端口映射, 如果起了多个vagrant vm，那么各个</span><br><span class="line">    																								# vm 会映射到host的不同端口</span><br><span class="line">==&gt; default: Booting VM...</span><br><span class="line">==&gt; default: Waiting for machine to boot. This may take a few minutes...</span><br><span class="line">    default: SSH address: 127.0.0.1:2222</span><br><span class="line">    default: SSH username: vagrant</span><br><span class="line">    default: SSH auth method: private key</span><br><span class="line">    default:</span><br><span class="line">    default: Vagrant insecure key detected. Vagrant will automatically replace</span><br><span class="line">    default: this with a newly generated keypair for better security.</span><br><span class="line">    default:</span><br><span class="line">    default: Inserting generated public key within guest...</span><br><span class="line">    default: Removing insecure key from the guest if it&#x27;s present...</span><br><span class="line">    default: Key inserted! Disconnecting and reconnecting using new SSH key...</span><br><span class="line">==&gt; default: Machine booted and ready!</span><br><span class="line">==&gt; default: Checking for guest additions in VM...</span><br><span class="line">    default: No guest additions were detected on the base box for this VM! Guest</span><br><span class="line">    default: additions are required for forwarded ports, shared folders, host only</span><br><span class="line">    default: networking, and more. If SSH fails on this machine, please install</span><br><span class="line">    default: the guest additions and repackage the box to continue.</span><br><span class="line">    default:</span><br><span class="line">    default: This is not an error message; everything may continue to work properly,</span><br><span class="line">    default: in which case you may ignore this message.</span><br><span class="line">==&gt; default: Configuring and enabling network interfaces...</span><br><span class="line">==&gt; default: Rsyncing folder: /Users/xinran/vagrant/ =&gt; /vagrant</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 登入/退出vm</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vagrant ssh</span></span><br><span class="line">Last login: Sat Jan 30 04:28:57 2021 from 10.0.2.2</span><br><span class="line">[vagrant@localhost ~]$ </span><br><span class="line">[vagrant@localhost ~]$ exit</span><br><span class="line">logout</span><br><span class="line">Shared connection to 127.0.0.1 closed.</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看host上的2222端口</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> lsof -i:2222</span></span><br><span class="line">COMMAND     PID   USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME</span><br><span class="line">VBoxHeadl 13238 xinran   16u  IPv4 0x294cd01b85b191f5      0t0  TCP localhost:rockwell-csp2 (LISTEN)</span><br><span class="line">VBoxHeadl 13238 xinran   20u  IPv4 0x294cd01b95fd8815      0t0  TCP localhost:rockwell-csp2-&gt;localhost:63021 (ESTABLISHED)</span><br><span class="line">ssh       13880 xinran    3u  IPv4 0x294cd01b94ae9e35      0t0  TCP localhost:63021-&gt;localhost:rockwell-csp2 (ESTABLISHED)</span><br><span class="line">ssh       13894 xinran    3u  IPv4 0x294cd01b94ae9e35      0t0  TCP localhost:63021-&gt;localhost:rockwell-csp2 (ESTABLISHE</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Note: 在下载box image时，要找到对应provider的box。我第一次下载成了libvirt provider的box，然后vagrant init就失败了，因为我的host上装的是virtualbox作为provider。</p>
+</blockquote>
 
       
     </div>
@@ -620,450 +1370,11 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/28/multi-device-try/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Xinran Wang">
-      <meta itemprop="description" content="Keep calm and coding">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Xinran's Blog">
-    </span>
-
-    
-    
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/01/28/multi-device-try/" class="post-title-link" itemprop="url">多设备同步hexoy</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2021-01-28 00:13:01" itemprop="dateCreated datePublished" datetime="2021-01-28T00:13:01+08:00">2021-01-28</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-01-29 12:35:01" itemprop="dateModified" datetime="2021-01-29T12:35:01+08:00">2021-01-29</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/hexo/" itemprop="url" rel="index"><span itemprop="name">hexo</span></a>
-        </span>
-    </span>
 
   
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="多个设备之间同步hexo"><a href="#多个设备之间同步hexo" class="headerlink" title="多个设备之间同步hexo"></a>多个设备之间同步hexo</h1><p><strong>原理</strong></p>
-<p>hexo deploy会将本地创建好的目录blog里面的文件生成对应的静态文件（html等），并且将它上传到xxx.github.com repo中。<br>在_config.yml中设置了deploy要操作的repo和branch，这里我使用的是xxinran.github.io的main branch。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/27/markdown101/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Xinran Wang">
-      <meta itemprop="description" content="Keep calm and coding">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Xinran's Blog">
-    </span>
-
-    
-    
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/01/27/markdown101/" class="post-title-link" itemprop="url">markdown基本语法</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2021-01-27 20:32:45" itemprop="dateCreated datePublished" datetime="2021-01-27T20:32:45+08:00">2021-01-27</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-01-29 12:35:01" itemprop="dateModified" datetime="2021-01-29T12:35:01+08:00">2021-01-29</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/language/" itemprop="url" rel="index"><span itemprop="name">language</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="一级标题"><a href="#一级标题" class="headerlink" title="一级标题"></a>一级标题</h1><h2 id="二级"><a href="#二级" class="headerlink" title="二级"></a>二级</h2><h3 id="三级-（CTRL-3-或者-）"><a href="#三级-（CTRL-3-或者-）" class="headerlink" title="三级 （CTRL +3 或者 ### ）"></a>三级 （CTRL +3 或者 ### ）</h3><h4 id="四级"><a href="#四级" class="headerlink" title="四级"></a>四级</h4><h6 id="最多支持到六级"><a href="#最多支持到六级" class="headerlink" title="最多支持到六级"></a>最多支持到六级</h6><h2 id="字体"><a href="#字体" class="headerlink" title="字体"></a>字体</h2><p><strong>hello world</strong></p>
-<p>CTRL + B 或者 两边加**</p>
-<p><em>hello world</em></p>
-<p>CTRL + I 或者两边加* </p>
-<p><strong><em>hello world</em></strong></p>
-<p>CTRL + B + I 或者 两边加***</p>
-<p><del>hello world</del></p>
-<p>ALT + SHIFT + 5  或者~~ </p>
-<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><blockquote>
-<p>这是一个引用， 用&gt;开始 </p>
-</blockquote>
-<h2 id="分割线"><a href="#分割线" class="headerlink" title="分割线"></a>分割线</h2><hr>
-<hr>
-<p>三个-， 或者三个*</p>
-<h2 id="图片"><a href="#图片" class="headerlink" title="图片"></a>图片</h2><p><img src="https://www.w3schools.com/images/w3schools_green.jpg" alt="图片名字"></p>
-<p>感叹号[图片名字]+ (图片地址)</p>
-<h2 id="超链接"><a href="#超链接" class="headerlink" title="超链接"></a>超链接</h2><p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/services-networking/service/#ips-and-vips">超级链接</a></p>
-<p>方括号里面写链接名字，后面加()写链接地址。</p>
-<h2 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h2><h3 id="有序列表"><a href="#有序列表" class="headerlink" title="有序列表"></a>有序列表</h3><ol>
-<li>A</li>
-<li>B</li>
-<li>C</li>
-</ol>
-<h3 id="无序列表"><a href="#无序列表" class="headerlink" title="无序列表"></a>无序列表</h3><p>减号 + space</p>
-<ul>
-<li>A</li>
-<li>B</li>
-</ul>
-<p>CTRL + [  回到上一级<br>CTRL + ]  回到下一级</p>
-<h2 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h2><table>
-<thead>
-<tr>
-<th>名字</th>
-<th>性别</th>
-<th>生日</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>张三</td>
-<td>男</td>
-<td>1997.1</td>
-</tr>
-</tbody></table>
-<p>名字 | 性别| 生日|</p>
-<p>–|–|–</p>
-<p>xx|xx|xx|</p>
-<p>进入源代码模式(CTRL + /)，删除行间空行，就可以生成表格了。</p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public</span><br></pre></td></tr></table></figure>
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/27/qat-deply/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Xinran Wang">
-      <meta itemprop="description" content="Keep calm and coding">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Xinran's Blog">
-    </span>
-
-    
-    
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/01/27/qat-deply/" class="post-title-link" itemprop="url">QAT在Ubuntu18.04上的安装和虚拟化</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2021-01-27 20:31:29" itemprop="dateCreated datePublished" datetime="2021-01-27T20:31:29+08:00">2021-01-27</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-01-29 12:35:01" itemprop="dateModified" datetime="2021-01-29T12:35:01+08:00">2021-01-29</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/deploy/" itemprop="url" rel="index"><span itemprop="name">deploy</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>本文将介绍QAT c62xx设备在Ubuntu 18.04上的安装部署和虚拟化。</p>
-<blockquote>
-<p>参考网站：<a target="_blank" rel="noopener" href="https://01.org/intel-quickassist-technology">https://01.org/intel-quickassist-technology</a></p>
-</blockquote>
-<h3 id="Prerequisite"><a href="#Prerequisite" class="headerlink" title="Prerequisite"></a>Prerequisite</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> uname -a</span></span><br><span class="line">Linux tme-prc002 5.3.0-53-generic #47~18.04.1-Ubuntu SMP Thu May 7 13:10:50 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux</span><br></pre></td></tr></table></figure>
-<h3 id="Updating-grub-Configuration-File"><a href="#Updating-grub-Configuration-File" class="headerlink" title="Updating grub Configuration File"></a>Updating grub Configuration File</h3><p>To enable IOMMU and SRIOV</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/default/grub</span><br></pre></td></tr></table></figure>
-<p>Modify <code>GRUB_CMDLINE_LINUX_DEFAULT=&quot;quiet splash&quot;</code> to <code>&quot;quiet splash intel_iommu=on&quot;</code></p>
-<p>Update grub and reboot:</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">update-grub</span><br><span class="line">sudo reboot</span><br></pre></td></tr></table></figure>
-<h3 id="Building-and-Installing-Software"><a href="#Building-and-Installing-Software" class="headerlink" title="Building and Installing Software"></a>Building and Installing Software</h3><h4 id="Create-a-working-directory-for-the-software-This-directory-can-be-user-defined-but"><a href="#Create-a-working-directory-for-the-software-This-directory-can-be-user-defined-but" class="headerlink" title="Create a working directory for the software. This directory can be user defined, but"></a>Create a working directory for the software. This directory can be user defined, but</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ cd $HOME </span><br><span class="line">$ mkdir &#x2F;QAT</span><br><span class="line">$ cd &#x2F;QAT</span><br></pre></td></tr></table></figure>
-<h4 id="Download-the-software"><a href="#Download-the-software" class="headerlink" title="Download the software."></a>Download the software.</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -O https:&#x2F;&#x2F;01.org&#x2F;sites&#x2F;default&#x2F;files&#x2F;downloads&#x2F;intelr-quickassist-technology&#x2F;qat1.7.l.4.3.0-00033.tar.gz</span><br></pre></td></tr></table></figure>
-<h4 id="Unpack-the-software"><a href="#Unpack-the-software" class="headerlink" title="Unpack the software."></a>Unpack the software.</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ tar -zxof &lt;QAT tarball name&gt;  </span><br><span class="line">$ chmod -R o-rwx *</span><br></pre></td></tr></table></figure>
-<h4 id="Install-dependencies-if-needed"><a href="#Install-dependencies-if-needed" class="headerlink" title="Install dependencies if needed."></a>Install dependencies if needed.</h4><p>For CentOS:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ yum -y groupinstall &quot;Development Tools&quot;</span><br><span class="line">$ yum -y install pciutils</span><br><span class="line">$ yum -y install libudev-devel</span><br><span class="line">$ yum -y install kernel-devel-$(uname -r)</span><br><span class="line">$ yum -y install gcc</span><br><span class="line">$ yum -y install openssl-devel</span><br></pre></td></tr></table></figure>
-<p>For Ubuntu:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ apt-get update</span><br><span class="line">$ apt-get install pciutils-dev</span><br><span class="line">$ apt-get install g++</span><br><span class="line">$ apt-get install pkg-config</span><br><span class="line">$ apt-get install libssl-dev</span><br></pre></td></tr></table></figure>
-<h4 id="configure-make-and-make-install-the-software-packages"><a href="#configure-make-and-make-install-the-software-packages" class="headerlink" title="configure, make and make install the software packages."></a>configure, make and make install the software packages.</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># suggest to clear up the env if there is a previous or modified version installed</span><br><span class="line">$ make uninstall</span><br><span class="line">$ .&#x2F;configure --enable-icp-sriov&#x3D;host  # It fails if missing dependency package.</span><br><span class="line">$ make</span><br><span class="line">$ make install  </span><br><span class="line">$ service qat_service start  </span><br><span class="line">$ service qat_service_vfs start</span><br></pre></td></tr></table></figure>
-<p>NOTE: in Guest OS, enable the SR-IOV build on the host by using:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ .&#x2F;configure --enable-icp-sriov&#x3D;guest</span><br></pre></td></tr></table></figure>
-<h4 id="Verifying-SR-IOV-On-The-Host"><a href="#Verifying-SR-IOV-On-The-Host" class="headerlink" title="Verifying SR-IOV On The Host"></a>Verifying SR-IOV On The Host</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">$ lspci | grep 37c9  </span><br><span class="line"># or </span><br><span class="line">$ lspci -d 8086:37c9</span><br><span class="line">$ lspci -d:37c9</span><br><span class="line">...</span><br><span class="line">01:01.0 Co-processor: Intel Corporation Device 37c9</span><br><span class="line">01:01.1 Co-processor: Intel Corporation Device 37c9</span><br><span class="line">01:01.2 Co-processor: Intel Corporation Device 37c9</span><br><span class="line">...</span><br><span class="line">01:01.7 Co-processor: Intel Corporation Device 37c9</span><br><span class="line">01:02.0 Co-processor: Intel Corporation Device 37c9</span><br><span class="line">01:02.1 Co-processor: Intel Corporation Device 37c9</span><br><span class="line">...</span><br><span class="line">01:02.6 Co-processor: Intel Corporation Device 37c9</span><br><span class="line">01:02.7 Co-processor: Intel Corporation Device 37c9</span><br></pre></td></tr></table></figure>
-<p>Or using <code>adf_ctl</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ adf_ctl status</span><br></pre></td></tr></table></figure>
-<p>This utility can bring up/down device by ourselves.</p>
-<h4 id="Detailed-SR-IOV-enabling-please-refer-to-the-guide"><a href="#Detailed-SR-IOV-enabling-please-refer-to-the-guide" class="headerlink" title="Detailed SR-IOV enabling please refer to the guide."></a>Detailed SR-IOV enabling please refer to the guide.</h4><p>Please refer to:<br><a target="_blank" rel="noopener" href="https://01.org/sites/default/files/downloads/330689qatvirtualizationappnoterev008us.pdf">https://01.org/sites/default/files/downloads/330689qatvirtualizationappnoterev008us.pdf</a></p>
-<h4 id="Note"><a href="#Note" class="headerlink" title="Note"></a>Note</h4><ul>
-<li>虚拟化之后的QAT PF不能被host使用，host和guest都应该使用VF来加速应用。</li>
-<li>在QAT software安装好后，我们可以通过lsmod|grep qat来检查，同时qat各个device的配置文件会被拷贝到/etc目录下。</li>
-<li>每一次修改了/etc下的配置文件后，都需要restart qat_service和qat_service_vfs.</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/27/hexo-github/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Xinran Wang">
-      <meta itemprop="description" content="Keep calm and coding">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Xinran's Blog">
-    </span>
-
-    
-    
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/01/27/hexo-github/" class="post-title-link" itemprop="url">hexo+github</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2021-01-27 19:15:38" itemprop="dateCreated datePublished" datetime="2021-01-27T19:15:38+08:00">2021-01-27</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-01-29 12:35:01" itemprop="dateModified" datetime="2021-01-29T12:35:01+08:00">2021-01-29</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/hexo/" itemprop="url" rel="index"><span itemprop="name">hexo</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h3 id="安装nodejs，git"><a href="#安装nodejs，git" class="headerlink" title="安装nodejs，git"></a>安装nodejs，git</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install npm</span><br><span class="line">sudo apt install nodejs</span><br><span class="line">sudo apt install git</span><br></pre></td></tr></table></figure>
-<h3 id="注册github帐号，创建github-repo，命名为xxinran-github-io"><a href="#注册github帐号，创建github-repo，命名为xxinran-github-io" class="headerlink" title="注册github帐号，创建github repo，命名为xxinran.github.io"></a>注册github帐号，创建github repo，命名为<code>xxinran.github.io</code></h3><h3 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo npm install -g hexo-cli</span><br></pre></td></tr></table></figure>
-<p>检查各项都已经成功安装：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">node -v</span><br><span class="line">hexo -v</span><br></pre></td></tr></table></figure>
-<h3 id="创建本地博客的repo"><a href="#创建本地博客的repo" class="headerlink" title="创建本地博客的repo"></a>创建本地博客的repo</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo init blog</span><br></pre></td></tr></table></figure>
-<p>运行后在当前目录下会生成一个blog目录。未来所有的博客主题，博文，配置都在这个目录里。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd blog</span><br></pre></td></tr></table></figure>
-<p>会发现目录结构如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">├── _config.yml  # hexo的配置文件，主题，标题，格式等都在这里指定</span><br><span class="line">├── db.json</span><br><span class="line">├── node_modules&#x2F;</span><br><span class="line">├── package.json</span><br><span class="line">├── package-lock.json</span><br><span class="line">├── public&#x2F;</span><br><span class="line">├── scaffolds&#x2F;</span><br><span class="line">├── source&#x2F; # 博客的静态页面的源文件，博文的md文件就存放在这里</span><br><span class="line">└── themes&#x2F; # 存放各种主题的源码</span><br></pre></td></tr></table></figure>
-<p>接下来在<code>blog</code>目录下运行<code>npm install</code> 来安装hexo所需的依赖。</p>
-<p>在<code>blog/source/_posts/hello-world.md</code>里有一个例子，我们先用这个例子，看看效果，运行：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo server </span><br><span class="line">or</span><br><span class="line">hexo s</span><br></pre></td></tr></table></figure>
-<p>可以看到Hexo运行在本地的4000端口，在浏览器中访问<code>localhost:4000</code>，就会看到上述hello-world的示例页面。</p>
-<p>我们也可以通过 <code>hexo new first-try</code>去创建一个新的md文件，可以在这个md文件里写博文，这时在4000端口我们就可以看到新的博文。（应该是需要重新运行<code>hexo s</code>，这里没有验证）</p>
-<h3 id="连接gihub和hexo"><a href="#连接gihub和hexo" class="headerlink" title="连接gihub和hexo"></a>连接gihub和hexo</h3><h4 id="上传SSH公钥"><a href="#上传SSH公钥" class="headerlink" title="上传SSH公钥"></a>上传SSH公钥</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen</span><br><span class="line"># copy ssh public to Github Account</span><br></pre></td></tr></table></figure>
-<p>输入<code>ssh -T git@github.com</code>，测试添加ssh是否成功。如果看到Hi后面是你的用户名，就说明成功了.</p>
-<h4 id="在Hexo的配置文件中指定向Github-Page部署"><a href="#在Hexo的配置文件中指定向Github-Page部署" class="headerlink" title="在Hexo的配置文件中指定向Github Page部署"></a>在Hexo的配置文件中指定向Github Page部署</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ～&#x2F;blog&#x2F;_config.yml</span><br></pre></td></tr></table></figure>
-<p>在deploy选项中填写Github信息， 例如：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">deploy:</span><br><span class="line">type: git</span><br><span class="line">repository: git@github.com:xxinran&#x2F;xxinran.github.io.git</span><br><span class="line">branch: main # 原来是master</span><br></pre></td></tr></table></figure>
-<h4 id="生成静态文件，并部署到gihub上去。"><a href="#生成静态文件，并部署到gihub上去。" class="headerlink" title="生成静态文件，并部署到gihub上去。"></a>生成静态文件，并部署到gihub上去。</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># generate static files</span><br><span class="line">hexo generate</span><br><span class="line">or </span><br><span class="line">hexo g</span><br><span class="line"></span><br><span class="line"># deploy to Github</span><br><span class="line">hexo deploy</span><br><span class="line">or</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
-<p>这一步有可能会报错<code>Deployer not found: git</code>：</p>
-<ul>
-<li>需要安装<code>npm install hexo-deployer-git --save</code>。</li>
-<li>需要配置gitconfig。</li>
-</ul>
-<h4 id="打开Github-Page验证。"><a href="#打开Github-Page验证。" class="headerlink" title="打开Github Page验证。"></a>打开<a target="_blank" rel="noopener" href="https://xxinran.github.io/">Github Page</a>验证。</h4><h3 id="Notes"><a href="#Notes" class="headerlink" title="Notes"></a>Notes</h3><ul>
-<li>每次修改完blog的配置，或者新建删除post，draft等，都需要先<code>hexo clean</code>，在重新<code>hexo g &amp; hexo d</code>。</li>
-</ul>
-<blockquote>
-<p> 参考文档： <a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/configuration.html">https://hexo.io/zh-cn/docs/configuration.html</a><br> <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/71164003">https://zhuanlan.zhihu.com/p/71164003</a></p>
-</blockquote>
-<h1 id="主题配置"><a href="#主题配置" class="headerlink" title="主题配置"></a>主题配置</h1><ul>
-<li>在blog目录下拉取想要应用的主题</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/iissnan/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure>
-<ul>
-<li><p>打开站点配置文件 _config.yml，找到 theme 字段，并将其值更改为 next。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">theme: next</span><br></pre></td></tr></table></figure></li>
-<li><p>切换Schema</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scheme: Pisces</span><br></pre></td></tr></table></figure></li>
-<li><p>更新github上的主题</p>
-<p>改完配置之后都要运行hexo clean &amp; hexo generate &amp; hexo deploy，为了方便，可以在blog目录下加入一个新的脚本deploy.sh：</p>
-<blockquote>
-<p>这里涉及到 “push hexo code”, 在多设备管理中会讲到 ）</p>
-</blockquote>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">DIR=`dirname $0`</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Generate blog</span></span><br><span class="line">echo &quot;Generate and deploy...&quot;</span><br><span class="line">hexo clean</span><br><span class="line">hexo generate &amp; hexo deploy</span><br><span class="line"><span class="meta">#</span><span class="bash"> hexo d -g</span></span><br><span class="line"></span><br><span class="line">sleep 10</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Push hexo code</span></span><br><span class="line">echo &quot;Push hexo code&quot;</span><br><span class="line">git add .</span><br><span class="line">current_date=`date &quot;+%Y-%m-%d %H:%M:%S&quot;`</span><br><span class="line">git commit -m &quot;Blog updated: $current_date&quot;</span><br><span class="line"></span><br><span class="line">sleep 2</span><br><span class="line">git push origin hexo</span><br><span class="line"></span><br><span class="line">echo &quot;=====&gt;Finish!&lt;=====&quot;</span><br></pre></td></tr></table></figure></li>
-<li><p>更新脚本权限：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod 755 deploy.sh</span><br></pre></td></tr></table></figure>
-<p>以后每次推送只要运行./deploy.sh即可。</p>
-</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-  
-  
-  
-
-
-  
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+  </nav>
 
 
 

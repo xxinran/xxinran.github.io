@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"8.0.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
+  </script>
+
+  <meta name="description" content="环境在mac上用vagrant起了一个centos8的vm。 换系统yum源 这里换的是清华的源。  参考：https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;help&#x2F;centos&#x2F;  建议先备份 &#x2F;etc&#x2F;yum.repos.d&#x2F; 内的文件（CentOS 7 及之前为 CentOS-Base.repo，CentOS 8 为CentOS-Linux-*.repo） 然后编辑">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在centos上修改源并安装docker">
+<meta property="og:url" content="http://example.com/2021/01/30/yum-config/index.html">
+<meta property="og:site_name" content="Xinran&#39;s Blog">
+<meta property="og:description" content="环境在mac上用vagrant起了一个centos8的vm。 换系统yum源 这里换的是清华的源。  参考：https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;help&#x2F;centos&#x2F;  建议先备份 &#x2F;etc&#x2F;yum.repos.d&#x2F; 内的文件（CentOS 7 及之前为 CentOS-Base.repo，CentOS 8 为CentOS-Linux-*.repo） 然后编辑">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-01-30T10:05:57.000Z">
+<meta property="article:modified_time" content="2021-02-02T09:00:08.293Z">
+<meta property="article:author" content="Xinran Wang">
+<meta property="article:tag" content="docker">
+<meta property="article:tag" content="deploy">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2021/01/30/yum-config/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>在centos上修改源并安装docker | Xinran's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Xinran's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83"><span class="nav-number">1.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8D%A2%E7%B3%BB%E7%BB%9Fyum%E6%BA%90"><span class="nav-number">2.</span> <span class="nav-text">换系统yum源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8D%A2%E4%B8%8B%E8%BD%BDdocker%E7%9A%84%E6%BA%90"><span class="nav-number">3.</span> <span class="nav-text">换下载docker的源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8D%A2docker%E9%95%9C%E5%83%8F%E6%BA%90"><span class="nav-number">4.</span> <span class="nav-text">换docker镜像源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-permission-denied"><span class="nav-number">5.</span> <span class="nav-text">docker permission denied</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95"><span class="nav-number">5.1.</span> <span class="nav-text">解决办法</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker-graph%E6%98%AF%E4%BB%80%E4%B9%88%E4%B8%9C%E8%A5%BF%E5%95%8A"><span class="nav-number"></span> <span class="nav-text">docker graph是什么东西啊</span></a></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Xinran Wang</p>
+  <div class="site-description" itemprop="description">Keep calm and coding</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xxinran" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xxinran" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:xxinran.wang@gmail.com" title="E-Mail → mailto:xxinran.wang@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+      
+
+      
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/30/yum-config/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Xinran Wang">
+      <meta itemprop="description" content="Keep calm and coding">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xinran's Blog">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          在centos上修改源并安装docker
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-01-30 18:05:57" itemprop="dateCreated datePublished" datetime="2021-01-30T18:05:57+08:00">2021-01-30</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-02-02 17:00:08" itemprop="dateModified" datetime="2021-02-02T17:00:08+08:00">2021-02-02</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/deploy/" itemprop="url" rel="index"><span itemprop="name">deploy</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h3><p>在mac上用vagrant起了一个centos8的vm。</p>
+<h3 id="换系统yum源"><a href="#换系统yum源" class="headerlink" title="换系统yum源"></a>换系统yum源</h3><blockquote>
+<p>这里换的是清华的源。</p>
+<p> 参考：<a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/help/centos/">https://mirrors.tuna.tsinghua.edu.cn/help/centos/</a></p>
+</blockquote>
+<p>建议先备份 <code>/etc/yum.repos.d/</code> 内的文件（CentOS 7 及之前为 <code>CentOS-Base.repo</code>，CentOS 8 为<code>CentOS-Linux-*.repo</code>）</p>
+<p>然后编辑 <code>/etc/yum.repos.d/</code> 中的相应文件，在 <code>mirrorlist=</code> 开头行前面加 <code>#</code> 注释掉；并将 <code>baseurl=</code> 开头行取消注释（如果被注释的话），把该行内的域名（例如<code>mirror.centos.org</code>）替换为 <code>mirrors.tuna.tsinghua.edu.cn</code>。</p>
+<p>以上步骤可以被下方的命令一步完成</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo sed -e &#39;s|^mirrorlist&#x3D;|#mirrorlist&#x3D;|g&#39; \</span><br><span class="line">         -e &#39;s|^#baseurl&#x3D;http:&#x2F;&#x2F;mirror.centos.org|baseurl&#x3D;https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn|g&#39; \</span><br><span class="line">         -i.bak \</span><br><span class="line">         &#x2F;etc&#x2F;yum.repos.d&#x2F;CentOS-*.repo</span><br></pre></td></tr></table></figure>
+<p>注意其中的<code>*</code>通配符，如果只需要替换一些文件中的源，请自行增删。</p>
+<p>注意，如果需要启用其中一些 repo，需要将其中的 <code>enabled=0</code> 改为 <code>enabled=1</code>。</p>
+<p>最后，更新软件包缓存</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum makecache</span><br></pre></td></tr></table></figure>
+<p>这时下载常用的软件包就已经变快了。</p>
+<h3 id="换下载docker的源"><a href="#换下载docker的源" class="headerlink" title="换下载docker的源"></a>换下载docker的源</h3><blockquote>
+<p>参考：<a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/help/docker-ce/">https://mirrors.tuna.tsinghua.edu.cn/help/docker-ce/</a></p>
+</blockquote>
+<p>然后我根据docker的官方文档安装docker，发现yum install docker-ce的时候特别慢。原因是官方文档配置的docker源repo是国外的，国外访问很慢。于是去网上找了清华的源。</p>
+<p>如果你之前安装过 docker，请先删掉</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum remove docker docker-common docker-selinux docker-engine</span><br></pre></td></tr></table></figure>
+<p>安装一些依赖</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install -y yum-utils device-mapper-persistent-data lvm2</span><br></pre></td></tr></table></figure>
+<p>根据你的发行版下载repo文件: CentOS/RHEL Fedora</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -O &#x2F;etc&#x2F;yum.repos.d&#x2F;docker-ce.repo https:&#x2F;&#x2F;download.docker.com&#x2F;linux&#x2F;centos&#x2F;docker-ce.repo</span><br></pre></td></tr></table></figure>
+<p>把软件仓库地址替换为 TUNA，这一步很关键，大部分网上的博客都没有提到，如果没有这一步，其实还是使用的国外的docker官方的源:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo sed -i &#39;s+download.docker.com+mirrors.tuna.tsinghua.edu.cn&#x2F;docker-ce+&#39; &#x2F;etc&#x2F;yum.repos.d&#x2F;docker-ce.repo</span><br></pre></td></tr></table></figure>
+<p>最后安装:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo yum makecache</span><br><span class="line">sudo yum install docker-ce</span><br></pre></td></tr></table></figure>
+<h3 id="换docker镜像源"><a href="#换docker镜像源" class="headerlink" title="换docker镜像源"></a>换docker镜像源</h3><p>docker默认源在国外，同样很慢。我们可以通过修改docker配置更改docker image的源。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 查看docker daemon config</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ls /etc/docker/daemon.json</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 如果文件不存在就创建一个</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo touch /etc/docker/daemon.json</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vi /etc/docker/daemon.json</span></span><br><span class="line">&#123;</span><br><span class="line">    &quot;registry-mirrors&quot; : [</span><br><span class="line">    &quot;https://registry.docker-cn.com&quot;,</span><br><span class="line">    &quot;https://docker.mirrors.ustc.edu.cn&quot;,</span><br><span class="line">    &quot;http://hub-mirror.c.163.com&quot;,</span><br><span class="line">    &quot;https://cr.console.aliyun.com/&quot;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo systemctl restart docker.service</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="docker-permission-denied"><a href="#docker-permission-denied" class="headerlink" title="docker permission denied"></a>docker permission denied</h3><p>这个问题特别常见，就是我们在安装完docker之后，发现docker指令必须在root权限下运行，这时因为我们当前的用户没有被加入到docker组里。</p>
+<h4 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h4><p>2.1、添加docker用户组</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">groupadd docker </span><br><span class="line"><span class="meta">#</span><span class="bash"> 一般都会提示docker用户组存在了。</span></span><br></pre></td></tr></table></figure>
+<p>2.2、把当前用户加入docker用户组</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gpasswd -a $&#123;USER&#125; docker</span><br><span class="line"><span class="meta">#</span><span class="bash"> 或者 sudo usermod -aG docker <span class="variable">$&#123;USER&#125;</span> (未验证)</span></span><br></pre></td></tr></table></figure>
+<p>3、查看是否添加成功：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/group | grep ^docker</span><br></pre></td></tr></table></figure>
+<p>4、重启docker</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">serivce docker restart</span><br></pre></td></tr></table></figure>
+<p>5、更新用户组</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">newgrp docker </span><br></pre></td></tr></table></figure>
+<p>6、测试docker命令是否可以使用sudo正常使用</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps</span><br></pre></td></tr></table></figure>
+
+
+
+
+<h1 id="docker-graph是什么东西啊"><a href="#docker-graph是什么东西啊" class="headerlink" title="docker graph是什么东西啊"></a>docker graph是什么东西啊</h1><p>The <code>-g</code> or <code>--graph</code> flag for the <code>dockerd</code> or <code>docker daemon</code> command was used to indicate the directory in which to store persistent data and resource configuration and has been replaced with the more descriptive <code>--data-root</code> flag.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/docker/" rel="tag"># docker</a>
+              <a href="/tags/deploy/" rel="tag"># deploy</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/01/29/proxy-intro/" rel="prev" title="代理服务器基本介绍">
+                  <i class="fa fa-chevron-left"></i> 代理服务器基本介绍
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/02/01/docker-network/" rel="next" title="浅析docker网络">
+                  浅析docker网络 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+  
+  
+  
+
+
+
+      
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      
+
+      
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xinran Wang</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
