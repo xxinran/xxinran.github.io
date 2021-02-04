@@ -95,6 +95,11 @@ Docker Root Dir: /home/docker
 CONTAINER ID   IMAGE                      COMMAND                  CREATED              STATUS              PORTS     NAMES
 d4ecdebab101   vcaa/centos-8.1-test:1.0   "/home/space/VCAC-SW…"   About a minute ago   Up About a minute             sleepy_ride
 
+# pwd: /home/space/VCAC-SW-Analytics/VCAC-A/Intel_Media_Analytics_Host/scripts
+$ sudo ./build.sh
+
+# pwd: /home/space/VCAC-SW-Analytics/VCAC-A/Intel_Media_Analytics_Node/scripts
+$ sudo ./vcad_build.sh -o EXTENDED  # EXTENDED可以在ubuntu os里装上openvino等软件。
 ```
 
 ### 安装新kernel，vca软件等
@@ -173,7 +178,8 @@ ERROR: Card: 0 Cpu: 0 - Card needs to be in "os_ready", "net_device_ready", "dhc
 $ vcactl blockio close 0 0 vcablk0
 WARNING: Card: 0 Cpu: 0 - Block device vcablk0 is not open. You do not need to close it.
 # 在build好的ubuntu的image加载进vca卡中
-$ vcactl blockio open 0 0 vcablk0 RW vca_disk48_k5.3_ubuntu18.04_1.0.1.vcad
+$ vcactl blockio open 0 0 vcablk0 RW /home/space/VCAC-SW-Analytics/VCAC-A/Intel_Media_Analytics_Node/build/vcad/INSTALL/vca_disk48_k5.3_ubuntu18.04_1.0.1.vcad
+
 #查看
 $ vcactl status
 Card: 0 Cpu: 0  STATE: bios_ready
@@ -185,7 +191,7 @@ $ vcactl status
 Card: 0 Cpu: 0  STATE: power_off
 
 # 开机
-$vcactl pwrbtn-short 0 0
+$ vcactl pwrbtn-short 0 0
 
 $ vcactl reset 0 0 --force
 $ vcactl boot 0 0 vcablk0 --force
@@ -256,8 +262,9 @@ iptables -t nat -A POSTROUTING -s 172.32.1.1 -d 0/0 -j MASQUERADE
 ssh root@172.32.1.1
 
 # configure proxy
+# host没有proxy的时候，可以不设置
 $ vim ~/.bashrc
-export https_proxy=" local network https proxy
+export https_proxy=" local network https proxy"
 export http_proxy=" local network http proxy"
 export ftp_proxy=" local network ftp proxy"
 ```
@@ -276,6 +283,7 @@ VCA卡应该和host有一样的网络连通能力。
 **Load SMBus driver**
 
 ```shell
+$ apt update
 $ modprobe i2c-i801
 $ modprobe i2c-dev  
 ```
@@ -289,7 +297,5 @@ $ insmod /lib/modules/5.3.18-1.9bf7f75.vca+/kernel/drivers/usb/myd/myd_vsc.ko
 $ lsmod | grep myd
 myd_vsc                24576  0
 myd_ion                49152  0
-
-
 ```
 
