@@ -6,6 +6,44 @@ categories: docker
 typora-root-url: ../_posts
 ---
 
+```shell
+$ docker image inspect ubuntu
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:bacd3af13903e13a43fe87b6944acd1ff21024132aad6e74b4452d984fb1a99a",
+                "sha256:9069f84dbbe96d4c50a656a05bbe6b6892722b0d1116a8f7fd9d274f4e991bf6",
+                "sha256:f6253634dc78da2f2e3bee9c8063593f880dc35d701307f30f65553e0f50c18c"
+            ]
+        },
+```
+
+
+
+rootfs
+
+bootfs
+
+chroot
+
+aufs
+
+xfs
+
+Overlay2
+
+copy on write 
+
+Writeout 
+
+init-layer - non commit
+
+
+
+<img src="/docker-image/image-20210203234917452.png" alt="image-20210203234917452" style="zoom:70%;" />
+
+
+
 ## 如何构建docker image
 
 步骤：
@@ -162,3 +200,6 @@ ADD http://example.com/big.tar.xz /usr/src/things/
 ##### 总结
 
 COPY 命令是为最基本的用法设计的，概念清晰，操作简单。而 ADD 命令基本上是 COPY 命令的超集(除了 multistage 场景)，可以实现一些方便、酷炫的拷贝操作。ADD 命令在增加了功能的同时也增加了使用它的复杂度，比如从 url 拷贝压缩文件时弊大于利。
+
+
+
