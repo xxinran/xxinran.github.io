@@ -286,7 +286,7 @@
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2021-02-25 17:26:41 / Modified: 18:08:21" itemprop="dateCreated datePublished" datetime="2021-02-25T17:26:41+08:00">2021-02-25</time>
+      <time title="Created: 2021-02-25 17:26:41 / Modified: 18:12:30" itemprop="dateCreated datePublished" datetime="2021-02-25T17:26:41+08:00">2021-02-25</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -317,37 +317,40 @@
 <h2 id="进程和线程的区别"><a href="#进程和线程的区别" class="headerlink" title="进程和线程的区别"></a>进程和线程的区别</h2><table>
 <thead>
 <tr>
-<th>进程</th>
-<th>线程</th>
+<th align="center">进程</th>
+<th align="center">线程</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>有独立的地址空间</td>
-<td>有自己的堆栈和局部变量，但没有单独的地址空间</td>
+<td align="center">有独立的地址空间</td>
+<td align="center">有自己的堆栈和局部变量，但没有单独的地址空间</td>
 </tr>
 <tr>
-<td>在保护模式下不会对其它进程产生影响</td>
-<td>一个线程死掉就等于整个进程死掉</td>
+<td align="center">在保护模式下不会对其它进程产生影响</td>
+<td align="center">一个线程死掉就等于整个进程死掉</td>
 </tr>
 <tr>
-<td>拥有独立的内存单元</td>
-<td>共享同一个进程里的内存</td>
+<td align="center">拥有独立的内存单元</td>
+<td align="center">同一进程中的多个线程共享代码段（代码和常量），数据段（全局变量和静态变量），扩展段（堆存储）。<br>但是每个线程拥有自己的栈段，栈段又叫运行时段，用来存放所有局部变量和临时变量。）</td>
 </tr>
 <tr>
-<td>IPC</td>
-<td>可以直接读写进程数据段和全局变量（互斥锁，信号量）</td>
+<td align="center">IPC</td>
+<td align="center">可以直接读写进程数据段和全局变量（互斥锁，信号量）</td>
 </tr>
 <tr>
-<td>上下文切换慢</td>
-<td>进程上下文切换快</td>
+<td align="center">上下文切换慢</td>
+<td align="center">进程上下文切换快</td>
 </tr>
 <tr>
-<td><strong>进程是操作系统分配资源的单位</strong></td>
-<td><strong>是CPU调度和分派执行的基本单位</strong></td>
+<td align="center"><strong>进程是操作系统分配资源的单位</strong></td>
+<td align="center"><strong>是CPU调度和分派执行的基本单位</strong></td>
 </tr>
 </tbody></table>
 <p>创建线程的代价比创建进程的代价小很多，如下图：</p>
 <img src="/2021/02/25/process-and-thread/image-20210225174720285.png" alt="image-20210225174720285" style="zoom:70%;">
+
+<p><strong>进程在执行过程中拥有独立的内存单元，而多个线程共享进程的内存</strong>。（资源分配给进程，同一进程的所有线程共享该进程的所有资源。同一进程中的多个线程共享代码段（代码和常量），数据段（全局变量和静态变量），扩展段（堆存储）。但是每个线程拥有自己的栈段，栈段又叫运行时段，用来存放所有局部变量和临时变量。）</p>
+
       
     </div>
 
