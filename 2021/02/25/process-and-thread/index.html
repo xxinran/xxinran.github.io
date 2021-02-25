@@ -22,20 +22,23 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"8.0.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
   </script>
 
-  <meta name="description" content="Keep calm and coding">
-<meta property="og:type" content="website">
-<meta property="og:title" content="categories">
-<meta property="og:url" content="http://example.com/categories/index.html">
+  <meta name="description" content="简单的理解对于操作系统来说，一个任务就是一个进程（Process），比如打开一个浏览器就是启动一个浏览器进程，打开一个记事本就启动了一个记事本进程，打开两个记事本就启动了两个记事本进程，打开一个Word就启动了一个Word进程。 有些进程还不止同时干一件事，比如Word，它可以同时进行打字、拼写检查、打印等事情。在一个进程内部，要同时干多件事，就需要同时运行多个“子任务”，我们把进程内的这些“">
+<meta property="og:type" content="article">
+<meta property="og:title" content="进程和线程">
+<meta property="og:url" content="http://example.com/2021/02/25/process-and-thread/index.html">
 <meta property="og:site_name" content="Xinran&#39;s Blog">
-<meta property="og:description" content="Keep calm and coding">
+<meta property="og:description" content="简单的理解对于操作系统来说，一个任务就是一个进程（Process），比如打开一个浏览器就是启动一个浏览器进程，打开一个记事本就启动了一个记事本进程，打开两个记事本就启动了两个记事本进程，打开一个Word就启动了一个Word进程。 有些进程还不止同时干一件事，比如Word，它可以同时进行打字、拼写检查、打印等事情。在一个进程内部，要同时干多件事，就需要同时运行多个“子任务”，我们把进程内的这些“">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2021-01-27T12:15:34.000Z">
-<meta property="article:modified_time" content="2021-01-29T04:35:01.968Z">
+<meta property="og:image" content="http://example.com/2021/02/25/process-and-thread/image-20210225180738908.png">
+<meta property="og:image" content="http://example.com/2021/02/25/process-and-thread/image-20210225174720285.png">
+<meta property="article:published_time" content="2021-02-25T09:26:41.000Z">
+<meta property="article:modified_time" content="2021-02-25T10:08:21.573Z">
 <meta property="article:author" content="Xinran Wang">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/02/25/process-and-thread/image-20210225180738908.png">
 
 
-<link rel="canonical" href="http://example.com/categories/">
+<link rel="canonical" href="http://example.com/2021/02/25/process-and-thread/">
 
 
 <script class="page-configurations">
@@ -43,13 +46,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'en'
   };
 </script>
 
-  <title>categories | Xinran's Blog
-</title>
+  <title>进程和线程 | Xinran's Blog</title>
   
 
 
@@ -179,7 +181,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           Table of Contents
@@ -191,6 +193,7 @@
 
       <!--noindex-->
       <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E7%9A%84%E7%90%86%E8%A7%A3"><span class="nav-number">1.</span> <span class="nav-text">简单的理解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%B6%E8%A1%8C%E5%92%8C%E5%B9%B6%E5%8F%91"><span class="nav-number">2.</span> <span class="nav-text">并行和并发</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%BA%BF%E7%A8%8B%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">3.</span> <span class="nav-text">进程和线程的区别</span></a></li></ol></div>
       </section>
       <!--/noindex-->
 
@@ -252,53 +255,137 @@
 </noscript>
 
 
-    <div class="main-inner page posts-expand">
+    <div class="main-inner post posts-expand">
       
-  
-  
 
       
 
     
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/25/process-and-thread/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Xinran Wang">
+      <meta itemprop="description" content="Keep calm and coding">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xinran's Blog">
+    </span>
+
     
     
-    <div class="post-block" lang="en">
       <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          进程和线程
+        </h1>
 
-<h1 class="post-title" itemprop="name headline">categories
-</h1>
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
 
-<div class="post-meta-container">
+      <time title="Created: 2021-02-25 17:26:41 / Modified: 18:08:21" itemprop="dateCreated datePublished" datetime="2021-02-25T17:26:41+08:00">2021-02-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+    </span>
+
   
-
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
 </div>
 
-</header>
+        </div>
+      </header>
 
-      
-      
-      
-      <div class="post-body">
-          <div class="category-all-page">
-  <div class="category-all-title">
-    9 categories in total
-  </div>
-  <div class="category-all">
-    <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/deploy/">deploy</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/deploy-network-intel/">deploy, network, intel</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/devices/">devices</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/docker/">docker</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">hexo</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/language/">language</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/network/">network</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%99%9A%E6%8B%9F%E5%8C%96/">虚拟化</a><span class="category-list-count">1</span></li></ul>
-  </div>
-</div>
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2021/02/25/process-and-thread/image-20210225180738908.png" alt="image-20210225180738908" style="zoom:67%;">
+
+<h2 id="简单的理解"><a href="#简单的理解" class="headerlink" title="简单的理解"></a>简单的理解</h2><p>对于操作系统来说，一个任务就是一个进程（<strong>Process</strong>），比如打开一个浏览器就是启动一个浏览器进程，打开一个记事本就启动了一个记事本进程，打开两个记事本就启动了两个记事本进程，打开一个Word就启动了一个Word进程。</p>
+<p>有些进程还不止同时干一件事，比如Word，它可以同时进行打字、拼写检查、打印等事情。在一个进程内部，要同时干多件事，就需要同时运行多个“子任务”，我们把进程内的这些“子任务”称为线程（<strong>Thread</strong>）。</p>
+<h2 id="并行和并发"><a href="#并行和并发" class="headerlink" title="并行和并发"></a>并行和并发</h2><p>并行是真正的同时运行，需要多核。</p>
+<p>并发只是看起来同时运行，最常见的就是<strong>时间片轮转调度算法</strong>。</p>
+<h2 id="进程和线程的区别"><a href="#进程和线程的区别" class="headerlink" title="进程和线程的区别"></a>进程和线程的区别</h2><table>
+<thead>
+<tr>
+<th>进程</th>
+<th>线程</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>有独立的地址空间</td>
+<td>有自己的堆栈和局部变量，但没有单独的地址空间</td>
+</tr>
+<tr>
+<td>在保护模式下不会对其它进程产生影响</td>
+<td>一个线程死掉就等于整个进程死掉</td>
+</tr>
+<tr>
+<td>拥有独立的内存单元</td>
+<td>共享同一个进程里的内存</td>
+</tr>
+<tr>
+<td>IPC</td>
+<td>可以直接读写进程数据段和全局变量（互斥锁，信号量）</td>
+</tr>
+<tr>
+<td>上下文切换慢</td>
+<td>进程上下文切换快</td>
+</tr>
+<tr>
+<td><strong>进程是操作系统分配资源的单位</strong></td>
+<td><strong>是CPU调度和分派执行的基本单位</strong></td>
+</tr>
+</tbody></table>
+<p>创建线程的代价比创建进程的代价小很多，如下图：</p>
+<img src="/2021/02/25/process-and-thread/image-20210225174720285.png" alt="image-20210225174720285" style="zoom:70%;">
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
 
         
-      </div>
-      
-      
-      
-    </div>
-    
 
-    
-    
-    
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/02/20/ssr-setup/" rel="prev" title="科学上网ssr">
+                  <i class="fa fa-chevron-left"></i> 科学上网ssr
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+  
+  
+  
+
 
 
       
