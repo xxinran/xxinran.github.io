@@ -286,7 +286,7 @@
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2021-02-25 17:26:41 / Modified: 18:12:30" itemprop="dateCreated datePublished" datetime="2021-02-25T17:26:41+08:00">2021-02-25</time>
+      <time title="Created: 2021-02-25 17:26:41 / Modified: 18:24:01" itemprop="dateCreated datePublished" datetime="2021-02-25T17:26:41+08:00">2021-02-25</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -310,11 +310,15 @@
     <div class="post-body" itemprop="articleBody">
           <img src="/2021/02/25/process-and-thread/image-20210225180738908.png" alt="image-20210225180738908" style="zoom:67%;">
 
+<blockquote>
+<p>参考：<a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1688297">https://cloud.tencent.com/developer/article/1688297</a></p>
+</blockquote>
 <h2 id="简单的理解"><a href="#简单的理解" class="headerlink" title="简单的理解"></a>简单的理解</h2><p>对于操作系统来说，一个任务就是一个进程（<strong>Process</strong>），比如打开一个浏览器就是启动一个浏览器进程，打开一个记事本就启动了一个记事本进程，打开两个记事本就启动了两个记事本进程，打开一个Word就启动了一个Word进程。</p>
 <p>有些进程还不止同时干一件事，比如Word，它可以同时进行打字、拼写检查、打印等事情。在一个进程内部，要同时干多件事，就需要同时运行多个“子任务”，我们把进程内的这些“子任务”称为线程（<strong>Thread</strong>）。</p>
 <h2 id="并行和并发"><a href="#并行和并发" class="headerlink" title="并行和并发"></a>并行和并发</h2><p>并行是真正的同时运行，需要多核。</p>
 <p>并发只是看起来同时运行，最常见的就是<strong>时间片轮转调度算法</strong>。</p>
-<h2 id="进程和线程的区别"><a href="#进程和线程的区别" class="headerlink" title="进程和线程的区别"></a>进程和线程的区别</h2><table>
+<h2 id="进程和线程的区别"><a href="#进程和线程的区别" class="headerlink" title="进程和线程的区别"></a>进程和线程的区别</h2><p><strong>共享同一地址空间</strong>（也就是同样的<strong>动态内存，映射文件，目标代码等等</strong>），<strong>打开的文件队列和其他内核资源</strong>。</p>
+<h5 id><a href="#" class="headerlink" title></a></h5><table>
 <thead>
 <tr>
 <th align="center">进程</th>
@@ -323,7 +327,7 @@
 </thead>
 <tbody><tr>
 <td align="center">有独立的地址空间</td>
-<td align="center">有自己的堆栈和局部变量，但没有单独的地址空间</td>
+<td align="center">有自己的栈和局部变量，但没有单独的地址空间。<br>同一进程中的多个线程共享代码段（代码和常量），数据段（全局变量和静态变量），扩展段（堆存储）。<br>但是每个线程拥有自己的栈段，栈段又叫运行时段，用来存放所有局部变量和临时变量。）</td>
 </tr>
 <tr>
 <td align="center">在保护模式下不会对其它进程产生影响</td>
@@ -331,10 +335,10 @@
 </tr>
 <tr>
 <td align="center">拥有独立的内存单元</td>
-<td align="center">同一进程中的多个线程共享代码段（代码和常量），数据段（全局变量和静态变量），扩展段（堆存储）。<br>但是每个线程拥有自己的栈段，栈段又叫运行时段，用来存放所有局部变量和临时变量。）</td>
+<td align="center">共享进程的内存</td>
 </tr>
 <tr>
-<td align="center">IPC</td>
+<td align="center">管道、系统IPC（包括<a target="_blank" rel="noopener" href="https://cloud.tencent.com/product/cmq?from=10680">消息队列</a>、信号量、信号、共享内存等）、以及套接字socket</td>
 <td align="center">可以直接读写进程数据段和全局变量（互斥锁，信号量）</td>
 </tr>
 <tr>
@@ -345,11 +349,13 @@
 <td align="center"><strong>进程是操作系统分配资源的单位</strong></td>
 <td align="center"><strong>是CPU调度和分派执行的基本单位</strong></td>
 </tr>
+<tr>
+<td align="center">进程编程调试简单可靠性高，但是创建销毁开销大</td>
+<td align="center">线程正相反，开销小，切换速度快，但是编程调试相对复杂</td>
+</tr>
 </tbody></table>
 <p>创建线程的代价比创建进程的代价小很多，如下图：</p>
-<img src="/2021/02/25/process-and-thread/image-20210225174720285.png" alt="image-20210225174720285" style="zoom:70%;">
-
-<p><strong>进程在执行过程中拥有独立的内存单元，而多个线程共享进程的内存</strong>。（资源分配给进程，同一进程的所有线程共享该进程的所有资源。同一进程中的多个线程共享代码段（代码和常量），数据段（全局变量和静态变量），扩展段（堆存储）。但是每个线程拥有自己的栈段，栈段又叫运行时段，用来存放所有局部变量和临时变量。）</p>
+<p><img src="/2021/02/25/process-and-thread/image-20210225181636565.png" alt="image-20210225181636565"></p>
 
       
     </div>
