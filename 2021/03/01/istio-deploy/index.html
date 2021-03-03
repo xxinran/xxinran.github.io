@@ -24,17 +24,24 @@
 
   <meta name="description" content="环境：ubuntu20.04 kubernete 1.20 Deploy K8s(all in one) using KubeadmInstall docker123456sudo apt-get install docker.iosudo groupadd dockersudo usermod -aG docker $&amp;#123;USER&amp;#125;  # To resolve permissi">
 <meta property="og:type" content="article">
-<meta property="og:title" content="部署istio+k8s">
+<meta property="og:title" content="部署istio+k8s+kiali">
 <meta property="og:url" content="http://example.com/2021/03/01/istio-deploy/index.html">
 <meta property="og:site_name" content="Xinran&#39;s Blog">
 <meta property="og:description" content="环境：ubuntu20.04 kubernete 1.20 Deploy K8s(all in one) using KubeadmInstall docker123456sudo apt-get install docker.iosudo groupadd dockersudo usermod -aG docker $&amp;#123;USER&amp;#125;  # To resolve permissi">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2021/03/01/istio-deploy/image-20210303143623822.png">
+<meta property="og:image" content="http://example.com/2021/03/01/istio-deploy/image-20210303144837821.png">
+<meta property="og:image" content="http://example.com/2021/03/01/istio-deploy/image-20210303144916013.png">
+<meta property="og:image" content="http://example.com/2021/03/01/istio-deploy/image-20210303145356395.png">
+<meta property="og:image" content="http://example.com/2021/03/01/istio-deploy/image-20210303145757231.png">
+<meta property="og:image" content="http://example.com/2021/03/01/istio-deploy/image-20210303151337851.png">
 <meta property="article:published_time" content="2021-03-01T09:30:27.000Z">
-<meta property="article:modified_time" content="2021-03-01T09:41:24.282Z">
+<meta property="article:modified_time" content="2021-03-03T07:59:30.405Z">
 <meta property="article:author" content="Xinran Wang">
 <meta property="article:tag" content="service-mesh">
 <meta property="article:tag" content="deploy">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/03/01/istio-deploy/image-20210303143623822.png">
 
 
 <link rel="canonical" href="http://example.com/2021/03/01/istio-deploy/">
@@ -50,7 +57,7 @@
   };
 </script>
 
-  <title>部署istio+k8s | Xinran's Blog</title>
+  <title>部署istio+k8s+kiali | Xinran's Blog</title>
   
 
 
@@ -192,7 +199,7 @@
 
       <!--noindex-->
       <section class="post-toc-wrap sidebar-panel">
-          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">环境：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deploy-K8s-all-in-one-using-Kubeadm"><span class="nav-number">2.</span> <span class="nav-text">Deploy K8s(all in one) using Kubeadm</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Install-docker"><span class="nav-number">2.1.</span> <span class="nav-text">Install docker</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Install-Kubeadm"><span class="nav-number">2.2.</span> <span class="nav-text">Install Kubeadm</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Run-kubeadm"><span class="nav-number">2.3.</span> <span class="nav-text">Run kubeadm</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Install-Calico"><span class="nav-number">2.4.</span> <span class="nav-text">Install Calico</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Install-Istio"><span class="nav-number">2.5.</span> <span class="nav-text">Install Istio</span></a></li></ol></li></ol></div>
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">环境：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deploy-K8s-all-in-one-using-Kubeadm"><span class="nav-number">2.</span> <span class="nav-text">Deploy K8s(all in one) using Kubeadm</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Install-docker"><span class="nav-number">2.1.</span> <span class="nav-text">Install docker</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Install-Kubeadm"><span class="nav-number">2.2.</span> <span class="nav-text">Install Kubeadm</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Run-kubeadm"><span class="nav-number">2.3.</span> <span class="nav-text">Run kubeadm</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Install-Calico"><span class="nav-number">2.4.</span> <span class="nav-text">Install Calico</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Install-Istio"><span class="nav-number">2.5.</span> <span class="nav-text">Install Istio</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Deploy-sample"><span class="nav-number">2.6.</span> <span class="nav-text">Deploy sample</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4%E5%A4%96%E8%AE%BF%E9%97%AE%E6%9C%8D%E5%8A%A1"><span class="nav-number">2.6.1.</span> <span class="nav-text">集群外访问服务</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Install-Dashboard"><span class="nav-number">2.7.</span> <span class="nav-text">Install Dashboard</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8Btunnel"><span class="nav-number">2.7.1.</span> <span class="nav-text">建立tunnel</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%EF%BC%9A"><span class="nav-number">2.7.2.</span> <span class="nav-text">问题：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8D%B8%E8%BD%BDUninstall"><span class="nav-number">2.8.</span> <span class="nav-text">卸载Uninstall</span></a></li></ol></li></ol></div>
       </section>
       <!--/noindex-->
 
@@ -279,7 +286,7 @@
     
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          部署istio+k8s
+          部署istio+k8s+kiali
         </h1>
 
         <div class="post-meta-container">
@@ -289,10 +296,16 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
-      
 
-      <time title="Created: 2021-03-01 17:30:27 / Modified: 17:41:24" itemprop="dateCreated datePublished" datetime="2021-03-01T17:30:27+08:00">2021-03-01</time>
+      <time title="Created: 2021-03-01 17:30:27" itemprop="dateCreated datePublished" datetime="2021-03-01T17:30:27+08:00">2021-03-01</time>
     </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-03-03 15:59:30" itemprop="dateModified" datetime="2021-03-03T15:59:30+08:00">2021-03-03</time>
+      </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
@@ -327,7 +340,29 @@
 <h4 id="Run-kubeadm"><a href="#Run-kubeadm" class="headerlink" title="Run kubeadm"></a>Run kubeadm</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo kubeadm init --pod-network-cidr=192.168.0.0/16</span><br><span class="line"></span><br><span class="line">mkdir -p $HOME/.kube</span><br><span class="line">sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config</span><br><span class="line">sudo chown $(id -u):$(id -g) $HOME/.kube/config</span><br></pre></td></tr></table></figure>
 <h4 id="Install-Calico"><a href="#Install-Calico" class="headerlink" title="Install Calico"></a>Install Calico</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">kubectl create -f https://docs.projectcalico.org/manifests/tigera-operator.yaml</span><br><span class="line">kubectl create -f https://docs.projectcalico.org/manifests/custom-resources.yaml</span><br><span class="line">watch kubectl get pods -n calico-system</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> untaint master node</span></span><br><span class="line">kubectl taint nodes --all node-role.kubernetes.io/master-</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> check</span></span><br><span class="line">kubectl get nodes -o wide</span><br></pre></td></tr></table></figure>
 <h4 id="Install-Istio"><a href="#Install-Istio" class="headerlink" title="Install Istio"></a>Install Istio</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">curl -L https://istio.io/downloadIstio | sh -</span><br><span class="line">export PATH=&quot;$PATH:/home/ubuntu/istio-1.9.0/bin&quot;</span><br><span class="line">cd istio-1.9.0</span><br><span class="line">istioctl install </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> all pods <span class="keyword">in</span> <span class="string">&quot;default&quot;</span> ns will have the sidecar</span></span><br><span class="line">kubectl label namespace default istio-injection=enabled</span><br></pre></td></tr></table></figure>
+<h4 id="Deploy-sample"><a href="#Deploy-sample" class="headerlink" title="Deploy sample"></a>Deploy sample</h4><p><a target="_blank" rel="noopener" href="https://istio.io/latest/docs/setup/getting-started/#bookinfo">https://istio.io/latest/docs/setup/getting-started/#bookinfo</a></p>
+<p><img src="/2021/03/01/istio-deploy/image-20210303143623822.png" alt="image-20210303143623822"></p>
+<p>cluster IP是pod间通信的ip，在host上访问不到。</p>
+<h5 id="集群外访问服务"><a href="#集群外访问服务" class="headerlink" title="集群外访问服务"></a>集群外访问服务</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> kubectl apply -f samples/bookinfo/networking/bookinfo-gateway.yaml</span></span><br><span class="line">gateway.networking.istio.io/bookinfo-gateway created</span><br><span class="line">virtualservice.networking.istio.io/bookinfo created</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> istioctl analyze</span></span><br><span class="line">✔ No validation issues found when analyzing namespace: default.</span><br></pre></td></tr></table></figure>
+<p><img src="/2021/03/01/istio-deploy/image-20210303144837821.png" alt="image-20210303144837821"></p>
+<p>因为我的系统不支持external loadbalancer，所以要通过nodeport的方式暴露host的接口，才可以在本机用<code>localhost:nodeport</code>来访问。</p>
+<img src="/2021/03/01/istio-deploy/image-20210303144916013.png" alt="image-20210303144916013" style="zoom:80%;">
 
+<h4 id="Install-Dashboard"><a href="#Install-Dashboard" class="headerlink" title="Install Dashboard"></a>Install Dashboard</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> kubectl apply -f samples/addons $ kubectl rollout status deployment/kiali -n istio-system</span></span><br><span class="line"></span><br><span class="line">Waiting for deployment &quot;kiali&quot; rollout to finish: 0 of 1 updated replicas are available... deployment &quot;kiali&quot; successfully rolled out</span><br></pre></td></tr></table></figure>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> istioctl dashboard kiali</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 因为是remote server，需要建立一个tunnel</span></span><br><span class="line">http://localhost:20001/kiali</span><br><span class="line">Failed to open browser; open http://localhost:20001/kiali in your browser.</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h5 id="建立tunnel"><a href="#建立tunnel" class="headerlink" title="建立tunnel"></a>建立tunnel</h5><p><img src="/2021/03/01/istio-deploy/image-20210303145356395.png" alt="image-20210303145356395"></p>
+<p><img src="/2021/03/01/istio-deploy/image-20210303145757231.png" alt="image-20210303145757231"></p>
+<p>解释上图：把remote上的所有开放端口，都通过跳板机jumper的22端口转发到本地机器的<strong>8888</strong>端口。在本地的浏览器里设置socks proxy，将本地机器的访问全部转发到<strong>8888</strong>端口，这样就可以完成通过跳板机的端口转发。</p>
+<h5 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h5><p>即使按上述设置了，还是访问不到kiali dashboard。追查到原因是：</p>
+<p><code>~/istio-xxxx/samples/addons/kiali.yaml</code></p>
+<p>这个文件里声明了kiali service:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">kiali</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">istio-system</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">helm.sh/chart:</span> <span class="string">kiali-server-1.29.0</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">kiali</span></span><br><span class="line">    <span class="attr">app.kubernetes.io/name:</span> <span class="string">kiali</span></span><br><span class="line">    <span class="attr">app.kubernetes.io/instance:</span> <span class="string">kiali-server</span></span><br><span class="line">    <span class="attr">version:</span> <span class="string">&quot;v1.29.0&quot;</span></span><br><span class="line">    <span class="attr">app.kubernetes.io/version:</span> <span class="string">&quot;v1.29.0&quot;</span></span><br><span class="line">    <span class="attr">app.kubernetes.io/managed-by:</span> <span class="string">Helm</span></span><br><span class="line">    <span class="attr">app.kubernetes.io/part-of:</span> <span class="string">&quot;kiali&quot;</span></span><br><span class="line">  <span class="attr">annotations:</span></span><br><span class="line">    <span class="attr">kiali.io/api-spec:</span> <span class="string">https://kiali.io/api</span></span><br><span class="line">    <span class="attr">kiali.io/api-type:</span> <span class="string">rest</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">http</span></span><br><span class="line">    <span class="attr">protocol:</span> <span class="string">TCP</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">20001</span></span><br><span class="line">    <span class="attr">nodePort:</span> <span class="number">30007</span>   <span class="comment"># 增加nodeport</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">http-metrics</span></span><br><span class="line">    <span class="attr">protocol:</span> <span class="string">TCP</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">9090</span></span><br><span class="line">    <span class="comment"># nodePort: 30008  # 增加nodeport</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app.kubernetes.io/name:</span> <span class="string">kiali</span></span><br><span class="line">    <span class="attr">app.kubernetes.io/instance:</span> <span class="string">kiali-server</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">NodePort</span> <span class="comment"># 指定service的类型是nodeport，这样可以从cluster外访问（通过hostip/locahost）</span></span><br></pre></td></tr></table></figure>
+
+
+<p>可以通过<strong>remote_server_ip:nodeport</strong>访问dashboar。</p>
+<p><img src="/2021/03/01/istio-deploy/image-20210303151337851.png" alt="image-20210303151337851"></p>
+<h4 id="卸载Uninstall"><a href="#卸载Uninstall" class="headerlink" title="卸载Uninstall"></a>卸载Uninstall</h4><p>Remove sample‘s resouces: <a target="_blank" rel="noopener" href="https://istio.io/latest/docs/examples/bookinfo/#cleanup">https://istio.io/latest/docs/examples/bookinfo/#cleanup</a></p>
+<p>Uninstall istio: <a target="_blank" rel="noopener" href="https://istio.io/latest/docs/setup/getting-started/#uninstall">https://istio.io/latest/docs/setup/getting-started/#uninstall</a></p>
 
     </div>
 
