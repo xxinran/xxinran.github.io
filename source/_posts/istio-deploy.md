@@ -84,7 +84,23 @@ https://istio.io/latest/docs/setup/getting-started/#bookinfo
 
 ![image-20210303143623822](istio-deploy/image-20210303143623822.png)
 
-cluster IP是pod间通信的ip，在host上访问不到。
+本机上（集群内），可以通过cluster IP访问：
+
+```shell
+$ curl 10.106.23.203:9080
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Bookstore App</title>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Latest compiled and minified CSS -->
+...
+```
+
+
 
 ##### 集群外访问服务
 
