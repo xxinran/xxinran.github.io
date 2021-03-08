@@ -201,14 +201,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-count">22</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -257,6 +257,141 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/08/port-compare/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Xinran Wang">
+      <meta itemprop="description" content="Keep calm and coding">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xinran's Blog">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/03/08/port-compare/" class="post-title-link" itemprop="url">containerPort, targetPort, port, nodePort等的区别</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2021-03-08 18:18:24 / Modified: 19:13:48" itemprop="dateCreated datePublished" datetime="2021-03-08T18:18:24+08:00">2021-03-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/kubernetes/" itemprop="url" rel="index"><span itemprop="name">kubernetes</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>本文会通过container中的应用的几种访问方式来解释containerPort, targetPort, port, nodePort的关系和区别。</p>
+<h2 id="containerPort"><a href="#containerPort" class="headerlink" title="containerPort"></a>containerPort</h2><p>容器暴露的端口，在container spec里声明。</p>
+<img src="/2021/03/08/port-compare/image-20210308182307042.png" alt="image-20210308182307042" style="zoom:50%;">
+
+<p>可以通过podIP:containerPort来访问容器内应用。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> k get pod -owide</span></span><br><span class="line">NAME    READY   STATUS    RESTARTS   AGE    IP                  NODE  </span><br><span class="line">pod1    2/2     Running   0          133m   192.168.227.89   otcloud-node1   </span><br><span class="line">pod2    2/2     Running   0          47m    192.168.227.97   otcloud-node1   </span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">可以访问容器内应用</span></span><br><span class="line">curl 192.168.227.97:9080</span><br></pre></td></tr></table></figure>
+<p><strong>Notes：</strong></p>
+<p>如果一个pod里声明了多个容器，那么每个容器暴露的端口必须不同，否则容器启动会失败。（Address already in use）</p>
+<p><strong>更进一步</strong>，因为一个pod里的所有容器都共享网络namespace，所以它们共享IP，和端口。</p>
+<h2 id="targetPort"><a href="#targetPort" class="headerlink" title="targetPort"></a>targetPort</h2><p>是<strong>Service</strong>资源里的一个概念，在service的声明中使用。</p>
+<p>targetPort是Pod上的端口，从port/nodePort上来的数据，经过kube-proxy流入到后端pod的targetPort上，最后进入容器。</p>
+<p>如果不指明targetPort，默认targetPort和service暴露的port一致。</p>
+<p>下面是一个service的声明：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">productpage</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">productpage</span></span><br><span class="line">    <span class="attr">service:</span> <span class="string">productpage</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">port:</span> <span class="number">9999</span>  <span class="comment"># clusterip:port </span></span><br><span class="line">    <span class="comment"># targetPort: 9080 # 如果不写，默认是9999</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">http</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">productpage</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"> k describe svc productpage</span><br><span class="line">Name:              productpage</span><br><span class="line">Namespace:         default</span><br><span class="line">Labels:            app=productpage</span><br><span class="line">                   service=productpage</span><br><span class="line">Annotations:       &lt;none&gt;</span><br><span class="line">Selector:          app=productpage</span><br><span class="line">Type:              ClusterIP</span><br><span class="line">IP Families:       &lt;none&gt;</span><br><span class="line">IP:                10.97.239.58</span><br><span class="line">IPs:               10.97.239.58</span><br><span class="line">Port:              http  9999/TCP  </span><br><span class="line">TargetPort:        9999/TCP  # 9999 和上面container暴露的接口不一致，访问一定会失败</span><br><span class="line">Endpoints:         192.168.227.97:9999</span><br><span class="line">Session Affinity:  None</span><br><span class="line">Events:            &lt;none&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><strong>解决方法：</strong></p>
+<ol>
+<li>显式地声明targetPort: 9080</li>
+<li>使用9080作为port，这样targetport也是9080，就可以和container port连接起来。</li>
+</ol>
+<p>这里我们把targetPort显式的写成9080，会得到：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"> k describe svc productpage</span><br><span class="line">Name:              productpage</span><br><span class="line">Namespace:         default</span><br><span class="line">Labels:            app=productpage</span><br><span class="line">                   service=productpage</span><br><span class="line">Annotations:       &lt;none&gt;</span><br><span class="line">Selector:          app=productpage</span><br><span class="line">Type:              ClusterIP</span><br><span class="line">IP Families:       &lt;none&gt;</span><br><span class="line">IP:                10.97.239.58 # cluster IP！</span><br><span class="line">IPs:               10.97.239.58</span><br><span class="line">Port:              http  9999/TCP # 注意！</span><br><span class="line">TargetPort:        9080/TCP  # 注意！</span><br><span class="line">Endpoints:         192.168.227.97:9080 # 注意！</span><br><span class="line">Session Affinity:  None</span><br><span class="line">Events:            &lt;none&gt;</span><br></pre></td></tr></table></figure>
+<p>这个service的细节要好好研究一下。</p>
+<p><strong>IP：</strong>Service的cluster IP。</p>
+<p><strong>Port：</strong>Service的cluster IP暴露的接口。</p>
+<p><strong>TargetPort：</strong>容器暴露的接口。</p>
+<p><strong>Endpoint：</strong> podIP:targetPort，注意这里是targetPort，不是containerPort。</p>
+<p>又有访问容器内应用的新方式：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> clusterIP:port</span></span><br><span class="line">curl 10.97.239.58:9999</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> by endpoint, 跟containerPort里讲到的实际是一样的</span></span><br><span class="line">curl 192.168.227.97:9080</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="Port"><a href="#Port" class="headerlink" title="Port"></a>Port</h2><p>上面讲的差不多了，也是<strong>service</strong>里的概念，是指在clusterIP上暴露的端口，是一个虚拟的东西。</p>
+<p>clusterIP：虚拟的IP，在集群内可以相互访问。它只是存在service的规则当中。 <strong>注意，它不是podIP。</strong></p>
+<h2 id="nodePort"><a href="#nodePort" class="headerlink" title="nodePort"></a>nodePort</h2><p>nodePort 提供了<strong>集群外</strong>部客户端访问 Service 的一种方式，nodePort 提供了集群外部客户端访问 Service 的端口，通过 <code>nodeIP:nodePort</code> 提供了外部流量访问k8s集群中service的入口。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> k get svc -owide</span></span><br><span class="line">NAME          TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)         AGE    SELECTOR</span><br><span class="line">productpage   NodePort    10.97.239.58   &lt;none&gt;       9999:30066/TCP  25m app=productpage</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> k describe svc productpage</span></span><br><span class="line">Name:                     productpage</span><br><span class="line">Namespace:                default</span><br><span class="line">Labels:                   app=productpage</span><br><span class="line">                          service=productpage</span><br><span class="line">Annotations:              &lt;none&gt;</span><br><span class="line">Selector:                 app=productpage</span><br><span class="line">Type:                     NodePort</span><br><span class="line">IP Families:              &lt;none&gt;</span><br><span class="line">IP:                       10.97.239.58</span><br><span class="line">IPs:                      10.97.239.58</span><br><span class="line">Port:                     http  9999/TCP</span><br><span class="line">TargetPort:               9080/TCP</span><br><span class="line">NodePort:                 http  30066/TCP  # 在host node上暴露的端口</span><br><span class="line">Endpoints:                192.168.227.97:9080</span><br><span class="line">Session Affinity:         None</span><br><span class="line">External Traffic Policy:  Cluster</span><br><span class="line">Events:                   &lt;none&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>又一种新的访问方式：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">hostIP:nodeport</span></span><br><span class="line">curl localhost:30066</span><br></pre></td></tr></table></figure>
+
+
+<p>总结：</p>
+<p><img src="/2021/03/08/port-compare/image-20210308190947963.png" alt="image-20210308190947963"></p>
+<p>三种访问方式以及范围：</p>
+<table>
+<thead>
+<tr>
+<th>方式</th>
+<th>范围</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>podIP:targetPort</td>
+<td>和pod在同一个网络下</td>
+</tr>
+<tr>
+<td>clusterIP:port</td>
+<td>在集群中</td>
+</tr>
+<tr>
+<td>hostIP:nodeport</td>
+<td>主机之间也可以访问</td>
+</tr>
+</tbody></table>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/04/istio-dev-env/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -284,10 +419,16 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
-      
 
-      <time title="Created: 2021-03-04 18:00:34 / Modified: 18:02:28" itemprop="dateCreated datePublished" datetime="2021-03-04T18:00:34+08:00">2021-03-04</time>
+      <time title="Created: 2021-03-04 18:00:34" itemprop="dateCreated datePublished" datetime="2021-03-04T18:00:34+08:00">2021-03-04</time>
     </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-03-08 16:49:59" itemprop="dateModified" datetime="2021-03-08T16:49:59+08:00">2021-03-08</time>
+      </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
@@ -308,7 +449,32 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>之前搭建了istio的<a href>开发环境</a>，这次搭建开发环境。</p>
+          <p>之前搭建了istio的生产环境，这次搭建开发环境。</p>
+<blockquote>
+<p>参考文档: <a target="_blank" rel="noopener" href="https://github.com/istio/istio/wiki/Preparing-for-Development">https://github.com/istio/istio/wiki/Preparing-for-Development</a></p>
+</blockquote>
+<h2 id="建立本地docker-registry"><a href="#建立本地docker-registry" class="headerlink" title="建立本地docker registry"></a>建立本地docker registry</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 把container的5000端口，映射到localhost:5000</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> mounty本地的/mnt/docker_imgs到容器里的/var/lib/registry</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 用官方的registry镜像即可</span></span><br><span class="line">docker run -d   -p 5000:5000   --restart=always   --name registry   -v /mnt/docker_imgs:/var/lib/registry   registry</span><br></pre></td></tr></table></figure>
+<h3 id="安装Isito开发环境"><a href="#安装Isito开发环境" class="headerlink" title="安装Isito开发环境"></a>安装Isito开发环境</h3><h4 id="设置一些环境变量"><a href="#设置一些环境变量" class="headerlink" title="设置一些环境变量"></a>设置一些环境变量</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> User specific environment and startup programs</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> This defines the docker hub to use when running integration tests and building docker images</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> eg: HUB=<span class="string">&quot;docker.io/istio&quot;</span>, HUB=<span class="string">&quot;gcr.io/istio-testing&quot;</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 这里的docker registry就是我们上一步设置的本地仓库</span></span><br><span class="line">export HUB=&quot;localhost:5000/xinranwang&quot;</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> This defines the docker tag to use when running integration tests and</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> building docker images to be your user id. You may also <span class="built_in">set</span> this variable</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> this to any other legitimate docker tag.</span></span><br><span class="line">export TAG=devel</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> This defines a shortcut to change directories to <span class="variable">$HOME</span>/istio.io</span></span><br><span class="line">export ISTIO=$HOME/istio.io</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> mkdir ~/go/src/istio.io/</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> https://github.com/istio/istio.git</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> ~/go/src/istio.io/istio</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> make DEBUG=1 build</span></span><br><span class="line">Unable to find image &#x27;gcr.io/istio-testing/build-tools:master-2021-03-01T22-30-49&#x27; locally</span><br><span class="line">master-2021-03-01T22-30-49: Pulling from istio-testing/build-tools</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> build docker images，with HUB and TAG environment variable.</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> make DEBUG=1 docker</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> push images to registry</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 会读取环境变量，就push到本地仓库了</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> make docker.push</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 可以看到本地仓库里有build好的docker image</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ls /mnt/docker_imgs/docker/registry/v2/repositories/xinranwang/</span></span><br><span class="line">app                   app_sidecar_debian_10      app_sidecar_ubuntu_focal   istioctl  proxyv2</span><br><span class="line">app_sidecar_centos_7  app_sidecar_debian_9       app_sidecar_ubuntu_xenial  operator</span><br><span class="line">app_sidecar_centos_8  app_sidecar_ubuntu_bionic  install-cni                pilot</span><br></pre></td></tr></table></figure>
+<img src="/2021/03/04/istio-dev-env/image-20210308154035936.png" alt="image-20210308154035936" style="zoom:80%;">
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ubuntu@otcloud-node1:~/istio-1.9.1/manifests/profiles$ istioctl install -f default-local-registry.yaml</span><br><span class="line">This will install the Istio 1.9.1  profile with [&quot;Istio core&quot; &quot;Istiod&quot; &quot;Ingress gateways&quot;] components into the cluster. Proceed? (y/N) y</span><br><span class="line">✔ Istio core installed</span><br><span class="line">✔ Istiod installed</span><br><span class="line">✔ Ingress gateways installed</span><br><span class="line">✔ Installation complete</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">k get pods -nistio-system</span><br><span class="line">NAME                                    READY   STATUS    RESTARTS   AGE</span><br><span class="line">istio-ingressgateway-58844f985b-mdckr   1/1     Running   0          34s</span><br><span class="line">istiod-6f846c944f-zwqxf                 1/1     Running   0          38s</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl label namespace default istio-injection=enabled</span><br></pre></td></tr></table></figure>
+
+
+<img src="/2021/03/04/istio-dev-env/image-20210308164345265.png" alt="image-20210308164345265" style="zoom:80%;">
+
+
+
+
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br></pre></td><td class="code"><pre><span class="line">Environment:</span><br><span class="line">------------</span><br><span class="line">ENVOY_PORT=</span><br><span class="line">INBOUND_CAPTURE_PORT=</span><br><span class="line">ISTIO_INBOUND_INTERCEPTION_MODE=</span><br><span class="line">ISTIO_INBOUND_TPROXY_MARK=</span><br><span class="line">ISTIO_INBOUND_TPROXY_ROUTE_TABLE=</span><br><span class="line">ISTIO_INBOUND_PORTS=</span><br><span class="line">ISTIO_OUTBOUND_PORTS=</span><br><span class="line">ISTIO_LOCAL_EXCLUDE_PORTS=</span><br><span class="line">ISTIO_SERVICE_CIDR=</span><br><span class="line">ISTIO_SERVICE_EXCLUDE_CIDR=</span><br><span class="line">ISTIO_META_DNS_CAPTURE=</span><br><span class="line"></span><br><span class="line">Variables:</span><br><span class="line">----------</span><br><span class="line">PROXY_PORT=15001</span><br><span class="line">PROXY_INBOUND_CAPTURE_PORT=15006</span><br><span class="line">PROXY_TUNNEL_PORT=15008</span><br><span class="line">PROXY_UID=1337</span><br><span class="line">PROXY_GID=1337</span><br><span class="line">INBOUND_INTERCEPTION_MODE=REDIRECT</span><br><span class="line">INBOUND_TPROXY_MARK=1337</span><br><span class="line">INBOUND_TPROXY_ROUTE_TABLE=133</span><br><span class="line">INBOUND_PORTS_INCLUDE=*</span><br><span class="line">INBOUND_PORTS_EXCLUDE=15090,15021,15020</span><br><span class="line">OUTBOUND_IP_RANGES_INCLUDE=*</span><br><span class="line">OUTBOUND_IP_RANGES_EXCLUDE=</span><br><span class="line">OUTBOUND_PORTS_INCLUDE=</span><br><span class="line">OUTBOUND_PORTS_EXCLUDE=</span><br><span class="line">KUBEVIRT_INTERFACES=</span><br><span class="line">ENABLE_INBOUND_IPV6=false</span><br><span class="line">DNS_CAPTURE=false</span><br><span class="line">DNS_SERVERS=[],[]</span><br><span class="line"></span><br><span class="line">Writing following contents to rules file:  /tmp/iptables-rules-1615191401124723984.txt833457753</span><br><span class="line">* nat</span><br><span class="line">-N ISTIO_INBOUND</span><br><span class="line">-N ISTIO_REDIRECT</span><br><span class="line">-N ISTIO_IN_REDIRECT</span><br><span class="line">-N ISTIO_OUTPUT</span><br><span class="line">-A ISTIO_INBOUND -p tcp --dport 15008 -j RETURN</span><br><span class="line">-A ISTIO_REDIRECT -p tcp -j REDIRECT --to-ports 15001</span><br><span class="line">-A ISTIO_IN_REDIRECT -p tcp -j REDIRECT --to-ports 15006</span><br><span class="line">-A PREROUTING -p tcp -j ISTIO_INBOUND</span><br><span class="line">-A ISTIO_INBOUND -p tcp --dport 22 -j RETURN</span><br><span class="line">-A ISTIO_INBOUND -p tcp --dport 15090 -j RETURN</span><br><span class="line">-A ISTIO_INBOUND -p tcp --dport 15021 -j RETURN</span><br><span class="line">-A ISTIO_INBOUND -p tcp --dport 15020 -j RETURN</span><br><span class="line">-A ISTIO_INBOUND -p tcp -j ISTIO_IN_REDIRECT</span><br><span class="line">-A OUTPUT -p tcp -j ISTIO_OUTPUT</span><br><span class="line">-A ISTIO_OUTPUT -o lo -s 127.0.0.6/32 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -o lo ! -d 127.0.0.1/32 -m owner --uid-owner 1337 -j ISTIO_IN_REDIRECT</span><br><span class="line">-A ISTIO_OUTPUT -o lo -m owner ! --uid-owner 1337 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -m owner --uid-owner 1337 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -o lo ! -d 127.0.0.1/32 -m owner --gid-owner 1337 -j ISTIO_IN_REDIRECT</span><br><span class="line">-A ISTIO_OUTPUT -o lo -m owner ! --gid-owner 1337 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -m owner --gid-owner 1337 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -d 127.0.0.1/32 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -j ISTIO_REDIRECT</span><br><span class="line">COMMIT</span><br><span class="line"></span><br><span class="line">iptables-restore --noflush /tmp/iptables-rules-1615191401124723984.txt833457753</span><br><span class="line">Writing following contents to rules file:  /tmp/ip6tables-rules-1615191401199424850.txt857904100</span><br><span class="line"></span><br><span class="line">ip6tables-restore --noflush /tmp/ip6tables-rules-1615191401199424850.txt857904100</span><br><span class="line">iptables-save </span><br><span class="line"><span class="meta">#</span><span class="bash"> Generated by iptables-save v1.6.1 on Mon Mar  8 08:16:41 2021</span></span><br><span class="line">*nat</span><br><span class="line">:PREROUTING ACCEPT [0:0]</span><br><span class="line">:INPUT ACCEPT [0:0]</span><br><span class="line">:OUTPUT ACCEPT [0:0]</span><br><span class="line">:POSTROUTING ACCEPT [0:0]</span><br><span class="line">:ISTIO_INBOUND - [0:0]</span><br><span class="line">:ISTIO_IN_REDIRECT - [0:0]</span><br><span class="line">:ISTIO_OUTPUT - [0:0]</span><br><span class="line">:ISTIO_REDIRECT - [0:0]</span><br><span class="line">-A PREROUTING -p tcp -j ISTIO_INBOUND</span><br><span class="line">-A OUTPUT -p tcp -j ISTIO_OUTPUT</span><br><span class="line">-A ISTIO_INBOUND -p tcp -m tcp --dport 15008 -j RETURN</span><br><span class="line">-A ISTIO_INBOUND -p tcp -m tcp --dport 22 -j RETURN</span><br><span class="line">-A ISTIO_INBOUND -p tcp -m tcp --dport 15090 -j RETURN</span><br><span class="line">-A ISTIO_INBOUND -p tcp -m tcp --dport 15021 -j RETURN</span><br><span class="line">-A ISTIO_INBOUND -p tcp -m tcp --dport 15020 -j RETURN</span><br><span class="line">-A ISTIO_INBOUND -p tcp -j ISTIO_IN_REDIRECT</span><br><span class="line">-A ISTIO_IN_REDIRECT -p tcp -j REDIRECT --to-ports 15006</span><br><span class="line">-A ISTIO_OUTPUT -s 127.0.0.6/32 -o lo -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT ! -d 127.0.0.1/32 -o lo -m owner --uid-owner 1337 -j ISTIO_IN_REDIRECT</span><br><span class="line">-A ISTIO_OUTPUT -o lo -m owner ! --uid-owner 1337 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -m owner --uid-owner 1337 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT ! -d 127.0.0.1/32 -o lo -m owner --gid-owner 1337 -j ISTIO_IN_REDIRECT</span><br><span class="line">-A ISTIO_OUTPUT -o lo -m owner ! --gid-owner 1337 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -m owner --gid-owner 1337 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -d 127.0.0.1/32 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -j ISTIO_REDIRECT</span><br><span class="line">-A ISTIO_REDIRECT -p tcp -j REDIRECT --to-ports 15001</span><br><span class="line">COMMIT</span><br><span class="line"><span class="meta">#</span><span class="bash"> Completed on Mon Mar  8 08:16:41 2021</span></span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -365,7 +531,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-03-03 15:59:30" itemprop="dateModified" datetime="2021-03-03T15:59:30+08:00">2021-03-03</time>
+        <time title="Modified: 2021-03-08 17:50:30" itemprop="dateModified" datetime="2021-03-08T17:50:30+08:00">2021-03-08</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -396,7 +562,10 @@
 <h4 id="Install-Istio"><a href="#Install-Istio" class="headerlink" title="Install Istio"></a>Install Istio</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">curl -L https://istio.io/downloadIstio | sh -</span><br><span class="line">export PATH=&quot;$PATH:/home/ubuntu/istio-1.9.0/bin&quot;</span><br><span class="line">cd istio-1.9.0</span><br><span class="line">istioctl install </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> all pods <span class="keyword">in</span> <span class="string">&quot;default&quot;</span> ns will have the sidecar</span></span><br><span class="line">kubectl label namespace default istio-injection=enabled</span><br></pre></td></tr></table></figure>
 <h4 id="Deploy-sample"><a href="#Deploy-sample" class="headerlink" title="Deploy sample"></a>Deploy sample</h4><p><a target="_blank" rel="noopener" href="https://istio.io/latest/docs/setup/getting-started/#bookinfo">https://istio.io/latest/docs/setup/getting-started/#bookinfo</a></p>
 <p><img src="/2021/03/01/istio-deploy/image-20210303143623822.png" alt="image-20210303143623822"></p>
-<p>cluster IP是pod间通信的ip，在host上访问不到。</p>
+<p>本机上（集群内），可以通过cluster IP访问：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> curl 10.106.23.203:9080</span></span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">  &lt;head&gt;</span><br><span class="line">    &lt;title&gt;Simple Bookstore App&lt;/title&gt;</span><br><span class="line">&lt;meta charset=&quot;utf-8&quot;&gt;</span><br><span class="line">&lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;</span><br><span class="line">&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- Latest compiled and minified CSS --&gt;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+
 <h5 id="集群外访问服务"><a href="#集群外访问服务" class="headerlink" title="集群外访问服务"></a>集群外访问服务</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> kubectl apply -f samples/bookinfo/networking/bookinfo-gateway.yaml</span></span><br><span class="line">gateway.networking.istio.io/bookinfo-gateway created</span><br><span class="line">virtualservice.networking.istio.io/bookinfo created</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> istioctl analyze</span></span><br><span class="line">✔ No validation issues found when analyzing namespace: default.</span><br></pre></td></tr></table></figure>
 <p><img src="/2021/03/01/istio-deploy/image-20210303144837821.png" alt="image-20210303144837821"></p>
 <p>因为我的系统不支持external loadbalancer，所以要通过nodeport的方式暴露host的接口，才可以在本机用<code>localhost:nodeport</code>来访问。</p>
@@ -1225,86 +1394,6 @@
 <h4 id="ip-hash（常用）"><a href="#ip-hash（常用）" class="headerlink" title="ip_hash（常用）"></a>ip_hash（常用）</h4><p>每个请求按照发起客户端的ip的hash结果进行匹配，这样的算法下一个固定ip地址的客户端总会访问到同一个后端服务器，这也在一定程度上解决了集群部署环境下<strong>session共享的</strong>问题。</p>
 <h4 id="fair智能调整调度算法"><a href="#fair智能调整调度算法" class="headerlink" title="fair智能调整调度算法"></a>fair智能调整调度算法</h4><p>动态的根据后端服务器的请求处理到响应的时间进行均衡分配，响应时间短处理效率高的服务器分配到请求的概率高，响应时间长处理效率低的服务器分配到的请求少；结合了前两者的优点的一种调度算法。但是需要注意的是Nginx默认不支持fair算法，如果要使用这种调度算法，请安装upstream_fair模块。</p>
 <h4 id="url-hash"><a href="#url-hash" class="headerlink" title="url_hash"></a>url_hash</h4><p>按照访问的url的hash结果分配请求，每个请求的url会指向后端固定的某个服务器，可以在Nginx作为静态服务器的情况下提高缓存效率。同样要注意Nginx默认不支持这种调度算法，要使用的话需要安装Nginx的hash软件包。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/01/network-virtualization/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Xinran Wang">
-      <meta itemprop="description" content="Keep calm and coding">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Xinran's Blog">
-    </span>
-
-    
-    
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/02/01/network-virtualization/" class="post-title-link" itemprop="url">网络虚拟化简介</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2021-02-01 21:47:17" itemprop="dateCreated datePublished" datetime="2021-02-01T21:47:17+08:00">2021-02-01</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-02-02 14:03:59" itemprop="dateModified" datetime="2021-02-02T14:03:59+08:00">2021-02-02</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E8%99%9A%E6%8B%9F%E5%8C%96/" itemprop="url" rel="index"><span itemprop="name">虚拟化</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <img src="/2021/02/01/network-virtualization/image-20210201221242667.png" alt="image-20210201221242667" style="zoom:70%;">
-
 
       
     </div>
