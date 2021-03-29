@@ -39,8 +39,6 @@ stiod acts as a Certificate Authority (CA) and generates certificates to allow s
 
 
 
-**QQQQ**： 是没有mixer了嘛？
-
 
 
 ## Istio的服务发现流程
@@ -57,7 +55,23 @@ istio的pilot组件时负责服务发现的。在pilot里只有服务发现的�
 | instance |  endpoint  |
 | version  | deployment |
 
+<img src="istio-pilot/image-20210309105852832.png" alt="image-20210309105852832" style="zoom:80%;" />
 
+每个envoy里都有全量的规则。（现在也是吗？？）
+
+
+
+Envoy （C++），CNCF毕业（kubernets，Prometheus之后）。
+
+xDS：
+
+listener（LDS）：
+
+routes（RDS）：
+
+cluster（CDS）：
+
+endpoint（EDS）：
 
 
 
@@ -66,6 +80,28 @@ Envoy目前支持的三种LB：
 1. 轮询round robin
 2. 随机random
 3. 加权weighted least request.
+
+
+
+Istio：
+
+用户可以配置（通过rules API）的CRD：
+
+gateway：
+
+virtualservice：
+
+destinationrule：
+
+serviceEntry：
+
+
+
+
+
+
+
+
 
 ### Pilot
 

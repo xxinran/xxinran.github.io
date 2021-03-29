@@ -129,9 +129,3 @@ This utility can bring up/down device by ourselves.
 
 Please refer to:
 https://01.org/sites/default/files/downloads/330689qatvirtualizationappnoterev008us.pdf
-
-#### Note
-
-- 虚拟化之后的QAT PF不能被host使用，host和guest都应该使用VF来加速应用。
-- 在QAT software安装好后，我们可以通过lsmod|grep qat来检查，同时qat各个device的配置文件会被拷贝到/etc目录下。
-- 每一次修改了/etc下的配置文件后，都需要restart qat_service和qat_service_vfs.
