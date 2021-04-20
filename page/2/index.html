@@ -284,10 +284,16 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
-      
 
-      <time title="Created: 2021-02-20 16:26:09 / Modified: 17:57:34" itemprop="dateCreated datePublished" datetime="2021-02-20T16:26:09+08:00">2021-02-20</time>
+      <time title="Created: 2021-02-20 16:26:09" itemprop="dateCreated datePublished" datetime="2021-02-20T16:26:09+08:00">2021-02-20</time>
     </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-04-20 11:28:32" itemprop="dateModified" datetime="2021-04-20T11:28:32+08:00">2021-04-20</time>
+      </span>
 
   
 </div>
@@ -299,16 +305,24 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>工具：<br>shadowsocks-libev<br>google vm</p>
+          <blockquote>
+<p>工具：<br>shadowsocks-libev<br>google vm</p>
+</blockquote>
 <h2 id="google-vm的基本配置"><a href="#google-vm的基本配置" class="headerlink" title="google vm的基本配置"></a>google vm的基本配置</h2><h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><p>具体创建步骤略，需要一个绑定一个海外银行卡。</p>
 <p>下面是我创建的虚拟机。</p>
 <p><img src="/2021/02/20/ssr-setup/image-20210220162859580.png" alt="image-20210220162859580"></p>
 <p>创建好之后可以去站长之家ping一下，保证在国内大多数地方可以ping通。如果ping不通删了重建。</p>
 <p>然后通过左边的<code>ssh</code>登录上去。</p>
-<h4 id="ssh登录"><a href="#ssh登录" class="headerlink" title="ssh登录"></a>ssh登录</h4><h3 id="安装ssr"><a href="#安装ssr" class="headerlink" title="安装ssr"></a>安装ssr</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt-get install --no-install-recommends gettext build-essential autoconf libtool libpcre3-dev asciidoc xmlto libev-dev libc-ares-dev automake libmbedtls-dev libsodium-dev</span><br></pre></td></tr></table></figure>
+<h3 id="安装ssr"><a href="#安装ssr" class="headerlink" title="安装ssr"></a>安装ssr</h3><h4 id="dependency"><a href="#dependency" class="headerlink" title="dependency"></a>dependency</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt-get install --no-install-recommends gettext build-essential autoconf libtool libpcre3-dev asciidoc xmlto libev-dev libc-ares-dev automake libmbedtls-dev libsodium-dev</span><br></pre></td></tr></table></figure>
+<h4 id="install-from-source"><a href="#install-from-source" class="headerlink" title="install from source"></a>install from source</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install git</span><br><span class="line">git clone https://github.com/shadowsocks/shadowsocks-libev.git</span><br><span class="line">sudo apt-get install --no-install-recommends gettext build-essential autoconf libtool libpcre3-dev asciidoc xmlto libev-dev libc-ares-dev automake libmbedtls-dev libsodium-dev</span><br><span class="line">cd shadowsocks-libev/ ./autogen.sh</span><br></pre></td></tr></table></figure>
+<p>missing makefile - &gt;  <code>git submodule update --init --recursive</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">./configure</span><br><span class="line"><span class="meta">#</span><span class="bash"> maybe not need：</span></span><br><span class="line">make</span><br><span class="line">sudo make install</span><br><span class="line">dpkg-buildpackage -b -us -uc -I</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">报错: missing pkg-config</span></span><br><span class="line">sudo apt-get install -y pkg-config debhelper </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> install deb pkg</span></span><br><span class="line">cd .. &amp;&amp; sudo dpkg -i shadowsocks-libev*.deb</span><br></pre></td></tr></table></figure>
+<h4 id="edit-config-file"><a href="#edit-config-file" class="headerlink" title="edit config file"></a>edit config file</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/shadowsocks-libev/config.json </span><br><span class="line">&#123;</span><br><span class="line">  &quot;server&quot;:[&quot;::1&quot;, &quot;127.0.0.1&quot;], # internal IP</span><br><span class="line">  &quot;mode&quot;:&quot;tcp_and_udp&quot;,</span><br><span class="line">  &quot;server_port&quot;:8388, # need enable this port&#x27;s ingress in firewall</span><br><span class="line">  &quot;local_port&quot;:1080,</span><br><span class="line">  &quot;password&quot;:&quot;password&quot;,</span><br><span class="line">  &quot;timeout&quot;:86400,</span><br><span class="line">  &quot;method&quot;:&quot;aes-256-cfb&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> restart service</span></span><br><span class="line">sudo systemctl restart shadowsocks-libev</span><br></pre></td></tr></table></figure>
+<h4 id="firewall-configuration"><a href="#firewall-configuration" class="headerlink" title="firewall configuration"></a>firewall configuration</h4><p><img src="/2021/02/20/ssr-setup/image-20210420112717314.png" alt="image-20210420112717314"></p>
+<h3 id="安装客户端"><a href="#安装客户端" class="headerlink" title="安装客户端"></a>安装客户端</h3><h4 id="手机"><a href="#手机" class="headerlink" title="手机"></a>手机</h4><p>shadowrocket</p>
+<h4 id="MacOS"><a href="#MacOS" class="headerlink" title="MacOS"></a>MacOS</h4><p>shadowsocks-NG</p>
+<p>need local socks proxy</p>
 
-
-<h4 id="配置防火墙"><a href="#配置防火墙" class="headerlink" title="配置防火墙"></a>配置防火墙</h4><h3 id="安装客户端"><a href="#安装客户端" class="headerlink" title="安装客户端"></a>安装客户端</h3><h3 id="手机"><a href="#手机" class="headerlink" title="手机"></a>手机</h3><h4 id="MacOS"><a href="#MacOS" class="headerlink" title="MacOS"></a>MacOS</h4>
       
     </div>
 
