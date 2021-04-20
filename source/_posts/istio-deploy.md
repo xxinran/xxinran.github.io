@@ -28,6 +28,11 @@ sudo usermod -aG docker ${USER}  # To resolve permission errors
 
 # check 
 docker ps -a
+
+# docker hub login
+docker login
+username: xinranwang
+password: xxxxxxXf
 ```
 
 #### Install Kubeadm
