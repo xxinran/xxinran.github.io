@@ -201,7 +201,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-count">27</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -253,6 +253,78 @@
       
 
       
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/20/ssr-setup/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Xinran Wang">
+      <meta itemprop="description" content="Keep calm and coding">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xinran's Blog">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/02/20/ssr-setup/" class="post-title-link" itemprop="url">科学上网ssr</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2021-02-20 16:26:09 / Modified: 17:57:34" itemprop="dateCreated datePublished" datetime="2021-02-20T16:26:09+08:00">2021-02-20</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>工具：<br>shadowsocks-libev<br>google vm</p>
+<h2 id="google-vm的基本配置"><a href="#google-vm的基本配置" class="headerlink" title="google vm的基本配置"></a>google vm的基本配置</h2><h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><p>具体创建步骤略，需要一个绑定一个海外银行卡。</p>
+<p>下面是我创建的虚拟机。</p>
+<p><img src="/2021/02/20/ssr-setup/image-20210220162859580.png" alt="image-20210220162859580"></p>
+<p>创建好之后可以去站长之家ping一下，保证在国内大多数地方可以ping通。如果ping不通删了重建。</p>
+<p>然后通过左边的<code>ssh</code>登录上去。</p>
+<h4 id="ssh登录"><a href="#ssh登录" class="headerlink" title="ssh登录"></a>ssh登录</h4><h3 id="安装ssr"><a href="#安装ssr" class="headerlink" title="安装ssr"></a>安装ssr</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt-get install --no-install-recommends gettext build-essential autoconf libtool libpcre3-dev asciidoc xmlto libev-dev libc-ares-dev automake libmbedtls-dev libsodium-dev</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="配置防火墙"><a href="#配置防火墙" class="headerlink" title="配置防火墙"></a>配置防火墙</h4><h3 id="安装客户端"><a href="#安装客户端" class="headerlink" title="安装客户端"></a>安装客户端</h3><h3 id="手机"><a href="#手机" class="headerlink" title="手机"></a>手机</h3><h4 id="MacOS"><a href="#MacOS" class="headerlink" title="MacOS"></a>MacOS</h4>
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -1319,130 +1391,6 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> linux</span></span><br><span class="line">Host *</span><br><span class="line">   ProxyCommand nc -X 5 -x proxy-xxx.intel.com:1080 %h %p</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> windows上需要把nc命令改成connect，参数-S表示是socks代理。</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat ~/.ssh/config | tail -5</span></span><br><span class="line">Host github.com</span><br><span class="line">   HostName github.com</span><br><span class="line">   User git</span><br><span class="line">   ProxyCommand connect -S proxy-xxx.intel.com:1080 %h %p</span><br><span class="line">   ForwardAgent yes</span><br></pre></td></tr></table></figure>
 <p>之后就可以成功ssh连接github了。</p>
 <p>但是<code>ping proxy-xxx.intel.com</code>是ping不通的，应该是公司关闭了。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/28/docker-image/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Xinran Wang">
-      <meta itemprop="description" content="Keep calm and coding">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Xinran's Blog">
-    </span>
-
-    
-    
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/01/28/docker-image/" class="post-title-link" itemprop="url">如何构建docker image</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2021-01-28 22:31:29" itemprop="dateCreated datePublished" datetime="2021-01-28T22:31:29+08:00">2021-01-28</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-02-08 11:02:27" itemprop="dateModified" datetime="2021-02-08T11:02:27+08:00">2021-02-08</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/docker/" itemprop="url" rel="index"><span itemprop="name">docker</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker image inspect ubuntu</span></span><br><span class="line">        &quot;RootFS&quot;: &#123;</span><br><span class="line">            &quot;Type&quot;: &quot;layers&quot;,</span><br><span class="line">            &quot;Layers&quot;: [</span><br><span class="line">                &quot;sha256:bacd3af13903e13a43fe87b6944acd1ff21024132aad6e74b4452d984fb1a99a&quot;,</span><br><span class="line">                &quot;sha256:9069f84dbbe96d4c50a656a05bbe6b6892722b0d1116a8f7fd9d274f4e991bf6&quot;,</span><br><span class="line">                &quot;sha256:f6253634dc78da2f2e3bee9c8063593f880dc35d701307f30f65553e0f50c18c&quot;</span><br><span class="line">            ]</span><br><span class="line">        &#125;,</span><br></pre></td></tr></table></figure>
-
-
-<p>rootfs</p>
-<p>bootfs</p>
-<p>chroot</p>
-<p>aufs</p>
-<p>xfs</p>
-<p>Overlay2</p>
-<p>copy on write </p>
-<p>Writeout </p>
-<p>init-layer - non commit</p>
-<img src="/2021/01/28/docker-image/image-20210203234917452.png" alt="image-20210203234917452" style="zoom:70%;">
-
-
-
-<h2 id="如何构建docker-image"><a href="#如何构建docker-image" class="headerlink" title="如何构建docker image"></a>如何构建docker image</h2><p>步骤：</p>
-<ol>
-<li>编写一个dockerfile</li>
-<li>docker build构建镜像</li>
-<li>docker run运行镜像</li>
-<li>docker push发布镜像</li>
-</ol>
-<h3 id="DockerFile构建过程"><a href="#DockerFile构建过程" class="headerlink" title="DockerFile构建过程"></a>DockerFile构建过程</h3><h4 id="基础知识："><a href="#基础知识：" class="headerlink" title="基础知识："></a><strong>基础知识：</strong></h4><ol>
-<li>每个保留关键字都是大写</li>
-<li>顺序执行</li>
-<li>#表示注释</li>
-<li>每一个指令都会创建提交一个新的镜像层。</li>
-</ol>
-<h4 id="DockerFile指令"><a href="#DockerFile指令" class="headerlink" title="DockerFile指令"></a>DockerFile指令</h4><p><img src="/2021/01/28/docker-image/image-20210128174810881-1611828531908.png" alt="image-20210128174810881"></p>
-<h4 id="CMD-和-ENTRYPOINT的区别"><a href="#CMD-和-ENTRYPOINT的区别" class="headerlink" title="CMD  和 ENTRYPOINT的区别"></a>CMD  和 ENTRYPOINT的区别</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> docker run image-id</span> </span><br><span class="line">CMD [&quot;ls&quot;,&quot;-a&quot;]  # 指定容器启动时要运行的命令，最后一个有效，可被替代。在docker run时不能被追加参数</span><br><span class="line">ENTRYPOINT [&quot;ls&quot;, [&quot;-a&quot;]] # 指定容器启动时要运行的命令，可以在docker run的时候追加参数</span><br><span class="line"> 													# 比如 docker run xxx &quot;-l&quot;</span><br></pre></td></tr></table></figure>
-<h5 id="测试CMD"><a href="#测试CMD" class="headerlink" title="测试CMD"></a>测试CMD</h5><p>写了两个CMD，在docker run的时候，发现只执行了最后一个，并没有echo出”Hello”，也不能追加参数，会报错。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">[vagrant@localhost dockerfile]$ cat docker-cmd-test</span><br><span class="line">FROM centos</span><br><span class="line">CMD [&quot;echo&quot;, &quot;Hello&quot;]</span><br><span class="line">CMD [&quot;ls&quot;, &quot;-a&quot;]</span><br><span class="line"></span><br><span class="line">[vagrant@localhost dockerfile]$ docker run cmdtest</span><br><span class="line">.</span><br><span class="line">..</span><br><span class="line">.dockerenv</span><br><span class="line">bin</span><br><span class="line">dev</span><br><span class="line">etc</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 尝试追加一个参数，想达到ls -al的效果，失败。</span></span><br><span class="line">[vagrant@localhost dockerfile]$ docker run cmdtest -l</span><br><span class="line">docker: Error response from daemon: OCI runtime create failed: container_linux.go:370: starting container process caused: exec: &quot;-l&quot;: executable file not found in $PATH: unknown.</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 但是可以在docker run的后面直接加命令。</span></span><br><span class="line">[vagrant@localhost dockerfile]$ docker run cmdtest ls -al</span><br><span class="line">total 0</span><br><span class="line">drwxr-xr-x.   1 root root   6 Jan 30 11:26 .</span><br><span class="line">drwxr-xr-x.   1 root root   6 Jan 30 11:26 ..</span><br><span class="line">-rwxr-xr-x.   1 root root   0 Jan 30 11:26 .dockerenv</span><br><span class="line">lrwxrwxrwx.   1 root root   7 Nov  3 15:22 bin -&gt; usr/bin</span><br><span class="line">drwxr-xr-x.   5 root root 340 Jan 30 11:26 dev</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-<h5 id="测试ENTRYPOINT"><a href="#测试ENTRYPOINT" class="headerlink" title="测试ENTRYPOINT"></a>测试ENTRYPOINT</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">[vagrant@localhost dockerfile]$ cat  docker-cmd-entrypoint</span><br><span class="line">FROM centos</span><br><span class="line">ENTRYPOINT [&quot;echo&quot;,&quot;Hello&quot;]</span><br><span class="line">ENTRYPOINT [&quot;ls&quot;,&quot;-a&quot;]</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 发现ENTRYPOINT也是只执行最后一个</span></span><br><span class="line">[vagrant@localhost dockerfile]$ docker run entrypoint</span><br><span class="line">.</span><br><span class="line">..</span><br><span class="line">.dockerenv</span><br><span class="line">bin</span><br><span class="line">dev</span><br><span class="line">etc</span><br><span class="line">home</span><br><span class="line">lib</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 但是ENTRYPOINT可以追加参数</span></span><br><span class="line">[vagrant@localhost dockerfile]$ docker run entrypoint -l</span><br><span class="line">total 0</span><br><span class="line">drwxr-xr-x.   1 root root   6 Jan 30 11:31 .</span><br><span class="line">drwxr-xr-x.   1 root root   6 Jan 30 11:31 ..</span><br><span class="line">-rwxr-xr-x.   1 root root   0 Jan 30 11:31 .dockerenv</span><br><span class="line">lrwxrwxrwx.   1 root root   7 Nov  3 15:22 bin -&gt; usr/bin</span><br><span class="line">drwxr-xr-x.   5 root root 340 Jan 30 11:31 dev</span><br><span class="line">drwxr-xr-x.   1 root root  66 Jan 30 11:31 etc</span><br></pre></td></tr></table></figure>
-
-
-<h4 id="COPY和ADD的区别"><a href="#COPY和ADD的区别" class="headerlink" title="COPY和ADD的区别"></a>COPY和ADD的区别</h4><p>add会自动解压</p>
-<h5 id="COPY测试"><a href="#COPY测试" class="headerlink" title="COPY测试"></a>COPY测试</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">[vagrant@localhost dockerfile]$ tree .</span><br><span class="line">.</span><br><span class="line">|-- copy01</span><br><span class="line">|-- copy02</span><br><span class="line">|-- test-dir/</span><br><span class="line">    |-- sub-dir/</span><br><span class="line">    |   |-- test3</span><br><span class="line">    |-- test1</span><br><span class="line">    |-- test2</span><br><span class="line">[vagrant@localhost dockerfile]$ cat docker-copy</span><br><span class="line">FROM centos</span><br><span class="line">COPY copy01 .</span><br><span class="line">COPY copy02 /home</span><br><span class="line">COPY test-dir .  # 不会拷贝目录，只拷贝目录下的文件和目录</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 如果不指定WORKDIR，默认是在跟目录下面</span></span><br><span class="line">[root@e4a55c64ff8f /]# ls</span><br><span class="line">bin  copy01  dev  etc  home  lib  lib64  lost+found  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> COPY可以指定目的路径</span></span><br><span class="line">[root@e4a55c64ff8f home]# ls</span><br><span class="line">copy02</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 不会拷贝目录，只拷贝目录下的文件和目录</span></span><br><span class="line">[root@e8be2eb3f129 /]# ls</span><br><span class="line">bin  copy01  dev  etc  home  lib  lib64  lost+found  media  mnt  opt  proc  root  run  sbin  srv  sub-dir  sys  test1  test2  tmp  usr  var</span><br><span class="line">[root@e8be2eb3f129 /]# cd sub-dir/</span><br><span class="line">[root@e8be2eb3f129 sub-dir]# ls</span><br><span class="line">test3</span><br></pre></td></tr></table></figure>
-<p>此外，COPY还可以用来实现<a target="_blank" rel="noopener" href="https://www.cnblogs.com/sparkdev/p/8508435.html">multi-stage(多阶段构建)</a>，就是一个dockerfile里有多个FROM，每个 FROM 指令代表一个 stage 的开始部分。我们可以把一个 stage 的产物拷贝到另一个 stage 中。</p>
-<h5 id="ADD测试"><a href="#ADD测试" class="headerlink" title="ADD测试"></a>ADD测试</h5><p>除了不能用在 multistage 的场景下，ADD 命令可以完成 COPY 命令的所有功能，并且还可以完成两类超酷的功能：</p>
-<ul>
-<li>解压压缩文件并把它们添加到镜像中</li>
-<li>从 url 拷贝文件到镜像中</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">WORKDIR /app</span><br><span class="line">ADD nickdir.tar.gz .  </span><br><span class="line"><span class="meta">#</span><span class="bash"> 可以把压缩包自动解压到/app目录下</span></span><br><span class="line">ADD http://example.com/big.tar.xz /usr/src/things/ </span><br><span class="line"><span class="meta">#</span><span class="bash"> 会直接把tar包加入镜像中，不会自动解压，实则增加了镜像的大小，不建议这么做！</span></span><br></pre></td></tr></table></figure>
-<h5 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h5><p>COPY 命令是为最基本的用法设计的，概念清晰，操作简单。而 ADD 命令基本上是 COPY 命令的超集(除了 multistage 场景)，可以实现一些方便、酷炫的拷贝操作。ADD 命令在增加了功能的同时也增加了使用它的复杂度，比如从 url 拷贝压缩文件时弊大于利。</p>
 
       
     </div>

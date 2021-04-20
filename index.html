@@ -201,7 +201,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-count">27</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -253,6 +253,74 @@
       
 
       
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/31/cpu-microarch/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Xinran Wang">
+      <meta itemprop="description" content="Keep calm and coding">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xinran's Blog">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/03/31/cpu-microarch/" class="post-title-link" itemprop="url">cpu-microarch</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2021-03-31 15:07:42 / Modified: 15:10:00" itemprop="dateCreated datePublished" datetime="2021-03-31T15:07:42+08:00">2021-03-31</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p><img src="https://en.wikichip.org/w/images/thumb/e/ee/skylake_server_block_diagram.svg/950px-skylake_server_block_diagram.svg.png" alt="skylake server block diagram.svg"></p>
+<p>front end：取值，解码</p>
+<p>execution engine：计算</p>
+<p>memory subsystem： 读写内存</p>
+<p>L1， L2 per core</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -905,7 +973,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-03-08 17:50:30" itemprop="dateModified" datetime="2021-03-08T17:50:30+08:00">2021-03-08</time>
+        <time title="Modified: 2021-03-30 14:11:43" itemprop="dateModified" datetime="2021-03-30T14:11:43+08:00">2021-03-30</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -929,7 +997,7 @@
     <div class="post-body" itemprop="articleBody">
           <h3 id="环境："><a href="#环境：" class="headerlink" title="环境："></a>环境：</h3><p>ubuntu20.04</p>
 <p>kubernete 1.20</p>
-<h3 id="Deploy-K8s-all-in-one-using-Kubeadm"><a href="#Deploy-K8s-all-in-one-using-Kubeadm" class="headerlink" title="Deploy K8s(all in one) using Kubeadm"></a>Deploy K8s(all in one) using Kubeadm</h3><h4 id="Install-docker"><a href="#Install-docker" class="headerlink" title="Install docker"></a>Install docker</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install docker.io</span><br><span class="line">sudo groupadd docker</span><br><span class="line">sudo usermod -aG docker <span class="variable">$&#123;USER&#125;</span>  <span class="comment"># To resolve permission errors</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># check </span></span><br><span class="line">docker ps -a</span><br></pre></td></tr></table></figure>
+<h3 id="Deploy-K8s-all-in-one-using-Kubeadm"><a href="#Deploy-K8s-all-in-one-using-Kubeadm" class="headerlink" title="Deploy K8s(all in one) using Kubeadm"></a>Deploy K8s(all in one) using Kubeadm</h3><h4 id="Install-docker"><a href="#Install-docker" class="headerlink" title="Install docker"></a>Install docker</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install docker.io</span><br><span class="line">sudo groupadd docker</span><br><span class="line">sudo usermod -aG docker <span class="variable">$&#123;USER&#125;</span>  <span class="comment"># To resolve permission errors</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># check </span></span><br><span class="line">docker ps -a</span><br><span class="line"></span><br><span class="line"><span class="comment"># docker hub login</span></span><br><span class="line">docker login</span><br><span class="line">username: xinranwang</span><br><span class="line">password: xxxxxxXf</span><br></pre></td></tr></table></figure>
 <h4 id="Install-Kubeadm"><a href="#Install-Kubeadm" class="headerlink" title="Install Kubeadm"></a>Install Kubeadm</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update &amp;&amp; sudo apt-get install -y apt-transport-https curl</span><br><span class="line">curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -</span><br><span class="line">cat &lt;&lt;EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list</span><br><span class="line">deb https://apt.kubernetes.io/ kubernetes-xenial main</span><br><span class="line">EOF</span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install -y kubelet kubeadm kubectl</span><br><span class="line">sudo apt-mark hold kubelet kubeadm kubectl</span><br></pre></td></tr></table></figure>
 <h4 id="Run-kubeadm"><a href="#Run-kubeadm" class="headerlink" title="Run kubeadm"></a>Run kubeadm</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo kubeadm init --pod-network-cidr=192.168.0.0/16</span><br><span class="line"></span><br><span class="line">mkdir -p $HOME/.kube</span><br><span class="line">sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config</span><br><span class="line">sudo chown $(id -u):$(id -g) $HOME/.kube/config</span><br></pre></td></tr></table></figure>
 <h4 id="Install-Calico"><a href="#Install-Calico" class="headerlink" title="Install Calico"></a>Install Calico</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">kubectl create -f https://docs.projectcalico.org/manifests/tigera-operator.yaml</span><br><span class="line">kubectl create -f https://docs.projectcalico.org/manifests/custom-resources.yaml</span><br><span class="line">watch kubectl get pods -n calico-system</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> untaint master node</span></span><br><span class="line">kubectl taint nodes --all node-role.kubernetes.io/master-</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> check</span></span><br><span class="line">kubectl get nodes -o wide</span><br></pre></td></tr></table></figure>
@@ -1211,78 +1279,6 @@
 <p>创建线程的代价比创建进程的代价小很多，如下图：</p>
 <p><img src="/2021/02/25/process-and-thread/image-20210225181636565.png" alt="image-20210225181636565"></p>
 
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/20/ssr-setup/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Xinran Wang">
-      <meta itemprop="description" content="Keep calm and coding">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Xinran's Blog">
-    </span>
-
-    
-    
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/02/20/ssr-setup/" class="post-title-link" itemprop="url">科学上网ssr</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-      
-
-      <time title="Created: 2021-02-20 16:26:09 / Modified: 17:57:34" itemprop="dateCreated datePublished" datetime="2021-02-20T16:26:09+08:00">2021-02-20</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>工具：<br>shadowsocks-libev<br>google vm</p>
-<h2 id="google-vm的基本配置"><a href="#google-vm的基本配置" class="headerlink" title="google vm的基本配置"></a>google vm的基本配置</h2><h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><p>具体创建步骤略，需要一个绑定一个海外银行卡。</p>
-<p>下面是我创建的虚拟机。</p>
-<p><img src="/2021/02/20/ssr-setup/image-20210220162859580.png" alt="image-20210220162859580"></p>
-<p>创建好之后可以去站长之家ping一下，保证在国内大多数地方可以ping通。如果ping不通删了重建。</p>
-<p>然后通过左边的<code>ssh</code>登录上去。</p>
-<h4 id="ssh登录"><a href="#ssh登录" class="headerlink" title="ssh登录"></a>ssh登录</h4><h3 id="安装ssr"><a href="#安装ssr" class="headerlink" title="安装ssr"></a>安装ssr</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt-get install --no-install-recommends gettext build-essential autoconf libtool libpcre3-dev asciidoc xmlto libev-dev libc-ares-dev automake libmbedtls-dev libsodium-dev</span><br></pre></td></tr></table></figure>
-
-
-<h4 id="配置防火墙"><a href="#配置防火墙" class="headerlink" title="配置防火墙"></a>配置防火墙</h4><h3 id="安装客户端"><a href="#安装客户端" class="headerlink" title="安装客户端"></a>安装客户端</h3><h3 id="手机"><a href="#手机" class="headerlink" title="手机"></a>手机</h3><h4 id="MacOS"><a href="#MacOS" class="headerlink" title="MacOS"></a>MacOS</h4>
       
     </div>
 
