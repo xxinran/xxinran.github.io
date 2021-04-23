@@ -105,3 +105,43 @@ serviceEntry：
 
 ### Pilot
 
+![image-20210423095618162](istio-pilot/image-20210423095618162.png)
+
+1. 平台适配层: 将不同的平台资源和istio的抽象模型相互转换。
+2. xds API： envoy API
+
+
+
+### citadel：
+
+没有citadel的时候，就是end to end的非对称密钥交换，然后对称加密传输数据。
+
+citadel：就是存储证书，发放证书的一个东西。
+
+### Galley
+
+istio自身创建的CRD有50多种，可以理解成验证，解析，管理CRD的东西。
+
+### Mixer
+
+1.7之后弃用，下放到envoy里。telemetry v2是在istio里？
+
+
+
+### 其他解决方案
+
+sofamesh蚂蚁金服，用**mosn**替换envoy，golang，合并mixer，增强pilot，增加对sofa rpc， dubbo的支持。
+
+linkerd =  control plane + data plane
+
+linkerd v1可以脱离k8s
+
+linkerd v2和k8s紧耦合
+
+consul
+
+192.168.0.195 zhang
+
+192.168.0.196 ci
+
+192.168.0.199 zhang
