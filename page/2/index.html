@@ -201,7 +201,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">28</span>
+          <span class="site-state-item-count">30</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -253,6 +253,264 @@
       
 
       
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/01/istio-deploy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Xinran Wang">
+      <meta itemprop="description" content="Keep calm and coding">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xinran's Blog">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/03/01/istio-deploy/" class="post-title-link" itemprop="url">部署istio+k8s+kiali</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-03-01 17:30:27" itemprop="dateCreated datePublished" datetime="2021-03-01T17:30:27+08:00">2021-03-01</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-03-30 14:11:43" itemprop="dateModified" datetime="2021-03-30T14:11:43+08:00">2021-03-30</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/deploy/" itemprop="url" rel="index"><span itemprop="name">deploy</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="环境："><a href="#环境：" class="headerlink" title="环境："></a>环境：</h3><p>ubuntu20.04</p>
+<p>kubernete 1.20</p>
+<h3 id="Deploy-K8s-all-in-one-using-Kubeadm"><a href="#Deploy-K8s-all-in-one-using-Kubeadm" class="headerlink" title="Deploy K8s(all in one) using Kubeadm"></a>Deploy K8s(all in one) using Kubeadm</h3><h4 id="Install-docker"><a href="#Install-docker" class="headerlink" title="Install docker"></a>Install docker</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install docker.io</span><br><span class="line">sudo groupadd docker</span><br><span class="line">sudo usermod -aG docker <span class="variable">$&#123;USER&#125;</span>  <span class="comment"># To resolve permission errors</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># check </span></span><br><span class="line">docker ps -a</span><br><span class="line"></span><br><span class="line"><span class="comment"># docker hub login</span></span><br><span class="line">docker login</span><br><span class="line">username: xinranwang</span><br><span class="line">password: xxxxxxXf</span><br></pre></td></tr></table></figure>
+<h4 id="Install-Kubeadm"><a href="#Install-Kubeadm" class="headerlink" title="Install Kubeadm"></a>Install Kubeadm</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update &amp;&amp; sudo apt-get install -y apt-transport-https curl</span><br><span class="line">curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -</span><br><span class="line">cat &lt;&lt;EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list</span><br><span class="line">deb https://apt.kubernetes.io/ kubernetes-xenial main</span><br><span class="line">EOF</span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install -y kubelet kubeadm kubectl</span><br><span class="line">sudo apt-mark hold kubelet kubeadm kubectl</span><br></pre></td></tr></table></figure>
+<h4 id="Run-kubeadm"><a href="#Run-kubeadm" class="headerlink" title="Run kubeadm"></a>Run kubeadm</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo kubeadm init --pod-network-cidr=192.168.0.0/16</span><br><span class="line"></span><br><span class="line">mkdir -p $HOME/.kube</span><br><span class="line">sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config</span><br><span class="line">sudo chown $(id -u):$(id -g) $HOME/.kube/config</span><br></pre></td></tr></table></figure>
+<h4 id="Install-Calico"><a href="#Install-Calico" class="headerlink" title="Install Calico"></a>Install Calico</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">kubectl create -f https://docs.projectcalico.org/manifests/tigera-operator.yaml</span><br><span class="line">kubectl create -f https://docs.projectcalico.org/manifests/custom-resources.yaml</span><br><span class="line">watch kubectl get pods -n calico-system</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> untaint master node</span></span><br><span class="line">kubectl taint nodes --all node-role.kubernetes.io/master-</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> check</span></span><br><span class="line">kubectl get nodes -o wide</span><br></pre></td></tr></table></figure>
+<h4 id="Install-Istio"><a href="#Install-Istio" class="headerlink" title="Install Istio"></a>Install Istio</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">curl -L https://istio.io/downloadIstio | sh -</span><br><span class="line">export PATH=&quot;$PATH:/home/ubuntu/istio-1.9.0/bin&quot;</span><br><span class="line">cd istio-1.9.0</span><br><span class="line">istioctl install </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> all pods <span class="keyword">in</span> <span class="string">&quot;default&quot;</span> ns will have the sidecar</span></span><br><span class="line">kubectl label namespace default istio-injection=enabled</span><br></pre></td></tr></table></figure>
+<h4 id="Deploy-sample"><a href="#Deploy-sample" class="headerlink" title="Deploy sample"></a>Deploy sample</h4><p><a target="_blank" rel="noopener" href="https://istio.io/latest/docs/setup/getting-started/#bookinfo">https://istio.io/latest/docs/setup/getting-started/#bookinfo</a></p>
+<p><img src="/2021/03/01/istio-deploy/image-20210303143623822.png" alt="image-20210303143623822"></p>
+<p>本机上（集群内），可以通过cluster IP访问：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> curl 10.106.23.203:9080</span></span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">  &lt;head&gt;</span><br><span class="line">    &lt;title&gt;Simple Bookstore App&lt;/title&gt;</span><br><span class="line">&lt;meta charset=&quot;utf-8&quot;&gt;</span><br><span class="line">&lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;</span><br><span class="line">&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- Latest compiled and minified CSS --&gt;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+
+<h5 id="集群外访问服务"><a href="#集群外访问服务" class="headerlink" title="集群外访问服务"></a>集群外访问服务</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> kubectl apply -f samples/bookinfo/networking/bookinfo-gateway.yaml</span></span><br><span class="line">gateway.networking.istio.io/bookinfo-gateway created</span><br><span class="line">virtualservice.networking.istio.io/bookinfo created</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> istioctl analyze</span></span><br><span class="line">✔ No validation issues found when analyzing namespace: default.</span><br></pre></td></tr></table></figure>
+<p><img src="/2021/03/01/istio-deploy/image-20210303144837821.png" alt="image-20210303144837821"></p>
+<p>因为我的系统不支持external loadbalancer，所以要通过nodeport的方式暴露host的接口，才可以在本机用<code>localhost:nodeport</code>来访问。</p>
+<img src="/2021/03/01/istio-deploy/image-20210303144916013.png" alt="image-20210303144916013" style="zoom:80%;">
+
+<h4 id="Install-Dashboard"><a href="#Install-Dashboard" class="headerlink" title="Install Dashboard"></a>Install Dashboard</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> kubectl apply -f samples/addons $ kubectl rollout status deployment/kiali -n istio-system</span></span><br><span class="line"></span><br><span class="line">Waiting for deployment &quot;kiali&quot; rollout to finish: 0 of 1 updated replicas are available... deployment &quot;kiali&quot; successfully rolled out</span><br></pre></td></tr></table></figure>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> istioctl dashboard kiali</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 因为是remote server，需要建立一个tunnel</span></span><br><span class="line">http://localhost:20001/kiali</span><br><span class="line">Failed to open browser; open http://localhost:20001/kiali in your browser.</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h5 id="建立tunnel"><a href="#建立tunnel" class="headerlink" title="建立tunnel"></a>建立tunnel</h5><p><img src="/2021/03/01/istio-deploy/image-20210303145356395.png" alt="image-20210303145356395"></p>
+<p><img src="/2021/03/01/istio-deploy/image-20210303145757231.png" alt="image-20210303145757231"></p>
+<p>解释上图：把remote上的所有开放端口，都通过跳板机jumper的22端口转发到本地机器的<strong>8888</strong>端口。在本地的浏览器里设置socks proxy，将本地机器的访问全部转发到<strong>8888</strong>端口，这样就可以完成通过跳板机的端口转发。</p>
+<h5 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h5><p>即使按上述设置了，还是访问不到kiali dashboard。追查到原因是：</p>
+<p><code>~/istio-xxxx/samples/addons/kiali.yaml</code></p>
+<p>这个文件里声明了kiali service:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">kiali</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">istio-system</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">helm.sh/chart:</span> <span class="string">kiali-server-1.29.0</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">kiali</span></span><br><span class="line">    <span class="attr">app.kubernetes.io/name:</span> <span class="string">kiali</span></span><br><span class="line">    <span class="attr">app.kubernetes.io/instance:</span> <span class="string">kiali-server</span></span><br><span class="line">    <span class="attr">version:</span> <span class="string">&quot;v1.29.0&quot;</span></span><br><span class="line">    <span class="attr">app.kubernetes.io/version:</span> <span class="string">&quot;v1.29.0&quot;</span></span><br><span class="line">    <span class="attr">app.kubernetes.io/managed-by:</span> <span class="string">Helm</span></span><br><span class="line">    <span class="attr">app.kubernetes.io/part-of:</span> <span class="string">&quot;kiali&quot;</span></span><br><span class="line">  <span class="attr">annotations:</span></span><br><span class="line">    <span class="attr">kiali.io/api-spec:</span> <span class="string">https://kiali.io/api</span></span><br><span class="line">    <span class="attr">kiali.io/api-type:</span> <span class="string">rest</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">http</span></span><br><span class="line">    <span class="attr">protocol:</span> <span class="string">TCP</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">20001</span></span><br><span class="line">    <span class="attr">nodePort:</span> <span class="number">30007</span>   <span class="comment"># 增加nodeport</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">http-metrics</span></span><br><span class="line">    <span class="attr">protocol:</span> <span class="string">TCP</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">9090</span></span><br><span class="line">    <span class="comment"># nodePort: 30008  # 增加nodeport</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app.kubernetes.io/name:</span> <span class="string">kiali</span></span><br><span class="line">    <span class="attr">app.kubernetes.io/instance:</span> <span class="string">kiali-server</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">NodePort</span> <span class="comment"># 指定service的类型是nodeport，这样可以从cluster外访问（通过hostip/locahost）</span></span><br></pre></td></tr></table></figure>
+
+
+<p>可以通过<strong>remote_server_ip:nodeport</strong>访问dashboar。</p>
+<p><img src="/2021/03/01/istio-deploy/image-20210303151337851.png" alt="image-20210303151337851"></p>
+<h4 id="卸载Uninstall"><a href="#卸载Uninstall" class="headerlink" title="卸载Uninstall"></a>卸载Uninstall</h4><p>Remove sample‘s resouces: <a target="_blank" rel="noopener" href="https://istio.io/latest/docs/examples/bookinfo/#cleanup">https://istio.io/latest/docs/examples/bookinfo/#cleanup</a></p>
+<p>Uninstall istio: <a target="_blank" rel="noopener" href="https://istio.io/latest/docs/setup/getting-started/#uninstall">https://istio.io/latest/docs/setup/getting-started/#uninstall</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/26/istio-pilot/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Xinran Wang">
+      <meta itemprop="description" content="Keep calm and coding">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xinran's Blog">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/02/26/istio-pilot/" class="post-title-link" itemprop="url">istio学习（1）-pilot</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-02-26 15:31:45" itemprop="dateCreated datePublished" datetime="2021-02-26T15:31:45+08:00">2021-02-26</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-04-23 14:12:25" itemprop="dateModified" datetime="2021-04-23T14:12:25+08:00">2021-04-23</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/service-mesh/" itemprop="url" rel="index"><span itemprop="name">service-mesh</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="service-mesh（服务网格）"><a href="#service-mesh（服务网格）" class="headerlink" title="service mesh（服务网格）"></a>service mesh（服务网格）</h2><p>Service Mesh通过一个个”代理” 来为微服务转发/接收所有流量，通过控制这些代理，就可以实现服务连接，注册，发现，负载均衡，熔断，监控等等一系列服务治理相关功能，从而微服务的代码不再需要服务治理的实现，换句话说，也就是服务治理对于微服务开发者而言是透明的。如下图所示：绿色方块为微服务，蓝色方块为 service mesh 的代理，蓝色线条为服务间通讯。可以看到蓝色的方块和线条组成了整个网格。这个网络就是 Service Mesh。</p>
+<img src="/2021/02/26/istio-pilot/v2-638a9d12e8a7406b7a733f2eadf989f5_1440w.jpg" alt="img" style="zoom:30%;">
+
+<h2 id="Istio"><a href="#Istio" class="headerlink" title="Istio"></a>Istio</h2><p>Go编写，控制面。对应的数据面是通常是envoy（基于C++）</p>
+<h3 id="架构图"><a href="#架构图" class="headerlink" title="架构图"></a>架构图</h3><p><img src="/2021/02/26/istio-pilot/arch.svg" alt="The overall architecture of an Istio-based application."></p>
+<h3 id="基本组件"><a href="#基本组件" class="headerlink" title="基本组件"></a>基本组件</h3><h4 id="envoy"><a href="#envoy" class="headerlink" title="envoy"></a>envoy</h4><p>以sidecar的形式运行在服务所在的pod中，所有service的流量进出都必须通过envoy proxy，用来控制service之间的访问，service是感知不到envoy proxy的存在。</p>
+<p>envoy可以和控制平面（istio的组件）双向交互，可以从istio拿到一些策略和服务发现的信息，同时也可以给istio传回一些监控的数据等等。</p>
+<h4 id="Istiod"><a href="#Istiod" class="headerlink" title="Istiod"></a>Istiod</h4><p>Istiod提供服务发现, 服务配置和证书管理。</p>
+<p>stiod acts as a Certificate Authority (CA) and generates certificates to allow secure mTLS communication in the data plane.</p>
+<h2 id="Istio的服务发现流程"><a href="#Istio的服务发现流程" class="headerlink" title="Istio的服务发现流程"></a>Istio的服务发现流程</h2><p><img src="/2021/02/26/istio-pilot/image-20210226160141651.png" alt="image-20210226160141651"></p>
+<p>istio的pilot组件时负责服务发现的。在pilot里只有服务发现的定义，但是没有服务发现的实现，服务发现的实现是在pilot adapter对接的platform（比如k8s）里的。pilot adapter可以对接不同的平台，比如cloudfoudary，eurake，kubernetes，consul等等，但是k8s的适配最好，也是istio社区的重点。</p>
+<h3 id="isito和kubernetes服务概念对应关系"><a href="#isito和kubernetes服务概念对应关系" class="headerlink" title="isito和kubernetes服务概念对应关系"></a>isito和kubernetes服务概念对应关系</h3><table>
+<thead>
+<tr>
+<th align="center">isito</th>
+<th align="center">kubernetes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">service</td>
+<td align="center">service</td>
+</tr>
+<tr>
+<td align="center">instance</td>
+<td align="center">endpoint</td>
+</tr>
+<tr>
+<td align="center">version</td>
+<td align="center">deployment</td>
+</tr>
+</tbody></table>
+<img src="/2021/02/26/istio-pilot/image-20210309105852832.png" alt="image-20210309105852832" style="zoom:80%;">
+
+<p>每个envoy里都有全量的规则。（现在也是吗？？）</p>
+<p>Envoy （C++），CNCF毕业（kubernets，Prometheus之后）。</p>
+<p>xDS：</p>
+<p>listener（LDS）：</p>
+<p>routes（RDS）：</p>
+<p>cluster（CDS）：</p>
+<p>endpoint（EDS）：</p>
+<p>Envoy目前支持的三种LB：</p>
+<ol>
+<li>轮询round robin</li>
+<li>随机random</li>
+<li>加权weighted least request.</li>
+</ol>
+<p>Istio：</p>
+<p>用户可以配置（通过rules API）的CRD：</p>
+<p>gateway：</p>
+<p>virtualservice：</p>
+<p>destinationrule：</p>
+<p>serviceEntry：</p>
+<h3 id="Pilot"><a href="#Pilot" class="headerlink" title="Pilot"></a>Pilot</h3><p><img src="/2021/02/26/istio-pilot/image-20210423095618162.png" alt="image-20210423095618162"></p>
+<ol>
+<li>平台适配层: 将不同的平台资源和istio的抽象模型相互转换。</li>
+<li>xds API： envoy API</li>
+</ol>
+<h3 id="citadel："><a href="#citadel：" class="headerlink" title="citadel："></a>citadel：</h3><p>没有citadel的时候，就是end to end的非对称密钥交换，然后对称加密传输数据。</p>
+<p>citadel：就是存储证书，发放证书的一个东西。</p>
+<h3 id="Galley"><a href="#Galley" class="headerlink" title="Galley"></a>Galley</h3><p>istio自身创建的CRD有50多种，可以理解成验证，解析，管理CRD的东西。</p>
+<h3 id="Mixer"><a href="#Mixer" class="headerlink" title="Mixer"></a>Mixer</h3><p>1.7之后弃用，下放到envoy里。telemetry v2是在istio里？</p>
+<h3 id="其他解决方案"><a href="#其他解决方案" class="headerlink" title="其他解决方案"></a>其他解决方案</h3><p>sofamesh蚂蚁金服，用<strong>mosn</strong>替换envoy，golang，合并mixer，增强pilot，增加对sofa rpc， dubbo的支持。</p>
+<p>linkerd =  control plane + data plane</p>
+<p>linkerd v1可以脱离k8s</p>
+<p>linkerd v2和k8s紧耦合</p>
+<p>consul</p>
+<p>192.168.0.195 zhang</p>
+<p>192.168.0.196 ci</p>
+<p>192.168.0.199 zhang</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -1157,279 +1415,6 @@
 </li>
 </ul>
 
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/30/yum-config/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Xinran Wang">
-      <meta itemprop="description" content="Keep calm and coding">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Xinran's Blog">
-    </span>
-
-    
-    
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/01/30/yum-config/" class="post-title-link" itemprop="url">在centos上修改源并安装docker</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2021-01-30 18:05:57" itemprop="dateCreated datePublished" datetime="2021-01-30T18:05:57+08:00">2021-01-30</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-02-02 17:00:08" itemprop="dateModified" datetime="2021-02-02T17:00:08+08:00">2021-02-02</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/deploy/" itemprop="url" rel="index"><span itemprop="name">deploy</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h3 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h3><p>在mac上用vagrant起了一个centos8的vm。</p>
-<h3 id="换系统yum源"><a href="#换系统yum源" class="headerlink" title="换系统yum源"></a>换系统yum源</h3><blockquote>
-<p>这里换的是清华的源。</p>
-<p> 参考：<a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/help/centos/">https://mirrors.tuna.tsinghua.edu.cn/help/centos/</a></p>
-</blockquote>
-<p>建议先备份 <code>/etc/yum.repos.d/</code> 内的文件（CentOS 7 及之前为 <code>CentOS-Base.repo</code>，CentOS 8 为<code>CentOS-Linux-*.repo</code>）</p>
-<p>然后编辑 <code>/etc/yum.repos.d/</code> 中的相应文件，在 <code>mirrorlist=</code> 开头行前面加 <code>#</code> 注释掉；并将 <code>baseurl=</code> 开头行取消注释（如果被注释的话），把该行内的域名（例如<code>mirror.centos.org</code>）替换为 <code>mirrors.tuna.tsinghua.edu.cn</code>。</p>
-<p>以上步骤可以被下方的命令一步完成</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo sed -e &#39;s|^mirrorlist&#x3D;|#mirrorlist&#x3D;|g&#39; \</span><br><span class="line">         -e &#39;s|^#baseurl&#x3D;http:&#x2F;&#x2F;mirror.centos.org|baseurl&#x3D;https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn|g&#39; \</span><br><span class="line">         -i.bak \</span><br><span class="line">         &#x2F;etc&#x2F;yum.repos.d&#x2F;CentOS-*.repo</span><br></pre></td></tr></table></figure>
-<p>注意其中的<code>*</code>通配符，如果只需要替换一些文件中的源，请自行增删。</p>
-<p>注意，如果需要启用其中一些 repo，需要将其中的 <code>enabled=0</code> 改为 <code>enabled=1</code>。</p>
-<p>最后，更新软件包缓存</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum makecache</span><br></pre></td></tr></table></figure>
-<p>这时下载常用的软件包就已经变快了。</p>
-<h3 id="换下载docker的源"><a href="#换下载docker的源" class="headerlink" title="换下载docker的源"></a>换下载docker的源</h3><blockquote>
-<p>参考：<a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/help/docker-ce/">https://mirrors.tuna.tsinghua.edu.cn/help/docker-ce/</a></p>
-</blockquote>
-<p>然后我根据docker的官方文档安装docker，发现yum install docker-ce的时候特别慢。原因是官方文档配置的docker源repo是国外的，国外访问很慢。于是去网上找了清华的源。</p>
-<p>如果你之前安装过 docker，请先删掉</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum remove docker docker-common docker-selinux docker-engine</span><br></pre></td></tr></table></figure>
-<p>安装一些依赖</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install -y yum-utils device-mapper-persistent-data lvm2</span><br></pre></td></tr></table></figure>
-<p>根据你的发行版下载repo文件: CentOS/RHEL Fedora</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -O &#x2F;etc&#x2F;yum.repos.d&#x2F;docker-ce.repo https:&#x2F;&#x2F;download.docker.com&#x2F;linux&#x2F;centos&#x2F;docker-ce.repo</span><br></pre></td></tr></table></figure>
-<p>把软件仓库地址替换为 TUNA，这一步很关键，大部分网上的博客都没有提到，如果没有这一步，其实还是使用的国外的docker官方的源:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo sed -i &#39;s+download.docker.com+mirrors.tuna.tsinghua.edu.cn&#x2F;docker-ce+&#39; &#x2F;etc&#x2F;yum.repos.d&#x2F;docker-ce.repo</span><br></pre></td></tr></table></figure>
-<p>最后安装:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo yum makecache</span><br><span class="line">sudo yum install docker-ce</span><br></pre></td></tr></table></figure>
-<h3 id="换docker镜像源"><a href="#换docker镜像源" class="headerlink" title="换docker镜像源"></a>换docker镜像源</h3><p>docker默认源在国外，同样很慢。我们可以通过修改docker配置更改docker image的源。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 查看docker daemon config</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ls /etc/docker/daemon.json</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 如果文件不存在就创建一个</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo touch /etc/docker/daemon.json</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vi /etc/docker/daemon.json</span></span><br><span class="line">&#123;</span><br><span class="line">    &quot;registry-mirrors&quot; : [</span><br><span class="line">    &quot;https://registry.docker-cn.com&quot;,</span><br><span class="line">    &quot;https://docker.mirrors.ustc.edu.cn&quot;,</span><br><span class="line">    &quot;http://hub-mirror.c.163.com&quot;,</span><br><span class="line">    &quot;https://cr.console.aliyun.com/&quot;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo systemctl restart docker.service</span></span><br></pre></td></tr></table></figure>
-
-
-<h3 id="docker-permission-denied"><a href="#docker-permission-denied" class="headerlink" title="docker permission denied"></a>docker permission denied</h3><p>这个问题特别常见，就是我们在安装完docker之后，发现docker指令必须在root权限下运行，这时因为我们当前的用户没有被加入到docker组里。</p>
-<h4 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h4><p>2.1、添加docker用户组</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">groupadd docker </span><br><span class="line"><span class="meta">#</span><span class="bash"> 一般都会提示docker用户组存在了。</span></span><br></pre></td></tr></table></figure>
-<p>2.2、把当前用户加入docker用户组</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gpasswd -a $&#123;USER&#125; docker</span><br><span class="line"><span class="meta">#</span><span class="bash"> 或者 sudo usermod -aG docker <span class="variable">$&#123;USER&#125;</span> (未验证)</span></span><br></pre></td></tr></table></figure>
-<p>3、查看是否添加成功：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/group | grep ^docker</span><br></pre></td></tr></table></figure>
-<p>4、重启docker</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">serivce docker restart</span><br></pre></td></tr></table></figure>
-<p>5、更新用户组</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">newgrp docker </span><br></pre></td></tr></table></figure>
-<p>6、测试docker命令是否可以使用sudo正常使用</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps</span><br></pre></td></tr></table></figure>
-
-
-
-
-<h1 id="docker-graph是什么东西啊"><a href="#docker-graph是什么东西啊" class="headerlink" title="docker graph是什么东西啊"></a>docker graph是什么东西啊</h1><p>The <code>-g</code> or <code>--graph</code> flag for the <code>dockerd</code> or <code>docker daemon</code> command was used to indicate the directory in which to store persistent data and resource configuration and has been replaced with the more descriptive <code>--data-root</code> flag.</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/29/proxy-intro/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Xinran Wang">
-      <meta itemprop="description" content="Keep calm and coding">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Xinran's Blog">
-    </span>
-
-    
-    
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/01/29/proxy-intro/" class="post-title-link" itemprop="url">代理服务器基本介绍</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2021-01-29 15:56:09" itemprop="dateCreated datePublished" datetime="2021-01-29T15:56:09+08:00">2021-01-29</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-02-02 15:32:49" itemprop="dateModified" datetime="2021-02-02T15:32:49+08:00">2021-02-02</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/network/" itemprop="url" rel="index"><span itemprop="name">network</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="为什么需要proxy-server"><a href="#为什么需要proxy-server" class="headerlink" title="为什么需要proxy server?"></a>为什么需要proxy server?</h2><ol>
-<li><p>监控，内容过滤</p>
-<ul>
-<li>公司的proxy server可以清楚的知道，你的流量要访问什么网站。proxy server可以禁掉一些网址，或者redirect到一些提示页面。</li>
-<li>公司的proxy server可以监控你每天都在访问什么网站，花了多长时间。</li>
-</ul>
-</li>
-<li><p>节约带宽，节省成本</p>
-<ul>
-<li>在proxy server上会有一些cache，里面存放了最近访问的website的数据，如果有1000个request通过同一个proxy server访问website A，这时如果proxy server上有website A的最新数据在cache里，就可以直接返回给这1000个client。如果proxy server上没有，也只需要发一个website A的请求，然后把返回数据放在cache里。</li>
-</ul>
-</li>
-<li><p>提高性能</p>
-<ul>
-<li>通过代理服务器的缓存（比如 CDN）和负载均衡（比如 nginx lb）功能，服务器端可以加速请求的访问，在更快的时间内返回结果）</li>
-</ul>
-</li>
-<li><p>安全和隐私</p>
-<ul>
-<li><p>有一些proxy server可以隐藏掉client的IP等个人信息，这样通过proxy访问网站，web server并不能知道是谁在真正的访问它。</p>
-</li>
-<li><p>公司可以在内网和外网之间通过代理进行转发，这样不仅对外隐藏了实现的细节，而且可以在代理层对爬虫、病毒性请求进行过滤，保护内部服务。</p>
-</li>
-<li><p>还可以加密数据</p>
-</li>
-</ul>
-</li>
-</ol>
-<blockquote>
-<p>风险：</p>
-<p>因为所有client的请求都要通过proxy server访问internet，所以有数据泄露的风险。也有一些技术可以实现数据加密，规避这种risk，后面会讲到。</p>
-</blockquote>
-<h2 id="代理服务器的分类："><a href="#代理服务器的分类：" class="headerlink" title="代理服务器的分类："></a>代理服务器的分类：</h2><ol>
-<li><h4 id="按照匿名功能分类（是否具有隐藏IP的功能）"><a href="#按照匿名功能分类（是否具有隐藏IP的功能）" class="headerlink" title="按照匿名功能分类（是否具有隐藏IP的功能）"></a>按照匿名功能分类（是否具有隐藏IP的功能）</h4><ul>
-<li><p>非匿名（和透明代理的区别？？？）</p>
-</li>
-<li><p>匿名：使用此种代理时，虽然被访问的网站不能知道你的 IP 地址，但仍然可 以知道你在使用代理，有些侦测 IP 的网页也仍然可以查到你的 IP。</p>
-</li>
-<li><p>高度匿名：使用此种代理时，被访问的网站不知道你的 IP 地址，也不知道你在使用代理进行访问。此种代理的隐藏 IP 地址的功能最强。</p>
-</li>
-<li><p>透明代理（简单代理）：透明代理的意思是客户端根本不需要知道有代理服务器的存在，它改编你的 request fields（报文），并会传送真实 IP。web server会直接获得client的IP，并且知道client是通过proxy访问的它。</p>
-</li>
-</ul>
-</li>
-<li><h4 id="按代理服务器的用途分类"><a href="#按代理服务器的用途分类" class="headerlink" title="按代理服务器的用途分类"></a>按代理服务器的用途分类</h4><ul>
-<li>HTTP代理</li>
-<li>SSL代理</li>
-<li>HTTP CONNECT代理</li>
-<li>FTP代理</li>
-<li>POP3代理</li>
-<li>Telnet代理</li>
-<li>Socks代理</li>
-<li>等等等等</li>
-</ul>
-</li>
-<li><h4 id="按照相对于client-server的角色分类"><a href="#按照相对于client-server的角色分类" class="headerlink" title="按照相对于client-server的角色分类"></a>按照相对于client-server的角色分类</h4><h5 id="正向代理"><a href="#正向代理" class="headerlink" title="正向代理"></a>正向代理</h5><p>代理对客户端不是透明的，客户端需要知道代理的地址并且手动配置。配置了代理，浏览器在发送请求的时候会对报文做特殊的修改。</p>
-<h5 id="反向代理"><a href="#反向代理" class="headerlink" title="反向代理"></a>反向代理</h5><p>说客户端一般不知道代理的存在，认为自己是直接和服务器通信。我们大部分访问的网站就是反向代理服务器，反向代理服务器会转发到真正的服务器，一般在反向代理这一层实现<strong>负载均衡</strong>和<strong>高可用</strong>的功能。而且这里也可以看到，客户端是不会知道真正服务器端的 ip 地址和端口的，这在一定程度上起到了安全保护的作用。</p>
-<img src="/2021/01/29/proxy-intro/image-20210129182705751.png" alt="image-20210129182705751" style="zoom:60%;">
-
-</li>
-</ol>
-<h2 id="代理具体做什么？"><a href="#代理具体做什么？" class="headerlink" title="代理具体做什么？"></a>代理具体做什么？</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">- 修改 HTTP 请求：url、header、body  </span><br><span class="line">- 过滤请求：根据一定的规则丢弃、过滤请求 </span><br><span class="line">- 决定转发到哪个后端（可以是静态定义的，也可以是动态决定） #nginx etc.</span><br><span class="line">- 保存服务器的应答，后续的请求可以直接使用保存的应答 # cache on proxy server</span><br><span class="line">- 修改应答：对应答做一些格式的转换，修改数据，甚至返回完全不一样的应答数据  #security issue?</span><br><span class="line">- 重试机制，如果后端服务器暂时无法响应，隔一段时间重试</span><br><span class="line">- ……</span><br></pre></td></tr></table></figure>
-
-
-
-<p>普通代理</p>
-<p>隧道代理</p>
-<h2 id="代理和网关的区别"><a href="#代理和网关的区别" class="headerlink" title="代理和网关的区别"></a>代理和网关的区别</h2>
       
     </div>
 

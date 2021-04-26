@@ -22,23 +22,27 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"8.0.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
   </script>
 
-  <meta name="description" content="一级标题二级三级 （CTRL +3 或者 ### ）四级最多支持到六级字体hello world CTRL + B 或者 两边加** hello world CTRL + I 或者两边加*  hello world CTRL + B + I 或者 两边加*** hello world ALT + SHIFT + 5  或者~~  引用 这是一个引用， 用&gt;开始   分割线  三个-， 或者三">
+  <meta name="description" content="为了充分利用和管理系统内存资源，Linux采用虚拟内存管理技术，利用虚拟内存技术让每个进程都有4GB 互不干涉的虚拟地址空间。 进程初始化分配和操作的都是基于这个「虚拟地址」，只有当进程需要实际访问内存资源的时候才会建立虚拟地址和物理地址的映射，调入物理内存页。   避免用户直接访问物理内存地址，防止一些破坏性操作，保护操作系统 每个进程都被分配了4GB的虚拟内存，用户程序可使用比实际物理内存更大">
 <meta property="og:type" content="article">
-<meta property="og:title" content="markdown基本语法">
-<meta property="og:url" content="http://example.com/2021/01/27/markdown101/index.html">
+<meta property="og:title" content="linux-memory">
+<meta property="og:url" content="http://example.com/2021/04/26/linux-memory/index.html">
 <meta property="og:site_name" content="Xinran&#39;s Blog">
-<meta property="og:description" content="一级标题二级三级 （CTRL +3 或者 ### ）四级最多支持到六级字体hello world CTRL + B 或者 两边加** hello world CTRL + I 或者两边加*  hello world CTRL + B + I 或者 两边加*** hello world ALT + SHIFT + 5  或者~~  引用 这是一个引用， 用&gt;开始   分割线  三个-， 或者三">
+<meta property="og:description" content="为了充分利用和管理系统内存资源，Linux采用虚拟内存管理技术，利用虚拟内存技术让每个进程都有4GB 互不干涉的虚拟地址空间。 进程初始化分配和操作的都是基于这个「虚拟地址」，只有当进程需要实际访问内存资源的时候才会建立虚拟地址和物理地址的映射，调入物理内存页。   避免用户直接访问物理内存地址，防止一些破坏性操作，保护操作系统 每个进程都被分配了4GB的虚拟内存，用户程序可使用比实际物理内存更大">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://www.w3schools.com/images/w3schools_green.jpg">
-<meta property="article:published_time" content="2021-01-27T12:32:45.000Z">
-<meta property="article:modified_time" content="2021-01-29T04:35:01.961Z">
+<meta property="og:image" content="http://example.com/2021/04/26/linux-memory/640">
+<meta property="og:image" content="http://example.com/2021/04/26/linux-memory/640">
+<meta property="og:image" content="http://example.com/2021/04/26/linux-memory/640">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/ceNmtYOhbMTz21XD2UcYWtoBBNHjicw025DwlBaLjtmuEwtfjXsdLDh0Ruw7b62ZhTHJwEMkcc5NRaTgIP60trA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="http://example.com/2021/04/26/linux-memory/image-20210426162841923.png">
+<meta property="og:image" content="http://example.com/2021/04/26/linux-memory/640">
+<meta property="article:published_time" content="2021-04-26T08:14:23.000Z">
+<meta property="article:modified_time" content="2021-04-26T08:44:40.515Z">
 <meta property="article:author" content="Xinran Wang">
-<meta property="article:tag" content="markdown">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://www.w3schools.com/images/w3schools_green.jpg">
+<meta name="twitter:image" content="http://example.com/2021/04/26/linux-memory/640">
 
 
-<link rel="canonical" href="http://example.com/2021/01/27/markdown101/">
+<link rel="canonical" href="http://example.com/2021/04/26/linux-memory/">
 
 
 <script class="page-configurations">
@@ -51,7 +55,7 @@
   };
 </script>
 
-  <title>markdown基本语法 | Xinran's Blog</title>
+  <title>linux-memory | Xinran's Blog</title>
   
 
 
@@ -193,7 +197,7 @@
 
       <!--noindex-->
       <section class="post-toc-wrap sidebar-panel">
-          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E7%BA%A7%E6%A0%87%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">一级标题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E7%BA%A7"><span class="nav-number">1.1.</span> <span class="nav-text">二级</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E7%BA%A7-%EF%BC%88CTRL-3-%E6%88%96%E8%80%85-%EF%BC%89"><span class="nav-number">1.1.1.</span> <span class="nav-text">三级 （CTRL +3 或者 ### ）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9B%9B%E7%BA%A7"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">四级</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%9C%80%E5%A4%9A%E6%94%AF%E6%8C%81%E5%88%B0%E5%85%AD%E7%BA%A7"><span class="nav-number">1.1.1.1.0.1.</span> <span class="nav-text">最多支持到六级</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E4%BD%93"><span class="nav-number">1.2.</span> <span class="nav-text">字体</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%95%E7%94%A8"><span class="nav-number">1.3.</span> <span class="nav-text">引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E5%89%B2%E7%BA%BF"><span class="nav-number">1.4.</span> <span class="nav-text">分割线</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E7%89%87"><span class="nav-number">1.5.</span> <span class="nav-text">图片</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B6%85%E9%93%BE%E6%8E%A5"><span class="nav-number">1.6.</span> <span class="nav-text">超链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%97%E8%A1%A8"><span class="nav-number">1.7.</span> <span class="nav-text">列表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%89%E5%BA%8F%E5%88%97%E8%A1%A8"><span class="nav-number">1.7.1.</span> <span class="nav-text">有序列表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A0%E5%BA%8F%E5%88%97%E8%A1%A8"><span class="nav-number">1.7.2.</span> <span class="nav-text">无序列表</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A1%A8%E6%A0%BC"><span class="nav-number">1.8.</span> <span class="nav-text">表格</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">1.9.</span> <span class="nav-text">代码</span></a></li></ol></li></ol></div>
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#ZONE-DMA"><span class="nav-number">1.</span> <span class="nav-text">ZONE_DMA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ZONE-NORMAL"><span class="nav-number">2.</span> <span class="nav-text">ZONE_NORMAL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ZONE-HIGHMEM"><span class="nav-number">3.</span> <span class="nav-text">ZONE_HIGHMEM</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E7%A9%BA%E9%97%B4%E5%9C%B0%E5%9D%80"><span class="nav-number"></span> <span class="nav-text">用户空间地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E6%A0%B8%E7%A9%BA%E9%97%B4"><span class="nav-number"></span> <span class="nav-text">内核空间</span></a></div>
       </section>
       <!--/noindex-->
 
@@ -264,7 +268,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/27/markdown101/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/26/linux-memory/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -280,7 +284,7 @@
     
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          markdown基本语法
+          linux-memory
         </h1>
 
         <div class="post-meta-container">
@@ -290,24 +294,9 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
+      
 
-      <time title="Created: 2021-01-27 20:32:45" itemprop="dateCreated datePublished" datetime="2021-01-27T20:32:45+08:00">2021-01-27</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-01-29 12:35:01" itemprop="dateModified" datetime="2021-01-29T12:35:01+08:00">2021-01-29</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/language/" itemprop="url" rel="index"><span itemprop="name">language</span></a>
-        </span>
+      <time title="Created: 2021-04-26 16:14:23 / Modified: 16:44:40" itemprop="dateCreated datePublished" datetime="2021-04-26T16:14:23+08:00">2021-04-26</time>
     </span>
 
   
@@ -327,54 +316,54 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="一级标题"><a href="#一级标题" class="headerlink" title="一级标题"></a>一级标题</h1><h2 id="二级"><a href="#二级" class="headerlink" title="二级"></a>二级</h2><h3 id="三级-（CTRL-3-或者-）"><a href="#三级-（CTRL-3-或者-）" class="headerlink" title="三级 （CTRL +3 或者 ### ）"></a>三级 （CTRL +3 或者 ### ）</h3><h4 id="四级"><a href="#四级" class="headerlink" title="四级"></a>四级</h4><h6 id="最多支持到六级"><a href="#最多支持到六级" class="headerlink" title="最多支持到六级"></a>最多支持到六级</h6><h2 id="字体"><a href="#字体" class="headerlink" title="字体"></a>字体</h2><p><strong>hello world</strong></p>
-<p>CTRL + B 或者 两边加**</p>
-<p><em>hello world</em></p>
-<p>CTRL + I 或者两边加* </p>
-<p><strong><em>hello world</em></strong></p>
-<p>CTRL + B + I 或者 两边加***</p>
-<p><del>hello world</del></p>
-<p>ALT + SHIFT + 5  或者~~ </p>
-<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><blockquote>
-<p>这是一个引用， 用&gt;开始 </p>
-</blockquote>
-<h2 id="分割线"><a href="#分割线" class="headerlink" title="分割线"></a>分割线</h2><hr>
-<hr>
-<p>三个-， 或者三个*</p>
-<h2 id="图片"><a href="#图片" class="headerlink" title="图片"></a>图片</h2><p><img src="https://www.w3schools.com/images/w3schools_green.jpg" alt="图片名字"></p>
-<p>感叹号[图片名字]+ (图片地址)</p>
-<h2 id="超链接"><a href="#超链接" class="headerlink" title="超链接"></a>超链接</h2><p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/services-networking/service/#ips-and-vips">超级链接</a></p>
-<p>方括号里面写链接名字，后面加()写链接地址。</p>
-<h2 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h2><h3 id="有序列表"><a href="#有序列表" class="headerlink" title="有序列表"></a>有序列表</h3><ol>
-<li>A</li>
-<li>B</li>
-<li>C</li>
-</ol>
-<h3 id="无序列表"><a href="#无序列表" class="headerlink" title="无序列表"></a>无序列表</h3><p>减号 + space</p>
+        <p>为了充分利用和管理系统内存资源，Linux采用虚拟内存管理技术，利用虚拟内存技术让每个进程都有<code>4GB</code> 互不干涉的虚拟地址空间。</p>
+<p>进程初始化分配和操作的都是基于这个「虚拟地址」，只有当进程需要实际访问内存资源的时候才会建立<strong>虚拟地址和物理地址的映射</strong>，调入物理内存页。</p>
+<p><img src="/2021/04/26/linux-memory/640" alt="Image"></p>
 <ul>
-<li>A</li>
-<li>B</li>
+<li>避免用户直接访问物理内存地址，防止一些破坏性操作，保护操作系统</li>
+<li>每个进程都被分配了4GB的虚拟内存，用户程序可使用比实际物理内存更大的地址空间</li>
 </ul>
-<p>CTRL + [  回到上一级<br>CTRL + ]  回到下一级</p>
-<h2 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h2><table>
-<thead>
-<tr>
-<th>名字</th>
-<th>性别</th>
-<th>生日</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>张三</td>
-<td>男</td>
-<td>1997.1</td>
-</tr>
-</tbody></table>
-<p>名字 | 性别| 生日|</p>
-<p>–|–|–</p>
-<p>xx|xx|xx|</p>
-<p>进入源代码模式(CTRL + /)，删除行间空行，就可以生成表格了。</p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public</span><br></pre></td></tr></table></figure>
+<p>当需进程要实际访问内存的时候，会由内核的「请求分页机制」产生「缺页异常」调入物理内存页。</p>
+<p>把虚拟地址转换成内存的物理地址，这中间涉及利用<code>MMU</code> 内存管理单元（Memory Management Unit ) 对虚拟地址分段和分页（段页式）地址转换</p>
+<p><code>Linux</code> 内核会将物理内存分为3个管理区，分别是：</p>
+<h3 id="ZONE-DMA"><a href="#ZONE-DMA" class="headerlink" title="ZONE_DMA"></a>ZONE_DMA</h3><p><code>DMA</code>内存区域。包含0MB~16MB之间的内存页框，可以由老式基于<code>ISA</code>的设备通过<code>DMA</code>使用，直接映射到内核的地址空间。</p>
+<h3 id="ZONE-NORMAL"><a href="#ZONE-NORMAL" class="headerlink" title="ZONE_NORMAL"></a>ZONE_NORMAL</h3><p>普通内存区域。包含16MB~896MB之间的内存页框，常规页框，直接映射到内核的地址空间。</p>
+<h3 id="ZONE-HIGHMEM"><a href="#ZONE-HIGHMEM" class="headerlink" title="ZONE_HIGHMEM"></a>ZONE_HIGHMEM</h3><p>高端内存区域。包含896MB以上的内存页框，不进行直接映射，可以通过永久映射和临时映射进行这部分内存页框的访问。</p>
+<p><img src="/2021/04/26/linux-memory/640" alt="Image"></p>
+<h2 id="用户空间地址"><a href="#用户空间地址" class="headerlink" title="用户空间地址"></a>用户空间地址</h2><p>用户进程能访问的是「用户空间」，每个进程都有自己独立的用户空间，虚拟地址范围从从 <code>0x00000000</code> 至 <code>0xBFFFFFFF</code> 总容量3G 。</p>
+<p>进程（执行的程序）占用的用户空间按照「 访问属性一致的地址空间存放在一起 」的原则，划分成 <code>5</code>个不同的内存区域。访问属性指的是“可读、可写、可执行等 。</p>
+<p><img src="/2021/04/26/linux-memory/640" alt="Image"></p>
+<ul>
+<li><p>代码段</p>
+<p>代码段是用来存放可执行文件的操作指令，可执行程序在内存中的镜像。代码段需要防止在运行时被非法修改，所以只准许读取操作，它是不可写的。</p>
+</li>
+<li><p>数据段</p>
+<p>数据段用来存放可执行文件中已初始化全局变量，换句话说就是存放程序静态分配的变量和全局变量。</p>
+</li>
+<li><p>BSS段</p>
+<p><code>BSS</code>段包含了程序中未初始化的全局变量，在内存中 <code>bss</code> 段全部置零。</p>
+</li>
+<li><p>堆 <code>heap</code></p>
+<p>堆是用于存放进程运行中被动态分配的内存段，它的大小并不固定，可动态扩张或缩减。当进程调用malloc等函数分配内存时，新分配的内存就被动态添加到堆上（堆被扩张）；当利用free等函数释放内存时，被释放的内存从堆中被剔除（堆被缩减）</p>
+</li>
+<li><p>栈 <code>stack</code></p>
+<p>栈是用户存放程序临时创建的局部变量，也就是函数中定义的变量（但不包括 <code>static</code> 声明的变量，static意味着在数据段中存放变量）。除此以外，在函数被调用时，其参数也会被压入发起调用的进程栈中，并且待到调用结束后，函数的返回值也会被存放回栈中。由于栈的先进先出特点，所以栈特别方便用来保存/恢复调用现场。从这个意义上讲，我们可以把堆栈看成一个寄存、交换临时数据的内存区。</p>
+</li>
+</ul>
+<h2 id="内核空间"><a href="#内核空间" class="headerlink" title="内核空间"></a>内核空间</h2><p>在 <code>x86 32</code> 位系统里，Linux 内核地址空间是指虚拟地址从 <code>0xC0000000</code> 开始到 <code>0xFFFFFFFF</code> 为止的高端内存地址空间，总计 <code>1G</code> 的容量， 包括了内核镜像、物理页面表、驱动程序等运行在内核空间 。</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/ceNmtYOhbMTz21XD2UcYWtoBBNHjicw025DwlBaLjtmuEwtfjXsdLDh0Ruw7b62ZhTHJwEMkcc5NRaTgIP60trA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1" alt="Image"></p>
+<p>用 <code>virt_to_phys()</code>函数将内核虚拟空间中的线性地址转化为物理地址。</p>
+<p>用户态切换到内核态的 3 种方式：系统调用、异常、外设中断</p>
+<p>用户态的程序就不能随意操作内核地址空间，具有一定的安全保护作用；内核态线程共享内核地址空间；</p>
+<p><img src="/2021/04/26/linux-memory/image-20210426162841923.png" alt="image-20210426162841923"></p>
+<p>MMU</p>
+<ul>
+<li>MMU 是一种硬件电路，它包含两个部件，一个是分段部件，一个是分页部件</li>
+<li>分段机制把一个逻辑地址转换为线性地址</li>
+<li>分页机制把一个线性地址转换为物理地址</li>
+</ul>
+<p><img src="/2021/04/26/linux-memory/640" alt="Image"></p>
+
     </div>
 
     
@@ -382,22 +371,16 @@
     
 
     <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/markdown/" rel="tag"># markdown</a>
-          </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2021/01/27/qat-deply/" rel="prev" title="QAT在Ubuntu18.04上的安装和虚拟化">
-                  <i class="fa fa-chevron-left"></i> QAT在Ubuntu18.04上的安装和虚拟化
+                <a href="/2021/04/26/gpu-virtualization/" rel="prev" title="GPU虚拟化">
+                  <i class="fa fa-chevron-left"></i> GPU虚拟化
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2021/01/28/multi-device-try/" rel="next" title="多设备同步hexoy">
-                  多设备同步hexoy <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>
