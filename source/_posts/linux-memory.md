@@ -1,19 +1,15 @@
 ---
-title: linux-memory
+title: linux内存管理
 date: 2021-04-26 16:14:23
 tags:
 categories:
 ---
 
-
-
-
-
 为了充分利用和管理系统内存资源，Linux采用虚拟内存管理技术，利用虚拟内存技术让每个进程都有`4GB` 互不干涉的虚拟地址空间。
 
 进程初始化分配和操作的都是基于这个「虚拟地址」，只有当进程需要实际访问内存资源的时候才会建立**虚拟地址和物理地址的映射**，调入物理内存页。
 
-![Image](linux-memory/640)
+![Image](linux-memory/1.png)
 
 - 避免用户直接访问物理内存地址，防止一些破坏性操作，保护操作系统
 - 每个进程都被分配了4GB的虚拟内存，用户程序可使用比实际物理内存更大的地址空间
@@ -36,7 +32,7 @@ categories:
 
 高端内存区域。包含896MB以上的内存页框，不进行直接映射，可以通过永久映射和临时映射进行这部分内存页框的访问。
 
-![Image](linux-memory/640)
+![Image](linux-memory/2.png)
 
 
 
@@ -50,7 +46,7 @@ categories:
 
 
 
-![Image](linux-memory/640)
+![Image](linux-memory/3.png)
 
 - 代码段
 
@@ -96,4 +92,70 @@ MMU
 - 分段机制把一个逻辑地址转换为线性地址
 - 分页机制把一个线性地址转换为物理地址
 
-![Image](linux-memory/640)
+
+
+## 物理内存
+
+page -  4KB
+
+struct-page 
+
+4G内存一共有4GB/4KB = 2 ^20个 
+
+zone:
+
+zone dma
+
+zone normal: direct mapping
+
+zone highmem: dynamic mapping
+
+```shell
+cat /proc/zoneinfo | grep Node
+Node 0, zone      DMA
+Node 0, zone    DMA32 # 64 bit system
+Node 0, zone   Normal
+Node 0, zone  Movable # 防止内存碎片化的ZONE_MOVABLE
+Node 0, zone   Device # 支持设备热插拔的ZONE_DEVICE
+Node 1, zone      DMA
+Node 1, zone    DMA32
+Node 1, zone   Normal
+Node 1, zone  Movable
+Node 1, zone   Device
+# 没有 zone highmem， 因为是64位系统，可以直接映射
+```
+
+
+
+zone与zone之间并没有任何的物理分割，便于管理进行的一种逻辑意义上的划分
+
+Node
+
+![uma-numa](linux-memory/numa.jgp)
+
+内存分配
+
+buddy
+
+slab
+
+
+
+## 虚拟内存
+
+
+
+
+
+### MMU
+
+单片机是没有mmu的，程序之间访问物理地址。
+
+![image-20210427151435405](linux-memory/image-20210427151435405.png)
+
+
+
+
+
+
+
