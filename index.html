@@ -292,7 +292,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-04-27 18:28:29" itemprop="dateModified" datetime="2021-04-27T18:28:29+08:00">2021-04-27</time>
+        <time title="Modified: 2021-04-28 17:41:42" itemprop="dateModified" datetime="2021-04-28T17:41:42+08:00">2021-04-28</time>
       </span>
 
   
@@ -305,7 +305,18 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>为了充分利用和管理系统内存资源，Linux采用虚拟内存管理技术，利用虚拟内存技术让每个进程都有<code>4GB</code> 互不干涉的虚拟地址空间。</p>
+          <h1 id="物理内存"><a href="#物理内存" class="headerlink" title="物理内存"></a>物理内存</h1><p><img src="/2021/04/26/linux-memory/%E5%AD%98%E5%82%A8%20(1).svg"></p>
+<p>内存条：</p>
+<img src="/2021/04/26/linux-memory/image-20210428163238359.png" alt="image-20210428163238359" style="zoom:67%;">
+
+<p>内存工作频率 = min(cpu外部频率，主板频率，内存自身频率)</p>
+<p>对于一个32位系统来说，地址总线最多是32bit，它能寻址的最大范围是2^32=4GB，所以也就能插4GB的内存条，插8GB的也没有用。</p>
+<p>64位CPU出现之后，其地址总线位宽一般采用的是36位或者40位，它们寻址的物理地址空间为64GB或者1T（intel）。</p>
+<blockquote>
+<p>注意： 常说的<strong>CPU位宽</strong>指的是<strong>数据总线</strong>位宽，最大寻址范围和CPU位宽无关。</p>
+</blockquote>
+<p><img src="/2021/04/26/linux-memory/image-20210428174116842.png" alt="image-20210428174116842"></p>
+<p>为了充分利用和管理系统内存资源，Linux采用虚拟内存管理技术，利用虚拟内存技术让每个进程都有<code>4GB</code> 互不干涉的虚拟地址空间。</p>
 <p>进程初始化分配和操作的都是基于这个「虚拟地址」，只有当进程需要实际访问内存资源的时候才会建立<strong>虚拟地址和物理地址的映射</strong>，调入物理内存页。</p>
 <p><img src="/2021/04/26/linux-memory/1.png" alt="Image"></p>
 <ul>
@@ -351,7 +362,7 @@
 <li>分段机制把一个逻辑地址转换为线性地址</li>
 <li>分页机制把一个线性地址转换为物理地址</li>
 </ul>
-<h2 id="物理内存"><a href="#物理内存" class="headerlink" title="物理内存"></a>物理内存</h2><p>page -  4KB</p>
+<h2 id="物理内存-1"><a href="#物理内存-1" class="headerlink" title="物理内存"></a>物理内存</h2><p>page -  4KB</p>
 <p>struct-page </p>
 <p>4G内存一共有4GB/4KB = 2 ^20个 </p>
 <p>zone:</p>
