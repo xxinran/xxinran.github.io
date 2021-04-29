@@ -22,25 +22,29 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"8.0.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
   </script>
 
-  <meta name="description" content="物理内存 内存条：   内存工作频率 &#x3D; min(cpu外部频率，主板频率，内存自身频率) 对于一个32位系统来说，地址总线最多是32bit，它能寻址的最大范围是2^32&#x3D;4GB，所以也就能插4GB的内存条，插8GB的也没有用。 64位CPU出现之后，其地址总线位宽一般采用的是36位或者40位，它们寻址的物理地址空间为64GB或者1T（intel）。  注意： 常说的CPU位宽指的是数据总线位宽，">
+  <meta name="description" content="主流存储设备 物理内存我们不讨论cache，flash，rom这些，只讨论memory也就是通常所说的主存，现在一般是DDR4.   内存工作频率 &#x3D; min(cpu外部频率，主板频率，内存自身频率) 对于一个32位系统来说，地址总线最多是32bit，它能寻址的最大范围是2^32&#x3D;4GB，所以也就能插4GB的内存条，插8GB的也没有用。 64位CPU出现之后，其地址总线位宽一般采用的是36位或者4">
 <meta property="og:type" content="article">
 <meta property="og:title" content="linux内存管理">
 <meta property="og:url" content="http://example.com/2021/04/26/linux-memory/index.html">
 <meta property="og:site_name" content="Xinran&#39;s Blog">
-<meta property="og:description" content="物理内存 内存条：   内存工作频率 &#x3D; min(cpu外部频率，主板频率，内存自身频率) 对于一个32位系统来说，地址总线最多是32bit，它能寻址的最大范围是2^32&#x3D;4GB，所以也就能插4GB的内存条，插8GB的也没有用。 64位CPU出现之后，其地址总线位宽一般采用的是36位或者40位，它们寻址的物理地址空间为64GB或者1T（intel）。  注意： 常说的CPU位宽指的是数据总线位宽，">
+<meta property="og:description" content="主流存储设备 物理内存我们不讨论cache，flash，rom这些，只讨论memory也就是通常所说的主存，现在一般是DDR4.   内存工作频率 &#x3D; min(cpu外部频率，主板频率，内存自身频率) 对于一个32位系统来说，地址总线最多是32bit，它能寻址的最大范围是2^32&#x3D;4GB，所以也就能插4GB的内存条，插8GB的也没有用。 64位CPU出现之后，其地址总线位宽一般采用的是36位或者4">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/2021/04/26/linux-memory/%E5%AD%98%E5%82%A8%20(1).svg">
 <meta property="og:image" content="http://example.com/2021/04/26/linux-memory/image-20210428163238359.png">
 <meta property="og:image" content="http://example.com/2021/04/26/linux-memory/image-20210428174116842.png">
-<meta property="og:image" content="http://example.com/2021/04/26/linux-memory/1.png">
 <meta property="og:image" content="http://example.com/2021/04/26/linux-memory/2.png">
-<meta property="og:image" content="http://example.com/2021/04/26/linux-memory/3.png">
-<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/ceNmtYOhbMTz21XD2UcYWtoBBNHjicw025DwlBaLjtmuEwtfjXsdLDh0Ruw7b62ZhTHJwEMkcc5NRaTgIP60trA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="http://example.com/2021/04/26/linux-memory/1.png">
+<meta property="og:image" content="http://example.com/2021/04/26/linux-memory/64bit.png">
 <meta property="og:image" content="http://example.com/2021/04/26/linux-memory/image-20210426162841923.png">
-<meta property="og:image" content="http://example.com/2021/04/26/linux-memory/numa.jgp">
+<meta property="og:image" content="http://example.com/2021/04/26/linux-memory/3.png">
+<meta property="og:image" content="http://example.com/2021/04/26/linux-memory/image-20210429173652156.png">
+<meta property="og:image" content="http://example.com/2021/04/26/linux-memory/image-20210429180241789.png">
 <meta property="og:image" content="http://example.com/2021/04/26/linux-memory/image-20210427151435405.png">
+<meta property="og:image" content="http://example.com/2021/04/26/linux-memory/numa.jgp">
+<meta property="og:image" content="http://example.com/2021/04/26/linux-memory/image-20210429154000972.png">
+<meta property="og:image" content="http://example.com/2021/04/26/linux-memory/image-20210429154341590.png">
 <meta property="article:published_time" content="2021-04-26T08:14:23.000Z">
-<meta property="article:modified_time" content="2021-04-28T09:41:42.823Z">
+<meta property="article:modified_time" content="2021-04-29T10:03:57.372Z">
 <meta property="article:author" content="Xinran Wang">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/2021/04/26/linux-memory/%E5%AD%98%E5%82%A8%20(1).svg">
@@ -201,7 +205,7 @@
 
       <!--noindex-->
       <section class="post-toc-wrap sidebar-panel">
-          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%89%A9%E7%90%86%E5%86%85%E5%AD%98"><span class="nav-number">1.</span> <span class="nav-text">物理内存</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ZONE-DMA"><span class="nav-number">1.0.1.</span> <span class="nav-text">ZONE_DMA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ZONE-NORMAL"><span class="nav-number">1.0.2.</span> <span class="nav-text">ZONE_NORMAL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ZONE-HIGHMEM"><span class="nav-number">1.0.3.</span> <span class="nav-text">ZONE_HIGHMEM</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E7%A9%BA%E9%97%B4%E5%9C%B0%E5%9D%80"><span class="nav-number">1.1.</span> <span class="nav-text">用户空间地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E6%A0%B8%E7%A9%BA%E9%97%B4"><span class="nav-number">1.2.</span> <span class="nav-text">内核空间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%A9%E7%90%86%E5%86%85%E5%AD%98-1"><span class="nav-number">1.3.</span> <span class="nav-text">物理内存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98"><span class="nav-number">1.4.</span> <span class="nav-text">虚拟内存</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MMU"><span class="nav-number">1.4.1.</span> <span class="nav-text">MMU</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BB%E6%B5%81%E5%AD%98%E5%82%A8%E8%AE%BE%E5%A4%87"><span class="nav-number">1.</span> <span class="nav-text">主流存储设备</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%89%A9%E7%90%86%E5%86%85%E5%AD%98"><span class="nav-number">2.</span> <span class="nav-text">物理内存</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%A9%E7%90%86%E5%86%85%E5%AD%983%E4%B8%AA%E7%AE%A1%E7%90%86%E5%8C%BA"><span class="nav-number">2.1.</span> <span class="nav-text">物理内存3个管理区</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ZONE-DMA"><span class="nav-number">2.1.1.</span> <span class="nav-text">ZONE_DMA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ZONE-NORMAL"><span class="nav-number">2.1.2.</span> <span class="nav-text">ZONE_NORMAL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ZONE-HIGHMEM"><span class="nav-number">2.1.3.</span> <span class="nav-text">ZONE_HIGHMEM</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98"><span class="nav-number">3.</span> <span class="nav-text">虚拟内存</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E6%80%81%E5%92%8C%E5%86%85%E6%A0%B8%E6%80%81"><span class="nav-number">3.1.</span> <span class="nav-text">用户态和内核态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E7%A9%BA%E9%97%B4%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98-3GB"><span class="nav-number">3.2.</span> <span class="nav-text">用户空间虚拟内存 - 3GB</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E6%A0%B8%E7%A9%BA%E9%97%B4%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98-1GB"><span class="nav-number">3.3.</span> <span class="nav-text">内核空间虚拟内存 - 1GB</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%80-%E7%89%A9%E7%90%86%E5%9C%B0%E5%9D%80%E7%9A%84%E6%98%A0%E5%B0%84%E5%85%B3%E7%B3%BB%E5%9B%BE"><span class="nav-number">3.4.</span> <span class="nav-text">虚拟地址 -  物理地址的映射关系图</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MMU"><span class="nav-number">4.</span> <span class="nav-text">MMU</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%AE%B5%E6%9C%BA%E5%88%B6"><span class="nav-number">4.1.</span> <span class="nav-text">分段机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E9%A1%B5%E6%9C%BA%E5%88%B6"><span class="nav-number">4.2.</span> <span class="nav-text">分页机制</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#NUMA"><span class="nav-number">5.</span> <span class="nav-text">NUMA</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">5.0.1.</span> <span class="nav-text"></span></a></li></ol></li></ol></li></ol></div>
       </section>
       <!--/noindex-->
 
@@ -306,7 +310,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-04-28 17:41:42" itemprop="dateModified" datetime="2021-04-28T17:41:42+08:00">2021-04-28</time>
+        <time title="Modified: 2021-04-29 18:03:57" itemprop="dateModified" datetime="2021-04-29T18:03:57+08:00">2021-04-29</time>
       </span>
 
   
@@ -326,8 +330,8 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="物理内存"><a href="#物理内存" class="headerlink" title="物理内存"></a>物理内存</h1><p><img src="/2021/04/26/linux-memory/%E5%AD%98%E5%82%A8%20(1).svg"></p>
-<p>内存条：</p>
+        <h1 id="主流存储设备"><a href="#主流存储设备" class="headerlink" title="主流存储设备"></a>主流存储设备</h1><p><img src="/2021/04/26/linux-memory/%E5%AD%98%E5%82%A8%20(1).svg"></p>
+<h1 id="物理内存"><a href="#物理内存" class="headerlink" title="物理内存"></a>物理内存</h1><p>我们不讨论cache，flash，rom这些，只讨论memory也就是通常所说的主存，现在一般是DDR4.</p>
 <img src="/2021/04/26/linux-memory/image-20210428163238359.png" alt="image-20210428163238359" style="zoom:67%;">
 
 <p>内存工作频率 = min(cpu外部频率，主板频率，内存自身频率)</p>
@@ -337,71 +341,98 @@
 <p>注意： 常说的<strong>CPU位宽</strong>指的是<strong>数据总线</strong>位宽，最大寻址范围和CPU位宽无关。</p>
 </blockquote>
 <p><img src="/2021/04/26/linux-memory/image-20210428174116842.png" alt="image-20210428174116842"></p>
-<p>为了充分利用和管理系统内存资源，Linux采用虚拟内存管理技术，利用虚拟内存技术让每个进程都有<code>4GB</code> 互不干涉的虚拟地址空间。</p>
+<p>查询系统地址总线位宽：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cat /proc/cpuinfo  | grep address</span><br><span class="line">address sizes   : 46 bits physical, 48 bits virtual</span><br><span class="line"><span class="meta">#</span><span class="bash"> 物理内存寻址范围/虚拟内存寻址范围可以不同</span></span><br></pre></td></tr></table></figure>
+<h2 id="物理内存3个管理区"><a href="#物理内存3个管理区" class="headerlink" title="物理内存3个管理区"></a>物理内存3个管理区</h2><p><code>Linux</code> 内核会将物理内存分为3个管理区，分别是：</p>
+<h3 id="ZONE-DMA"><a href="#ZONE-DMA" class="headerlink" title="ZONE_DMA"></a>ZONE_DMA</h3><p><code>DMA</code>内存区域。包含0MB~16MB之间的内存页框，可以由老式基于<code>ISA</code>的设备通过<code>DMA</code>使用，直接映射到内核的地址空间。</p>
+<h3 id="ZONE-NORMAL"><a href="#ZONE-NORMAL" class="headerlink" title="ZONE_NORMAL"></a>ZONE_NORMAL</h3><p>普通内存区域。包含16MB~896MB之间的内存页框，常规页框，直接映射到内核的地址空间。</p>
+<h3 id="ZONE-HIGHMEM"><a href="#ZONE-HIGHMEM" class="headerlink" title="ZONE_HIGHMEM"></a>ZONE_HIGHMEM</h3><p>高端内存区域。包含896MB以上的内存页框，不进行直接映射，可以通过永久映射和临时映射进行这部分内存页框的访问。</p>
+<p><img src="/2021/04/26/linux-memory/2.png" alt="Image"></p>
+<h1 id="虚拟内存"><a href="#虚拟内存" class="headerlink" title="虚拟内存"></a>虚拟内存</h1><p>对于32位系统来说，为了充分利用和管理系统内存资源，Linux采用虚拟内存管理技术，利用虚拟内存技术让每个进程都有<code>4GB</code> 互不干涉的虚拟地址空间。</p>
+<p>为什么是4GB? </p>
+<p>之所以是 4GB ，是因为在 32 位的操作系统中，一个指针长度是 4 字节 （32位）， 2的32次 方个地址寻址能力是从 0x00000000~0xFFFFFFFF 即为 4GB 大小的容量。</p>
 <p>进程初始化分配和操作的都是基于这个「虚拟地址」，只有当进程需要实际访问内存资源的时候才会建立<strong>虚拟地址和物理地址的映射</strong>，调入物理内存页。</p>
 <p><img src="/2021/04/26/linux-memory/1.png" alt="Image"></p>
+<p>这么做的目的是：</p>
 <ul>
 <li>避免用户直接访问物理内存地址，防止一些破坏性操作，保护操作系统</li>
 <li>每个进程都被分配了4GB的虚拟内存，用户程序可使用比实际物理内存更大的地址空间</li>
 </ul>
 <p>当需进程要实际访问内存的时候，会由内核的「请求分页机制」产生「缺页异常」调入物理内存页。</p>
-<p>把虚拟地址转换成内存的物理地址，这中间涉及利用<code>MMU</code> 内存管理单元（Memory Management Unit ) 对虚拟地址分段和分页（段页式）地址转换</p>
-<p><code>Linux</code> 内核会将物理内存分为3个管理区，分别是：</p>
-<h3 id="ZONE-DMA"><a href="#ZONE-DMA" class="headerlink" title="ZONE_DMA"></a>ZONE_DMA</h3><p><code>DMA</code>内存区域。包含0MB~16MB之间的内存页框，可以由老式基于<code>ISA</code>的设备通过<code>DMA</code>使用，直接映射到内核的地址空间。</p>
-<h3 id="ZONE-NORMAL"><a href="#ZONE-NORMAL" class="headerlink" title="ZONE_NORMAL"></a>ZONE_NORMAL</h3><p>普通内存区域。包含16MB~896MB之间的内存页框，常规页框，直接映射到内核的地址空间。</p>
-<h3 id="ZONE-HIGHMEM"><a href="#ZONE-HIGHMEM" class="headerlink" title="ZONE_HIGHMEM"></a>ZONE_HIGHMEM</h3><p>高端内存区域。包含896MB以上的内存页框，不进行直接映射，可以通过永久映射和临时映射进行这部分内存页框的访问。</p>
-<p><img src="/2021/04/26/linux-memory/2.png" alt="Image"></p>
-<h2 id="用户空间地址"><a href="#用户空间地址" class="headerlink" title="用户空间地址"></a>用户空间地址</h2><p>用户进程能访问的是「用户空间」，每个进程都有自己独立的用户空间，虚拟地址范围从从 <code>0x00000000</code> 至 <code>0xBFFFFFFF</code> 总容量3G 。</p>
+<p><strong>64位系统对比：</strong></p>
+<p><img src="/2021/04/26/linux-memory/64bit.png" alt="Linux的进程地址空间[一]"></p>
+<h2 id="用户态和内核态"><a href="#用户态和内核态" class="headerlink" title="用户态和内核态"></a>用户态和内核态</h2><p>用户态切换到内核态的 3 种方式：系统调用、异常、外设中断</p>
+<p>用户态的程序就不能随意操作内核地址空间，具有一定的安全保护作用；内核态线程共享内核地址空间；</p>
+<p><img src="/2021/04/26/linux-memory/image-20210426162841923.png" alt="image-20210426162841923"></p>
+<h2 id="用户空间虚拟内存-3GB"><a href="#用户空间虚拟内存-3GB" class="headerlink" title="用户空间虚拟内存 - 3GB"></a>用户空间虚拟内存 - 3GB</h2><p>用户进程能访问的是「用户空间」，每个进程都有自己独立的用户空间，虚拟地址范围从从 <code>0x00000000</code> 至 <code>0xBFFFFFFF</code> 总容量3G 。</p>
 <p>进程（执行的程序）占用的用户空间按照「 访问属性一致的地址空间存放在一起 」的原则，划分成 <code>5</code>个不同的内存区域。访问属性指的是“可读、可写、可执行等 。</p>
 <p><img src="/2021/04/26/linux-memory/3.png" alt="Image"></p>
 <ul>
 <li><p>代码段</p>
-<p>代码段是用来存放可执行文件的操作指令，可执行程序在内存中的镜像。代码段需要防止在运行时被非法修改，所以只准许读取操作，它是不可写的。</p>
+<p>代码段是用来存放可执行文件的操作指令，可执行程序在内存中的镜像。代码段需要防止在运行时被非法修改，所以<strong>只准许读取操作，它是不可写的</strong>。</p>
 </li>
 <li><p>数据段</p>
-<p>数据段用来存放可执行文件中已初始化全局变量，换句话说就是存放程序静态分配的变量和全局变量。</p>
+<p>数据段用来存放可执行文件中<strong>已初始化全局变量</strong>，换句话说就是存放程序静态分配的变量和全局变量。</p>
 </li>
 <li><p>BSS段</p>
-<p><code>BSS</code>段包含了程序中未初始化的全局变量，在内存中 <code>bss</code> 段全部置零。</p>
+<p><code>BSS</code>段包含了程序中<strong>未初始化的全局变量</strong>，在内存中 <code>bss</code> 段全部置零。</p>
 </li>
 <li><p>堆 <code>heap</code></p>
-<p>堆是用于存放进程运行中被动态分配的内存段，它的大小并不固定，可动态扩张或缩减。当进程调用malloc等函数分配内存时，新分配的内存就被动态添加到堆上（堆被扩张）；当利用free等函数释放内存时，被释放的内存从堆中被剔除（堆被缩减）</p>
+<p>堆是用于存放进程运行中被<strong>动态分配的内存段</strong>，它的大小并不固定，可动态扩张或缩减。当进程调用malloc等函数分配内存时，新分配的内存就被动态添加到堆上（堆被扩张）；当利用free等函数释放内存时，被释放的内存从堆中被剔除（堆被缩减）</p>
 </li>
 <li><p>栈 <code>stack</code></p>
-<p>栈是用户存放程序临时创建的局部变量，也就是函数中定义的变量（但不包括 <code>static</code> 声明的变量，static意味着在数据段中存放变量）。除此以外，在函数被调用时，其参数也会被压入发起调用的进程栈中，并且待到调用结束后，函数的返回值也会被存放回栈中。由于栈的先进先出特点，所以栈特别方便用来保存/恢复调用现场。从这个意义上讲，我们可以把堆栈看成一个寄存、交换临时数据的内存区。</p>
+<p>栈是用户存放程序<strong>临时创建的局部变量</strong>，也就是函数中定义的变量（但不包括 <code>static</code> 声明的变量，static意味着在数据段中存放变量）。除此以外，在函数被调用时，其参数也会被压入发起调用的进程栈中，并且待到调用结束后，函数的返回值也会被存放回栈中。由于栈的先进先出特点，所以栈特别方便用来保存/恢复调用现场。从这个意义上讲，我们可以把堆栈看成一个寄存、交换临时数据的内存区。</p>
 </li>
 </ul>
-<h2 id="内核空间"><a href="#内核空间" class="headerlink" title="内核空间"></a>内核空间</h2><p>在 <code>x86 32</code> 位系统里，Linux 内核地址空间是指虚拟地址从 <code>0xC0000000</code> 开始到 <code>0xFFFFFFFF</code> 为止的高端内存地址空间，总计 <code>1G</code> 的容量， 包括了内核镜像、物理页面表、驱动程序等运行在内核空间 。</p>
-<p><img src="https://mmbiz.qpic.cn/mmbiz_png/ceNmtYOhbMTz21XD2UcYWtoBBNHjicw025DwlBaLjtmuEwtfjXsdLDh0Ruw7b62ZhTHJwEMkcc5NRaTgIP60trA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1" alt="Image"></p>
-<p>用 <code>virt_to_phys()</code>函数将内核虚拟空间中的线性地址转化为物理地址。</p>
-<p>用户态切换到内核态的 3 种方式：系统调用、异常、外设中断</p>
-<p>用户态的程序就不能随意操作内核地址空间，具有一定的安全保护作用；内核态线程共享内核地址空间；</p>
-<p><img src="/2021/04/26/linux-memory/image-20210426162841923.png" alt="image-20210426162841923"></p>
-<p>MMU</p>
+<h2 id="内核空间虚拟内存-1GB"><a href="#内核空间虚拟内存-1GB" class="headerlink" title="内核空间虚拟内存 - 1GB"></a>内核空间虚拟内存 - 1GB</h2><p>在 <code>x86 32</code> 位系统里，Linux 内核地址空间是指虚拟地址从 <code>0xC0000000</code> 开始到 <code>0xFFFFFFFF</code> 为止的高端内存地址空间，总计 <code>1G</code> 的容量， 包括了内核镜像、物理页面表、驱动程序等运行在内核空间 。虚拟空间的1GB怎么对应到物理内存的4GB甚至更多（取决于地址总线最大寻址和插的内存条大小）呢？</p>
+<img src="/2021/04/26/linux-memory/image-20210429173652156.png" alt="image-20210429173652156" style="zoom:80%;">
+
+<ul>
+<li><p>直接映射区：线性空间中从 3G 开始到3GB+896M 的区间，直接映射到物理内存的 0 - 896MB（dma zone + normal zone），物理和虚拟中间差一个固定的偏移量：PAGE_OFFSET = 0xC0000000。</p>
+<p>虚拟地址 = <code>PAGE_OFFSET</code> + 物理地址，也可以用 <code>virt_to_phys()</code>函数将内核虚拟空间中的线性地址转化为物理地址。</p>
+</li>
+<li><p>除了直接映射区：还有4G-(3G+896MB) = 128MB的空间要映射到物理内存的其他空间，显然1：1map是不够的。所以内核空间拿出了最后的 128M 地址区间，划分成下面三个高端内存映射区（动态分配，可以重复映射不同的地址）：</p>
+<ul>
+<li>动态内存映射区：该区域由内核函数 vmalloc 来分配</li>
+<li>永久内存映射区：该区域可访问高端内存（highmem）</li>
+<li>固定映射区：该区域和 4G 的顶端只有 4k 的隔离带，其每个地址项都服务于特定的用途，如：ACPI_BASE 等</li>
+</ul>
+</li>
+</ul>
+<h2 id="虚拟地址-物理地址的映射关系图"><a href="#虚拟地址-物理地址的映射关系图" class="headerlink" title="虚拟地址 -  物理地址的映射关系图"></a>虚拟地址 -  物理地址的映射关系图</h2><p><img src="/2021/04/26/linux-memory/image-20210429180241789.png" alt="image-20210429180241789"></p>
+<h1 id="MMU"><a href="#MMU" class="headerlink" title="MMU"></a>MMU</h1><p>把虚拟地址转换成内存的物理地址，这中间涉及利用<code>MMU</code> 内存管理单元（Memory Management Unit ) 对虚拟地址分段和分页（段页式）地址转换。</p>
 <ul>
 <li>MMU 是一种硬件电路，它包含两个部件，一个是分段部件，一个是分页部件</li>
 <li>分段机制把一个逻辑地址转换为线性地址</li>
 <li>分页机制把一个线性地址转换为物理地址</li>
 </ul>
-<h2 id="物理内存-1"><a href="#物理内存-1" class="headerlink" title="物理内存"></a>物理内存</h2><p>page -  4KB</p>
+<blockquote>
+<p>单片机是没有mmu的，程序直接访问物理地址。</p>
+</blockquote>
+<p><img src="/2021/04/26/linux-memory/image-20210427151435405.png" alt="image-20210427151435405"></p>
+<h2 id="分段机制"><a href="#分段机制" class="headerlink" title="分段机制"></a>分段机制</h2><h2 id="分页机制"><a href="#分页机制" class="headerlink" title="分页机制"></a>分页机制</h2><p>page -  4KB</p>
 <p>struct-page </p>
 <p>4G内存一共有4GB/4KB = 2 ^20个 </p>
-<p>zone:</p>
-<p>zone dma</p>
-<p>zone normal: direct mapping</p>
-<p>zone highmem: dynamic mapping</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">cat /proc/zoneinfo | grep Node</span><br><span class="line">Node 0, zone      DMA</span><br><span class="line">Node 0, zone    DMA32 # 64 bit system</span><br><span class="line">Node 0, zone   Normal</span><br><span class="line">Node 0, zone  Movable # 防止内存碎片化的ZONE_MOVABLE</span><br><span class="line">Node 0, zone   Device # 支持设备热插拔的ZONE_DEVICE</span><br><span class="line">Node 1, zone      DMA</span><br><span class="line">Node 1, zone    DMA32</span><br><span class="line">Node 1, zone   Normal</span><br><span class="line">Node 1, zone  Movable</span><br><span class="line">Node 1, zone   Device</span><br><span class="line"><span class="meta">#</span><span class="bash"> 没有 zone highmem， 因为是64位系统，可以直接映射</span></span><br></pre></td></tr></table></figure>
-
-
-<p>zone与zone之间并没有任何的物理分割，便于管理进行的一种逻辑意义上的划分</p>
-<p>Node</p>
-<p><img src="/2021/04/26/linux-memory/numa.jgp" alt="uma-numa"></p>
 <p>内存分配</p>
 <p>buddy</p>
 <p>slab</p>
-<h2 id="虚拟内存"><a href="#虚拟内存" class="headerlink" title="虚拟内存"></a>虚拟内存</h2><h3 id="MMU"><a href="#MMU" class="headerlink" title="MMU"></a>MMU</h3><p>单片机是没有mmu的，程序之间访问物理地址。</p>
-<p><img src="/2021/04/26/linux-memory/image-20210427151435405.png" alt="image-20210427151435405"></p>
+<h1 id="NUMA"><a href="#NUMA" class="headerlink" title="NUMA"></a>NUMA</h1><p>Node，Zone，Page</p>
+<p><img src="/2021/04/26/linux-memory/numa.jgp" alt="uma-numa"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">cat /proc/zoneinfo | grep Node</span><br><span class="line">Node 0, zone      DMA</span><br><span class="line">Node 0, zone    DMA32 # 64 bit system</span><br><span class="line">Node 0, zone   Normal</span><br><span class="line">Node 0, zone  Movable # 防止内存碎片化的ZONE_MOVABLE</span><br><span class="line">Node 0, zone   Device # 支持设备热插拔的ZONE_DEVICE</span><br><span class="line">Node 1, zone      DMA</span><br><span class="line">Node 1, zone    DMA32</span><br><span class="line">Node 1, zone   Normal</span><br><span class="line">Node 1, zone  Movable</span><br><span class="line">Node 1, zone   Device</span><br><span class="line"><span class="meta">#</span><span class="bash"> 没有 zone highmem， 因为是64位系统，可以直接映射</span></span><br></pre></td></tr></table></figure>
 
+
+
+
+
+
+
+
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> lscpu</span></span><br><span class="line">Architecture:                    x86_64</span><br><span class="line">CPU op-mode(s):                  32-bit, 64-bit</span><br><span class="line">Byte Order:                      Little Endian</span><br><span class="line">Address sizes:                   46 bits physical, 48 bits virtual</span><br><span class="line">CPU(s):                          32  # cores per socket * sockets * thread per core </span><br><span class="line">On-line CPU(s) list:             0-31</span><br><span class="line">Thread(s) per core:              2</span><br><span class="line">Core(s) per socket:              8</span><br><span class="line">Socket(s):                       2</span><br><span class="line">NUMA node(s):                    2</span><br><span class="line">Vendor ID:                       GenuineIntel</span><br><span class="line">CPU family:                      6</span><br><span class="line">Model:                           45</span><br><span class="line">Model name:                      Intel(R) Xeon(R) CPU E5-2670 0 @ 2.60GHz</span><br><span class="line">Stepping:                        7</span><br><span class="line">CPU MHz:                         1207.495</span><br><span class="line">CPU max MHz:                     3300.0000</span><br><span class="line">CPU min MHz:                     1200.0000</span><br><span class="line">BogoMIPS:                        5187.02</span><br><span class="line">Virtualization:                  VT-x</span><br><span class="line">L1d cache:                       512 KiB  # instruction cache</span><br><span class="line">L1i cache:                       512 KiB  # data cache</span><br><span class="line">L2 cache:                        4 MiB</span><br><span class="line">L3 cache:                        40 MiB</span><br><span class="line">NUMA node0 CPU(s):               0-7,16-23</span><br><span class="line">NUMA node1 CPU(s):               8-15,24-31</span><br><span class="line">Vulnerability Itlb multihit:     KVM: Mitigation: Split huge pages</span><br><span class="line">Vulnerability L1tf:              Mitigation; PTE Inversion; VMX conditional cache flushes, SMT vulnerable</span><br><span class="line">Vulnerability Mds:               Mitigation; Clear CPU buffers; SMT vulnerable</span><br><span class="line">Vulnerability Meltdown:          Mitigation; PTI</span><br><span class="line">Vulnerability Spec store bypass: Mitigation; Speculative Store Bypass disabled via prctl and seccomp</span><br><span class="line">Vulnerability Spectre v1:        Mitigation; usercopy/swapgs barriers and __user pointer sanitization</span><br><span class="line">Vulnerability Spectre v2:        Mitigation; Full generic retpoline, IBPB conditional, IBRS_FW, STIBP conditional, RSB filling</span><br><span class="line">Vulnerability Srbds:             Not affected</span><br><span class="line">Vulnerability Tsx async abort:   Not affected</span><br><span class="line">Flags:                           fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxs</span><br><span class="line">                                 r sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good</span><br><span class="line">                                  nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2</span><br><span class="line">                                  ssse3 cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic popcnt tsc_deadline_timer aes xsave avx lahf</span><br><span class="line">                                 _lm epb pti ssbd ibrs ibpb stib</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><img src="/2021/04/26/linux-memory/image-20210429154000972.png" alt="image-20210429154000972"></p>
+<img src="/2021/04/26/linux-memory/image-20210429154341590.png" alt="image-20210429154341590" style="zoom:67%;">
+
+<h3 id><a href="#" class="headerlink" title></a></h3>
     </div>
 
     
