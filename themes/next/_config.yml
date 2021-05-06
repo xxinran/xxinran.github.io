@@ -67,8 +67,8 @@ custom_logo: #/uploads/custom-logo.jpg
 # CC licenses are available in 39 languages, you can find the specific and correct abbreviation you need on https://creativecommons.org
 creative_commons:
   license: by-nc-sa
-  sidebar: false
-  post: false
+  sidebar: true
+  post: true
   language:
 
 
@@ -82,12 +82,12 @@ creative_commons:
 # When running the site in a subdirectory (e.g. yoursite.com/blog), remove the leading slash from link value (/archives -> archives).
 # External url should start with http:// or https://
 menu:
-  home: / || fa fa-home
-  about: /about/ || fa fa-user
-  tags: /tags/ || fa fa-tags
-  categories: /categories/ || fa fa-th
-  archives: /archives/ || fa fa-archive
-  schedule: /schedule/ || fa fa-calendar
+  home: /
+  about: /about/
+  tags: /tags/
+  categories: /categories/
+  archives: /archives/
+  schedule: /schedule/
 
 # Enable / Disable menu icons / item badges.
 menu_settings:
@@ -139,8 +139,8 @@ site_state: true
 # Key is the link label showing to end users.
 # Value before `||` delimiter is the target permalink, value after `||` delimiter is the name of Font Awesome icon.
 social:
-  GitHub: https://github.com/xxinran || fab fa-github
-  E-Mail: mailto:xxinran.wang@gmail.com || fa fa-envelope
+  GitHub: https://github.com/xxinran
+  E-Mail: mailto:xxinran.wang@gmail.com
   #Weibo: https://weibo.com/yourname || fab fa-weibo
   #Google: https://plus.google.com/yourname || fab fa-google
   #Twitter: https://twitter.com/yourname || fab fa-twitter
@@ -238,9 +238,6 @@ excerpt_description: true
 # Read more button
 # If true, the read more button will be displayed in excerpt section.
 read_more_btn: true
-auto_excerpt:
-  enable: true
-  length: 150
 
 # Post meta display settings
 post_meta:
@@ -256,6 +253,11 @@ post_meta:
 symbols_count_time:
   separated_meta: true
   item_text_total: false
+post_wordcount:
+  item_text: true
+  wordcount: true
+  min2read: true
+  separated_meta: true
 
 # Use icon instead of the symbol # to indicate the tag at the bottom of the post
 tag_icon: false
@@ -371,9 +373,9 @@ codeblock:
 back2top:
   enable: true
   # Back to top in sidebar.
-  sidebar: false
+  sidebar: true
   # Scroll percent label in b2t button.
-  scrollpercent: false
+  scrollpercent: true
 
 # Reading progress bar
 reading_progress:
@@ -831,7 +833,7 @@ motion:
 # Progress bar in the top during page loading.
 # For more information: https://github.com/HubSpot/pace
 pace:
-  enable: false
+  enable: true
   # Themes list:
   # big-counter | bounce | barber-shop | center-atom | center-circle | center-radar | center-simple
   # corner-indicator | fill-left | flat-top | flash | loading-bar | mac-osx | material | minimal
@@ -840,12 +842,12 @@ pace:
 # Canvas ribbon
 # For more information: https://github.com/hustcc/ribbon.js
 canvas_ribbon:
-  enable: true
+  enable: false
   size: 300 # The width of the ribbon
   alpha: 0.6 # The transparency of the ribbon
   zIndex: -1 # The display level of the ribbon
 
-canvas_nest: true
+canvas_lines: true
 
 #! ==============================================================
 #! DO NOT EDIT THE FOLLOWING SETTINGS
@@ -946,3 +948,8 @@ vendors:
 css: css
 js: js
 images: images
+
+post_copyright:
+  enbale: true
+  license: CC BY-NC-SA 3.0
+  license_url: https://creativecommons.org/licenses/by-nv-sa/3.0
