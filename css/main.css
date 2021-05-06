@@ -2842,6 +2842,10 @@ mark.search-keyword {
   border-top: initial;
   padding: 10px 0 10px;
 }
+.posts-expand .post {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
 .post-body h1,
 .post-body h2 {
   border-bottom: 1px solid #eee;
