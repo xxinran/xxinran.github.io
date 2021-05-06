@@ -24,12 +24,12 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"8.0.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":true}};
   </script>
 
-  <meta name="description" content="主流存储设备 物理内存我们不讨论cache，flash，rom这些，只讨论memory也就是通常所说的主存，现在一般是DDR4.   内存工作频率 &#x3D; min(cpu外部频率，主板频率，内存自身频率) &lt;! – more –&gt; 对于一个32位系统来说，地址总线最多是32bit，它能寻址的最大范围是2^32&#x3D;4GB，所以也就能插4GB的内存条，插8GB的也没有用。 64位CPU出现之后，">
+  <meta name="description" content="主流存储设备 物理内存我们不讨论cache，flash，rom这些，只讨论memory也就是通常所说的主存，现在一般是DDR4.   内存工作频率 &#x3D; min(cpu外部频率，主板频率，内存自身频率)">
 <meta property="og:type" content="article">
 <meta property="og:title" content="linux内存管理">
 <meta property="og:url" content="http://example.com/2021/04/26/linux-memory/index.html">
 <meta property="og:site_name" content="Xinran&#39;s Blog">
-<meta property="og:description" content="主流存储设备 物理内存我们不讨论cache，flash，rom这些，只讨论memory也就是通常所说的主存，现在一般是DDR4.   内存工作频率 &#x3D; min(cpu外部频率，主板频率，内存自身频率) &lt;! – more –&gt; 对于一个32位系统来说，地址总线最多是32bit，它能寻址的最大范围是2^32&#x3D;4GB，所以也就能插4GB的内存条，插8GB的也没有用。 64位CPU出现之后，">
+<meta property="og:description" content="主流存储设备 物理内存我们不讨论cache，flash，rom这些，只讨论memory也就是通常所说的主存，现在一般是DDR4.   内存工作频率 &#x3D; min(cpu外部频率，主板频率，内存自身频率)">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/2021/04/26/linux-memory/%E5%AD%98%E5%82%A8%20(1).svg">
 <meta property="og:image" content="http://example.com/2021/04/26/linux-memory/image-20210428163238359.png">
@@ -48,7 +48,7 @@
 <meta property="og:image" content="http://example.com/2021/04/26/linux-memory/image-20210429154000972.png">
 <meta property="og:image" content="http://example.com/2021/04/26/linux-memory/image-20210429154341590.png">
 <meta property="article:published_time" content="2021-04-26T08:14:23.000Z">
-<meta property="article:modified_time" content="2021-05-06T09:57:01.375Z">
+<meta property="article:modified_time" content="2021-05-06T10:00:36.762Z">
 <meta property="article:author" content="Xinran Wang">
 <meta property="article:tag" content="linux">
 <meta name="twitter:card" content="summary">
@@ -341,7 +341,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-05-06 17:57:01" itemprop="dateModified" datetime="2021-05-06T17:57:01+08:00">2021-05-06</time>
+        <time title="Modified: 2021-05-06 18:00:36" itemprop="dateModified" datetime="2021-05-06T18:00:36+08:00">2021-05-06</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -375,7 +375,8 @@
 <img src="/2021/04/26/linux-memory/image-20210428163238359.png" alt="image-20210428163238359" style="zoom:67%;">
 
 <p>内存工作频率 = min(cpu外部频率，主板频率，内存自身频率)</p>
-<p>&lt;! – more –&gt;</p>
+<a id="more"></a>
+
 <p>对于一个32位系统来说，地址总线最多是32bit，它能寻址的最大范围是2^32=4GB，所以也就能插4GB的内存条，插8GB的也没有用。</p>
 <p>64位CPU出现之后，其地址总线位宽一般采用的是36位或者40位，它们寻址的物理地址空间为64GB或者1T（intel）。</p>
 <blockquote>
