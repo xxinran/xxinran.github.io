@@ -40,12 +40,15 @@
 <meta property="og:image" content="http://example.com/2021/04/26/linux-memory/image-20210429173652156.png">
 <meta property="og:image" content="http://example.com/2021/04/26/linux-memory/image-20210429180241789.png">
 <meta property="og:image" content="http://example.com/2021/04/26/linux-memory/image-20210427151435405.png">
+<meta property="og:image" content="http://example.com/2021/04/26/linux-memory/waibu.png">
+<meta property="og:image" content="http://example.com/2021/04/26/linux-memory/neibu.pnf">
 <meta property="og:image" content="http://example.com/2021/04/26/linux-memory/numa.jgp">
 <meta property="og:image" content="http://example.com/2021/04/26/linux-memory/image-20210429154000972.png">
 <meta property="og:image" content="http://example.com/2021/04/26/linux-memory/image-20210429154341590.png">
 <meta property="article:published_time" content="2021-04-26T08:14:23.000Z">
-<meta property="article:modified_time" content="2021-04-29T10:03:57.372Z">
+<meta property="article:modified_time" content="2021-05-06T07:41:18.946Z">
 <meta property="article:author" content="Xinran Wang">
+<meta property="article:tag" content="linux">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/2021/04/26/linux-memory/%E5%AD%98%E5%82%A8%20(1).svg">
 
@@ -205,7 +208,7 @@
 
       <!--noindex-->
       <section class="post-toc-wrap sidebar-panel">
-          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BB%E6%B5%81%E5%AD%98%E5%82%A8%E8%AE%BE%E5%A4%87"><span class="nav-number">1.</span> <span class="nav-text">主流存储设备</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%89%A9%E7%90%86%E5%86%85%E5%AD%98"><span class="nav-number">2.</span> <span class="nav-text">物理内存</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%A9%E7%90%86%E5%86%85%E5%AD%983%E4%B8%AA%E7%AE%A1%E7%90%86%E5%8C%BA"><span class="nav-number">2.1.</span> <span class="nav-text">物理内存3个管理区</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ZONE-DMA"><span class="nav-number">2.1.1.</span> <span class="nav-text">ZONE_DMA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ZONE-NORMAL"><span class="nav-number">2.1.2.</span> <span class="nav-text">ZONE_NORMAL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ZONE-HIGHMEM"><span class="nav-number">2.1.3.</span> <span class="nav-text">ZONE_HIGHMEM</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98"><span class="nav-number">3.</span> <span class="nav-text">虚拟内存</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E6%80%81%E5%92%8C%E5%86%85%E6%A0%B8%E6%80%81"><span class="nav-number">3.1.</span> <span class="nav-text">用户态和内核态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E7%A9%BA%E9%97%B4%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98-3GB"><span class="nav-number">3.2.</span> <span class="nav-text">用户空间虚拟内存 - 3GB</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E6%A0%B8%E7%A9%BA%E9%97%B4%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98-1GB"><span class="nav-number">3.3.</span> <span class="nav-text">内核空间虚拟内存 - 1GB</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%80-%E7%89%A9%E7%90%86%E5%9C%B0%E5%9D%80%E7%9A%84%E6%98%A0%E5%B0%84%E5%85%B3%E7%B3%BB%E5%9B%BE"><span class="nav-number">3.4.</span> <span class="nav-text">虚拟地址 -  物理地址的映射关系图</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MMU"><span class="nav-number">4.</span> <span class="nav-text">MMU</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%AE%B5%E6%9C%BA%E5%88%B6"><span class="nav-number">4.1.</span> <span class="nav-text">分段机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E9%A1%B5%E6%9C%BA%E5%88%B6"><span class="nav-number">4.2.</span> <span class="nav-text">分页机制</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#NUMA"><span class="nav-number">5.</span> <span class="nav-text">NUMA</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">5.0.1.</span> <span class="nav-text"></span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BB%E6%B5%81%E5%AD%98%E5%82%A8%E8%AE%BE%E5%A4%87"><span class="nav-number">1.</span> <span class="nav-text">主流存储设备</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%89%A9%E7%90%86%E5%86%85%E5%AD%98"><span class="nav-number">2.</span> <span class="nav-text">物理内存</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%A9%E7%90%86%E5%86%85%E5%AD%983%E4%B8%AA%E7%AE%A1%E7%90%86%E5%8C%BA"><span class="nav-number">2.1.</span> <span class="nav-text">物理内存3个管理区</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ZONE-DMA"><span class="nav-number">2.1.1.</span> <span class="nav-text">ZONE_DMA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ZONE-NORMAL"><span class="nav-number">2.1.2.</span> <span class="nav-text">ZONE_NORMAL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ZONE-HIGHMEM"><span class="nav-number">2.1.3.</span> <span class="nav-text">ZONE_HIGHMEM</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98"><span class="nav-number">3.</span> <span class="nav-text">虚拟内存</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E6%80%81%E5%92%8C%E5%86%85%E6%A0%B8%E6%80%81"><span class="nav-number">3.1.</span> <span class="nav-text">用户态和内核态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E7%A9%BA%E9%97%B4%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98-3GB"><span class="nav-number">3.2.</span> <span class="nav-text">用户空间虚拟内存 - 3GB</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E6%A0%B8%E7%A9%BA%E9%97%B4%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98-1GB"><span class="nav-number">3.3.</span> <span class="nav-text">内核空间虚拟内存 - 1GB</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%80-%E7%89%A9%E7%90%86%E5%9C%B0%E5%9D%80%E7%9A%84%E6%98%A0%E5%B0%84%E5%85%B3%E7%B3%BB%E5%9B%BE"><span class="nav-number">3.4.</span> <span class="nav-text">虚拟地址 -  物理地址的映射关系图</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MMU"><span class="nav-number">4.</span> <span class="nav-text">MMU</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%AE%B5%E6%9C%BA%E5%88%B6"><span class="nav-number">4.1.</span> <span class="nav-text">分段机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E9%A1%B5%E6%9C%BA%E5%88%B6"><span class="nav-number">4.2.</span> <span class="nav-text">分页机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%A9%E7%90%86%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D"><span class="nav-number">4.3.</span> <span class="nav-text">物理内存分配</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%96%E9%83%A8%E7%A2%8E%E7%89%87"><span class="nav-number">4.3.1.</span> <span class="nav-text">外部碎片</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E9%83%A8%E7%A2%8E%E7%89%87"><span class="nav-number">4.3.2.</span> <span class="nav-text">内部碎片</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Buddy%EF%BC%88%E4%BC%99%E4%BC%B4%EF%BC%89%E5%88%86%E9%85%8D%E7%AE%97%E6%B3%95-gt-%E5%A4%96%E9%83%A8%E7%A2%8E%E7%89%87"><span class="nav-number">4.3.3.</span> <span class="nav-text">Buddy（伙伴）分配算法 -&gt; 外部碎片</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#slab%E5%88%86%E9%85%8D%E5%99%A8-gt-%E5%86%85%E9%83%A8%E7%A2%8E%E7%89%87"><span class="nav-number">4.3.4.</span> <span class="nav-text">slab分配器 - &gt; 内部碎片</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#NUMA"><span class="nav-number">5.</span> <span class="nav-text">NUMA</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">5.0.1.</span> <span class="nav-text"></span></a></li></ol></li></ol></li></ol></div>
       </section>
       <!--/noindex-->
 
@@ -310,8 +313,17 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-04-29 18:03:57" itemprop="dateModified" datetime="2021-04-29T18:03:57+08:00">2021-04-29</time>
+        <time title="Modified: 2021-05-06 15:41:18" itemprop="dateModified" datetime="2021-05-06T15:41:18+08:00">2021-05-06</time>
       </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+    </span>
 
   
     <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
@@ -393,8 +405,8 @@
 </li>
 <li><p>除了直接映射区：还有4G-(3G+896MB) = 128MB的空间要映射到物理内存的其他空间，显然1：1map是不够的。所以内核空间拿出了最后的 128M 地址区间，划分成下面三个高端内存映射区（动态分配，可以重复映射不同的地址）：</p>
 <ul>
-<li>动态内存映射区：该区域由内核函数 vmalloc 来分配</li>
-<li>永久内存映射区：该区域可访问高端内存（highmem）</li>
+<li>动态内存映射区：该区域由内核函数 vmalloc 来分配，特点是：线性空间连续，但是对应的物理地址空间不一定连续。<code>vmalloc</code> 分配的线性地址所对应的物理页可能处于低端内存，也可能处于高端内存。</li>
+<li>永久内存映射区：该区域可访问高端内存（highmem），访问方法是使用 <code>alloc_page (_GFP_HIGHMEM)</code> 分配高端内存页或者使用<code>kmap</code>函数将分配到的高端内存映射到该区域。</li>
 <li>固定映射区：该区域和 4G 的顶端只有 4k 的隔离带，其每个地址项都服务于特定的用途，如：ACPI_BASE 等</li>
 </ul>
 </li>
@@ -410,12 +422,22 @@
 <p>单片机是没有mmu的，程序直接访问物理地址。</p>
 </blockquote>
 <p><img src="/2021/04/26/linux-memory/image-20210427151435405.png" alt="image-20210427151435405"></p>
-<h2 id="分段机制"><a href="#分段机制" class="headerlink" title="分段机制"></a>分段机制</h2><h2 id="分页机制"><a href="#分页机制" class="headerlink" title="分页机制"></a>分页机制</h2><p>page -  4KB</p>
+<h2 id="分段机制"><a href="#分段机制" class="headerlink" title="分段机制"></a>分段机制</h2><h2 id="分页机制"><a href="#分页机制" class="headerlink" title="分页机制"></a>分页机制</h2><p>页表保存在<strong>物理内存中</strong>，<strong>MMU会查找页表来确定一个VA应该映射到什么PA。</strong></p>
+<p><strong>段错误</strong>我们已经遇到过很多次了，它是这样产生的：</p>
+<ol>
+<li>用户程序要访问的一个VA，经MMU检查无权访问。</li>
+<li>MMU产生一个异常，CPU从用户模式切换到特权模式，跳转到内核代码中执行异常服务程序。</li>
+<li>内核把这个异常解释为段错误，把引发异常的进程终止掉。</li>
+</ol>
+<p>page -  4KB</p>
 <p>struct-page </p>
 <p>4G内存一共有4GB/4KB = 2 ^20个 </p>
-<p>内存分配</p>
-<p>buddy</p>
-<p>slab</p>
+<h2 id="物理内存分配"><a href="#物理内存分配" class="headerlink" title="物理内存分配"></a>物理内存分配</h2><h3 id="外部碎片"><a href="#外部碎片" class="headerlink" title="外部碎片"></a>外部碎片</h3><p>当需要分配大块内存的时候，要用好几页组合起来才够，而系统分配物理内存页的时候会尽量分配连续的内存页面，频繁的分配与回收物理页导致大量的小块内存夹杂在已分配页面中间，形成外部碎片，举个例子：</p>
+<p><img src="/2021/04/26/linux-memory/waibu.png" alt="Image"></p>
+<h3 id="内部碎片"><a href="#内部碎片" class="headerlink" title="内部碎片"></a>内部碎片</h3><p>物理内存是按页来分配的，这样当实际只需要很小内存的时候，也会分配至少是 4K 大小的页面，而内核中有很多需要以字节为单位分配内存的场景，这样本来只想要几个字节而已却不得不分配一页内存，除去用掉的字节剩下的就形成了内部碎片。</p>
+<p><img src="/2021/04/26/linux-memory/neibu.pnf" alt="Image"></p>
+<h3 id="Buddy（伙伴）分配算法-gt-外部碎片"><a href="#Buddy（伙伴）分配算法-gt-外部碎片" class="headerlink" title="Buddy（伙伴）分配算法 -&gt; 外部碎片"></a>Buddy（伙伴）分配算法 -&gt; 外部碎片</h3><p>相同大小的页框块用链表串起来，页框块就像手拉手的好伙伴，也是这个算法名字的由来。</p>
+<h3 id="slab分配器-gt-内部碎片"><a href="#slab分配器-gt-内部碎片" class="headerlink" title="slab分配器 - &gt; 内部碎片"></a>slab分配器 - &gt; 内部碎片</h3><p>通过将内存按使用对象不同<strong>再划分</strong>成不同大小的空间，应用于内核对象的缓存。</p>
 <h1 id="NUMA"><a href="#NUMA" class="headerlink" title="NUMA"></a>NUMA</h1><p>Node，Zone，Page</p>
 <p><img src="/2021/04/26/linux-memory/numa.jgp" alt="uma-numa"></p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">cat /proc/zoneinfo | grep Node</span><br><span class="line">Node 0, zone      DMA</span><br><span class="line">Node 0, zone    DMA32 # 64 bit system</span><br><span class="line">Node 0, zone   Normal</span><br><span class="line">Node 0, zone  Movable # 防止内存碎片化的ZONE_MOVABLE</span><br><span class="line">Node 0, zone   Device # 支持设备热插拔的ZONE_DEVICE</span><br><span class="line">Node 1, zone      DMA</span><br><span class="line">Node 1, zone    DMA32</span><br><span class="line">Node 1, zone   Normal</span><br><span class="line">Node 1, zone  Movable</span><br><span class="line">Node 1, zone   Device</span><br><span class="line"><span class="meta">#</span><span class="bash"> 没有 zone highmem， 因为是64位系统，可以直接映射</span></span><br></pre></td></tr></table></figure>
@@ -440,6 +462,9 @@
     
 
     <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux/" rel="tag"># linux</a>
+          </div>
 
         
 
