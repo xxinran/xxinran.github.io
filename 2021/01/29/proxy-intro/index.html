@@ -21,7 +21,7 @@
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"8.0.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"8.0.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":true}};
   </script>
 
   <meta name="description" content="为什么需要proxy server? 监控，内容过滤  公司的proxy server可以清楚的知道，你的流量要访问什么网站。proxy server可以禁掉一些网址，或者redirect到一些提示页面。 公司的proxy server可以监控你每天都在访问什么网站，花了多长时间。   节约带宽，节省成本  在proxy server上会有一些cache，里面存放了最近访问的website的数据，">
@@ -412,9 +412,7 @@
 </li>
 <li><h4 id="按照相对于client-server的角色分类"><a href="#按照相对于client-server的角色分类" class="headerlink" title="按照相对于client-server的角色分类"></a>按照相对于client-server的角色分类</h4><h5 id="正向代理"><a href="#正向代理" class="headerlink" title="正向代理"></a>正向代理</h5><p>代理对客户端不是透明的，客户端需要知道代理的地址并且手动配置。配置了代理，浏览器在发送请求的时候会对报文做特殊的修改。</p>
 <h5 id="反向代理"><a href="#反向代理" class="headerlink" title="反向代理"></a>反向代理</h5><p>说客户端一般不知道代理的存在，认为自己是直接和服务器通信。我们大部分访问的网站就是反向代理服务器，反向代理服务器会转发到真正的服务器，一般在反向代理这一层实现<strong>负载均衡</strong>和<strong>高可用</strong>的功能。而且这里也可以看到，客户端是不会知道真正服务器端的 ip 地址和端口的，这在一定程度上起到了安全保护的作用。</p>
-<img src="/2021/01/29/proxy-intro/image-20210129182705751.png" alt="image-20210129182705751" style="zoom:60%;">
-
-</li>
+<img src="/2021/01/29/proxy-intro/image-20210129182705751.png" alt="image-20210129182705751" style="zoom:60%;"></li>
 </ol>
 <h2 id="代理具体做什么？"><a href="#代理具体做什么？" class="headerlink" title="代理具体做什么？"></a>代理具体做什么？</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">- 修改 HTTP 请求：url、header、body  </span><br><span class="line">- 过滤请求：根据一定的规则丢弃、过滤请求 </span><br><span class="line">- 决定转发到哪个后端（可以是静态定义的，也可以是动态决定） #nginx etc.</span><br><span class="line">- 保存服务器的应答，后续的请求可以直接使用保存的应答 # cache on proxy server</span><br><span class="line">- 修改应答：对应答做一些格式的转换，修改数据，甚至返回完全不一样的应答数据  #security issue?</span><br><span class="line">- 重试机制，如果后端服务器暂时无法响应，隔一段时间重试</span><br><span class="line">- ……</span><br></pre></td></tr></table></figure>
 
