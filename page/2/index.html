@@ -160,7 +160,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/posts/f5beba55.html">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/01/istio-deploy/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -174,7 +174,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/posts/f5beba55.html" class="post-title-link" itemprop="url">部署istio+k8s+kiali</a>
+            <a href="/2021/03/01/istio-deploy/" class="post-title-link" itemprop="url">部署istio+k8s+kiali</a>
         </h2>
 
         <div class="post-meta">
@@ -191,7 +191,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-05-07 15:14:22" itemprop="dateModified" datetime="2021-05-07T15:14:22+08:00">2021-05-07</time>
+                <time title="Modified: 2021-05-07 15:30:57" itemprop="dateModified" datetime="2021-05-07T15:30:57+08:00">2021-05-07</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -222,20 +222,20 @@
 <h4 id="Install-Calico"><a href="#Install-Calico" class="headerlink" title="Install Calico"></a>Install Calico</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">kubectl create -f https://docs.projectcalico.org/manifests/tigera-operator.yaml</span><br><span class="line">kubectl create -f https://docs.projectcalico.org/manifests/custom-resources.yaml</span><br><span class="line">watch kubectl get pods -n calico-system</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> untaint master node</span></span><br><span class="line">kubectl taint nodes --all node-role.kubernetes.io/master-</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> check</span></span><br><span class="line">kubectl get nodes -o wide</span><br></pre></td></tr></table></figure>
 <h4 id="Install-Istio"><a href="#Install-Istio" class="headerlink" title="Install Istio"></a>Install Istio</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">curl -L https://istio.io/downloadIstio | sh -</span><br><span class="line">export PATH=&quot;$PATH:/home/ubuntu/istio-1.9.0/bin&quot;</span><br><span class="line">cd istio-1.9.0</span><br><span class="line">istioctl install </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> all pods <span class="keyword">in</span> <span class="string">&quot;default&quot;</span> ns will have the sidecar</span></span><br><span class="line">kubectl label namespace default istio-injection=enabled</span><br></pre></td></tr></table></figure>
 <h4 id="Deploy-sample"><a href="#Deploy-sample" class="headerlink" title="Deploy sample"></a>Deploy sample</h4><p><a target="_blank" rel="noopener" href="https://istio.io/latest/docs/setup/getting-started/#bookinfo">https://istio.io/latest/docs/setup/getting-started/#bookinfo</a></p>
-<p><img src="/posts/f5beba55.htm/image-20210303143623822.png" alt="image-20210303143623822"></p>
+<p><img src="/2021/03/01/istio-deploy/image-20210303143623822.png" alt="image-20210303143623822"></p>
 <p>本机上（集群内），可以通过cluster IP访问：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> curl 10.106.23.203:9080</span></span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">  &lt;head&gt;</span><br><span class="line">    &lt;title&gt;Simple Bookstore App&lt;/title&gt;</span><br><span class="line">&lt;meta charset=&quot;utf-8&quot;&gt;</span><br><span class="line">&lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;</span><br><span class="line">&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- Latest compiled and minified CSS --&gt;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
 
 <h5 id="集群外访问服务"><a href="#集群外访问服务" class="headerlink" title="集群外访问服务"></a>集群外访问服务</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> kubectl apply -f samples/bookinfo/networking/bookinfo-gateway.yaml</span></span><br><span class="line">gateway.networking.istio.io/bookinfo-gateway created</span><br><span class="line">virtualservice.networking.istio.io/bookinfo created</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> istioctl analyze</span></span><br><span class="line">✔ No validation issues found when analyzing namespace: default.</span><br></pre></td></tr></table></figure>
-<p><img src="/posts/f5beba55.htm/image-20210303144837821.png" alt="image-20210303144837821"></p>
+<p><img src="/2021/03/01/istio-deploy/image-20210303144837821.png" alt="image-20210303144837821"></p>
 <p>因为我的系统不支持external loadbalancer，所以要通过nodeport的方式暴露host的接口，才可以在本机用<code>localhost:nodeport</code>来访问。</p>
-<img src="/posts/f5beba55.htm/image-20210303144916013.png" alt="image-20210303144916013" style="zoom:80%;">
+<img src="/2021/03/01/istio-deploy/image-20210303144916013.png" alt="image-20210303144916013" style="zoom:80%;">
 
 <h4 id="Install-Dashboard"><a href="#Install-Dashboard" class="headerlink" title="Install Dashboard"></a>Install Dashboard</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> kubectl apply -f samples/addons $ kubectl rollout status deployment/kiali -n istio-system</span></span><br><span class="line"></span><br><span class="line">Waiting for deployment &quot;kiali&quot; rollout to finish: 0 of 1 updated replicas are available... deployment &quot;kiali&quot; successfully rolled out</span><br></pre></td></tr></table></figure>
  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> istioctl dashboard kiali</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 因为是remote server，需要建立一个tunnel</span></span><br><span class="line">http://localhost:20001/kiali</span><br><span class="line">Failed to open browser; open http://localhost:20001/kiali in your browser.</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h5 id="建立tunnel"><a href="#建立tunnel" class="headerlink" title="建立tunnel"></a>建立tunnel</h5><p><img src="/posts/f5beba55.htm/image-20210303145356395.png" alt="image-20210303145356395"></p>
-<p><img src="/posts/f5beba55.htm/image-20210303145757231.png" alt="image-20210303145757231"></p>
+<h5 id="建立tunnel"><a href="#建立tunnel" class="headerlink" title="建立tunnel"></a>建立tunnel</h5><p><img src="/2021/03/01/istio-deploy/image-20210303145356395.png" alt="image-20210303145356395"></p>
+<p><img src="/2021/03/01/istio-deploy/image-20210303145757231.png" alt="image-20210303145757231"></p>
 <p>解释上图：把remote上的所有开放端口，都通过跳板机jumper的22端口转发到本地机器的<strong>8888</strong>端口。在本地的浏览器里设置socks proxy，将本地机器的访问全部转发到<strong>8888</strong>端口，这样就可以完成通过跳板机的端口转发。</p>
 <h5 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h5><p>即使按上述设置了，还是访问不到kiali dashboard。追查到原因是：</p>
 <p><code>~/istio-xxxx/samples/addons/kiali.yaml</code></p>
@@ -244,7 +244,7 @@
 
 
 <p>可以通过<strong>remote_server_ip:nodeport</strong>访问dashboar。</p>
-<p><img src="/posts/f5beba55.htm/image-20210303151337851.png" alt="image-20210303151337851"></p>
+<p><img src="/2021/03/01/istio-deploy/image-20210303151337851.png" alt="image-20210303151337851"></p>
 <h4 id="卸载Uninstall"><a href="#卸载Uninstall" class="headerlink" title="卸载Uninstall"></a>卸载Uninstall</h4><p>Remove sample‘s resouces: <a target="_blank" rel="noopener" href="https://istio.io/latest/docs/examples/bookinfo/#cleanup">https://istio.io/latest/docs/examples/bookinfo/#cleanup</a></p>
 <p>Uninstall istio: <a target="_blank" rel="noopener" href="https://istio.io/latest/docs/setup/getting-started/#uninstall">https://istio.io/latest/docs/setup/getting-started/#uninstall</a></p>
 
@@ -266,7 +266,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/posts/a94c45db.html">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/26/istio-pilot/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -280,7 +280,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/posts/a94c45db.html" class="post-title-link" itemprop="url">istio学习（1）-pilot</a>
+            <a href="/2021/02/26/istio-pilot/" class="post-title-link" itemprop="url">istio学习（1）-pilot</a>
         </h2>
 
         <div class="post-meta">
@@ -297,7 +297,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-05-07 15:14:22" itemprop="dateModified" datetime="2021-05-07T15:14:22+08:00">2021-05-07</time>
+                <time title="Modified: 2021-05-07 15:30:57" itemprop="dateModified" datetime="2021-05-07T15:30:57+08:00">2021-05-07</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -321,15 +321,15 @@
 
       
           <h2 id="service-mesh（服务网格）"><a href="#service-mesh（服务网格）" class="headerlink" title="service mesh（服务网格）"></a>service mesh（服务网格）</h2><p>Service Mesh通过一个个”代理” 来为微服务转发/接收所有流量，通过控制这些代理，就可以实现服务连接，注册，发现，负载均衡，熔断，监控等等一系列服务治理相关功能，从而微服务的代码不再需要服务治理的实现，换句话说，也就是服务治理对于微服务开发者而言是透明的。如下图所示：绿色方块为微服务，蓝色方块为 service mesh 的代理，蓝色线条为服务间通讯。可以看到蓝色的方块和线条组成了整个网格。这个网络就是 Service Mesh。</p>
-<img src="/posts/a94c45db.htm/v2-638a9d12e8a7406b7a733f2eadf989f5_1440w.jpg" alt="img" style="zoom:30%;">
+<img src="/2021/02/26/istio-pilot/v2-638a9d12e8a7406b7a733f2eadf989f5_1440w.jpg" alt="img" style="zoom:30%;">
 
 <h2 id="Istio"><a href="#Istio" class="headerlink" title="Istio"></a>Istio</h2><p>Go编写，控制面。对应的数据面是通常是envoy（基于C++）</p>
-<h3 id="架构图"><a href="#架构图" class="headerlink" title="架构图"></a>架构图</h3><p><img src="/posts/a94c45db.htm/arch.svg" alt="The overall architecture of an Istio-based application."></p>
+<h3 id="架构图"><a href="#架构图" class="headerlink" title="架构图"></a>架构图</h3><p><img src="/2021/02/26/istio-pilot/arch.svg" alt="The overall architecture of an Istio-based application."></p>
 <h3 id="基本组件"><a href="#基本组件" class="headerlink" title="基本组件"></a>基本组件</h3><h4 id="envoy"><a href="#envoy" class="headerlink" title="envoy"></a>envoy</h4><p>以sidecar的形式运行在服务所在的pod中，所有service的流量进出都必须通过envoy proxy，用来控制service之间的访问，service是感知不到envoy proxy的存在。</p>
 <p>envoy可以和控制平面（istio的组件）双向交互，可以从istio拿到一些策略和服务发现的信息，同时也可以给istio传回一些监控的数据等等。</p>
 <h4 id="Istiod"><a href="#Istiod" class="headerlink" title="Istiod"></a>Istiod</h4><p>Istiod提供服务发现, 服务配置和证书管理。</p>
 <p>stiod acts as a Certificate Authority (CA) and generates certificates to allow secure mTLS communication in the data plane.</p>
-<h2 id="Istio的服务发现流程"><a href="#Istio的服务发现流程" class="headerlink" title="Istio的服务发现流程"></a>Istio的服务发现流程</h2><p><img src="/posts/a94c45db.htm/image-20210226160141651.png" alt="image-20210226160141651"></p>
+<h2 id="Istio的服务发现流程"><a href="#Istio的服务发现流程" class="headerlink" title="Istio的服务发现流程"></a>Istio的服务发现流程</h2><p><img src="/2021/02/26/istio-pilot/image-20210226160141651.png" alt="image-20210226160141651"></p>
 <p>istio的pilot组件时负责服务发现的。在pilot里只有服务发现的定义，但是没有服务发现的实现，服务发现的实现是在pilot adapter对接的platform（比如k8s）里的。pilot adapter可以对接不同的平台，比如cloudfoudary，eurake，kubernetes，consul等等，但是k8s的适配最好，也是istio社区的重点。</p>
 <h3 id="isito和kubernetes服务概念对应关系"><a href="#isito和kubernetes服务概念对应关系" class="headerlink" title="isito和kubernetes服务概念对应关系"></a>isito和kubernetes服务概念对应关系</h3><table>
 <thead>
@@ -351,7 +351,7 @@
 <td align="center">deployment</td>
 </tr>
 </tbody></table>
-<img src="/posts/a94c45db.htm/image-20210309105852832.png" alt="image-20210309105852832" style="zoom:80%;">
+<img src="/2021/02/26/istio-pilot/image-20210309105852832.png" alt="image-20210309105852832" style="zoom:80%;">
 
 <p>每个envoy里都有全量的规则。（现在也是吗？？）</p>
 <p>Envoy （C++），CNCF毕业（kubernets，Prometheus之后）。</p>
@@ -372,7 +372,7 @@
 <p>virtualservice：</p>
 <p>destinationrule：</p>
 <p>serviceEntry：</p>
-<h3 id="Pilot"><a href="#Pilot" class="headerlink" title="Pilot"></a>Pilot</h3><p><img src="/posts/a94c45db.htm/image-20210423095618162.png" alt="image-20210423095618162"></p>
+<h3 id="Pilot"><a href="#Pilot" class="headerlink" title="Pilot"></a>Pilot</h3><p><img src="/2021/02/26/istio-pilot/image-20210423095618162.png" alt="image-20210423095618162"></p>
 <ol>
 <li>平台适配层: 将不同的平台资源和istio的抽象模型相互转换。</li>
 <li>xds API： envoy API</li>
@@ -408,7 +408,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/posts/6ac22eb.html">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/25/process-and-thread/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -422,7 +422,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/posts/6ac22eb.html" class="post-title-link" itemprop="url">进程和线程</a>
+            <a href="/2021/02/25/process-and-thread/" class="post-title-link" itemprop="url">进程和线程</a>
         </h2>
 
         <div class="post-meta">
@@ -439,7 +439,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-05-07 15:14:22" itemprop="dateModified" datetime="2021-05-07T15:14:22+08:00">2021-05-07</time>
+                <time title="Modified: 2021-05-07 15:30:57" itemprop="dateModified" datetime="2021-05-07T15:30:57+08:00">2021-05-07</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -462,7 +462,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <img src="/posts/6ac22eb.htm/image-20210225180738908.png" alt="image-20210225180738908" style="zoom:67%;">
+          <img src="/2021/02/25/process-and-thread/image-20210225180738908.png" alt="image-20210225180738908" style="zoom:67%;">
 
 <blockquote>
 <p>参考：<a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1688297">https://cloud.tencent.com/developer/article/1688297</a></p>
@@ -509,7 +509,7 @@
 </tr>
 </tbody></table>
 <p>创建线程的代价比创建进程的代价小很多，如下图：</p>
-<p><img src="/posts/6ac22eb.htm/image-20210225181636565.png" alt="image-20210225181636565"></p>
+<p><img src="/2021/02/25/process-and-thread/image-20210225181636565.png" alt="image-20210225181636565"></p>
 
       
     </div>
@@ -529,7 +529,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/posts/a838020d.html">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/20/ssr-setup/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -543,7 +543,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/posts/a838020d.html" class="post-title-link" itemprop="url">科学上网ssr</a>
+            <a href="/2021/02/20/ssr-setup/" class="post-title-link" itemprop="url">科学上网ssr</a>
         </h2>
 
         <div class="post-meta">
@@ -560,7 +560,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-05-07 15:14:22" itemprop="dateModified" datetime="2021-05-07T15:14:22+08:00">2021-05-07</time>
+                <time title="Modified: 2021-05-07 15:30:57" itemprop="dateModified" datetime="2021-05-07T15:30:57+08:00">2021-05-07</time>
               </span>
 
           
@@ -579,7 +579,7 @@
 </blockquote>
 <h2 id="google-vm的基本配置"><a href="#google-vm的基本配置" class="headerlink" title="google vm的基本配置"></a>google vm的基本配置</h2><h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><p>具体创建步骤略，需要一个绑定一个海外银行卡。</p>
 <p>下面是我创建的虚拟机。</p>
-<p><img src="/posts/a838020d.htm/image-20210220162859580.png" alt="image-20210220162859580"></p>
+<p><img src="/2021/02/20/ssr-setup/image-20210220162859580.png" alt="image-20210220162859580"></p>
 <p>创建好之后可以去站长之家ping一下，保证在国内大多数地方可以ping通。如果ping不通删了重建。</p>
 <p>然后通过左边的<code>ssh</code>登录上去。</p>
 <h3 id="安装ssr"><a href="#安装ssr" class="headerlink" title="安装ssr"></a>安装ssr</h3><h4 id="dependency"><a href="#dependency" class="headerlink" title="dependency"></a>dependency</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt-get install --no-install-recommends gettext build-essential autoconf libtool libpcre3-dev asciidoc xmlto libev-dev libc-ares-dev automake libmbedtls-dev libsodium-dev</span><br></pre></td></tr></table></figure>
@@ -587,7 +587,7 @@
 <p>missing makefile - &gt;  <code>git submodule update --init --recursive</code></p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">./configure</span><br><span class="line"><span class="meta">#</span><span class="bash"> maybe not need：</span></span><br><span class="line">make</span><br><span class="line">sudo make install</span><br><span class="line">dpkg-buildpackage -b -us -uc -I</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">报错: missing pkg-config</span></span><br><span class="line">sudo apt-get install -y pkg-config debhelper </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> install deb pkg</span></span><br><span class="line">cd .. &amp;&amp; sudo dpkg -i shadowsocks-libev*.deb</span><br></pre></td></tr></table></figure>
 <h4 id="edit-config-file"><a href="#edit-config-file" class="headerlink" title="edit config file"></a>edit config file</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/shadowsocks-libev/config.json </span><br><span class="line">&#123;</span><br><span class="line">  &quot;server&quot;:[&quot;::1&quot;, &quot;127.0.0.1&quot;], # internal IP</span><br><span class="line">  &quot;mode&quot;:&quot;tcp_and_udp&quot;,</span><br><span class="line">  &quot;server_port&quot;:8388, # need enable this port&#x27;s ingress in firewall</span><br><span class="line">  &quot;local_port&quot;:1080,</span><br><span class="line">  &quot;password&quot;:&quot;password&quot;,</span><br><span class="line">  &quot;timeout&quot;:86400,</span><br><span class="line">  &quot;method&quot;:&quot;aes-256-cfb&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> restart service</span></span><br><span class="line">sudo systemctl restart shadowsocks-libev</span><br></pre></td></tr></table></figure>
-<h4 id="firewall-configuration"><a href="#firewall-configuration" class="headerlink" title="firewall configuration"></a>firewall configuration</h4><p><img src="/posts/a838020d.htm/image-20210420112717314.png" alt="image-20210420112717314"></p>
+<h4 id="firewall-configuration"><a href="#firewall-configuration" class="headerlink" title="firewall configuration"></a>firewall configuration</h4><p><img src="/2021/02/20/ssr-setup/image-20210420112717314.png" alt="image-20210420112717314"></p>
 <h3 id="安装客户端"><a href="#安装客户端" class="headerlink" title="安装客户端"></a>安装客户端</h3><h4 id="手机"><a href="#手机" class="headerlink" title="手机"></a>手机</h4><p>shadowrocket</p>
 <h4 id="MacOS"><a href="#MacOS" class="headerlink" title="MacOS"></a>MacOS</h4><p>shadowsocks-NG</p>
 <p>need local socks proxy</p>
@@ -610,7 +610,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/posts/7c4ca347.html">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/08/network-intro/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -624,7 +624,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/posts/7c4ca347.html" class="post-title-link" itemprop="url">计算机网络概述</a>
+            <a href="/2021/02/08/network-intro/" class="post-title-link" itemprop="url">计算机网络概述</a>
         </h2>
 
         <div class="post-meta">
@@ -641,7 +641,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-05-07 15:14:22" itemprop="dateModified" datetime="2021-05-07T15:14:22+08:00">2021-05-07</time>
+                <time title="Modified: 2021-05-07 15:30:57" itemprop="dateModified" datetime="2021-05-07T15:30:57+08:00">2021-05-07</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -668,7 +668,7 @@
 <h4 id="带宽"><a href="#带宽" class="headerlink" title="带宽"></a>带宽</h4><p>单位同速率，指理想条件下的最高速率。</p>
 <h4 id="吞吐量"><a href="#吞吐量" class="headerlink" title="吞吐量"></a>吞吐量</h4><p>单位时间内通过某个网络的数据总量。</p>
 <h4 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h4><p>比如说1000M宽带的路由器连着三部手机，每部手机都是10mb/s看片，那么速率就是10mb/s，带宽是宽带的1000m，路由器吞吐量是30mb/s。</p>
-<img src="/posts/7c4ca347.htm/image-20210208111213048.png" alt="image-20210208111213048" style="zoom:50%;">
+<img src="/2021/02/08/network-intro/image-20210208111213048.png" alt="image-20210208111213048" style="zoom:50%;">
 
 
 
@@ -707,13 +707,13 @@
 <p>= 传播时延*2 + 处理时延</p>
 <h3 id="3-利用率"><a href="#3-利用率" class="headerlink" title="3. 利用率"></a>3. 利用率</h3><h4 id="信道利用率"><a href="#信道利用率" class="headerlink" title="信道利用率"></a>信道利用率</h4><p>=  有数据通过的时间/（有+无数据通过的时间）</p>
 <h4 id="网络利用率"><a href="#网络利用率" class="headerlink" title="网络利用率"></a>网络利用率</h4><p>= 所有信道利用率加权求平均值</p>
-<h4 id="时延和利用率的关系"><a href="#时延和利用率的关系" class="headerlink" title="时延和利用率的关系"></a>时延和利用率的关系</h4><img src="/posts/7c4ca347.htm/image-20210208111943694.png" alt="image-20210208111943694">
+<h4 id="时延和利用率的关系"><a href="#时延和利用率的关系" class="headerlink" title="时延和利用率的关系"></a>时延和利用率的关系</h4><img src="/2021/02/08/network-intro/image-20210208111943694.png" alt="image-20210208111943694">
 
 
 
-<h3 id="4-网络的分层结构"><a href="#4-网络的分层结构" class="headerlink" title="4. 网络的分层结构"></a>4. 网络的分层结构</h3><p><img src="/posts/7c4ca347.htm/image-20210208112313439.png" alt="image-20210208112313439"></p>
+<h3 id="4-网络的分层结构"><a href="#4-网络的分层结构" class="headerlink" title="4. 网络的分层结构"></a>4. 网络的分层结构</h3><p><img src="/2021/02/08/network-intro/image-20210208112313439.png" alt="image-20210208112313439"></p>
 <p>结合TCP/IP参考模型和OSI参考模型，现在广泛使用的是五层参考模型，如下图：</p>
-<p><img src="/posts/7c4ca347.htm/image-20210208112446492.png" alt="image-20210208112446492"></p>
+<p><img src="/2021/02/08/network-intro/image-20210208112446492.png" alt="image-20210208112446492"></p>
 <p>下面将按照这五层一次介绍。</p>
 <h2 id="物理层"><a href="#物理层" class="headerlink" title="物理层"></a>物理层</h2><p>主要负责传输数据比特流。</p>
 <h4 id="码元"><a href="#码元" class="headerlink" title="码元"></a>码元</h4><p>一个码元就是一个脉冲信号，如果这个脉冲信号是矩形脉冲，只有高低两个电平，则只能表示0或者1，也就是一个比特位。如果这个脉冲信号有8种变化（可以是电平高低，相位变化等），则可以表示3位比特位（000-111）一共八种。</p>
@@ -727,16 +727,16 @@
 <p>全双工：可以同时收和发，需要2条信道</p>
 <h4 id="两种数据传输模式"><a href="#两种数据传输模式" class="headerlink" title="两种数据传输模式"></a>两种数据传输模式</h4><p>串行：速度慢，省钱，适合远距离 </p>
 <p>并行：速度快，花钱，适合近距离</p>
-<p><img src="/posts/7c4ca347.htm/image-20210208115132757.png" alt="image-20210208115132757"></p>
+<p><img src="/2021/02/08/network-intro/image-20210208115132757.png" alt="image-20210208115132757"></p>
 <h4 id="工作在物理层的设备"><a href="#工作在物理层的设备" class="headerlink" title="工作在物理层的设备"></a>工作在物理层的设备</h4><h5 id="中继器"><a href="#中继器" class="headerlink" title="中继器"></a>中继器</h5><p>当数据离开源在网络上传送时，它是转换为能够沿着网络介质传输的电脉冲或光脉冲的——这些脉冲称为信号（signal）。当信号沿着网络介质进行传送时， 随着经过的线缆越来越长，信号就会变得越来越弱，越来越差。中继器的目的是在<strong>比特级别</strong>对网络信号进行<strong>再生和重定</strong>时，从而使得它们能够在网络上传输更长的距离。</p>
 <p>作用：对信号进行放大和整形，仅适用于以太网。</p>
-<img src="/posts/7c4ca347.htm/image-20210208161145175.png" alt="image-20210208161145175" style="zoom:150%;">
+<img src="/2021/02/08/network-intro/image-20210208161145175.png" alt="image-20210208161145175" style="zoom:150%;">
 
 <h5 id="集线器（HUB）"><a href="#集线器（HUB）" class="headerlink" title="集线器（HUB）"></a>集线器（HUB）</h5><p>也有放大和整形的功能，可以看作是一个多端口的中继器。</p>
 <p>HUB是网络中各个设备的通用连接点，它通常用于连接LAN的分段。HUB含有多个端口。每一个分组到达某个端口时，都会被复制到其他所有端口（广播），以便所有的LAN分段都能看见所有的分组。集线器并不认识信号、地址或数据中任何信息模式。</p>
-<h6 id="集线器产生的思路："><a href="#集线器产生的思路：" class="headerlink" title="集线器产生的思路："></a>集线器产生的思路：</h6><p>一开始，电脑之前就通过网线连接，当电脑数量增多时，就会很乱，网络变得异常复杂。<img src="/posts/7c4ca347.htm/image-20210208161725908.png" alt="image-20210208161725908" style="zoom:50%;"></p>
+<h6 id="集线器产生的思路："><a href="#集线器产生的思路：" class="headerlink" title="集线器产生的思路："></a>集线器产生的思路：</h6><p>一开始，电脑之前就通过网线连接，当电脑数量增多时，就会很乱，网络变得异常复杂。<img src="/2021/02/08/network-intro/image-20210208161725908.png" alt="image-20210208161725908" style="zoom:50%;"></p>
 <p>所以我们在这些电脑的中间加一个设备——集线器。</p>
-<img src="/posts/7c4ca347.htm/image-20210208162211908.png" alt="image-20210208162211908" style="zoom:67%;">
+<img src="/2021/02/08/network-intro/image-20210208162211908.png" alt="image-20210208162211908" style="zoom:67%;">
 
 
 
@@ -760,7 +760,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/posts/b56963ac.html">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/03/namespace-cgroups/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -774,7 +774,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/posts/b56963ac.html" class="post-title-link" itemprop="url">容器的namespace和cgroups</a>
+            <a href="/2021/02/03/namespace-cgroups/" class="post-title-link" itemprop="url">容器的namespace和cgroups</a>
         </h2>
 
         <div class="post-meta">
@@ -791,7 +791,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-05-07 15:14:22" itemprop="dateModified" datetime="2021-05-07T15:14:22+08:00">2021-05-07</time>
+                <time title="Modified: 2021-05-07 15:30:57" itemprop="dateModified" datetime="2021-05-07T15:30:57+08:00">2021-05-07</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -826,7 +826,7 @@
 <p>此外，Linux 操作系统还提供了 <strong>Mount</strong>、<strong>UTS</strong>、<strong>IPC</strong>、<strong>Network</strong> 和 <strong>User</strong> 这些 Namespace，用来对各种不同的进程上下文进行“障眼法”操作。</p>
 <h4 id="Mount-namespace"><a href="#Mount-namespace" class="headerlink" title="Mount namespace"></a>Mount namespace</h4><p>用于让被隔离进程只看到当前 Namespace 里的挂载点信息</p>
 <h4 id="Network-Namespace"><a href="#Network-Namespace" class="headerlink" title="Network Namespace"></a>Network Namespace</h4><p>用于让被隔离进程看到当前 Namespace 里的网络设备和配置。</p>
-<h2 id="虚拟机-vs-容器"><a href="#虚拟机-vs-容器" class="headerlink" title="虚拟机 vs 容器"></a>虚拟机 vs 容器</h2><h4 id="hypervisor和docker-engine"><a href="#hypervisor和docker-engine" class="headerlink" title="hypervisor和docker engine"></a>hypervisor和docker engine</h4><img src="/posts/b56963ac.htm/image-20210203222905761.png" alt="image-20210203222905761" style="zoom:50%;">
+<h2 id="虚拟机-vs-容器"><a href="#虚拟机-vs-容器" class="headerlink" title="虚拟机 vs 容器"></a>虚拟机 vs 容器</h2><h4 id="hypervisor和docker-engine"><a href="#hypervisor和docker-engine" class="headerlink" title="hypervisor和docker engine"></a>hypervisor和docker engine</h4><img src="/2021/02/03/namespace-cgroups/image-20210203222905761.png" alt="image-20210203222905761" style="zoom:50%;">
 
 <p><strong>hypervisor</strong>：对应用进程的隔离环境负责</p>
 <p><strong>docker engine</strong>：对隔离性不负责任，真正对隔离性负责的是linux os（namespace）。</p>
@@ -876,7 +876,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/posts/dd7abf56.html">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/02/vca-intro/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -890,7 +890,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/posts/dd7abf56.html" class="post-title-link" itemprop="url">在centos8上使能vca-a卡</a>
+            <a href="/2021/02/02/vca-intro/" class="post-title-link" itemprop="url">在centos8上使能vca-a卡</a>
         </h2>
 
         <div class="post-meta">
@@ -907,7 +907,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-05-07 15:14:22" itemprop="dateModified" datetime="2021-05-07T15:14:22+08:00">2021-05-07</time>
+                <time title="Modified: 2021-05-07 15:30:57" itemprop="dateModified" datetime="2021-05-07T15:30:57+08:00">2021-05-07</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -930,7 +930,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="vca卡的内部结构"><a href="#vca卡的内部结构" class="headerlink" title="vca卡的内部结构"></a>vca卡的内部结构</h2><p><img src="/posts/dd7abf56.htm/image-20210202160154068.png" alt="image-20210202160154068"></p>
+          <h2 id="vca卡的内部结构"><a href="#vca卡的内部结构" class="headerlink" title="vca卡的内部结构"></a>vca卡的内部结构</h2><p><img src="/2021/02/02/vca-intro/image-20210202160154068.png" alt="image-20210202160154068"></p>
 <ul>
 <li><p>一块kabylake CPU，上面带一个Intel GFX 610集成显卡。</p>
 </li>
@@ -949,7 +949,7 @@
 </ul>
 </li>
 </ul>
-<h2 id="Host上vca-software安装"><a href="#Host上vca-software安装" class="headerlink" title="Host上vca software安装"></a>Host上vca software安装</h2><p><img src="/posts/dd7abf56.htm/image-20210202162348217.png" alt="image-20210202162348217"></p>
+<h2 id="Host上vca-software安装"><a href="#Host上vca-software安装" class="headerlink" title="Host上vca software安装"></a>Host上vca software安装</h2><p><img src="/2021/02/02/vca-intro/image-20210202162348217.png" alt="image-20210202162348217"></p>
 <p>service跑在host上，agent和其他的workload都跑在vca卡上，卡上有个单独的os，ubuntu1804。</p>
 <h3 id="下载software-packages源码"><a href="#下载software-packages源码" class="headerlink" title="下载software packages源码"></a>下载software packages源码</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> https://github.com/OpenVisualCloud/VCAC-SW-Analytics.git -b release/VCAC-A/R6</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> tree -L 2</span></span><br><span class="line">.</span><br><span class="line">├── Documents                   # 平平无奇的文档</span><br><span class="line">│   ├── VCAC-Analytics-releasenotes-rev6-0.pdf</span><br><span class="line">│   └── VCAC-Analytics-software-installation-guide-rev6-0.pdf</span><br><span class="line">├── Intel_Media_Analytics_Host  # Host files</span><br><span class="line">│   ├── scripts                 # scripts to build kernel and vca driver module</span><br><span class="line">│   └── tar                     # kernel patch, vca driver patch and utilities</span><br><span class="line">└── Intel_Media_Analytics_Node  # Software packages</span><br><span class="line">    ├── scripts                 # scripte to build ubunut1804 image and dockerfiles </span><br><span class="line">    └── tar                     # patch for kernel on card, install pkg for VPU metrics</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <h3 id="使用docker在容器里build安装包"><a href="#使用docker在容器里build安装包" class="headerlink" title="使用docker在容器里build安装包"></a>使用docker在容器里build安装包</h3><p>在host上 用docker启动容器，去build一些软件包，等等。</p>
@@ -959,9 +959,9 @@
 
 
 <p>拉取centos8的image</p>
-<p><img src="/posts/dd7abf56.htm/image-20210202170918413.png" alt="image-20210202170918413"></p>
+<p><img src="/2021/02/02/vca-intro/image-20210202170918413.png" alt="image-20210202170918413"></p>
 <p>安装一些需要的pkg</p>
-<p><img src="/posts/dd7abf56.htm/image-20210202171007593.png" alt="image-20210202171007593"></p>
+<p><img src="/2021/02/02/vca-intro/image-20210202171007593.png" alt="image-20210202171007593"></p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[space@inspurserver CentOS8]$ docker ps</span><br><span class="line">CONTAINER ID   IMAGE                      COMMAND                  CREATED              STATUS              PORTS     NAMES</span><br><span class="line">d4ecdebab101   vcaa/centos-8.1-test:1.0   &quot;/home/space/VCAC-SW…&quot;   About a minute ago   Up About a minute             sleepy_ride</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">pwd</span>: /home/space/VCAC-SW-Analytics/VCAC-A/Intel_Media_Analytics_Host/scripts</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo ./build.sh</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">pwd</span>: /home/space/VCAC-SW-Analytics/VCAC-A/Intel_Media_Analytics_Node/scripts</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo ./vcad_build.sh -o EXTENDED  <span class="comment"># EXTENDED可以在ubuntu os里装上openvino等软件。</span></span></span><br></pre></td></tr></table></figure>
 <h3 id="安装新kernel，vca软件等"><a href="#安装新kernel，vca软件等" class="headerlink" title="安装新kernel，vca软件等"></a>安装新kernel，vca软件等</h3><p>用生成的包，去换kernel，安装host上的vca daemon，vca cli， kernel， kernel-devel等等。</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 安装kernel包</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo yum -y localinstall kernel-4.18.0-147_1.fb4dfe2.VCA+-1.x86_64.rpm</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo yum -y localinstall kernel-devel-4.18.0-147_1.fb4dfe2.VCA+-1.x86_64.rpm</span></span><br><span class="line"><span class="meta">#</span><span class="bash">安装vca driver module</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo yum -y localinstall vcass-modules-4.18.0-147_1.fb4dfe2.VCA</span></span><br><span class="line">+-1.690990a-0.x86_64.rpm</span><br><span class="line"><span class="meta">#</span><span class="bash"> 安装vca daemon</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo yum -y localinstall daemon-vca-2.7.3-centos8-x86_64.rpm</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo yum -y localinstall ../../tar/Centos8/vca_query-1.0_centos8-1.x86_64.rpm</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 换default kernel，参考 https://www.golinuxcloud.com/change-default-kernel-version-rhel-centos-8/</span></span><br><span class="line">sudo grubby --set-default &quot;/boot/vmlinuz-4.18.0.0e222f9.VCA+&quot; </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> reboot</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo reboot</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 开机之后验证kernel更换成功</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> uname -r</span></span><br><span class="line">4.18.0.0e222f9.VCA+</span><br></pre></td></tr></table></figure>
@@ -1005,7 +1005,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/posts/0.html">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/02/yum-config/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -1019,7 +1019,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/posts/0.html" class="post-title-link" itemprop="url">Untitled</a>
+            <a href="/2021/02/02/yum-config/" class="post-title-link" itemprop="url">Untitled</a>
         </h2>
 
         <div class="post-meta">
@@ -1036,7 +1036,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-05-07 15:14:22" itemprop="dateModified" datetime="2021-05-07T15:14:22+08:00">2021-05-07</time>
+                <time title="Modified: 2021-05-07 15:30:57" itemprop="dateModified" datetime="2021-05-07T15:30:57+08:00">2021-05-07</time>
               </span>
 
           
@@ -1124,7 +1124,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/posts/cc1b6e67.html">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/01/nginx-intro/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -1138,7 +1138,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/posts/cc1b6e67.html" class="post-title-link" itemprop="url">Nginx简介</a>
+            <a href="/2021/02/01/nginx-intro/" class="post-title-link" itemprop="url">Nginx简介</a>
         </h2>
 
         <div class="post-meta">
@@ -1155,7 +1155,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-05-07 15:14:22" itemprop="dateModified" datetime="2021-05-07T15:14:22+08:00">2021-05-07</time>
+                <time title="Modified: 2021-05-07 15:30:57" itemprop="dateModified" datetime="2021-05-07T15:30:57+08:00">2021-05-07</time>
               </span>
 
           
@@ -1177,15 +1177,15 @@
 <h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo yum install nginx</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo systemctl start nginx.service</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 访问成功</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> curl localhost:80</span></span><br></pre></td></tr></table></figure>
 <p><strong>测试安装成功</strong></p>
 <p>因为我的测试环境是vagrant vm，所以需要做一个端口映射，这样我们可以在host上访问。</p>
-<img src="/posts/cc1b6e67.htm/image-20210201230936553.png" alt="image-20210201230936553" style="zoom:50%;">
+<img src="/2021/02/01/nginx-intro/image-20210201230936553.png" alt="image-20210201230936553" style="zoom:50%;">
 
 <p>成功！</p>
-<img src="/posts/cc1b6e67.htm/image-20210201231043622.png" alt="image-20210201231043622" style="zoom:50%;">
+<img src="/2021/02/01/nginx-intro/image-20210201231043622.png" alt="image-20210201231043622" style="zoom:50%;">
 
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> nginx -h</span></span><br><span class="line">nginx version: nginx/1.14.1</span><br><span class="line">Usage: nginx [-?hvVtTq] [-s signal] [-c filename] [-p prefix] [-g directives]</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">...</span><br><span class="line">  -s signal     : send signal to a master process: stop, quit, reopen, reload</span><br><span class="line">  -p prefix     : set prefix path (default: /usr/share/nginx/)</span><br><span class="line">  -c filename   : set configuration file (default: /etc/nginx/nginx.conf)</span><br><span class="line">  -g directives : set global directives out of configuration file</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> nginx -s stop 停止</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> nginx -s quit 安全退出</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> nginx -s reload 重新加载配置文件</span></span><br></pre></td></tr></table></figure>
 <h3 id="nginx配置文件"><a href="#nginx配置文件" class="headerlink" title="nginx配置文件"></a>nginx配置文件</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vim /etc/nginx/nginx.conf</span></span><br></pre></td></tr></table></figure>
 <p>可以看到nginx server是监听在80端口的，我们可以修改端口，然后用<code>nginx -s reload</code>来生效。</p>
-<img src="/posts/cc1b6e67.htm/image-20210201231634344.png" alt="image-20210201231634344" style="zoom:50%;">
+<img src="/2021/02/01/nginx-intro/image-20210201231634344.png" alt="image-20210201231634344" style="zoom:50%;">
 
 
 
@@ -1215,7 +1215,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/posts/e41fb1bd.html">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/01/network-virtualization/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -1229,7 +1229,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/posts/e41fb1bd.html" class="post-title-link" itemprop="url">网络虚拟化简介</a>
+            <a href="/2021/02/01/network-virtualization/" class="post-title-link" itemprop="url">网络虚拟化简介</a>
         </h2>
 
         <div class="post-meta">
@@ -1246,7 +1246,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-05-07 15:14:22" itemprop="dateModified" datetime="2021-05-07T15:14:22+08:00">2021-05-07</time>
+                <time title="Modified: 2021-05-07 15:30:57" itemprop="dateModified" datetime="2021-05-07T15:30:57+08:00">2021-05-07</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1269,7 +1269,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <img src="/posts/e41fb1bd.htm/image-20210201221242667.png" alt="image-20210201221242667" style="zoom:70%;">
+          <img src="/2021/02/01/network-virtualization/image-20210201221242667.png" alt="image-20210201221242667" style="zoom:70%;">
 
 
       
@@ -1407,7 +1407,7 @@
 
 <div class="copyright">
   
-  &copy; 2020 – 
+  &copy; 
   <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
@@ -1416,13 +1416,6 @@
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
   </div>
-
-<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-<div class="powered-by">
-<i class="fa fa-user-md"></i><span id="busuanzi_container_site_uv">
-  本站访客数:<span id="busuanzi_value_site_uv"></span>
-</span>
-</div>
 
         
 
