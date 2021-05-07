@@ -37,9 +37,9 @@ custom_file_path:
 
 # Schemes
 #scheme: Muse
-#scheme: Mist
+scheme: Mist
 #scheme: Pisces
-scheme: Gemini
+#scheme: Gemini
 
 # Dark Mode
 darkmode: false
@@ -358,12 +358,6 @@ android_chrome_color: "#222"
 codeblock:
   # Code Highlight theme
   # All available themes: https://theme-next.js.org/highlight/
-  theme:
-    light: default
-    dark: tomorrow-night
-  prism:
-    light: prism
-    dark: prism-dark
   # Add copy button on codeblock
   copy_button:
     enable: true
@@ -416,7 +410,7 @@ github_banner:
 # ---------------------------------------------------------------
 
 font:
-  enable: true
+  enable: false
 
   # Uri of fonts host, e.g. https://fonts.googleapis.com (Default).
   host:
