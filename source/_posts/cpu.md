@@ -1,5 +1,6 @@
 ---
 title: cpu基础
+abbrlink: fe9b70
 date: 2021-03-29 10:35:41
 tags:
 categories:

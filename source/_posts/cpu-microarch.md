@@ -1,5 +1,6 @@
 ---
 title: cpu-microarch
+abbrlink: f1d93d2c
 date: 2021-03-31 15:07:42
 tags:
 categories:

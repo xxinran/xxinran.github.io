@@ -1,8 +1,9 @@
 ---
 title: 进程和线程
+categories: linux
+abbrlink: 6ac22eb
 date: 2021-02-25 17:26:41
 tags:
-categories: linux
 ---
 
 <img src="process-and-thread/image-20210225180738908.png" alt="image-20210225180738908" style="zoom:67%;" />

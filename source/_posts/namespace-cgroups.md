@@ -1,10 +1,11 @@
 ---
 title: 容器的namespace和cgroups
-date: 2021-02-03 22:14:08
 tags:
-- docker
-- linux
+  - docker
+  - linux
 categories: docker
+abbrlink: b56963ac
+date: 2021-02-03 22:14:08
 ---
 
 ## namespace

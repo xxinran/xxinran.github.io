@@ -1,9 +1,10 @@
 ---
 title: 科学上网ssr
-date: 2021-02-20 16:26:09
 tags:
-- deploy
-- network
+  - deploy
+  - network
+abbrlink: a838020d
+date: 2021-02-20 16:26:09
 categories:
 ---
 

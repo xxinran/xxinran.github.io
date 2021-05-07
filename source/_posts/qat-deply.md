@@ -1,8 +1,9 @@
 ---
 title: QAT在Ubuntu18.04上的安装和虚拟化
-date: 2021-01-27 20:31:29
 tags: qat
 categories: deploy
+abbrlink: 461bb783
+date: 2021-01-27 20:31:29
 ---
 
 本文将介绍QAT c62xx设备在Ubuntu 18.04上的安装部署和虚拟化。

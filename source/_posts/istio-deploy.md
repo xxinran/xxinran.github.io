@@ -1,10 +1,11 @@
 ---
 title: 部署istio+k8s+kiali
-date: 2021-03-01 17:30:27
 tags:
-- service-mesh
-- deploy
+  - service-mesh
+  - deploy
 categories: deploy
+abbrlink: f5beba55
+date: 2021-03-01 17:30:27
 ---
 
 

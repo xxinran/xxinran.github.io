@@ -1,9 +1,10 @@
 ---
 title: 计算机网络概述
-date: 2021-02-08 11:03:35
 tags:
-- network
+  - network
 categories: network
+abbrlink: 7c4ca347
+date: 2021-02-08 11:03:35
 ---
 
 ## 概述

@@ -1,8 +1,9 @@
 ---
 title: linux内存管理
-date: 2021-04-26 16:14:23
 tags: linux
 categories: linux
+abbrlink: d0683ba8
+date: 2021-04-26 16:14:23
 ---
 
 # 主流存储设备

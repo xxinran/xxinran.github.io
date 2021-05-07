@@ -1,8 +1,9 @@
 ---
 title: hexo+github
-date: 2021-01-27 19:15:38
 tags: hexo
 categories: hexo
+abbrlink: ebeabd53
+date: 2021-01-27 19:15:38
 ---
 
 ### 安装nodejs，git

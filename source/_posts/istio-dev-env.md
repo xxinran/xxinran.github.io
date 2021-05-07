@@ -1,10 +1,11 @@
 ---
 title: istio开发环境搭建
-date: 2021-03-04 18:00:34
 tags:
-- deploy
-- service mesh
+  - deploy
+  - service mesh
 categories: deploy
+abbrlink: 702f5168
+date: 2021-03-04 18:00:34
 ---
 
 

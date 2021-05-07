@@ -1,8 +1,9 @@
 ---
 title: 多设备同步hexoy
-date: 2021-01-28 00:13:01
 tags: hexo
 categories: hexo
+abbrlink: c9d1870c
+date: 2021-01-28 00:13:01
 ---
 
 # 多个设备之间同步hexo

@@ -1,10 +1,11 @@
 ---
 title: istio学习（1）-pilot
-date: 2021-02-26 15:31:45
 tags:
-- service-mesh
-- istio
+  - service-mesh
+  - istio
 categories: service-mesh
+abbrlink: a94c45db
+date: 2021-02-26 15:31:45
 ---
 
 ## service mesh（服务网格）

@@ -1,11 +1,12 @@
 ---
 title: 公司内部ssh设置socks代理
-date: 2021-01-29 14:40:50
 tags:
-- ssh
-- socks
-- network
-categories: deploy, network, intel
+  - ssh
+  - socks
+  - network
+categories: 'deploy, network, intel'
+abbrlink: a9be766e
+date: 2021-01-29 14:40:50
 ---
 
 > [Proxy at Intel - Intelpedia](https://intelpedia.intel.com/Proxy_at_Intel)

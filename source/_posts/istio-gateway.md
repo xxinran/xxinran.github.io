@@ -1,5 +1,6 @@
 ---
 title: istio-gateway
+abbrlink: def4f008
 date: 2021-03-09 15:04:29
 tags:
 categories:

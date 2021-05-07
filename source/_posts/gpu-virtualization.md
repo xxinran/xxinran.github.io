@@ -1,5 +1,6 @@
 ---
 title: GPU虚拟化
+abbrlink: 204fd6f0
 date: 2021-04-26 10:25:33
 tags:
 categories:

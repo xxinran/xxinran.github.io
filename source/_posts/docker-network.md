@@ -1,10 +1,11 @@
 ---
 title: 浅析docker网络
-date: 2021-02-01 12:18:56
 tags:
-- network
-- docker
+  - network
+  - docker
 categories: docker
+abbrlink: 3e6a7048
+date: 2021-02-01 12:18:56
 ---
 
 ### docker0

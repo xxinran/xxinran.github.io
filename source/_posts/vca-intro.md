@@ -1,10 +1,11 @@
 ---
 title: 在centos8上使能vca-a卡
-date: 2021-02-02 15:59:19
 tags:
-- device
-- intel
+  - device
+  - intel
 categories: devices
+abbrlink: dd7abf56
+date: 2021-02-02 15:59:19
 ---
 
 ## vca卡的内部结构

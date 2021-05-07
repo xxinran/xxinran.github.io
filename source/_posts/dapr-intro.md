@@ -1,9 +1,10 @@
 ---
 title: dapr-intro
+categories:
+  - cloud native
+abbrlink: c02c2ddc
 date: 2021-03-09 19:13:28
 tags:
-categories:
-- cloud native
 ---
 
 ## dapr简介
