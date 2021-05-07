@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xxinran.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="vca卡的内部结构  一块kabylake CPU，上面带一个Intel GFX 610集成显卡。  12个movidius VPU：  其中两个通过USB连接到CPU上 剩下的10个通过PCI-USB bridge和CPU通信 PCI-USB bridge ：The ASM1042A is ASMedia’s new generation of Universal Serial Bus 3.0">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在centos8上使能vca-a卡">
+<meta property="og:url" content="http://xxinran.github.io/posts/dd7abf56.html">
+<meta property="og:site_name" content="Xinran&#39;s Blog">
+<meta property="og:description" content="vca卡的内部结构  一块kabylake CPU，上面带一个Intel GFX 610集成显卡。  12个movidius VPU：  其中两个通过USB连接到CPU上 剩下的10个通过PCI-USB bridge和CPU通信 PCI-USB bridge ：The ASM1042A is ASMedia’s new generation of Universal Serial Bus 3.0">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://xxinran.github.io/posts/dd7abf56/image-20210202160154068.png">
+<meta property="og:image" content="http://xxinran.github.io/posts/dd7abf56/image-20210202162348217.png">
+<meta property="og:image" content="http://xxinran.github.io/posts/dd7abf56/image-20210202170918413.png">
+<meta property="og:image" content="http://xxinran.github.io/posts/dd7abf56/image-20210202171007593.png">
+<meta property="article:published_time" content="2021-02-02T07:59:19.000Z">
+<meta property="article:modified_time" content="2021-05-07T08:02:10.005Z">
+<meta property="article:author" content="Xinran Wang">
+<meta property="article:tag" content="device">
+<meta property="article:tag" content="intel">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://xxinran.github.io/posts/dd7abf56/image-20210202160154068.png">
+
+<link rel="canonical" href="http://xxinran.github.io/posts/dd7abf56.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>在centos8上使能vca-a卡 | Xinran's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Xinran's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">18</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">12</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">30</span></a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>Schedule</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://xxinran.github.io/posts/dd7abf56.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Xinran Wang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xinran's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          在centos8上使能vca-a卡
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-02-02 15:59:19" itemprop="dateCreated datePublished" datetime="2021-02-02T15:59:19+08:00">2021-02-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-05-07 16:02:10" itemprop="dateModified" datetime="2021-05-07T16:02:10+08:00">2021-05-07</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/devices/" itemprop="url" rel="index"><span itemprop="name">devices</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="vca卡的内部结构"><a href="#vca卡的内部结构" class="headerlink" title="vca卡的内部结构"></a>vca卡的内部结构</h2><p><img src="/posts/dd7abf56/image-20210202160154068.png" alt="image-20210202160154068"></p>
+<ul>
+<li><p>一块kabylake CPU，上面带一个Intel GFX 610集成显卡。</p>
+</li>
+<li><p>12个movidius VPU：</p>
+<ul>
+<li>其中两个通过USB连接到CPU上</li>
+<li>剩下的10个通过PCI-USB bridge和CPU通信<ul>
+<li>PCI-USB bridge ：The <strong>ASM1042A</strong> is ASMedia’s new generation of Universal Serial Bus 3.0 extended host controller, bridging PCI Express to two ports of USB3.0</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>一个PCIe switch：为host提供NTB</p>
+<ul>
+<li>NTB（Non-Transparent-Bridge）</li>
+</ul>
+</li>
+</ul>
+<h2 id="Host上vca-software安装"><a href="#Host上vca-software安装" class="headerlink" title="Host上vca software安装"></a>Host上vca software安装</h2><p><img src="/posts/dd7abf56/image-20210202162348217.png" alt="image-20210202162348217"></p>
+<p>service跑在host上，agent和其他的workload都跑在vca卡上，卡上有个单独的os，ubuntu1804。</p>
+<h3 id="下载software-packages源码"><a href="#下载software-packages源码" class="headerlink" title="下载software packages源码"></a>下载software packages源码</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> https://github.com/OpenVisualCloud/VCAC-SW-Analytics.git -b release/VCAC-A/R6</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> tree -L 2</span></span><br><span class="line">.</span><br><span class="line">├── Documents                   # 平平无奇的文档</span><br><span class="line">│   ├── VCAC-Analytics-releasenotes-rev6-0.pdf</span><br><span class="line">│   └── VCAC-Analytics-software-installation-guide-rev6-0.pdf</span><br><span class="line">├── Intel_Media_Analytics_Host  # Host files</span><br><span class="line">│   ├── scripts                 # scripts to build kernel and vca driver module</span><br><span class="line">│   └── tar                     # kernel patch, vca driver patch and utilities</span><br><span class="line">└── Intel_Media_Analytics_Node  # Software packages</span><br><span class="line">    ├── scripts                 # scripte to build ubunut1804 image and dockerfiles </span><br><span class="line">    └── tar                     # patch for kernel on card, install pkg for VPU metrics</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="使用docker在容器里build安装包"><a href="#使用docker在容器里build安装包" class="headerlink" title="使用docker在容器里build安装包"></a>使用docker在容器里build安装包</h3><p>在host上 用docker启动容器，去build一些软件包，等等。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker info | grep Dir</span></span><br><span class="line">Docker Root Dir: /var/lib/docker</span><br></pre></td></tr></table></figure>
+<p>这个docker目录最多只有50GB，不够去build vcad，可能会报错<code>&quot;no space left on device&quot; </code>, 所以我们需要换一个Docker Root Dir。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vim /usr/lib/systemd/system/docker.service<span class="string">&quot;</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> add <span class="string">&quot;--graph /home/docker&quot;</span> after <span class="string">&quot;ExecStart=/user/bin/dockerd</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat /usr/lib/systemd/system/docker.service | grep graph</span></span><br><span class="line">ExecStart=/usr/bin/dockerd --graph /home/docker -H fd:// --containerd=/run/containerd/containerd.sock</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 重启</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> systemctl daemon-reload</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> systemctl restart docker</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 再查看一下，已经改好了</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker info  | grep Dir</span></span><br><span class="line">Docker Root Dir: /home/docker</span><br></pre></td></tr></table></figure>
+
+
+<p>拉取centos8的image</p>
+<p><img src="/posts/dd7abf56/image-20210202170918413.png" alt="image-20210202170918413"></p>
+<p>安装一些需要的pkg</p>
+<p><img src="/posts/dd7abf56/image-20210202171007593.png" alt="image-20210202171007593"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[space@inspurserver CentOS8]$ docker ps</span><br><span class="line">CONTAINER ID   IMAGE                      COMMAND                  CREATED              STATUS              PORTS     NAMES</span><br><span class="line">d4ecdebab101   vcaa/centos-8.1-test:1.0   &quot;/home/space/VCAC-SW…&quot;   About a minute ago   Up About a minute             sleepy_ride</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">pwd</span>: /home/space/VCAC-SW-Analytics/VCAC-A/Intel_Media_Analytics_Host/scripts</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo ./build.sh</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">pwd</span>: /home/space/VCAC-SW-Analytics/VCAC-A/Intel_Media_Analytics_Node/scripts</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo ./vcad_build.sh -o EXTENDED  <span class="comment"># EXTENDED可以在ubuntu os里装上openvino等软件。</span></span></span><br></pre></td></tr></table></figure>
+<h3 id="安装新kernel，vca软件等"><a href="#安装新kernel，vca软件等" class="headerlink" title="安装新kernel，vca软件等"></a>安装新kernel，vca软件等</h3><p>用生成的包，去换kernel，安装host上的vca daemon，vca cli， kernel， kernel-devel等等。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 安装kernel包</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo yum -y localinstall kernel-4.18.0-147_1.fb4dfe2.VCA+-1.x86_64.rpm</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo yum -y localinstall kernel-devel-4.18.0-147_1.fb4dfe2.VCA+-1.x86_64.rpm</span></span><br><span class="line"><span class="meta">#</span><span class="bash">安装vca driver module</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo yum -y localinstall vcass-modules-4.18.0-147_1.fb4dfe2.VCA</span></span><br><span class="line">+-1.690990a-0.x86_64.rpm</span><br><span class="line"><span class="meta">#</span><span class="bash"> 安装vca daemon</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo yum -y localinstall daemon-vca-2.7.3-centos8-x86_64.rpm</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo yum -y localinstall ../../tar/Centos8/vca_query-1.0_centos8-1.x86_64.rpm</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 换default kernel，参考 https://www.golinuxcloud.com/change-default-kernel-version-rhel-centos-8/</span></span><br><span class="line">sudo grubby --set-default &quot;/boot/vmlinuz-4.18.0.0e222f9.VCA+&quot; </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> reboot</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo reboot</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 开机之后验证kernel更换成功</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> uname -r</span></span><br><span class="line">4.18.0.0e222f9.VCA+</span><br></pre></td></tr></table></figure>
+<h3 id="enable-iommu"><a href="#enable-iommu" class="headerlink" title="enable iommu"></a>enable iommu</h3><p>其实我之前设置了<code>intel_iommu=on </code>，但是由于换了kernel，之前那个kernel的cmdline不起作用了。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 在这里重新设置一下</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat /boot/grub2/grubenv</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> GRUB Environment Block</span></span><br><span class="line">saved_entry=4f71b0d5929445139ae33f60b7e05767-4.18.0.0e222f9.VCA+</span><br><span class="line">kernelopts=root=LABEL=cloudimg-rootfs ro console=ttyS0,115200n8 no_timer_check net.ifnames=0 crashkernel=auto rd.auto=1 intel_iommu=on</span><br><span class="line">boot_success=1</span><br><span class="line">boot_indeterminate=0</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo reboot</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 然后就可以看到使能好的iommu groups了！</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ls /sys/kernel/iommu_groups/</span></span><br><span class="line">0   11  14  17  2   22  25  28  30  33  36  39  41  44  47  5   52  55  58  60  63  66 </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">check cmdline</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat /proc/cmdline</span></span><br><span class="line">BOOT_IMAGE=(hd0,gpt1)/boot/vmlinuz-4.18.0.0e222f9.VCA+ root=LABEL=cloudimg-rootfs ro console=ttyS0,115200n8 no_timer_check net.ifnames=0 crashkernel=auto rd.auto=1 intel_iommu=on</span><br></pre></td></tr></table></figure>
+<h3 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 报错！因为不是root权限</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl info BIOS 0 0</span></span><br><span class="line">ERROR: could not parse vca configuration file!</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo su</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 成功！</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl status</span></span><br><span class="line">Card: 0 Cpu: 0  STATE: bios_up</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 报错，这个时候ubuntu1804和host的网络还没有配置好</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo vcactl network ip</span></span><br><span class="line">ERROR: Card: 0 Cpu: 0 - Card needs to be in &quot;os_ready&quot;, &quot;net_device_ready&quot;, &quot;dhcp_error&quot;, &quot;net_device_no_ip&quot;, &quot;dhcp_in_progress&quot; or &quot;dhcp_done&quot; state!</span><br></pre></td></tr></table></figure>
+<h3 id="在vca卡上载入ubuntu-os"><a href="#在vca卡上载入ubuntu-os" class="headerlink" title="在vca卡上载入ubuntu os"></a>在vca卡上载入ubuntu os</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 关闭已打开的块设备</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl blockio close 0 0 vcablk0</span></span><br><span class="line">WARNING: Card: 0 Cpu: 0 - Block device vcablk0 is not open. You do not need to close it.</span><br><span class="line"><span class="meta">#</span><span class="bash"> 在build好的ubuntu的image加载进vca卡中</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl blockio open 0 0 vcablk0 RW /home/space/VCAC-SW-Analytics/VCAC-A/Intel_Media_Analytics_Node/build/vcad/INSTALL/vca_disk48_k5.3_ubuntu18.04_1.0.1.vcad</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">查看</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl status</span></span><br><span class="line">Card: 0 Cpu: 0  STATE: bios_ready</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 在bios_ready之后，需要重启一下vca卡，使其生效</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 关机</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl pwrbtn-long 0 0</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl status</span></span><br><span class="line">Card: 0 Cpu: 0  STATE: power_off</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 开机</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl pwrbtn-short 0 0</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl reset 0 0 --force</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl boot 0 0 vcablk0 --force</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl status</span></span><br><span class="line">Card: 0 Cpu: 0  STATE: booting</span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl status</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl network ip</span></span><br><span class="line">Card 0 Cpu 0:</span><br><span class="line">172.32.1.1</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 密码是vista1</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ssh root@172.32.1.1</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 到这里，vca卡的os也安装完毕了！</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>vca卡上os，可以和host相互ping通，</p>
+<p>但连接不上internet。dns也没有设置好。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">root@vca_node_00:~# wget www.baidu.com</span><br><span class="line">--2021-02-02 15:06:13--  http://www.baidu.com/</span><br><span class="line">Resolving www.baidu.com (www.baidu.com)... failed: Temporary failure in name resolution.</span><br><span class="line">wget: unable to resolve host address &#x27;www.baidu.com&#x27;</span><br><span class="line">root@vca_node_00:~# ping baidu.com</span><br><span class="line">ping: baidu.com: Temporary failure in name resolution</span><br></pre></td></tr></table></figure>
+<h3 id="vca-amp-host-网络配置"><a href="#vca-amp-host-网络配置" class="headerlink" title="vca &amp; host 网络配置"></a>vca &amp; host 网络配置</h3><p><strong>在host上</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> config proxy</span></span><br><span class="line">touch /etc/yum.repos.d/10proxy</span><br><span class="line">vim 10proxy</span><br><span class="line">Acquire::http::Proxy &quot; local network http proxy &quot;;</span><br><span class="line">scp /etc/yum.repos.d/10proxy root@172.32.1.1:/etc/apt/apt.conf.d/10proxy  </span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> config dns</span></span><br><span class="line">scp /etc/resolv.conf root@172.32.1.1:/etc</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">disable</span> firewall</span></span><br><span class="line">systemctl stop firewalld.service</span><br><span class="line">systemctl disable firewalld.service</span><br><span class="line">systemctl status firewalld.service</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">enable</span> ip forwarding <span class="keyword">in</span> host kernel</span></span><br><span class="line">echo 1 &gt; /proc/sys/net/ipv4/ip_forward</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> add rules to NAT</span></span><br><span class="line">iptables -t nat -A POSTROUTING -s 172.32.1.1 -d 0/0 -j MASQUERADE</span><br></pre></td></tr></table></figure>
+<p><strong>在VCA卡上</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">ssh root@172.32.1.1</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> configure proxy</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> host没有proxy的时候，可以不设置</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vim ~/.bashrc</span></span><br><span class="line">export https_proxy=&quot; local network https proxy&quot;</span><br><span class="line">export http_proxy=&quot; local network http proxy&quot;</span><br><span class="line">export ftp_proxy=&quot; local network ftp proxy&quot;</span><br></pre></td></tr></table></figure>
+<h4 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget www.baidu.com</span><br><span class="line">wget www.google.com</span><br></pre></td></tr></table></figure>
+<p>VCA卡应该和host有一样的网络连通能力。</p>
+<h2 id="在vca卡上安装software"><a href="#在vca卡上安装software" class="headerlink" title="在vca卡上安装software"></a>在vca卡上安装software</h2><p><strong>Load SMBus driver</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> apt update</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> modprobe i2c-i801</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> modprobe i2c-dev</span>  </span><br></pre></td></tr></table></figure>
+<p><strong>Load HDDL driver</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> insmod /lib/modules/5.3.18-1.9bf7f75.vca+/kernel/drivers/ion/myd_ion.ko</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> insmod /lib/modules/5.3.18-1.9bf7f75.vca+/kernel/drivers/usb/myd/myd_vsc.ko</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> lsmod | grep myd</span></span><br><span class="line">myd_vsc                24576  0</span><br><span class="line">myd_ion                49152  0</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Xinran Wang
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="http://xxinran.github.io/posts/dd7abf56.html" title="在centos8上使能vca-a卡">http://xxinran.github.io/posts/dd7abf56.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/device/" rel="tag"> <i class="fa fa-tag"></i> device</a>
+              <a href="/tags/intel/" rel="tag"> <i class="fa fa-tag"></i> intel</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/0.html" rel="prev" title="">
+      <i class="fa fa-chevron-left"></i> 
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/b56963ac.html" rel="next" title="容器的namespace和cgroups">
+      容器的namespace和cgroups <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#vca%E5%8D%A1%E7%9A%84%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">vca卡的内部结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Host%E4%B8%8Avca-software%E5%AE%89%E8%A3%85"><span class="nav-number">2.</span> <span class="nav-text">Host上vca software安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BDsoftware-packages%E6%BA%90%E7%A0%81"><span class="nav-number">2.1.</span> <span class="nav-text">下载software packages源码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8docker%E5%9C%A8%E5%AE%B9%E5%99%A8%E9%87%8Cbuild%E5%AE%89%E8%A3%85%E5%8C%85"><span class="nav-number">2.2.</span> <span class="nav-text">使用docker在容器里build安装包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E6%96%B0kernel%EF%BC%8Cvca%E8%BD%AF%E4%BB%B6%E7%AD%89"><span class="nav-number">2.3.</span> <span class="nav-text">安装新kernel，vca软件等</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#enable-iommu"><span class="nav-number">2.4.</span> <span class="nav-text">enable iommu</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%AA%8C%E8%AF%81"><span class="nav-number">2.5.</span> <span class="nav-text">验证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8vca%E5%8D%A1%E4%B8%8A%E8%BD%BD%E5%85%A5ubuntu-os"><span class="nav-number">2.6.</span> <span class="nav-text">在vca卡上载入ubuntu os</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vca-amp-host-%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE"><span class="nav-number">2.7.</span> <span class="nav-text">vca &amp; host 网络配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95"><span class="nav-number">2.7.1.</span> <span class="nav-text">测试</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8vca%E5%8D%A1%E4%B8%8A%E5%AE%89%E8%A3%85software"><span class="nav-number">3.</span> <span class="nav-text">在vca卡上安装software</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Xinran Wang"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Xinran Wang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xxinran" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xxinran" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:xxinran.wang@gmail.com" title="E-Mail → mailto:xxinran.wang@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xinran Wang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

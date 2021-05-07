@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xxinran.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="docker0先来查看一下host的网络：     12345678910111213141516171819# 启动一个tomcat容器[vagrant@localhost ~]$ docker run -d -P --name tomcat01 tomcat# 查看容器里的网络，发现有一个 eth0@if37（172.17.0.2）和host上的docker0（172.17.0.1）在同一个网">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅析docker网络">
+<meta property="og:url" content="http://xxinran.github.io/posts/3e6a7048.html">
+<meta property="og:site_name" content="Xinran&#39;s Blog">
+<meta property="og:description" content="docker0先来查看一下host的网络：     12345678910111213141516171819# 启动一个tomcat容器[vagrant@localhost ~]$ docker run -d -P --name tomcat01 tomcat# 查看容器里的网络，发现有一个 eth0@if37（172.17.0.2）和host上的docker0（172.17.0.1）在同一个网">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://xxinran.github.io/posts/3e6a7048/image-20210201164717688.png">
+<meta property="og:image" content="http://xxinran.github.io/posts/3e6a7048/image-20210201170031892.png">
+<meta property="og:image" content="http://xxinran.github.io/posts/3e6a7048/image-20210201171348699.png">
+<meta property="og:image" content="http://xxinran.github.io/posts/3e6a7048/image-20210201164519343.png">
+<meta property="og:image" content="http://xxinran.github.io/posts/3e6a7048/image-20210201173721626.png">
+<meta property="article:published_time" content="2021-02-01T04:18:56.000Z">
+<meta property="article:modified_time" content="2021-05-07T08:02:09.974Z">
+<meta property="article:author" content="Xinran Wang">
+<meta property="article:tag" content="docker">
+<meta property="article:tag" content="network">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://xxinran.github.io/posts/3e6a7048/image-20210201164717688.png">
+
+<link rel="canonical" href="http://xxinran.github.io/posts/3e6a7048.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>浅析docker网络 | Xinran's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Xinran's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">18</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">12</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">30</span></a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>Schedule</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://xxinran.github.io/posts/3e6a7048.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Xinran Wang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xinran's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          浅析docker网络
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-02-01 12:18:56" itemprop="dateCreated datePublished" datetime="2021-02-01T12:18:56+08:00">2021-02-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-05-07 16:02:09" itemprop="dateModified" datetime="2021-05-07T16:02:09+08:00">2021-05-07</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/docker/" itemprop="url" rel="index"><span itemprop="name">docker</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="docker0"><a href="#docker0" class="headerlink" title="docker0"></a>docker0</h3><p>先来查看一下host的网络：</p>
+<img src="/posts/3e6a7048/image-20210201164717688.png" alt="image-20210201164717688" style="zoom:50%;">
+
+
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 启动一个tomcat容器</span></span><br><span class="line">[vagrant@localhost ~]$ docker run -d -P --name tomcat01 tomcat</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看容器里的网络，发现有一个 eth0@if37（172.17.0.2）和host上的docker0（172.17.0.1）在同一个网段。</span></span><br><span class="line">[vagrant@localhost dockerfile]$ docker exec -it ef59e03b0b34 ip a</span><br><span class="line">1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000</span><br><span class="line">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</span><br><span class="line">    inet 127.0.0.1/8 scope host lo</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">36: eth0@if37: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default</span><br><span class="line">    link/ether 02:42:ac:11:00:02 brd ff:ff:ff:ff:ff:ff link-netnsid 0</span><br><span class="line">    inet 172.17.0.2/16 brd 172.17.255.255 scope global eth0</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">     </span><br><span class="line"><span class="meta">#</span><span class="bash"> 从host上ping容器的eth0@if37，可以ping通。</span></span><br><span class="line">[vagrant@localhost dockerfile]$ ping 172.17.0.2</span><br><span class="line">PING 172.17.0.2 (172.17.0.2) 56(84) bytes of data.</span><br><span class="line">64 bytes from 172.17.0.2: icmp_seq=1 ttl=64 time=0.083 ms</span><br><span class="line">64 bytes from 172.17.0.2: icmp_seq=2 ttl=64 time=0.061 ms</span><br></pre></td></tr></table></figure>
+<p>我们每启动一个docker容器，docker就会给容器分配一个ip，我们只要安装的docker，就会有一个docker0网卡，这个网卡是桥接模式，使用的技术是ve th-pair技术。</p>
+<p>启动完tomcat容器后，再在host上查看网络接口，会发现多了一个接口：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[vagrant@localhost ~]$ ip a</span><br><span class="line">...</span><br><span class="line"><span class="meta">#</span><span class="bash"> </span></span><br><span class="line">37: veth9f8a1b7@if36: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue master docker0 state UP group default</span><br><span class="line">    link/ether 0a:6f:15:99:d0:b8 brd ff:ff:ff:ff:ff:ff link-netnsid 0</span><br><span class="line">    inet6 fe80::86f:15ff:fe99:d0b8/64 scope link</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br></pre></td></tr></table></figure>
+<h3 id="veth-pair技术"><a href="#veth-pair技术" class="headerlink" title="veth-pair技术"></a>veth-pair技术</h3><p>是一对虚拟设备接口，都是成对出现的。</p>
+<p>我们再起一个tomcat，现在有两个容器，tomcat01和tomcat02。看一下他们的网络接口和host的网络。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> -it tomcat01 ip a</span></span><br><span class="line">1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000</span><br><span class="line">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</span><br><span class="line">    inet 127.0.0.1/8 scope host lo</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">36: eth0@if37: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default</span><br><span class="line">    link/ether 02:42:ac:11:00:02 brd ff:ff:ff:ff:ff:ff link-netnsid 0</span><br><span class="line">    inet 172.17.0.2/16 brd 172.17.255.255 scope global eth0</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">       </span><br><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> -it tomcat02 ip a</span></span><br><span class="line">1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000</span><br><span class="line">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</span><br><span class="line">    inet 127.0.0.1/8 scope host lo</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">38: eth0@if39: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default</span><br><span class="line">    link/ether 02:42:ac:11:00:03 brd ff:ff:ff:ff:ff:ff link-netnsid 0</span><br><span class="line">    inet 172.17.0.3/16 brd 172.17.255.255 scope global eth0</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    </span><br><span class="line"><span class="meta">$</span><span class="bash"> ip a</span></span><br><span class="line">...</span><br><span class="line">3: docker0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default</span><br><span class="line">    link/ether 02:42:95:5a:03:dc brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 fe80::42:95ff:fe5a:3dc/64 scope link</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">37: veth9f8a1b7@if36: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue master docker0 state UP group default</span><br><span class="line">    link/ether 0a:6f:15:99:d0:b8 brd ff:ff:ff:ff:ff:ff link-netnsid 0</span><br><span class="line">    inet6 fe80::86f:15ff:fe99:d0b8/64 scope link</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">39: veth11e4e0f@if38: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue master docker0 state UP group default</span><br><span class="line">    link/ether ba:3b:43:24:29:92 brd ff:ff:ff:ff:ff:ff link-netnsid 1</span><br><span class="line">    inet6 fe80::b83b:43ff:fe24:2992/64 scope link</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br></pre></td></tr></table></figure>
+<p>网络模型如下，每个容器在创建的时候会建立一对veth pair，用于和docker0通信，不同容器间的通信也是通过docker0网桥。</p>
+<img src="/posts/3e6a7048/image-20210201170031892.png" alt="image-20210201170031892" style="zoom:50%;">
+
+<h3 id="limitation"><a href="#limitation" class="headerlink" title="limitation"></a>limitation</h3><p>测试两个容器的连通性</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> ping容器名是ping不通的</span></span><br><span class="line">vagrant@localhost ~]$ docker exec -it tomcat01 ping tomcat02</span><br><span class="line">ping: tomcat02: No address associated with hostname</span><br><span class="line"><span class="meta">#</span><span class="bash"> ping ip可以ping通</span></span><br><span class="line">[vagrant@localhost ~]$ docker exec -it tomcat01 ping 172.17.0.3</span><br><span class="line">PING 172.17.0.3 (172.17.0.3) 56(84) bytes of data.</span><br><span class="line">64 bytes from 172.17.0.3: icmp_seq=1 ttl=64 time=0.058 ms</span><br><span class="line">64 bytes from 172.17.0.3: icmp_seq=2 ttl=64 time=0.066 ms</span><br></pre></td></tr></table></figure>
+<p>这就是docker0网桥的局限性，<strong>不支持容器名访问</strong>。这里我们可以通过<code>--link</code>来实现通过容器名来连通。</p>
+<h4 id="–link"><a href="#–link" class="headerlink" title="–link"></a>–link</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 删除tomcat02，并且重新创建</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker run -d -P --name tomcat02 --link tomcat01 tomcat</span></span><br><span class="line">a9a926b40eb97a28d39ec67418efaa05b362b9917f7375620da18e8f13607282</span><br><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> -it tomcat02 ping tomcat01</span></span><br><span class="line">PING tomcat01 (172.17.0.2) 56(84) bytes of data.</span><br><span class="line">64 bytes from tomcat01 (172.17.0.2): icmp_seq=1 ttl=64 time=0.090 ms</span><br><span class="line">64 bytes from tomcat01 (172.17.0.2): icmp_seq=2 ttl=64 time=0.060 ms</span><br><span class="line">^C</span><br><span class="line">--- tomcat01 ping statistics ---</span><br><span class="line">2 packets transmitted, 2 received, 0% packet loss, time 11ms</span><br><span class="line">rtt min/avg/max/mdev = 0.060/0.075/0.090/0.015 ms</span><br></pre></td></tr></table></figure>
+<p>发现可以通过容器名ping通了，但是反向ping还是不通。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> -it tomcat01 ping tomcat02</span></span><br><span class="line">ping: tomcat02: No address associated with hostname</span><br></pre></td></tr></table></figure>
+<p>原因是因为我们只是在docker run tomcat02的时候加了<code>--link</code>,相当于只对tomcat02设置了针对tomcat01的连通性，反之则没有，所以tomcat01并不知道如何处理tomcat02这个域名。</p>
+<p>那么，<code>--link</code>  到底在tomcat02里配置了什么呢？ 下面是<code>docker inspect tomcat02</code>的输出，可以看到在HostConfig中有一个关于tomcat01的设置。</p>
+<img src="/posts/3e6a7048/image-20210201171348699.png" alt="image-20210201171348699" style="zoom:50%;">
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> --link主要干了两件事</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 1. 设置tomcat01（被link容器）的环境变量</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span>  -it tomcat02 env | grep -i tomcat01</span></span><br><span class="line">TOMCAT01_PORT=tcp://172.17.0.2:8080</span><br><span class="line">TOMCAT01_PORT_8080_TCP=tcp://172.17.0.2:8080</span><br><span class="line">TOMCAT01_PORT_8080_TCP_ADDR=172.17.0.2</span><br><span class="line">TOMCAT01_PORT_8080_TCP_PORT=8080</span><br><span class="line">TOMCAT01_PORT_8080_TCP_PROTO=tcp</span><br><span class="line">TOMCAT01_NAME=/tomcat02/tomcat01</span><br><span class="line">TOMCAT01_ENV_LANG=C.UTF-8</span><br><span class="line">TOMCAT01_ENV_JAVA_HOME=/usr/local/openjdk-11</span><br><span class="line">TOMCAT01_ENV_JAVA_VERSION=11.0.9.1</span><br><span class="line">TOMCAT01_ENV_CATALINA_HOME=/usr/local/tomcat</span><br><span class="line">TOMCAT01_ENV_TOMCAT_NATIVE_LIBDIR=/usr/local/tomcat/native-jni-lib</span><br><span class="line">TOMCAT01_ENV_LD_LIBRARY_PATH=/usr/local/tomcat/native-jni-lib</span><br><span class="line">TOMCAT01_ENV_GPG_KEYS=05AB33110949707C93A279E3D3EFE6B686867BA6 07E48665A34DCAFAE522E5E6266191C37C037D42 47309207D818FFD8DCD3F83F1931D684307A10A5 541FBE7D8F78B25E055DDEE13C370389288584E7 61B832AC2F1C5A90F0F9B00A1C506407564C17A3 79F7026C690BAA50B92CD8B66A3AD3F4F22C4FED 9BA44C2621385CB966EBA586F72C284D731FABEE A27677289986DB50844682F8ACB77FC2E86E29AC A9C5DF4D22E99998D9875A5110C01C5A2F6059E7 DCFD35E0BF8CA7344752DE8B6FB21E8933C60243 F3A04C595DB5B6A5F1ECA43E3B7BBB100D811BBE F7DA48BB64BCB84ECBA7EE6935CD23C10D498E23</span><br><span class="line">TOMCAT01_ENV_TOMCAT_MAJOR=9</span><br><span class="line">TOMCAT01_ENV_TOMCAT_VERSION=9.0.41</span><br><span class="line">TOMCAT01_ENV_TOMCAT_SHA512=b6450e590a37c5bccf049b1176c441f0964796995e80d4c7c7d9fb74f9ad817107c303b6b83ed3d71c9251b2b8acf334b90a4abdf9deea122e338643cece0766</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 2. 设置/etc/hosts</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span>  -it tomcat02 cat /etc/hosts</span></span><br><span class="line">127.0.0.1       localhost</span><br><span class="line">::1     localhost ip6-localhost ip6-loopback</span><br><span class="line">fe00::0 ip6-localnet</span><br><span class="line">ff00::0 ip6-mcastprefix</span><br><span class="line">ff02::1 ip6-allnodes</span><br><span class="line">ff02::2 ip6-allrouters</span><br><span class="line">172.17.0.2      tomcat01 ef59e03b0b34  # 这里设置了tomcat01的IP映射关系</span><br><span class="line">172.17.0.3      a9a926b40eb9</span><br></pre></td></tr></table></figure>
+<h3 id="自定义网络"><a href="#自定义网络" class="headerlink" title="自定义网络"></a>自定义网络</h3><p>在docker 安装的时候，有</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker network ls</span></span><br><span class="line">NETWORK ID     NAME      DRIVER    SCOPE</span><br><span class="line">b3d482ea68aa   bridge    bridge    local  # veth pair - &gt; docker0 桥接模式（缺省模式）</span><br><span class="line">70901896d6a3   host      host      local  # 和host共享网络</span><br><span class="line">51ec536b7953   none      null      local  # 不配置网络，一般不用</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 还有一种container模式，容器内网络连通（不常用）。</span></span><br></pre></td></tr></table></figure>
+<p>bridge网络里面配置了gateway， subnet，并且可以看到连接在这个网络上的容器。</p>
+<p>这里的gateway就说doker0网桥（172.17.0.1）</p>
+<img src="/posts/3e6a7048/image-20210201164519343.png" alt="image-20210201164519343" style="zoom:50%;">
+
+<h4 id="创建一个新的网络"><a href="#创建一个新的网络" class="headerlink" title="创建一个新的网络"></a>创建一个新的网络</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 默认driver就是bridge</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> --driver bridge</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> --subnet 192.168.0.0/16 (192.168.0.1- 192.168.255.255)</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker network create -d bridge --gateway 192.168.0.1 --subnet 192.168.0.0/16 mynet</span></span><br><span class="line">49025b4d0eaa1303c112bbec9290a306fac466b9bc56aa81237d823476d86ada</span><br><span class="line"><span class="meta">$</span><span class="bash"> docker network ls</span></span><br><span class="line">NETWORK ID     NAME      DRIVER    SCOPE</span><br><span class="line">b3d482ea68aa   bridge    bridge    local</span><br><span class="line">70901896d6a3   host      host      local</span><br><span class="line">49025b4d0eaa   mynet     bridge    local</span><br><span class="line">51ec536b7953   none      null      local</span><br></pre></td></tr></table></figure>
+<h4 id="在mynet网络里创建两个新的tomcat"><a href="#在mynet网络里创建两个新的tomcat" class="headerlink" title="在mynet网络里创建两个新的tomcat"></a>在mynet网络里创建两个新的tomcat</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 起两个在mynet里的tomcat</span></span><br><span class="line">[vagrant@localhost ~]$ docker run -d -P --name tomcat-net-01 --net mynet tomcat</span><br><span class="line">8151712ef76b6315018f969b6c0b8116b297a8391793736f7d7825c88a89cc8c</span><br><span class="line">[vagrant@localhost ~]$ docker run -d -P --name tomcat-net-02 --net mynet tomcat</span><br><span class="line">8dada8500e5c3c7993b649984f64c0bb8266a52d6e38256a73807a8e99d901cd</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 发现这两个容器可以通过容器名互通。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 这就是自定义网络比docker默认的bridge网络（docker0）更高级的地方。</span></span><br><span class="line">[vagrant@localhost ~]$ docker exec -it tomcat-net-01 ping tomcat-net-02</span><br><span class="line">PING tomcat-net-02 (192.168.0.3) 56(84) bytes of data.</span><br><span class="line">64 bytes from tomcat-net-02.mynet (192.168.0.3): icmp_seq=1 ttl=64 time=0.082 ms</span><br><span class="line">64 bytes from tomcat-net-02.mynet (192.168.0.3): icmp_seq=2 ttl=64 time=0.078 ms</span><br><span class="line">^C</span><br><span class="line">--- tomcat-net-02 ping statistics ---</span><br><span class="line">2 packets transmitted, 2 received, 0% packet loss, time 2ms</span><br><span class="line">rtt min/avg/max/mdev = 0.078/0.080/0.082/0.002 ms</span><br><span class="line">[vagrant@localhost ~]$ docker exec -it tomcat-net-02 ping tomcat-net-01</span><br><span class="line">PING tomcat-net-01 (192.168.0.2) 56(84) bytes of data.</span><br><span class="line">64 bytes from tomcat-net-01.mynet (192.168.0.2): icmp_seq=1 ttl=64 time=0.059 ms</span><br><span class="line">64 bytes from tomcat-net-01.mynet (192.168.0.2): icmp_seq=2 ttl=64 time=0.068 ms</span><br><span class="line"></span><br><span class="line">64 bytes from tomcat-net-01.mynet (192.168.0.2): icmp_seq=3 ttl=64 time=0.216 ms</span><br><span class="line">^C</span><br><span class="line">--- tomcat-net-01 ping statistics ---</span><br><span class="line">3 packets transmitted, 3 received, 0% packet loss, time 90ms</span><br><span class="line">rtt min/avg/max/mdev = 0.059/0.114/0.216/0.072 ms</span><br></pre></td></tr></table></figure>
+<h4 id="不同docker网络里的容器连通（跨网络）"><a href="#不同docker网络里的容器连通（跨网络）" class="headerlink" title="不同docker网络里的容器连通（跨网络）"></a>不同docker网络里的容器连通（跨网络）</h4><p>这时又有一个问题。现在我的host上的容器如图所示。</p>
+<img src="/posts/3e6a7048/image-20210201173721626.png" alt="image-20210201173721626" style="zoom:50%;">
+
+<p>tomcat01和tomcat02是在默认的docker0的网络里，tomcat-net-01和tomcat-net-02在我新创建的mynet里。如果我需要tomcat01和tomcat-net-0连通，应该怎么做呢。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker network connect mynet tomcat01</span> </span><br><span class="line"><span class="meta">#</span><span class="bash"> 把tomcat容器连接到mynet网络中</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 现在就可以ping通了</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> -it tomcat01 ping tomcat-net-02</span> </span><br><span class="line">PING tomcat-net-02 (192.168.0.3) 56(84) bytes of data.</span><br><span class="line">64 bytes from tomcat-net-02.mynet (192.168.0.3): icmp_seq=1 ttl=64 time=0.235 ms</span><br><span class="line">64 bytes from tomcat-net-02.mynet (192.168.0.3): icmp_seq=2 ttl=64 time=0.160 ms</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 看一下tomcat01的网卡，发现多了一个eth1@if48，对应IP是 192.168.0.4，在mynet网段中。</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> -it tomcat01 ip a</span></span><br><span class="line">1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000</span><br><span class="line">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</span><br><span class="line">    inet 127.0.0.1/8 scope host lo</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">36: eth0@if37: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default</span><br><span class="line">    link/ether 02:42:ac:11:00:02 brd ff:ff:ff:ff:ff:ff link-netnsid 0</span><br><span class="line">    inet 172.17.0.2/16 brd 172.17.255.255 scope global eth0</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">47: eth1@if48: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default</span><br><span class="line">    link/ether 02:42:c0:a8:00:04 brd ff:ff:ff:ff:ff:ff link-netnsid 0</span><br><span class="line">    inet 192.168.0.4/16 brd 192.168.255.255 scope global eth1</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="docker的几种网络模式"><a href="#docker的几种网络模式" class="headerlink" title="docker的几种网络模式"></a>docker的几种网络模式</h3><h4 id="host模式"><a href="#host模式" class="headerlink" title="host模式"></a>host模式</h4><p>当我们在容器中执行任何类似ifconfig命令查看网络环境时，看到的都是宿主机上的信息。而外界访问容器中的应用，则直接使用10.10.101.105:80即可，不用任何NAT转换，就如直接跑在宿主机中一样。但是，容器的其他方面，如文件系统、进程列表等还是和宿主机隔离的。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 和host一样，共享</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> -it bb-host ip ad</span></span><br><span class="line">1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue qlen 1000</span><br><span class="line">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</span><br><span class="line">    inet 127.0.0.1/8 scope host lo</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 ::1/128 scope host</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">2: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc fq_codel qlen 1000</span><br><span class="line">    link/ether 52:54:00:27:8b:50 brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 10.0.2.15/24 brd 10.0.2.255 scope global dynamic eth0</span><br><span class="line">       valid_lft 44372sec preferred_lft 44372sec</span><br><span class="line">    inet6 fe80::5054:ff:fe27:8b50/64 scope link</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">3: docker0: &lt;NO-CARRIER,BROADCAST,MULTICAST,UP&gt; mtu 1500 qdisc noqueue</span><br><span class="line">    link/ether 02:42:95:5a:03:dc brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 fe80::42:95ff:fe5a:3dc/64 scope link</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">42: br-49025b4d0eaa: &lt;NO-CARRIER,BROADCAST,MULTICAST,UP&gt; mtu 1500 qdisc noqueue</span><br><span class="line">    link/ether 02:42:ad:cf:bc:6f brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 192.168.0.1/16 brd 192.168.255.255 scope global br-49025b4d0eaa</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 fe80::42:adff:fecf:bc6f/64 scope link</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br></pre></td></tr></table></figure>
+<h4 id="container模式"><a href="#container模式" class="headerlink" title="container模式"></a>container模式</h4><p>这个模式指定新创建的容器和已经存在的一个容器共享一个Network Namespace，而不是和宿主机共享。新创建的容器不会创建自己的网卡，配置自己的IP，而是和一个指定的容器共享IP、端口范围等。同样，两个容器除了网络方面，其他的如文件系统、进程列表等还是隔离的。两个容器的进程可以通过lo网卡设备通信。</p>
+<h4 id="none模式"><a href="#none模式" class="headerlink" title="none模式"></a>none模式</h4><p>这个模式和前两个不同。在这种模式下，Docker容器拥有自己的Network Namespace，但是，并不为Docker容器进行任何网络配置。也就是说，这个Docker容器没有网卡、IP、路由等信息。需要我们自己为Docker容器添加网卡、配置IP等。</p>
+<h4 id="bridge模式"><a href="#bridge模式" class="headerlink" title="bridge模式"></a>bridge模式</h4><p>bridge模式是Docker默认的网络设置，就是docker0的模式。此模式会为每一个容器分配Network Namespace、设置IP等，并将一个主机上的Docker容器连接到一个虚拟网桥上。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
+<li><p>Docker0：默认网络，缺点是不能通过容器名访问。</p>
+</li>
+<li><p>–link可以解决，但是太麻烦，是单向的。</p>
+</li>
+<li><p>一般需要自定义网络，这个可以通过容器名访问。</p>
+</li>
+<li><p>如果不同网络里的容器需要互联，则需要<code>docker network connect</code>，这个命令可以把network1中的容器连接到network2中，此时容器有两个IP，分别对应network1和2。</p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Xinran Wang
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="http://xxinran.github.io/posts/3e6a7048.html" title="浅析docker网络">http://xxinran.github.io/posts/3e6a7048.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/docker/" rel="tag"> <i class="fa fa-tag"></i> docker</a>
+              <a href="/tags/network/" rel="tag"> <i class="fa fa-tag"></i> network</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/65bbead6.html" rel="prev" title="代理服务器基本介绍">
+      <i class="fa fa-chevron-left"></i> 代理服务器基本介绍
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/e41fb1bd.html" rel="next" title="网络虚拟化简介">
+      网络虚拟化简介 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#docker0"><span class="nav-number">1.</span> <span class="nav-text">docker0</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#veth-pair%E6%8A%80%E6%9C%AF"><span class="nav-number">2.</span> <span class="nav-text">veth-pair技术</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#limitation"><span class="nav-number">3.</span> <span class="nav-text">limitation</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%80%93link"><span class="nav-number">3.1.</span> <span class="nav-text">–link</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E7%BD%91%E7%BB%9C"><span class="nav-number">4.</span> <span class="nav-text">自定义网络</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E6%96%B0%E7%9A%84%E7%BD%91%E7%BB%9C"><span class="nav-number">4.1.</span> <span class="nav-text">创建一个新的网络</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%A8mynet%E7%BD%91%E7%BB%9C%E9%87%8C%E5%88%9B%E5%BB%BA%E4%B8%A4%E4%B8%AA%E6%96%B0%E7%9A%84tomcat"><span class="nav-number">4.2.</span> <span class="nav-text">在mynet网络里创建两个新的tomcat</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8D%E5%90%8Cdocker%E7%BD%91%E7%BB%9C%E9%87%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E8%BF%9E%E9%80%9A%EF%BC%88%E8%B7%A8%E7%BD%91%E7%BB%9C%EF%BC%89"><span class="nav-number">4.3.</span> <span class="nav-text">不同docker网络里的容器连通（跨网络）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker%E7%9A%84%E5%87%A0%E7%A7%8D%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F"><span class="nav-number">5.</span> <span class="nav-text">docker的几种网络模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#host%E6%A8%A1%E5%BC%8F"><span class="nav-number">5.1.</span> <span class="nav-text">host模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#container%E6%A8%A1%E5%BC%8F"><span class="nav-number">5.2.</span> <span class="nav-text">container模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#none%E6%A8%A1%E5%BC%8F"><span class="nav-number">5.3.</span> <span class="nav-text">none模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bridge%E6%A8%A1%E5%BC%8F"><span class="nav-number">5.4.</span> <span class="nav-text">bridge模式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Xinran Wang"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Xinran Wang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xxinran" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xxinran" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:xxinran.wang@gmail.com" title="E-Mail → mailto:xxinran.wang@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xinran Wang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
