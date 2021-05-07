@@ -184,7 +184,7 @@ body {
 body {
   background: var(--body-bg-color);
   color: var(--text-color);
-  font-family: Monda, "Microsoft YaHei", sans-serif;
+  font-family: Noto Sans SC, "Microsoft YaHei", sans-serif;
   font-size: 16px;
   line-height: 1.8em;
   min-height: 100%;
@@ -197,7 +197,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: Roboto Slab, Monda, "Microsoft YaHei", sans-serif;
+  font-family: Noto Sans SC, Noto Sans SC, "Microsoft YaHei", sans-serif;
   font-weight: bold;
   line-height: 1.5;
   margin: 20px 0 15px;
@@ -498,7 +498,7 @@ pre {
 }
 pre,
 code {
-  font-family: PT Mono, consolas, Menlo, monospace, "Microsoft YaHei";
+  font-family: Noto Sans SC, consolas, Menlo, monospace, "Microsoft YaHei";
 }
 code {
   border-radius: 3px;
@@ -1221,7 +1221,7 @@ pre code {
   color: var(--brand-hover-color);
 }
 .site-title {
-  font-family: Roboto Slab, Monda, "Microsoft YaHei", sans-serif;
+  font-family: Noto Sans SC, Noto Sans SC, "Microsoft YaHei", sans-serif;
   font-size: 14px;
   font-weight: normal;
   margin: 0;
@@ -1865,7 +1865,7 @@ pre code {
   width: 4px;
 }
 .post-body {
-  font-family: Monda, "Microsoft YaHei", sans-serif;
+  font-family: Noto Sans SC, Noto Sans SC, "Microsoft YaHei", sans-serif;
   overflow-wrap: break-word;
 }
 @media (min-width: 1200px) {
@@ -2058,7 +2058,7 @@ pre code {
 }
 .posts-expand .post-meta-container {
   color: #999;
-  font-family: Monda, "Microsoft YaHei", sans-serif;
+  font-family: Noto Sans SC, Noto Sans SC, "Microsoft YaHei", sans-serif;
   font-size: $font-size-smallest;
   margin-top: 3px;
 }
@@ -2879,4 +2879,7 @@ mark.search-keyword {
   .comments {
     padding: 10px 12px;
   }
+}
+* {
+  color: #2e405b;
 }
