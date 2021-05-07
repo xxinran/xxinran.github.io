@@ -364,7 +364,6 @@ codeblock:
     show_result: true
     # Available values: default | flat | mac
     style:
-  highlight_theme: night eighties
 
 back2top:
   enable: true
