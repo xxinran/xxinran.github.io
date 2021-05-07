@@ -414,9 +414,9 @@
       
         <tags>
             
-            <tag> docker </tag>
-            
             <tag> network </tag>
+            
+            <tag> docker </tag>
             
         </tags>
       
