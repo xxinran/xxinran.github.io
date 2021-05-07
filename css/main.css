@@ -1194,7 +1194,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #ffb8f9;
+  background: #ffbd8c;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -1422,7 +1422,7 @@ pre .javascript .function {
 }
 .languages {
   display: inline-block;
-  font-size: 17px;
+  font-size: 21px;
   position: relative;
 }
 .languages .lang-select-label span {
@@ -1551,7 +1551,7 @@ pre .javascript .function {
 }
 @media (min-width: 1200px) {
   .post-body {
-    font-size: 17px;
+    font-size: 21px;
   }
 }
 .post-body .exturl .fa {
@@ -1600,7 +1600,7 @@ pre .javascript .function {
   }
 }
 .posts-collapse .collection-title {
-  font-size: 17px;
+  font-size: 21px;
   position: relative;
 }
 .posts-collapse .collection-title::before {
@@ -1661,7 +1661,7 @@ pre .javascript .function {
   left: 0;
   margin-left: -4px;
   position: absolute;
-  top: 9px;
+  top: 11px;
   transition-property: background;
   width: 6px;
   transition-delay: 0s;
@@ -1676,7 +1676,7 @@ pre .javascript .function {
 }
 .posts-collapse .post-meta {
   display: inline;
-  font-size: 9px;
+  font-size: 11px;
   margin-right: 10px;
 }
 .posts-collapse .post-title {
@@ -1802,7 +1802,7 @@ pre .javascript .function {
   margin: 0;
 }
 .posts-expand .post-header {
-  font-size: 17px;
+  font-size: 21px;
 }
 .posts-expand .post-title {
   font-size: 33px;
@@ -1844,7 +1844,7 @@ pre .javascript .function {
 .posts-expand .post-meta {
   color: #999;
   font-family: 'Lato', -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "STHeiti", "Source Han Sans SC", "Noto Sans CJK SC", "WenQuanYi Micro Hei", "Droid Sans Fallback", "Microsoft YaHei", sans-serif;
-  font-size: 9px;
+  font-size: 11px;
   margin: 3px 0 60px 0;
   text-align: center;
 }
@@ -1897,7 +1897,7 @@ pre .javascript .function {
   top: 2px;
 }
 .post-nav-item .fa {
-  font-size: 9px;
+  font-size: 11px;
 }
 .post-nav-item:first-child {
   margin-right: 15px;
@@ -2154,7 +2154,7 @@ pre .javascript .function {
   }
 }
 ul.breadcrumb {
-  font-size: 9px;
+  font-size: 11px;
   list-style: none;
   margin: 1em 0;
   padding: 0 2em;
