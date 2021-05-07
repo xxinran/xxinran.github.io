@@ -1,11 +1,10 @@
----
 title: 在centos上修改源并安装docker
 date: 2021-01-30 18:05:57
 tags:
+
 - deploy
 - docker
 categories: deploy
----
 
 ### 环境
 
