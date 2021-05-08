@@ -110,7 +110,7 @@ deploy:
   type: git
   repo:
     github: git@github.com:xxinran/xxinran.github.io.git, main
-    gitee: git@gitee.com/xxinran/xxinran.git, master
+    gitee: git@gitee.com:xxinran/xxinran.git, master
 
 search:
   path: search.xml
