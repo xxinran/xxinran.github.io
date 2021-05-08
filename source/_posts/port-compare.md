@@ -1,12 +1,11 @@
 ---
 title: 'containerPort, targetPort, port, nodePort等的区别'
 categories: kubernetes
+description: ' '
 abbrlink: 3836ec52
 date: 2021-03-08 18:18:24
 tags:
 ---
-
-<!-- more -->
 
 本文会通过container中的应用的几种访问方式来解释containerPort, targetPort, port, nodePort的关系和区别。
 

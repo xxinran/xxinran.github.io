@@ -2,11 +2,10 @@
 title: hexo+github
 tags: hexo
 categories: hexo
+description: ' '
 abbrlink: ebeabd53
 date: 2021-01-27 19:15:38
 ---
-
-<!-- more -->
 
 ### 安装nodejs，git
 

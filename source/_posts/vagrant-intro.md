@@ -4,11 +4,10 @@ tags:
   - vagrant
   - virtualbox
 Categories: 'deploy,vm'
+description: ' '
 abbrlink: e1d7a8
 date: 2021-01-28 22:23:48
 ---
-
-<!-- more -->
 
 ## vagrant介绍
 

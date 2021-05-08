@@ -2,11 +2,10 @@
 title: 多设备同步hexoy
 tags: hexo
 categories: hexo
+description: ' '
 abbrlink: c9d1870c
 date: 2021-01-28 00:13:01
 ---
-
-<!-- more -->
 
 # 多个设备之间同步hexo
 

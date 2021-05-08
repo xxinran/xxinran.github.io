@@ -4,11 +4,10 @@ tags:
   - network
   - docker
 categories: docker
+description: ' '
 abbrlink: 3e6a7048
 date: 2021-02-01 12:18:56
 ---
-
-<!-- more -->
 
 ### docker0
 

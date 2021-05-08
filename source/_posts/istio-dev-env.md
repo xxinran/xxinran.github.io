@@ -4,11 +4,10 @@ tags:
   - deploy
   - service mesh
 categories: deploy
+description: ' '
 abbrlink: 702f5168
 date: 2021-03-04 18:00:34
 ---
-
-<!-- more -->
 
 之前搭建了istio的生产环境，这次搭建开发环境。
 

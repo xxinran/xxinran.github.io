@@ -4,11 +4,10 @@ tags:
   - device
   - intel
 categories: devices
+description: ' '
 abbrlink: dd7abf56
 date: 2021-02-02 15:59:19
 ---
-
-<!-- more -->
 
 ## vca卡的内部结构
 

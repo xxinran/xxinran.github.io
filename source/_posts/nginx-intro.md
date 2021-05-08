@@ -1,12 +1,11 @@
 ---
 title: Nginx简介
+description: ' '
 abbrlink: cc1b6e67
 date: 2021-02-01 23:04:57
 tags:
 categories:
 ---
-
-<!-- more -->
 
 ## 简介
 
