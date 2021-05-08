@@ -1,16 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>cpu-microarch</title>
-    <url>/posts/f1d93d2c.html</url>
-    <content><![CDATA[<p><img src="https://en.wikichip.org/w/images/thumb/e/ee/skylake_server_block_diagram.svg/950px-skylake_server_block_diagram.svg.png" alt="skylake server block diagram.svg"></p>
-<p>front end：取值，解码</p>
-<p>execution engine：计算</p>
-<p>memory subsystem： 读写内存</p>
-<p>L1， L2 per core</p>
-]]></content>
-  </entry>
-  <entry>
     <title>cpu基础</title>
     <url>/posts/fe9b70.html</url>
     <content><![CDATA[<p>cpu运行阶段：取值，解码，执行，写回。</p>
@@ -20,6 +10,16 @@
 <p>倍频</p>
 <p>外频：cpu的基准频率，cpu和其他部件通讯的频率，决定着整块主板的运行速度。因为cpu的频率太高，其他部件跟不上。</p>
 <p>超频：</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>cpu-microarch</title>
+    <url>/posts/f1d93d2c.html</url>
+    <content><![CDATA[<p><img src="https://en.wikichip.org/w/images/thumb/e/ee/skylake_server_block_diagram.svg/950px-skylake_server_block_diagram.svg.png" alt="skylake server block diagram.svg"></p>
+<p>front end：取值，解码</p>
+<p>execution engine：计算</p>
+<p>memory subsystem： 读写内存</p>
+<p>L1， L2 per core</p>
 ]]></content>
   </entry>
   <entry>
@@ -804,6 +804,20 @@
       </tags>
   </entry>
   <entry>
+    <title>网络虚拟化简介</title>
+    <url>/posts/e41fb1bd.html</url>
+    <content><![CDATA[<img src="/posts/e41fb1bd/image-20210201221242667.png" alt="image-20210201221242667" style="zoom:70%;">
+
+]]></content>
+      <categories>
+        <category>虚拟化</category>
+      </categories>
+      <tags>
+        <tag>network</tag>
+        <tag>virtualization</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>计算机网络概述</title>
     <url>/posts/7c4ca347.html</url>
     <content><![CDATA[<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><h3 id="1-速率相关性能指标"><a href="#1-速率相关性能指标" class="headerlink" title="1. 速率相关性能指标"></a>1. 速率相关性能指标</h3><h4 id="速率"><a href="#速率" class="headerlink" title="速率"></a>速率</h4><p>在数字信道上传输数据位的速度。单位: b/s,Kb/s,Mb/s,Tb/s，<br>如果用字节表示，则是B/s,KB/s,MB/s,TB/s（1Byte=8Bit）</p>
@@ -889,20 +903,6 @@
       </categories>
       <tags>
         <tag>network</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>网络虚拟化简介</title>
-    <url>/posts/e41fb1bd.html</url>
-    <content><![CDATA[<img src="/posts/e41fb1bd/image-20210201221242667.png" alt="image-20210201221242667" style="zoom:70%;">
-
-]]></content>
-      <categories>
-        <category>虚拟化</category>
-      </categories>
-      <tags>
-        <tag>network</tag>
-        <tag>virtualization</tag>
       </tags>
   </entry>
   <entry>
