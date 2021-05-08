@@ -275,5 +275,3 @@ Flags:                           fpu vme de pse tsc msr pae mce cx8 apic sep mtr
 ![image-20210429154000972](linux-memory/image-20210429154000972.png)
 
 <img src="linux-memory/image-20210429154341590.png" alt="image-20210429154341590" style="zoom:67%;" />
-
-### 
