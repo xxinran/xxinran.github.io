@@ -108,9 +108,9 @@ pjax: true
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: git
-  repository:
-    git@github.com:xxinran/xxinran.github.io.git, main
-    git@gitee.com/xxinran/xxinran.git,master
+  repo:
+    github: git@github.com:xxinran/xxinran.github.io.git, main
+    gitee: git@gitee.com/xxinran/xxinran.git, master
 
 search:
   path: search.xml
