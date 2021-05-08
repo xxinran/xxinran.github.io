@@ -3,8 +3,8 @@ title: ebpf-intro
 description: ' '
 abbrlink: 85f2c2fa
 date: 2021-04-23 15:37:48
-tags:
-categories:
+tags: eBPF
+categories: LINUX
 ---
 
 bpf - bakerly profiling filter

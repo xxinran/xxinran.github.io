@@ -1,7 +1,7 @@
 ---
 title: QAT在Ubuntu18.04上的安装和虚拟化
-tags: qat
-categories: deploy
+tags: QAT
+categories: Device
 description: ' '
 abbrlink: 461bb783
 date: 2021-01-27 20:31:29

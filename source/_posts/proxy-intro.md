@@ -1,7 +1,7 @@
 ---
 title: 代理服务器基本介绍
 tags: proxy
-categories: network
+categories: Network
 description: ' '
 abbrlink: 65bbead6
 date: 2021-01-29 15:56:09

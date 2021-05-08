@@ -4,7 +4,9 @@ description: ' '
 abbrlink: 204fd6f0
 date: 2021-04-26 10:25:33
 tags:
-categories:
+  - GPU
+  - 虚拟化
+categories: LINUX
 ---
 
 目前流行的几种模式：pass through, sriov, 半虚拟化（mdev passthrough： Intel gvt-g, Nvidia GRID vGPU), 全虚拟化（VMware： vSGA）

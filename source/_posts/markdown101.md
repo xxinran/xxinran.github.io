@@ -1,7 +1,7 @@
 ---
 title: markdown基本语法
 tags: markdown
-categories: language
+categories: tools
 description: ' '
 abbrlink: 47caaf1e
 date: 2021-01-27 20:32:45

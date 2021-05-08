@@ -1,9 +1,8 @@
 ---
 title: 部署istio+k8s+kiali
 tags:
-  - service-mesh
   - deploy
-categories: deploy
+categories: Istio
 description: ' '
 abbrlink: f5beba55
 date: 2021-03-01 17:30:27

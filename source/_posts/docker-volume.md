@@ -1,7 +1,7 @@
 ---
 title: 容器volume基本介绍
 tags: docker
-categories: docker
+categories: cloud native
 typora-root-url: ../_posts
 description: ' '
 abbrlink: 4b81a639

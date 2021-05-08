@@ -1,9 +1,7 @@
 ---
 title: 在mac上用vagrant和virtualbox创建虚拟机
 tags:
-  - vagrant
-  - virtualbox
-Categories: 'deploy,vm'
+Categories: tools
 description: ' '
 abbrlink: e1d7a8
 date: 2021-01-28 22:23:48

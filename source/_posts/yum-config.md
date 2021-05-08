@@ -3,7 +3,7 @@ title: 在centos上修改源并安装docker
 tags:
   - deploy
   - docker
-categories: deploy
+categories: cloud native
 description: " "
 abbrlink: 8d209cf6
 date: 2021-01-30 18:05:57

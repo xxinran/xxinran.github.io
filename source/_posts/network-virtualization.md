@@ -1,10 +1,9 @@
 ---
 title: 网络虚拟化简介
 tags:
-  - network
-  - virtualization
-categories:
   - 虚拟化
+categories:
+  - Network
 description: ' '
 abbrlink: e41fb1bd
 date: 2021-02-01 21:47:17

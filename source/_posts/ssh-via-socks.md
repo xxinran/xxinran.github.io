@@ -1,10 +1,7 @@
 ---
 title: 公司内部ssh设置socks代理
 tags:
-  - ssh
-  - socks
-  - network
-categories: 'deploy, network, intel'
+categories: Notes
 description: ' '
 abbrlink: a9be766e
 date: 2021-01-29 14:40:50

@@ -1,9 +1,8 @@
 ---
 title: 浅析docker网络
 tags:
-  - network
   - docker
-categories: docker
+categories: cloud native
 description: ' '
 abbrlink: 3e6a7048
 date: 2021-02-01 12:18:56

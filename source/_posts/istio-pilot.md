@@ -1,9 +1,7 @@
 ---
 title: istio学习（1）-pilot
 tags:
-  - service-mesh
-  - istio
-categories: service-mesh
+categories: Istio
 description: ' '
 abbrlink: a94c45db
 date: 2021-02-26 15:31:45

@@ -1,6 +1,6 @@
 ---
 title: 进程和线程
-categories: linux
+categories: LINUX
 description: ' '
 abbrlink: 6ac22eb
 date: 2021-02-25 17:26:41

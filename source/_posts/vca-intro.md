@@ -1,9 +1,7 @@
 ---
 title: 在centos8上使能vca-a卡
 tags:
-  - device
-  - intel
-categories: devices
+categories: Device
 description: ' '
 abbrlink: dd7abf56
 date: 2021-02-02 15:59:19

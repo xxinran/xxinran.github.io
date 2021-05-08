@@ -1,7 +1,7 @@
 ---
 title: linux内存管理
-tags: linux
-categories: linux
+tags:
+categories: LINUX
 description: " "
 abbrlink: d0683ba8
 date: 2021-04-26 16:14:23

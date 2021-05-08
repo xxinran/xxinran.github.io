@@ -3,8 +3,8 @@ title: cpu基础
 description: ' '
 abbrlink: fe9b70
 date: 2021-03-29 10:35:41
-tags:
-categories:
+tags: CPU
+categories: 计算机组成
 ---
 
 cpu运行阶段：取值，解码，执行，写回。

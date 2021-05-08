@@ -1,6 +1,6 @@
 ---
 title: 'containerPort, targetPort, port, nodePort等的区别'
-categories: kubernetes
+categories: cloud native
 description: ' '
 abbrlink: 3836ec52
 date: 2021-03-08 18:18:24

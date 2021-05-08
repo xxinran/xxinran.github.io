@@ -1,7 +1,7 @@
 ---
 title: 如何构建docker image
 tags: docker
-categories: docker
+categories: cloud native
 typora-root-url: ../_posts
 description: ' '
 abbrlink: 85a08636
