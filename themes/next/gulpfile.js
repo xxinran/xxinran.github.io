@@ -12,7 +12,7 @@ gulp.task('lint', () => gulp.src([
   .pipe(eslint.format()));
 
 gulp.task('lint:stylus', shell.task([
-  'npx stylint ./source/css/'
+  '"./node_modules/.bin/stylint" ./source/css/'
 ]));
 
 gulp.task('validate:config', cb => {

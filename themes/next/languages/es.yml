@@ -1,5 +1,4 @@
 ---
-name: Español
 title:
   archive: Archivo
   category: Categoría
@@ -25,6 +24,7 @@ post:
   modified: Modificado por
   edit: Editar esta entrada
   in: En
+  more: más
   read_more: Leer más
   untitled: Sin título
   sticky: Sticky
@@ -37,6 +37,7 @@ post:
     license_content: "Todos los artículos de este blog están licenciados bajo %s a no ser que se especifique una licencia adicional."
 footer:
   powered: "Creado mediante %s"
+  theme: Tema
   total_views: Visitas totales
   total_visitors: Visitantes totales
 counter:
@@ -74,10 +75,7 @@ reward:
   donate: Donar
   wechatpay: WeChat Pay
   alipay: Alipay
-  paypal: PayPal
   bitcoin: Bitcoin
-follow_me:
-  welcome: Welcome to my other publishing channels
 accessibility:
   nav_toggle: Cambiar a barra de navegación
   prev_page: Página anterior

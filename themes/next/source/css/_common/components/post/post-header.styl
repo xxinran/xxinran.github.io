@@ -3,8 +3,7 @@
 }
 
 .posts-expand .post-title {
-  font-size: $font-size-largest;
-  font-weight: normal;
+  font-weight: $font-weight-normal;
   margin: initial;
   text-align: center;
   word-wrap();
@@ -24,7 +23,7 @@
       }
 
       &:hover {
-        color: $sidebar-highlight;
+        color: black;
       }
     }
   }
@@ -32,13 +31,13 @@
 
 .posts-expand .post-title-link {
   border-bottom: none;
-  color: var(--link-color);
+  color: $black-light;
   display: inline-block;
   position: relative;
   vertical-align: top;
 
   &::before {
-    background: var(--link-color);
+    background: black;
     bottom: 0;
     content: '';
     height: 2px;
@@ -55,7 +54,7 @@
     visibility: visible;
   }
 
-  .fa-external-link-alt {
+  .fa {
     font-size: $font-size-small;
     margin-left: 5px;
   }
@@ -64,7 +63,7 @@
 .posts-expand .post-meta {
   color: $grey-dark;
   font-family: $font-family-posts;
-  font-size: $font-size-small;
+  font-size: $font-size-smallest;
   margin: 3px 0 60px 0;
   text-align: center;
 

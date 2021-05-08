@@ -4,8 +4,6 @@
 
 {% block title %}{{ __('title.tag') }}: {{ page.tag }} | {{ title }}{% endblock %}
 
-{% block class %}tag{% endblock %}
-
 {% block content %}
 
   {#################}
@@ -14,10 +12,10 @@
   <div class="post-block">
     <div class="posts-collapse">
       <div class="collection-title">
-        <h2 class="collection-header">
+        <{%- if theme.seo %}h2{% else %}h1{%- endif %} class="collection-header">
           {{- page.tag }}
           <small>{{ __('title.tag') }}</small>
-        </h2>
+        </{%- if theme.seo %}h2{% else %}h1{%- endif %}>
       </div>
 
       {{ post_template.render(page.posts) }}

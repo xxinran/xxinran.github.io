@@ -1,19 +1,21 @@
 // Post Expand
 // --------------------------------------------------
-.posts-expand {
-  &.index {
-    .post-title, .post-meta {
-      text-align: $site-meta-text-align;
+.posts-expand .home {
+  .post-title, .post-meta {
+    text-align: $site-meta-text-align;
 
-      +mobile() {
-        text-align: center;
-      }
-    }
-
-    .post-meta {
-      margin: 5px 0 20px 0;
+    +mobile() {
+      text-align: center;
     }
   }
+
+  .post-meta {
+    margin: 5px 0 20px 0;
+  }
+}
+
+.posts-expand {
+  padding-top: 0;
 
   .post-eof {
     display: none;
@@ -25,6 +27,10 @@
 
   .post-title, .post-meta {
     text-align: center;
+  }
+
+  .post-title-link::before {
+    background: $black-deep;
   }
 
   .post-body img {
@@ -58,12 +64,13 @@
     // color: $grey-dim;
     background: none;
     border: 0;
-    border-bottom: 2px solid var(--btn-default-border-color);
+    border-bottom: 2px solid $grey-dim;
+    font-size: $font-size-small;
     padding: 0;
     transition-property: border;
 
     &:hover {
-      border-bottom-color: var(--btn-default-hover-border-color);
+      border-bottom-color: $black-deep;
     }
   }
 }

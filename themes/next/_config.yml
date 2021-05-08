@@ -5,7 +5,7 @@
 
 # If false, merge configs from `_data/next.yml` into default configuration (rewrite).
 # If true, will fully override default configuration by options from `_data/next.yml` (override). Only for NexT settings.
-# And if true, all config from default NexT `_config.yml` have to be copied into `next.yml`. Use if you know what you are doing.
+# And if true, all config from default NexT `_config.yml` must be copied into `next.yml`. Use if you know what you are doing.
 # Useful if you want to comment some options from NexT `_config.yml` by `next.yml` without editing default config.
 override: false
 
@@ -47,29 +47,37 @@ favicon:
   #android_manifest: /images/manifest.json
   #ms_browserconfig: /images/browserconfig.xml
 
-# Show multilingual switcher in footer.
-language_switcher: false
-
 footer:
   # Specify the date when the site was setup. If not defined, current year will be used.
   #since: 2015
 
   # Icon between year and copyright info.
   icon:
-    # Icon name in Font Awesome. See: https://fontawesome.com/icons
-    name: fa fa-heart
+    # Icon name in Font Awesome. See: https://fontawesome.com/v4.7.0/icons/
+    # `heart` is recommended with animation in red (#ff0000).
+    name: heart #user
     # If you want to animate the icon, set it to true.
-    animated: false
+    animated: true
     # Change the color of icon, using Hex Code.
+    # color: "#808080"
     color: "#ff0000"
 
   # If not defined, `author` from Hexo `_config.yml` will be used.
   copyright:
 
-  # Powered by Hexo & NexT
-  powered: true
+  powered:
+    # Hexo link (Powered by Hexo).
+    enable: false
+    # Version info of Hexo after Hexo link (vX.X.X).
+    version: true
 
-  # Beian ICP and gongan information for Chinese users. See: https://beian.miit.gov.cn, http://www.beian.gov.cn
+  theme:
+    # Theme & scheme info link (Theme - NexT.scheme).
+    enable: false
+    # Version info of NexT after scheme info (vX.X.X).
+    version: true
+
+  # Beian ICP and gongan information for Chinese users. See: http://www.beian.miit.gov.cn, http://www.beian.gov.cn
   beian:
     enable: false
     icp:
@@ -87,8 +95,8 @@ footer:
 # CC licenses are available in 39 languages, you can find the specific and correct abbreviation you need on https://creativecommons.org
 creative_commons:
   license: by-nc-sa
-  sidebar: true
-  post: true
+  sidebar: false
+  post: false
   language:
 
 
@@ -97,13 +105,10 @@ creative_commons:
 # ---------------------------------------------------------------
 
 # Schemes
-#scheme: Muse
-#scheme: Mist
-scheme: Pisces
-#scheme: Gemini
-
-# Dark Mode
-darkmode: false
+# scheme: Muse
+# scheme: Mist
+# scheme: Pisces
+scheme: Gemini
 
 
 # ---------------------------------------------------------------
@@ -116,19 +121,19 @@ darkmode: false
 # When running the site in a subdirectory (e.g. yoursite.com/blog), remove the leading slash from link value (/archives -> archives).
 # External url should start with http:// or https://
 menu:
-  home: / || fa fa-home
-  #about: /about/ || fa fa-user
-  tags: /tags/ || fa fa-tags
-  categories: /categories/ || fa fa-th
-  archives: /archives/ || fa fa-archive
-  schedule: /schedule/ || fa fa-calendar
-  #sitemap: /sitemap.xml || fa fa-sitemap
-  #commonweal: /404/ || fa fa-heartbeat
+  home: / || home
+  about: /about/ || user
+  tags: /tags/ || tags
+  categories: /categories/ || th
+  archives: /archives/ || archive
+  #schedule: /schedule/ || calendar
+  #sitemap: /sitemap.xml || sitemap
+  #commonweal: /404/ || heartbeat
 
 # Enable / Disable menu icons / item badges.
 menu_settings:
   icons: true
-  badges: true
+  badges: false
 
 
 # ---------------------------------------------------------------
@@ -163,11 +168,11 @@ sidebar:
 # Sidebar Avatar
 avatar:
   # Replace the default image and set the url here.
-  url: /images/avatar.png
+  url: /images/a.jpg
   # If true, the avatar will be dispalyed in circle.
-  rounded: true
+  rounded: false
   # If true, the avatar will be rotated with the cursor.
-  rotated: false
+  rotated: true
 
 # Posts / Categories / Tags in sidebar.
 site_state: true
@@ -177,16 +182,17 @@ site_state: true
 # Key is the link label showing to end users.
 # Value before `||` delimiter is the target permalink, value after `||` delimiter is the name of Font Awesome icon.
 social:
-  GitHub: https://github.com/xxinran || fab fa-github
-  E-Mail: mailto:xxinran.wang@gmail.com || fa fa-envelope
-  #Weibo: https://weibo.com/yourname || fab fa-weibo
-  #Google: https://plus.google.com/yourname || fab fa-google
-  #Twitter: https://twitter.com/yourname || fab fa-twitter
-  #FB Page: https://www.facebook.com/yourname || fab fa-facebook
-  #StackOverflow: https://stackoverflow.com/yourname || fab fa-stack-overflow
-  #YouTube: https://youtube.com/yourname || fab fa-youtube
-  #Instagram: https://instagram.com/yourname || fab fa-instagram
-  #Skype: skype:yourname?call|chat || fab fa-skype
+  GitHub: https://github.com/xxinran || github
+  E-Mail: mailto:xxinran.wang@gmail.com || envelope
+  #Weibo: https://weibo.com/yourname || weibo
+  #Google: https://plus.google.com/yourname || google
+  #Twitter: https://twitter.com/yourname || twitter
+  #FB Page: https://www.facebook.com/yourname || facebook
+  #StackOverflow: https://stackoverflow.com/yourname || stack-overflow
+  #YouTube: https://youtube.com/yourname || youtube
+  #Instagram: https://instagram.com/yourname || instagram
+  #Skype: skype:yourname?call|chat || skype
+  #RSS: /atom.xml || rss
 
 social_icons:
   enable: true
@@ -195,13 +201,13 @@ social_icons:
 
 # Blog rolls
 links_settings:
-  icon: fa fa-link
+  icon: link
   title: Links
   # Available values: block | inline
   layout: block
 
 links:
-  #Title: http://yoursite.com
+  GitHub: https://github.com/xxinran
 
 # Table of Contents in the Sidebar
 # Front-matter variable (unsupport wrap expand_all).
@@ -222,7 +228,7 @@ chat:
   enable: false
   #service: chatra
   #service: tidio
-  icon: fa fa-comment # Icon name in Font Awesome, set false to disable icon.
+  icon: comment # Icon name in Font Awesome, set false to disable icon.
   text: Chat # Button text, change it as you wish.
 
 
@@ -250,16 +256,11 @@ post_meta:
 # Post wordcount display settings
 # Dependencies: https://github.com/theme-next/hexo-symbols-count-time
 symbols_count_time:
-  item_text: true
-  wordcount: true
-  min2read: true
-  totalcount: true
   separated_meta: true
   item_text_post: true
   item_text_total: false
   awl: 4
   wpm: 275
-  suffix: mins
 
 # Use icon instead of the symbol # to indicate the tag at the bottom of the post
 tag_icon: false
@@ -268,23 +269,14 @@ tag_icon: false
 # Front-matter variable (unsupport animation).
 reward_settings:
   # If true, reward will be displayed in every article by default.
-  enable: false
-  animation: false
-  #comment: Donate comment here.
+  enable: true
+  animation: true
+  comment: 🤣~疯狂暗示~🤣
 
 reward:
-  #wechatpay: /images/wechatpay.png
-  #alipay: /images/alipay.png
-  #paypal: /images/paypal.png
+  wechatpay: /images/wechatpay.png
+  alipay: /images/alipay.png
   #bitcoin: /images/bitcoin.png
-
-# Subscribe through Telegram Channel, Twitter, etc.
-# Usage: `Key: permalink || icon` (Font Awesome)
-follow_me:
-  #Twitter: https://twitter.com/username || fab fa-twitter
-  #Telegram: https://t.me/channel_name || fab fa-telegram
-  #WeChat: /images/wechat_channel.jpg || fab fa-weixin
-  #RSS: /atom.xml || fa fa-rss
 
 # Related popular posts
 # Dependencies: https://github.com/tea3/hexo-related-popular-posts
@@ -354,6 +346,9 @@ mobile_layout_economy: false
 # Android Chrome header panel color ($brand-bg / $headband-bg => $black-deep).
 android_chrome_color: "#222"
 
+# Hide sticky headers and color the menu bar on Safari (iOS / macOS).
+safari_rainbow: false
+
 # Custom Logo (Do not support scheme Mist)
 custom_logo: #/uploads/custom-logo.jpg
 
@@ -361,14 +356,14 @@ codeblock:
   # Code Highlight theme
   # Available values: normal | night | night eighties | night blue | night bright | solarized | solarized dark | galactic
   # See: https://github.com/chriskempson/tomorrow-theme
-  highlight_theme: solarized dark
+  highlight_theme: normal
   # Add copy button on codeblock
   copy_button:
-    enable: true
+    enable: false
     # Show text copy result.
     show_result: false
     # Available values: default | flat | mac
-    style: default
+    style:
 
 back2top:
   enable: true
@@ -379,7 +374,7 @@ back2top:
 
 # Reading progress bar
 reading_progress:
-  enable: true
+  enable: false
   # Available values: top | bottom
   position: top
   color: "#37c6c0"
@@ -415,10 +410,10 @@ github_banner:
 # ---------------------------------------------------------------
 
 font:
-  enable: true
+  enable: false
 
-  # Uri of fonts host, e.g. https://fonts.googleapis.com (Default).
-  host: https://fonts.loli.net
+  # Uri of fonts host, e.g. //fonts.googleapis.com (Default).
+  host:
 
   # Font options:
   # `external: true` will load this font family from `host` above.
@@ -440,8 +435,8 @@ font:
   # Font settings for headlines (<h1> to <h6>).
   headings:
     external: true
-    family: Roboto Slab
-    size: 
+    family:
+    size:
 
   # Font settings for posts (.post-body).
   posts:
@@ -451,8 +446,7 @@ font:
   # Font settings for <code> and code blocks.
   codes:
     external: true
-    family: Roboto Slab
-    size: 16
+    family:
 
 
 # ---------------------------------------------------------------
@@ -461,6 +455,14 @@ font:
 
 # Disable Baidu transformation on mobile devices.
 disable_baidu_transformation: false
+
+# Set a canonical link tag for your Hexo site.
+# See: https://support.google.com/webmasters/answer/139066
+# Remember to set up your URL in Hexo `_config.yml` (e.g. url: http://yoursite.com)
+canonical: true
+
+# Change headers hierarchy on site-subtitle (will be main site description) and on all post / page titles for better SEO-optimization.
+seo: false
 
 # If true, site-subtitle will be added to index page.
 # Remember to set up your site-subtitle in Hexo `_config.yml` (e.g. subtitle: Subtitle)
@@ -471,7 +473,7 @@ exturl: false
 
 # Google Webmaster tools verification.
 # See: https://www.google.com/webmasters
-google_site_verification:
+google_site_verification: "3abnhEvWQ0iIBDU9h6rc6nbVAh0SsAcOtLf_FRgE0As"
 
 # Bing Webmaster tools verification.
 # See: https://www.bing.com/webmaster
@@ -483,16 +485,17 @@ yandex_site_verification:
 
 # Baidu Webmaster tools verification.
 # See: https://ziyuan.baidu.com/site
-baidu_site_verification:
+baidu_site_verification: "aWB7epV6j1"
+
+
 
 # Enable baidu push so that the blog will push the url to baidu automatically which is very helpful for SEO.
-baidu_push: false
+baidu_push: true
 
 
 # ---------------------------------------------------------------
 # Third Party Plugins & Services Settings
 # See: https://theme-next.org/docs/third-party-services/
-# More plugins: https://github.com/theme-next/awesome-next
 # You may need to install dependencies or set CDN URLs in `vendors`
 # There are two different CDN providers by default:
 #   - jsDelivr (cdn.jsdelivr.net), works everywhere even in China
@@ -508,7 +511,7 @@ math:
 
   # hexo-renderer-pandoc (or hexo-renderer-kramed) required for full MathJax support.
   mathjax:
-    enable: false
+    enable: true
     # See: https://mhchem.github.io/MathJax-mhchem/
     mhchem: false
 
@@ -540,7 +543,6 @@ lazyload: false
 pangu: false
 
 # Quicklink Support
-# Do not enable both `pjax` and `quicklink`.
 # For more information: https://github.com/GoogleChromeLabs/quicklink
 # Front-matter (unsupport home archive).
 quicklink:
@@ -638,21 +640,6 @@ valine:
 # You can get your uid from https://livere.com/insight/myCode (General web site)
 livere_uid: # <your_uid>
 
-# Gitalk
-# For more information: https://gitalk.github.io, https://github.com/gitalk/gitalk
-gitalk:
-  enable: false
-  github_id: # GitHub repo owner
-  repo: # Repository name to store issues
-  client_id: # GitHub Application Client ID
-  client_secret: # GitHub Application Client Secret
-  admin_user: # GitHub repo owner and collaborators, only these guys can initialize gitHub issues
-  distraction_free_mode: true # Facebook-like distraction free mode
-  # Gitalk's display language depends on user's browser or system environment
-  # If you want everyone visiting your site to see a uniform language, you can set a force language value
-  # Available values: en | es-ES | fr | ru | zh-CN | zh-TW
-  language:
-
 
 # ---------------------------------------------------------------
 # Post Widgets & Content Sharing Services
@@ -662,7 +649,7 @@ gitalk:
 # Star rating support to each article.
 # To get your ID visit https://widgetpack.com
 rating:
-  enable: false
+  enable: true
   id:     # <app_id>
   color:  fc6423
 
@@ -698,14 +685,13 @@ cnzz_siteid:
 # Do not enable both `valine.visitor` and `leancloud_visitors`.
 leancloud_visitors:
   enable: false
-  app_id: # <your app id>
-  app_key: # <your app key>
-  # Required for apps from CN region
-  server_url: # <your server url>
+  app_id: # <app_id>
+  app_key: # <app_key>
   # Dependencies: https://github.com/theme-next/hexo-leancloud-counter-security
   # If you don't care about security in leancloud counter and just want to use it directly
   # (without hexo-leancloud-counter-security plugin), set `security` to `false`.
   security: true
+  betterPerformance: false
 
 # Another tool to show number of visitors to each article.
 # Visit https://console.firebase.google.com/u/0/ to get apiKey and projectId.
@@ -719,13 +705,27 @@ firestore:
 # Show Views / Visitors of the website / page with busuanzi.
 # Get more information on http://ibruce.info/2015/04/04/busuanzi
 busuanzi_count:
-  enable: false
+  enable: true
   total_visitors: true
-  total_visitors_icon: fa fa-user
+  total_visitors_icon: user
   total_views: true
-  total_views_icon: fa fa-eye
+  total_views_icon: eye
   post_views: true
-  post_views_icon: fa fa-eye
+  post_views_icon: eye
+
+gitalk:
+  enable: true
+  github_id: xxinran # GitHub repo owner
+  repo: xxinran.github.io # Repository name to store issues
+  client_id: dfe7e5d0a0c58dc0140a # GitHub Application Client ID
+  client_secret: d7007693e675c7d1417eee1258251af2503968f7  # GitHub Application Client Secret
+  admin_user: xxinran # GitHub repo owner and collaborators, only these guys can initialize gitHub issues
+  distraction_free_mode: true # Facebook-like distraction free mode
+  # Gitalk's display language depends on user's browser or system environment
+  # If you want everyone visiting your site to see a uniform language, you can set a force language value
+  # Available values: en | es-ES | fr | ru | zh-CN | zh-TW
+  language:
+
 
 
 # ---------------------------------------------------------------
@@ -736,7 +736,7 @@ busuanzi_count:
 # Algolia Search
 # For more information: https://www.algolia.com
 algolia_search:
-  enable: true
+  enable: false
   hits:
     per_page: 10
   labels:
@@ -760,7 +760,7 @@ local_search:
 
 # Swiftype Search API Key
 swiftype_key:
-  
+
 
 # ---------------------------------------------------------------
 # Chat Services
@@ -808,9 +808,10 @@ tabs:
     tabs: false
     labels: true
 
-# PDF tag
-# NexT will try to load pdf files natively, if failed, pdf.js will be used.
-# So, you have to install the dependency of pdf.js if you want to use pdf tag and make it available to all browsers.
+# PDF tag, requires two plugins: pdfObject and pdf.js
+# pdfObject will try to load pdf files natively, if failed, pdf.js will be used.
+# The following `cdn` setting is only for pdfObject, because cdn for pdf.js might be blocked by CORS policy.
+# So, you must install the dependency of pdf.js if you want to use pdf tag and make it available to all browsers.
 # See: https://github.com/theme-next/theme-next-pdf
 pdf:
   enable: false
@@ -861,10 +862,21 @@ pace:
 # JavaScript 3D library.
 # Dependencies: https://github.com/theme-next/theme-next-three
 three:
-  enable: true
+  enable: false
   three_waves: false
-  canvas_lines: true
+  canvas_lines: false
   canvas_sphere: false
+
+# Canvas-nest
+# Dependencies: https://github.com/theme-next/theme-next-canvas-nest
+# For more information: https://github.com/hustcc/canvas-nest.js
+canvas_nest:
+  enable: false
+  onmobile: true # Display on mobile or not
+  color: "0,0,255" # RGB values, use `,` to separate
+  opacity: 0.5 # The opacity of line: 0~1
+  zIndex: -1 # z-index property of the background
+  count: 99 # The number of lines
 
 # Canvas-ribbon
 # Dependencies: https://github.com/theme-next/theme-next-canvas-ribbon
@@ -893,14 +905,18 @@ vendors:
   # anime: //cdn.jsdelivr.net/npm/animejs@3.1.0/lib/anime.min.js
   anime:
 
-  # Internal version: 5.13.0
-  # fontawesome: //cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css
-  # fontawesome: //cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css
+  # Internal version: 4.7.0
+  # fontawesome: //cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css
+  # fontawesome: //cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css
   fontawesome:
 
   # MathJax
-  # mathjax: //cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+  # mathjax: //cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML
+  # mathjax: //cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML
+  # mhchem: //cdn.jsdelivr.net/npm/mathjax-mhchem@3
+  # mhchem: //cdnjs.cloudflare.com/ajax/libs/mathjax-mhchem/3.3.0
   mathjax:
+  mhchem:
 
   # KaTeX
   # katex: //cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css
@@ -929,7 +945,7 @@ vendors:
 
   # Lazyload
   # lazyload: //cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js
-  # lazyload: //cdnjs.cloudflare.com/ajax/libs/lozad.js/1.14.0/lozad.min.js
+  # lazyload: //cdnjs.cloudflare.com/ajax/libs/lozad.js/1.9.0/lozad.min.js
   lazyload:
 
   # Pangu
@@ -954,19 +970,24 @@ vendors:
 
   # Gitalk
   # gitalk_js: //cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js
-  # gitalk_css: //cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css
+  # gitalk_css: //cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css
   gitalk_js:
   gitalk_css:
 
   # Algolia Search
-  # algolia_search: //cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js
-  # instant_search: //cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js
-  algolia_search:
-  instant_search:
+  # algolia_instant_js: //cdn.jsdelivr.net/npm/instantsearch.js@2/dist/instantsearch.min.js
+  # algolia_instant_css: //cdn.jsdelivr.net/npm/instantsearch.js@2/dist/instantsearch.min.css
+  algolia_instant_js:
+  algolia_instant_css:
+
+  # PDF
+  # pdfobject: //cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js
+  # pdfobject: //cdnjs.cloudflare.com/ajax/libs/pdfobject/2.1.1/pdfobject.min.js
+  pdfobject:
 
   # Mermaid
   # mermaid: //cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js
-  # mermaid: //cdnjs.cloudflare.com/ajax/libs/mermaid/8.4.8/mermaid.min.js
+  # mermaid: //cdnjs.cloudflare.com/ajax/libs/mermaid/8.3.0/mermaid.min.js
   mermaid:
 
   # Internal version: 1.2.1
@@ -989,11 +1010,17 @@ vendors:
   # three: //cdn.jsdelivr.net/gh/theme-next/theme-next-three@1/three.min.js
   # three_waves: //cdn.jsdelivr.net/gh/theme-next/theme-next-three@1/three-waves.min.js
   # canvas_lines: //cdn.jsdelivr.net/gh/theme-next/theme-next-three@1/canvas_lines.min.js
-  # canvas_sphere: //cdn.jsdelivr.net/gh/theme-next/theme-next-three@1/.min.js
+  # canvas_sphere: //cdn.jsdelivr.net/gh/theme-next/theme-next-three@1/canvas_sphere.min.js
   three:
   three_waves:
   canvas_lines:
   canvas_sphere:
+
+  # Internal version: 1.0.0
+  # canvas_nest: //cdn.jsdelivr.net/gh/theme-next/theme-next-canvas-nest@1/canvas-nest.min.js
+  # canvas_nest_nomobile: //cdn.jsdelivr.net/gh/theme-next/theme-next-canvas-nest@1/canvas-nest-nomobile.min.js
+  canvas_nest:
+  canvas_nest_nomobile:
 
   # Internal version: 1.0.0
   # canvas_ribbon: //cdn.jsdelivr.net/gh/theme-next/theme-next-canvas-ribbon@1/canvas-ribbon.js
@@ -1003,10 +1030,3 @@ vendors:
 css: css
 js: js
 images: images
-
-  # post_wordcount:
-  #   item_text: true
-  #   wordcount: true
-  #   min2read: true
-  #   totalcount: true
-  #   separated_meta: true

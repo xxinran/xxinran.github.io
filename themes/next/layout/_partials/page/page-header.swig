@@ -1,9 +1,9 @@
 <header class="post-header">
 
-<h1 class="post-title" itemprop="name headline">
+<{%- if theme.seo %}h2{% else %}h1{%- endif %} class="post-title" itemprop="name headline">
   {{- page.title }}
   {{- post_edit(page.source) }}
-</h1>
+</{%- if theme.seo %}h2{% else %}h1{%- endif %}>
 
 <div class="post-meta">
   {%- if page.description %}

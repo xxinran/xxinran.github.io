@@ -1,24 +1,22 @@
 {% macro render(name, itemName, value) %}
 
   {%- set itemURL = value.split('||')[0] | trim %}
-  {%- if not itemURL.startsWith('http') %}
+  {%- if itemURL.indexOf('http') != 0 %}
     {%- set itemURL = itemURL | replace('//', '/') %}
   {%- endif %}
   <li class="menu-item menu-item-{{ itemName | replace(' ', '-') }}">
 
-    {%- set menuIcon = '' %}
-    {%- if theme.menu_settings.icons %}
-      {%- set menuIcon = '<i class="' + value.split('||')[1] | trim + ' fa-fw"></i>' %}
-    {%- endif %}
     {%- set menuText = __('menu.' + name) | replace('menu.', '') %}
+    {%- if theme.menu_settings.icons %}
+      {%- set menuIcon = '<i class="fa fa-fw fa-' + value.split('||')[1] | trim + '"></i>' %}
+    {%- endif %}
 
     {%- set menuBadge = '' %}
     {%- if theme.menu_settings.badges %}
       {%- set badges = {
-        archives  : site.posts.length,
+        archives: site.posts.length,
         categories: site.categories.length,
-        tags      : site.tags.length
-        }
+        tags: site.tags.length }
       %}
       {%- for menu, count in badges %}
         {%- if name == menu %}

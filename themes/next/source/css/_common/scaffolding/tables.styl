@@ -1,4 +1,5 @@
 .table-container {
+  -webkit-overflow-scrolling: touch;
   overflow: auto;
 }
 
@@ -7,23 +8,24 @@ table {
   border-spacing: 0;
   font-size: $table-font-size;
   margin: 0 0 20px 0;
-  width: 100%;
+  width: $table-width;
 }
 
 tbody tr {
   &:nth-of-type(odd) {
-    background: var(--table-row-odd-bg-color);
+    background: $table-row-odd-bg-color;
   }
 
   &:hover {
-    background: var(--table-row-hover-bg-color);
+    background: $table-row-hover-bg-color;
   }
 }
 
 caption, th, td {
   font-weight: normal;
-  padding: 8px;
-  vertical-align: middle;
+  padding: $table-cell-padding;
+  text-align: $table-content-alignment;
+  vertical-align: $table-content-vertical;
 }
 
 th, td {
@@ -32,7 +34,7 @@ th, td {
 }
 
 th {
-  font-weight: 700;
+  font-weight: $table-th-font-weight;
   padding-bottom: 10px;
 }
 

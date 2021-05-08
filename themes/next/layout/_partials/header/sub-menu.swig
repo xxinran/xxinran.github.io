@@ -15,11 +15,11 @@
         {%- for subname, subvalue in value %}
           {# For main submenu items #}
           {%- if subvalue != '[object Object]' %}
-            {%- set itemName = subname | lower %}
+            {%- set itemName = subname.toLowerCase() %}
             {%- if itemName == 'default' %}
               {%- set parentValue = subvalue.split('||')[0] | trim %}
             {% else %}
-              {%- if subvalue.startsWith('http') %}
+              {%- if subvalue.indexOf('http') == 0 %}
                 {%- set respath = subvalue %}
               {% else %}
                 {%- set respath = parentValue + subvalue %}
@@ -28,7 +28,7 @@
             {%- endif %}
           {% else %}
             {# For 'default' submenu item in main submenu #}
-            {%- set itemName = subname | lower %}
+            {%- set itemName = subname.toLowerCase() %}
             {%- for subname2, subvalue2 in subvalue %}
               {%- if subname2 == 'default' %}
                 {%- set respath = parentValue + subvalue2 %}
@@ -46,7 +46,7 @@
           {%- if value == '[object Object]' %}
 
             {%- for subname, subvalue in value %}
-              {%- set itemName = subname | lower %}
+              {%- set itemName = subname.toLowerCase() %}
               {%- if itemName == 'default' %}
                 {%- set parentValue = subvalue.split('||')[0] | trim %}
               {%- endif %}
@@ -61,11 +61,11 @@
                     <ul id="sub-menu-2" class="sub-menu menu">
                     {%- for subname2, subvalue2 in subvalue %}
                       {%- set respath2 = subvalue %}
-                      {%- set itemName = subname2 | lower %}
+                      {%- set itemName = subname2.toLowerCase() %}
                       {%- if itemName == 'default' %}
                         {%- set parentSubValue = subvalue2.split('||')[0] | trim %}
                       {% else %}
-                        {%- if subvalue2.startsWith('http') %}
+                        {%- if subvalue2.indexOf('http') == 0 %}
                           {%- set respath2 = subvalue2 %}
                         {% else %}
                           {%- set respath2 = parentValue + parentSubValue + subvalue2 %}

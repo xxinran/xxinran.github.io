@@ -1,5 +1,4 @@
 ---
-name: Bahasa Indonesia
 title:
   archive: Arsip
   category: Kategori
@@ -25,6 +24,7 @@ post:
   modified: Updated at
   edit: Edit this post
   in: Di
+  more: more
   read_more: Baca lebih
   untitled: Tidak ada title
   sticky: Sticky
@@ -37,6 +37,7 @@ post:
     license_content: "All articles in this blog are licensed under %s unless stating additionally."
 footer:
   powered: "Powered by %s"
+  theme: Tema
   total_views: Total Views
   total_visitors: Total Visitors
 counter:
@@ -74,10 +75,7 @@ reward:
   donate: Donate
   wechatpay: WeChat Pay
   alipay: Alipay
-  paypal: PayPal
   bitcoin: Bitcoin
-follow_me:
-  welcome: Welcome to my other publishing channels
 accessibility:
   nav_toggle: Toggle navigation bar
   prev_page: Halaman sebelumnya

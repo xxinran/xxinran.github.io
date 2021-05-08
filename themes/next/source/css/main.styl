@@ -4,6 +4,7 @@
 $scheme    = hexo-config('scheme') ? hexo-config('scheme') : 'Muse';
 
 $variables = base $scheme;
+$mixins    = base $scheme;
 
 
 // Variables Layer
@@ -15,13 +16,10 @@ for $inject_variable in hexo-config('injects.variable')
 
 // Mixins Layer
 // --------------------------------------------------
-@import "_mixins.styl";
+for $mixin in $mixins
+  @import "_mixins/" + $mixin;
 for $inject_mixin in hexo-config('injects.mixin')
   @import $inject_mixin;
-
-// Dark mode colors
-// --------------------------------------------------
-@import "_colors.styl";
 
 // Common Layer
 // --------------------------------------------------

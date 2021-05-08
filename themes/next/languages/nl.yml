@@ -1,5 +1,4 @@
 ---
-name: Niederländisch
 title:
   archive: Archief
   category: Categorie
@@ -25,6 +24,7 @@ post:
   modified: Post aangepast
   edit: Edit this post
   in: In
+  more: meer
   read_more: Lees meer
   untitled: Naamloos
   sticky: Sticky
@@ -37,6 +37,7 @@ post:
     license_content: "Alle artikelen op deze blog zijn gelicenseerd onder %s, mits niet anders aangegeven."
 footer:
   powered: "Mede mogelijk gemaakt door %s"
+  theme: Thema
   total_views: Total Views
   total_visitors: Total Visitors
 counter:
@@ -74,10 +75,7 @@ reward:
   donate: Doneer
   wechatpay: WeChat Pay
   alipay: Alipay
-  paypal: PayPal
   bitcoin: Bitcoin
-follow_me:
-  welcome: Welcome to my other publishing channels
 accessibility:
   nav_toggle: Toggle navigation bar
   prev_page: Vorige pagina
