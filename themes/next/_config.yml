@@ -250,9 +250,16 @@ post_meta:
 # Post wordcount display settings
 # Dependencies: https://github.com/theme-next/hexo-symbols-count-time
 symbols_count_time:
+  item_text: true
+  wordcount: true
+  min2read: true
+  totalcount: true
   separated_meta: true
   item_text_post: true
   item_text_total: false
+  awl: 4
+  wpm: 275
+  suffix: mins
 
 # Use icon instead of the symbol # to indicate the tag at the bottom of the post
 tag_icon: false
@@ -422,7 +429,7 @@ font:
   global:
     external: true
     family: Lato
-    size:
+    size: 
 
   # Font settings for site title (.site-title).
   title:
@@ -729,7 +736,7 @@ busuanzi_count:
 # Algolia Search
 # For more information: https://www.algolia.com
 algolia_search:
-  enable: false
+  enable: true
   hits:
     per_page: 10
   labels:
@@ -740,7 +747,7 @@ algolia_search:
 # Local Search
 # Dependencies: https://github.com/theme-next/hexo-generator-searchdb
 local_search:
-  enable: false
+  enable: true
   # If auto, trigger search by changing input.
   # If manual, trigger search by pressing enter key or search button.
   trigger: auto
@@ -753,7 +760,7 @@ local_search:
 
 # Swiftype Search API Key
 swiftype_key:
-
+  
 
 # ---------------------------------------------------------------
 # Chat Services
@@ -996,3 +1003,10 @@ vendors:
 css: css
 js: js
 images: images
+
+  # post_wordcount:
+  #   item_text: true
+  #   wordcount: true
+  #   min2read: true
+  #   totalcount: true
+  #   separated_meta: true
