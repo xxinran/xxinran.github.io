@@ -8,6 +8,8 @@ abbrlink: e1d7a8
 date: 2021-01-28 22:23:48
 ---
 
+<!-- more -->
+
 ## vagrant介绍
 
 基于ruby，用于创建和部署虚拟化开发环境。它 使用Oracle的开源[VirtualBox](https://baike.baidu.com/item/VirtualBox)虚拟化系统，使用 Chef创建自动化虚拟环境。我们可以使用它来干如下这些事：

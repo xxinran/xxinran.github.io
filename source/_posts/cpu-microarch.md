@@ -6,6 +6,8 @@ tags:
 categories:
 ---
 
+<!-- more -->
+
 ![skylake server block diagram.svg](https://en.wikichip.org/w/images/thumb/e/ee/skylake_server_block_diagram.svg/950px-skylake_server_block_diagram.svg.png)
 
 

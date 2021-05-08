@@ -6,6 +6,8 @@ abbrlink: d0683ba8
 date: 2021-04-26 16:14:23
 ---
 
+<!-- more -->
+
 # 主流存储设备
 
 ![](linux-memory/%E5%AD%98%E5%82%A8%20(1).svg)
@@ -20,15 +22,13 @@ date: 2021-04-26 16:14:23
 
 内存工作频率 = min(cpu外部频率，主板频率，内存自身频率)
 
-<!-- more -->
-
 对于一个32位系统来说，地址总线最多是32bit，它能寻址的最大范围是2^32=4GB，所以也就能插4GB的内存条，插8GB的也没有用。
 
 64位CPU出现之后，其地址总线位宽一般采用的是36位或者40位，它们寻址的物理地址空间为64GB或者1T（intel）。
 
 > 注意： 常说的**CPU位宽**指的是**数据总线**位宽，最大寻址范围和CPU位宽无关。
 
-![image-20210428174116842](linux-memory/image-20210428174116842.png)
+<img src="linux-memory/image-20210428174116842.png" alt="image-20210428174116842" style="zoom:67%;" />
 
 查询系统地址总线位宽：
 
@@ -54,7 +54,7 @@ address sizes   : 46 bits physical, 48 bits virtual
 
 高端内存区域。包含896MB以上的内存页框，不进行直接映射，可以通过永久映射和临时映射进行这部分内存页框的访问。
 
-![Image](linux-memory/2.png)
+<img src="linux-memory/2.png" alt="Image" style="zoom:80%;" />
 
 
 
@@ -68,7 +68,7 @@ address sizes   : 46 bits physical, 48 bits virtual
 
 进程初始化分配和操作的都是基于这个「虚拟地址」，只有当进程需要实际访问内存资源的时候才会建立**虚拟地址和物理地址的映射**，调入物理内存页。
 
-![Image](linux-memory/1.png)
+<img src="linux-memory/1.png" alt="Image" style="zoom:80%;" />
 
 这么做的目的是：
 
@@ -81,7 +81,7 @@ address sizes   : 46 bits physical, 48 bits virtual
 
 **64位系统对比：**
 
-![Linux的进程地址空间[一]](linux-memory/64bit.png)
+<img src="linux-memory/64bit.png" alt="Linux的进程地址空间[一]" style="zoom:40%;" />
 
 ## 用户态和内核态
 
@@ -89,7 +89,7 @@ address sizes   : 46 bits physical, 48 bits virtual
 
 用户态的程序就不能随意操作内核地址空间，具有一定的安全保护作用；内核态线程共享内核地址空间；
 
-![image-20210426162841923](linux-memory/image-20210426162841923.png)
+<img src="linux-memory/image-20210426162841923.png" alt="image-20210426162841923" style="zoom:78%;" />
 
 ## 用户空间虚拟内存 - 3GB
 
@@ -125,7 +125,7 @@ address sizes   : 46 bits physical, 48 bits virtual
 
 在 `x86 32` 位系统里，Linux 内核地址空间是指虚拟地址从 `0xC0000000` 开始到 `0xFFFFFFFF` 为止的高端内存地址空间，总计 `1G` 的容量， 包括了内核镜像、物理页面表、驱动程序等运行在内核空间 。虚拟空间的1GB怎么对应到物理内存的4GB甚至更多（取决于地址总线最大寻址和插的内存条大小）呢？
 
-<img src="linux-memory/image-20210429173652156.png" alt="image-20210429173652156" style="zoom:80%;" />
+<img src="linux-memory/image-20210429173652156.png" alt="image-20210429173652156" style="zoom:50%;" />
 
 - 直接映射区：线性空间中从 3G 开始到3GB+896M 的区间，直接映射到物理内存的 0 - 896MB（dma zone + normal zone），物理和虚拟中间差一个固定的偏移量：PAGE_OFFSET = 0xC0000000。
 
@@ -142,7 +142,7 @@ address sizes   : 46 bits physical, 48 bits virtual
 
 ## 虚拟地址 -  物理地址的映射关系图
 
-![image-20210429180241789](linux-memory/image-20210429180241789.png)
+<img src="linux-memory/image-20210429180241789.png" alt="image-20210429180241789" style="zoom:50%;" />
 
 
 
@@ -156,7 +156,7 @@ address sizes   : 46 bits physical, 48 bits virtual
 
 > 单片机是没有mmu的，程序直接访问物理地址。
 
-![image-20210427151435405](linux-memory/image-20210427151435405.png)
+<img src="linux-memory/image-20210427151435405.png" alt="image-20210427151435405" style="zoom:66%;" />
 
 ## 分段机制
 

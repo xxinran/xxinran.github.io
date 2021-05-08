@@ -6,6 +6,10 @@ abbrlink: 461bb783
 date: 2021-01-27 20:31:29
 ---
 
+
+
+<!-- more -->
+
 本文将介绍QAT c62xx设备在Ubuntu 18.04上的安装部署和虚拟化。
 
 > 参考网站：https://01.org/intel-quickassist-technology

@@ -9,9 +9,13 @@ abbrlink: a9be766e
 date: 2021-01-29 14:40:50
 ---
 
+<!-- more -->
+
 > [Proxy at Intel - Intelpedia](https://intelpedia.intel.com/Proxy_at_Intel)
 >
 > 因为公司设置了vpn，所以通过公司电脑访问外网时需要通过代理（http, https, socks等）。
+
+
 
 #### 起因
 

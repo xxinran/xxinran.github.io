@@ -7,6 +7,8 @@ abbrlink: 85a08636
 date: 2021-01-28 22:31:29
 ---
 
+
+<!-- more -->
 ```shell
 $ docker image inspect ubuntu
         "RootFS": {

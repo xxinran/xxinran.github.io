@@ -1,13 +1,14 @@
 ---
-abbrlink: '0'
----
 title: 在centos上修改源并安装docker
 date: 2021-01-30 18:05:57
 tags:
-
+abbrlink: '0'
 - deploy
 - docker
 categories: deploy
+---
+
+<!-- more -->
 
 ### 环境
 

@@ -8,6 +8,8 @@ abbrlink: dd7abf56
 date: 2021-02-02 15:59:19
 ---
 
+<!-- more -->
+
 ## vca卡的内部结构
 
 ![image-20210202160154068](vca-intro/image-20210202160154068.png)

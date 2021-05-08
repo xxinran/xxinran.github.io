@@ -6,19 +6,9 @@ tags:
 categories:
 ---
 
+<!-- more -->
 
-
-目前流行的几种模式：
-
-pass through
-
-sriov
-
-半虚拟化（mdev passthrough： Intel gvt-g, Nvidia GRID vGPU)
-
-全虚拟化（VMware： vSGA）
-
-
+目前流行的几种模式：pass through, sriov, 半虚拟化（mdev passthrough： Intel gvt-g, Nvidia GRID vGPU), 全虚拟化（VMware： vSGA）
 
 学习路径
 
