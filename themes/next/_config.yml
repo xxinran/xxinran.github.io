@@ -441,7 +441,7 @@ font:
   headings:
     external: true
     family: Roboto Slab
-    size:
+    size: 
 
   # Font settings for posts (.post-body).
   posts:
