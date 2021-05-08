@@ -282,7 +282,7 @@ kbd {
 table {
   border-collapse: collapse;
   border-spacing: 0;
-  font-size: 12px;
+  font-size: 28px;
   margin: 0 0 20px 0;
   width: 100%;
 }
@@ -447,7 +447,7 @@ code {
   background: #002b36;
   color: #93a1a1;
   display: flex;
-  font-size: 12px;
+  font-size: 28px;
   justify-content: space-between;
   line-height: 1.2;
   padding: 0.5em;
@@ -489,7 +489,7 @@ pre {
 pre code {
   background: none;
   color: #93a1a1;
-  font-size: 12px;
+  font-size: 28px;
   padding: 0;
   text-shadow: none;
 }
@@ -1003,7 +1003,7 @@ pre .javascript .function {
   border-bottom: none;
   color: var(--brand-color);
   display: inline-block;
-  line-height: 26px;
+  line-height: 28px;
   padding: 0 40px;
   position: relative;
 }
@@ -1012,13 +1012,13 @@ pre .javascript .function {
 }
 .site-title {
   font-family: $font-family-larger;
-  font-size: 26px;
+  font-size: 28px;
   font-weight: normal;
   margin: 0;
 }
 .site-subtitle {
   color: #ddd;
-  font-size: 12px;
+  font-size: 18px;
   margin: 10px 0;
 }
 .use-motion .brand {
@@ -1195,7 +1195,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #7aff81;
+  background: #87ac0d;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -1503,7 +1503,7 @@ pre .javascript .function {
   }
 }
 .back-to-top {
-  font-size: 12px;
+  font-size: 14px;
   text-align: center;
   transition-delay: 0s;
   transition-duration: 0.2s;
