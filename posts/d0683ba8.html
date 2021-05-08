@@ -48,12 +48,12 @@
   };
 </script>
 
-  <meta name="description" content="主流存储设备 物理内存我们不讨论cache，flash，rom这些，只讨论memory也就是通常所说的主存，现在一般是DDR4.   内存工作频率 &#x3D; min(cpu外部频率，主板频率，内存自身频率)">
+  <meta name="description" content="主流存储设备 物理内存我们不讨论cache，flash，rom这些，只讨论memory也就是通常所说的主存，现在一般是DDR4.   内存工作频率 &#x3D; min(cpu外部频率，主板频率，内存自身频率) 对于一个32位系统来说，地址总线最多是32bit，它能寻址的最大范围是2^32&#x3D;4GB，所以也就能插4GB的内存条，插8GB的也没有用。 64位CPU出现之后，其地址总线位宽一般采用的是36位或">
 <meta property="og:type" content="article">
 <meta property="og:title" content="linux内存管理">
 <meta property="og:url" content="http://xxinran.github.io/posts/d0683ba8.html">
 <meta property="og:site_name" content="Xinran&#39;s Blog">
-<meta property="og:description" content="主流存储设备 物理内存我们不讨论cache，flash，rom这些，只讨论memory也就是通常所说的主存，现在一般是DDR4.   内存工作频率 &#x3D; min(cpu外部频率，主板频率，内存自身频率)">
+<meta property="og:description" content="主流存储设备 物理内存我们不讨论cache，flash，rom这些，只讨论memory也就是通常所说的主存，现在一般是DDR4.   内存工作频率 &#x3D; min(cpu外部频率，主板频率，内存自身频率) 对于一个32位系统来说，地址总线最多是32bit，它能寻址的最大范围是2^32&#x3D;4GB，所以也就能插4GB的内存条，插8GB的也没有用。 64位CPU出现之后，其地址总线位宽一般采用的是36位或">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://xxinran.github.io/posts/d0683ba8/%E5%AD%98%E5%82%A8%20(1).svg">
 <meta property="og:image" content="http://xxinran.github.io/posts/d0683ba8/image-20210428163238359.png">
@@ -72,7 +72,7 @@
 <meta property="og:image" content="http://xxinran.github.io/posts/d0683ba8/image-20210429154000972.png">
 <meta property="og:image" content="http://xxinran.github.io/posts/d0683ba8/image-20210429154341590.png">
 <meta property="article:published_time" content="2021-04-26T08:14:23.000Z">
-<meta property="article:modified_time" content="2021-05-07T08:02:09.985Z">
+<meta property="article:modified_time" content="2021-05-08T08:52:25.012Z">
 <meta property="article:author" content="Xinran Wang">
 <meta property="article:tag" content="linux">
 <meta name="twitter:card" content="summary">
@@ -259,7 +259,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-07 16:02:09" itemprop="dateModified" datetime="2021-05-07T16:02:09+08:00">2021-05-07</time>
+                <time title="修改时间：2021-05-08 16:52:25" itemprop="dateModified" datetime="2021-05-08T16:52:25+08:00">2021-05-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -305,31 +305,36 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="主流存储设备"><a href="#主流存储设备" class="headerlink" title="主流存储设备"></a>主流存储设备</h1><p><img src="/posts/d0683ba8/%E5%AD%98%E5%82%A8%20(1).svg"></p>
+        <a id="more"></a>
+
+<h1 id="主流存储设备"><a href="#主流存储设备" class="headerlink" title="主流存储设备"></a>主流存储设备</h1><p><img src="/posts/d0683ba8/%E5%AD%98%E5%82%A8%20(1).svg"></p>
 <h1 id="物理内存"><a href="#物理内存" class="headerlink" title="物理内存"></a>物理内存</h1><p>我们不讨论cache，flash，rom这些，只讨论memory也就是通常所说的主存，现在一般是DDR4.</p>
 <img src="/posts/d0683ba8/image-20210428163238359.png" alt="image-20210428163238359" style="zoom:67%;">
 
 <p>内存工作频率 = min(cpu外部频率，主板频率，内存自身频率)</p>
-<a id="more"></a>
-
 <p>对于一个32位系统来说，地址总线最多是32bit，它能寻址的最大范围是2^32=4GB，所以也就能插4GB的内存条，插8GB的也没有用。</p>
 <p>64位CPU出现之后，其地址总线位宽一般采用的是36位或者40位，它们寻址的物理地址空间为64GB或者1T（intel）。</p>
 <blockquote>
 <p>注意： 常说的<strong>CPU位宽</strong>指的是<strong>数据总线</strong>位宽，最大寻址范围和CPU位宽无关。</p>
 </blockquote>
-<p><img src="/posts/d0683ba8/image-20210428174116842.png" alt="image-20210428174116842"></p>
+<img src="/posts/d0683ba8/image-20210428174116842.png" alt="image-20210428174116842" style="zoom:67%;">
+
 <p>查询系统地址总线位宽：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cat /proc/cpuinfo  | grep address</span><br><span class="line">address sizes   : 46 bits physical, 48 bits virtual</span><br><span class="line"><span class="meta">#</span><span class="bash"> 物理内存寻址范围/虚拟内存寻址范围可以不同</span></span><br></pre></td></tr></table></figure>
 <h2 id="物理内存3个管理区"><a href="#物理内存3个管理区" class="headerlink" title="物理内存3个管理区"></a>物理内存3个管理区</h2><p><code>Linux</code> 内核会将物理内存分为3个管理区，分别是：</p>
 <h3 id="ZONE-DMA"><a href="#ZONE-DMA" class="headerlink" title="ZONE_DMA"></a>ZONE_DMA</h3><p><code>DMA</code>内存区域。包含0MB~16MB之间的内存页框，可以由老式基于<code>ISA</code>的设备通过<code>DMA</code>使用，直接映射到内核的地址空间。</p>
 <h3 id="ZONE-NORMAL"><a href="#ZONE-NORMAL" class="headerlink" title="ZONE_NORMAL"></a>ZONE_NORMAL</h3><p>普通内存区域。包含16MB~896MB之间的内存页框，常规页框，直接映射到内核的地址空间。</p>
 <h3 id="ZONE-HIGHMEM"><a href="#ZONE-HIGHMEM" class="headerlink" title="ZONE_HIGHMEM"></a>ZONE_HIGHMEM</h3><p>高端内存区域。包含896MB以上的内存页框，不进行直接映射，可以通过永久映射和临时映射进行这部分内存页框的访问。</p>
-<p><img src="/posts/d0683ba8/2.png" alt="Image"></p>
+<img src="/posts/d0683ba8/2.png" alt="Image" style="zoom:80%;">
+
+
+
 <h1 id="虚拟内存"><a href="#虚拟内存" class="headerlink" title="虚拟内存"></a>虚拟内存</h1><p>对于32位系统来说，为了充分利用和管理系统内存资源，Linux采用虚拟内存管理技术，利用虚拟内存技术让每个进程都有<code>4GB</code> 互不干涉的虚拟地址空间。</p>
 <p>为什么是4GB? </p>
 <p>之所以是 4GB ，是因为在 32 位的操作系统中，一个指针长度是 4 字节 （32位）， 2的32次 方个地址寻址能力是从 0x00000000~0xFFFFFFFF 即为 4GB 大小的容量。</p>
 <p>进程初始化分配和操作的都是基于这个「虚拟地址」，只有当进程需要实际访问内存资源的时候才会建立<strong>虚拟地址和物理地址的映射</strong>，调入物理内存页。</p>
-<p><img src="/posts/d0683ba8/1.png" alt="Image"></p>
+<img src="/posts/d0683ba8/1.png" alt="Image" style="zoom:80%;">
+
 <p>这么做的目的是：</p>
 <ul>
 <li>避免用户直接访问物理内存地址，防止一些破坏性操作，保护操作系统</li>
@@ -337,10 +342,12 @@
 </ul>
 <p>当需进程要实际访问内存的时候，会由内核的「请求分页机制」产生「缺页异常」调入物理内存页。</p>
 <p><strong>64位系统对比：</strong></p>
-<p><img src="/posts/d0683ba8/64bit.png" alt="Linux的进程地址空间[一]"></p>
+<img src="/posts/d0683ba8/64bit.png" alt="Linux的进程地址空间[一]" style="zoom:40%;">
+
 <h2 id="用户态和内核态"><a href="#用户态和内核态" class="headerlink" title="用户态和内核态"></a>用户态和内核态</h2><p>用户态切换到内核态的 3 种方式：系统调用、异常、外设中断</p>
 <p>用户态的程序就不能随意操作内核地址空间，具有一定的安全保护作用；内核态线程共享内核地址空间；</p>
-<p><img src="/posts/d0683ba8/image-20210426162841923.png" alt="image-20210426162841923"></p>
+<img src="/posts/d0683ba8/image-20210426162841923.png" alt="image-20210426162841923" style="zoom:78%;">
+
 <h2 id="用户空间虚拟内存-3GB"><a href="#用户空间虚拟内存-3GB" class="headerlink" title="用户空间虚拟内存 - 3GB"></a>用户空间虚拟内存 - 3GB</h2><p>用户进程能访问的是「用户空间」，每个进程都有自己独立的用户空间，虚拟地址范围从从 <code>0x00000000</code> 至 <code>0xBFFFFFFF</code> 总容量3G 。</p>
 <p>进程（执行的程序）占用的用户空间按照「 访问属性一致的地址空间存放在一起 」的原则，划分成 <code>5</code>个不同的内存区域。访问属性指的是“可读、可写、可执行等 。</p>
 <p><img src="/posts/d0683ba8/3.png" alt="Image"></p>
@@ -362,7 +369,7 @@
 </li>
 </ul>
 <h2 id="内核空间虚拟内存-1GB"><a href="#内核空间虚拟内存-1GB" class="headerlink" title="内核空间虚拟内存 - 1GB"></a>内核空间虚拟内存 - 1GB</h2><p>在 <code>x86 32</code> 位系统里，Linux 内核地址空间是指虚拟地址从 <code>0xC0000000</code> 开始到 <code>0xFFFFFFFF</code> 为止的高端内存地址空间，总计 <code>1G</code> 的容量， 包括了内核镜像、物理页面表、驱动程序等运行在内核空间 。虚拟空间的1GB怎么对应到物理内存的4GB甚至更多（取决于地址总线最大寻址和插的内存条大小）呢？</p>
-<img src="/posts/d0683ba8/image-20210429173652156.png" alt="image-20210429173652156" style="zoom:80%;">
+<img src="/posts/d0683ba8/image-20210429173652156.png" alt="image-20210429173652156" style="zoom:50%;">
 
 <ul>
 <li><p>直接映射区：线性空间中从 3G 开始到3GB+896M 的区间，直接映射到物理内存的 0 - 896MB（dma zone + normal zone），物理和虚拟中间差一个固定的偏移量：PAGE_OFFSET = 0xC0000000。</p>
@@ -376,7 +383,10 @@
 </ul>
 </li>
 </ul>
-<h2 id="虚拟地址-物理地址的映射关系图"><a href="#虚拟地址-物理地址的映射关系图" class="headerlink" title="虚拟地址 -  物理地址的映射关系图"></a>虚拟地址 -  物理地址的映射关系图</h2><p><img src="/posts/d0683ba8/image-20210429180241789.png" alt="image-20210429180241789"></p>
+<h2 id="虚拟地址-物理地址的映射关系图"><a href="#虚拟地址-物理地址的映射关系图" class="headerlink" title="虚拟地址 -  物理地址的映射关系图"></a>虚拟地址 -  物理地址的映射关系图</h2><img src="/posts/d0683ba8/image-20210429180241789.png" alt="image-20210429180241789" style="zoom:50%;">
+
+
+
 <h1 id="MMU"><a href="#MMU" class="headerlink" title="MMU"></a>MMU</h1><p>把虚拟地址转换成内存的物理地址，这中间涉及利用<code>MMU</code> 内存管理单元（Memory Management Unit ) 对虚拟地址分段和分页（段页式）地址转换。</p>
 <ul>
 <li>MMU 是一种硬件电路，它包含两个部件，一个是分段部件，一个是分页部件</li>
@@ -386,7 +396,8 @@
 <blockquote>
 <p>单片机是没有mmu的，程序直接访问物理地址。</p>
 </blockquote>
-<p><img src="/posts/d0683ba8/image-20210427151435405.png" alt="image-20210427151435405"></p>
+<img src="/posts/d0683ba8/image-20210427151435405.png" alt="image-20210427151435405" style="zoom:66%;">
+
 <h2 id="分段机制"><a href="#分段机制" class="headerlink" title="分段机制"></a>分段机制</h2><h2 id="分页机制"><a href="#分页机制" class="headerlink" title="分页机制"></a>分页机制</h2><p>页表保存在<strong>物理内存中</strong>，<strong>MMU会查找页表来确定一个VA应该映射到什么PA。</strong></p>
 <p><strong>段错误</strong>我们已经遇到过很多次了，它是这样产生的：</p>
 <ol>
@@ -542,7 +553,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-count">29</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -600,12 +611,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">74k</span>
+    <span title="站点总字数">72k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:07</span>
+    <span title="站点阅读时长">1:05</span>
 </div>
 
         
