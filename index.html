@@ -238,7 +238,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-08 16:52:25" itemprop="dateModified" datetime="2021-05-08T16:52:25+08:00">2021-05-08</time>
+                <time title="修改时间：2021-05-08 17:39:32" itemprop="dateModified" datetime="2021-05-08T17:39:32+08:00">2021-05-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -277,132 +277,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <a id="more"></a>
-
-<h1 id="主流存储设备"><a href="#主流存储设备" class="headerlink" title="主流存储设备"></a>主流存储设备</h1><p><img src="/posts/d0683ba8/%E5%AD%98%E5%82%A8%20(1).svg"></p>
-<h1 id="物理内存"><a href="#物理内存" class="headerlink" title="物理内存"></a>物理内存</h1><p>我们不讨论cache，flash，rom这些，只讨论memory也就是通常所说的主存，现在一般是DDR4.</p>
-<img src="/posts/d0683ba8/image-20210428163238359.png" alt="image-20210428163238359" style="zoom:67%;">
-
-<p>内存工作频率 = min(cpu外部频率，主板频率，内存自身频率)</p>
-<p>对于一个32位系统来说，地址总线最多是32bit，它能寻址的最大范围是2^32=4GB，所以也就能插4GB的内存条，插8GB的也没有用。</p>
-<p>64位CPU出现之后，其地址总线位宽一般采用的是36位或者40位，它们寻址的物理地址空间为64GB或者1T（intel）。</p>
-<blockquote>
-<p>注意： 常说的<strong>CPU位宽</strong>指的是<strong>数据总线</strong>位宽，最大寻址范围和CPU位宽无关。</p>
-</blockquote>
-<img src="/posts/d0683ba8/image-20210428174116842.png" alt="image-20210428174116842" style="zoom:67%;">
-
-<p>查询系统地址总线位宽：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cat /proc/cpuinfo  | grep address</span><br><span class="line">address sizes   : 46 bits physical, 48 bits virtual</span><br><span class="line"><span class="meta">#</span><span class="bash"> 物理内存寻址范围/虚拟内存寻址范围可以不同</span></span><br></pre></td></tr></table></figure>
-<h2 id="物理内存3个管理区"><a href="#物理内存3个管理区" class="headerlink" title="物理内存3个管理区"></a>物理内存3个管理区</h2><p><code>Linux</code> 内核会将物理内存分为3个管理区，分别是：</p>
-<h3 id="ZONE-DMA"><a href="#ZONE-DMA" class="headerlink" title="ZONE_DMA"></a>ZONE_DMA</h3><p><code>DMA</code>内存区域。包含0MB~16MB之间的内存页框，可以由老式基于<code>ISA</code>的设备通过<code>DMA</code>使用，直接映射到内核的地址空间。</p>
-<h3 id="ZONE-NORMAL"><a href="#ZONE-NORMAL" class="headerlink" title="ZONE_NORMAL"></a>ZONE_NORMAL</h3><p>普通内存区域。包含16MB~896MB之间的内存页框，常规页框，直接映射到内核的地址空间。</p>
-<h3 id="ZONE-HIGHMEM"><a href="#ZONE-HIGHMEM" class="headerlink" title="ZONE_HIGHMEM"></a>ZONE_HIGHMEM</h3><p>高端内存区域。包含896MB以上的内存页框，不进行直接映射，可以通过永久映射和临时映射进行这部分内存页框的访问。</p>
-<img src="/posts/d0683ba8/2.png" alt="Image" style="zoom:80%;">
-
-
-
-<h1 id="虚拟内存"><a href="#虚拟内存" class="headerlink" title="虚拟内存"></a>虚拟内存</h1><p>对于32位系统来说，为了充分利用和管理系统内存资源，Linux采用虚拟内存管理技术，利用虚拟内存技术让每个进程都有<code>4GB</code> 互不干涉的虚拟地址空间。</p>
-<p>为什么是4GB? </p>
-<p>之所以是 4GB ，是因为在 32 位的操作系统中，一个指针长度是 4 字节 （32位）， 2的32次 方个地址寻址能力是从 0x00000000~0xFFFFFFFF 即为 4GB 大小的容量。</p>
-<p>进程初始化分配和操作的都是基于这个「虚拟地址」，只有当进程需要实际访问内存资源的时候才会建立<strong>虚拟地址和物理地址的映射</strong>，调入物理内存页。</p>
-<img src="/posts/d0683ba8/1.png" alt="Image" style="zoom:80%;">
-
-<p>这么做的目的是：</p>
-<ul>
-<li>避免用户直接访问物理内存地址，防止一些破坏性操作，保护操作系统</li>
-<li>每个进程都被分配了4GB的虚拟内存，用户程序可使用比实际物理内存更大的地址空间</li>
-</ul>
-<p>当需进程要实际访问内存的时候，会由内核的「请求分页机制」产生「缺页异常」调入物理内存页。</p>
-<p><strong>64位系统对比：</strong></p>
-<img src="/posts/d0683ba8/64bit.png" alt="Linux的进程地址空间[一]" style="zoom:40%;">
-
-<h2 id="用户态和内核态"><a href="#用户态和内核态" class="headerlink" title="用户态和内核态"></a>用户态和内核态</h2><p>用户态切换到内核态的 3 种方式：系统调用、异常、外设中断</p>
-<p>用户态的程序就不能随意操作内核地址空间，具有一定的安全保护作用；内核态线程共享内核地址空间；</p>
-<img src="/posts/d0683ba8/image-20210426162841923.png" alt="image-20210426162841923" style="zoom:78%;">
-
-<h2 id="用户空间虚拟内存-3GB"><a href="#用户空间虚拟内存-3GB" class="headerlink" title="用户空间虚拟内存 - 3GB"></a>用户空间虚拟内存 - 3GB</h2><p>用户进程能访问的是「用户空间」，每个进程都有自己独立的用户空间，虚拟地址范围从从 <code>0x00000000</code> 至 <code>0xBFFFFFFF</code> 总容量3G 。</p>
-<p>进程（执行的程序）占用的用户空间按照「 访问属性一致的地址空间存放在一起 」的原则，划分成 <code>5</code>个不同的内存区域。访问属性指的是“可读、可写、可执行等 。</p>
-<p><img src="/posts/d0683ba8/3.png" alt="Image"></p>
-<ul>
-<li><p>代码段</p>
-<p>代码段是用来存放可执行文件的操作指令，可执行程序在内存中的镜像。代码段需要防止在运行时被非法修改，所以<strong>只准许读取操作，它是不可写的</strong>。</p>
-</li>
-<li><p>数据段</p>
-<p>数据段用来存放可执行文件中<strong>已初始化全局变量</strong>，换句话说就是存放程序静态分配的变量和全局变量。</p>
-</li>
-<li><p>BSS段</p>
-<p><code>BSS</code>段包含了程序中<strong>未初始化的全局变量</strong>，在内存中 <code>bss</code> 段全部置零。</p>
-</li>
-<li><p>堆 <code>heap</code></p>
-<p>堆是用于存放进程运行中被<strong>动态分配的内存段</strong>，它的大小并不固定，可动态扩张或缩减。当进程调用malloc等函数分配内存时，新分配的内存就被动态添加到堆上（堆被扩张）；当利用free等函数释放内存时，被释放的内存从堆中被剔除（堆被缩减）</p>
-</li>
-<li><p>栈 <code>stack</code></p>
-<p>栈是用户存放程序<strong>临时创建的局部变量</strong>，也就是函数中定义的变量（但不包括 <code>static</code> 声明的变量，static意味着在数据段中存放变量）。除此以外，在函数被调用时，其参数也会被压入发起调用的进程栈中，并且待到调用结束后，函数的返回值也会被存放回栈中。由于栈的先进先出特点，所以栈特别方便用来保存/恢复调用现场。从这个意义上讲，我们可以把堆栈看成一个寄存、交换临时数据的内存区。</p>
-</li>
-</ul>
-<h2 id="内核空间虚拟内存-1GB"><a href="#内核空间虚拟内存-1GB" class="headerlink" title="内核空间虚拟内存 - 1GB"></a>内核空间虚拟内存 - 1GB</h2><p>在 <code>x86 32</code> 位系统里，Linux 内核地址空间是指虚拟地址从 <code>0xC0000000</code> 开始到 <code>0xFFFFFFFF</code> 为止的高端内存地址空间，总计 <code>1G</code> 的容量， 包括了内核镜像、物理页面表、驱动程序等运行在内核空间 。虚拟空间的1GB怎么对应到物理内存的4GB甚至更多（取决于地址总线最大寻址和插的内存条大小）呢？</p>
-<img src="/posts/d0683ba8/image-20210429173652156.png" alt="image-20210429173652156" style="zoom:50%;">
-
-<ul>
-<li><p>直接映射区：线性空间中从 3G 开始到3GB+896M 的区间，直接映射到物理内存的 0 - 896MB（dma zone + normal zone），物理和虚拟中间差一个固定的偏移量：PAGE_OFFSET = 0xC0000000。</p>
-<p>虚拟地址 = <code>PAGE_OFFSET</code> + 物理地址，也可以用 <code>virt_to_phys()</code>函数将内核虚拟空间中的线性地址转化为物理地址。</p>
-</li>
-<li><p>除了直接映射区：还有4G-(3G+896MB) = 128MB的空间要映射到物理内存的其他空间，显然1：1map是不够的。所以内核空间拿出了最后的 128M 地址区间，划分成下面三个高端内存映射区（动态分配，可以重复映射不同的地址）：</p>
-<ul>
-<li>动态内存映射区：该区域由内核函数 vmalloc 来分配，特点是：线性空间连续，但是对应的物理地址空间不一定连续。<code>vmalloc</code> 分配的线性地址所对应的物理页可能处于低端内存，也可能处于高端内存。</li>
-<li>永久内存映射区：该区域可访问高端内存（highmem），访问方法是使用 <code>alloc_page (_GFP_HIGHMEM)</code> 分配高端内存页或者使用<code>kmap</code>函数将分配到的高端内存映射到该区域。</li>
-<li>固定映射区：该区域和 4G 的顶端只有 4k 的隔离带，其每个地址项都服务于特定的用途，如：ACPI_BASE 等</li>
-</ul>
-</li>
-</ul>
-<h2 id="虚拟地址-物理地址的映射关系图"><a href="#虚拟地址-物理地址的映射关系图" class="headerlink" title="虚拟地址 -  物理地址的映射关系图"></a>虚拟地址 -  物理地址的映射关系图</h2><img src="/posts/d0683ba8/image-20210429180241789.png" alt="image-20210429180241789" style="zoom:50%;">
-
-
-
-<h1 id="MMU"><a href="#MMU" class="headerlink" title="MMU"></a>MMU</h1><p>把虚拟地址转换成内存的物理地址，这中间涉及利用<code>MMU</code> 内存管理单元（Memory Management Unit ) 对虚拟地址分段和分页（段页式）地址转换。</p>
-<ul>
-<li>MMU 是一种硬件电路，它包含两个部件，一个是分段部件，一个是分页部件</li>
-<li>分段机制把一个逻辑地址转换为线性地址</li>
-<li>分页机制把一个线性地址转换为物理地址</li>
-</ul>
-<blockquote>
-<p>单片机是没有mmu的，程序直接访问物理地址。</p>
-</blockquote>
-<img src="/posts/d0683ba8/image-20210427151435405.png" alt="image-20210427151435405" style="zoom:66%;">
-
-<h2 id="分段机制"><a href="#分段机制" class="headerlink" title="分段机制"></a>分段机制</h2><h2 id="分页机制"><a href="#分页机制" class="headerlink" title="分页机制"></a>分页机制</h2><p>页表保存在<strong>物理内存中</strong>，<strong>MMU会查找页表来确定一个VA应该映射到什么PA。</strong></p>
-<p><strong>段错误</strong>我们已经遇到过很多次了，它是这样产生的：</p>
-<ol>
-<li>用户程序要访问的一个VA，经MMU检查无权访问。</li>
-<li>MMU产生一个异常，CPU从用户模式切换到特权模式，跳转到内核代码中执行异常服务程序。</li>
-<li>内核把这个异常解释为段错误，把引发异常的进程终止掉。</li>
-</ol>
-<p>page -  4KB</p>
-<p>struct-page </p>
-<p>4G内存一共有4GB/4KB = 2 ^20个 </p>
-<h2 id="物理内存分配"><a href="#物理内存分配" class="headerlink" title="物理内存分配"></a>物理内存分配</h2><h3 id="外部碎片"><a href="#外部碎片" class="headerlink" title="外部碎片"></a>外部碎片</h3><p>当需要分配大块内存的时候，要用好几页组合起来才够，而系统分配物理内存页的时候会尽量分配连续的内存页面，频繁的分配与回收物理页导致大量的小块内存夹杂在已分配页面中间，形成外部碎片，举个例子：</p>
-<p><img src="/posts/d0683ba8/waibu.png" alt="Image"></p>
-<h3 id="内部碎片"><a href="#内部碎片" class="headerlink" title="内部碎片"></a>内部碎片</h3><p>物理内存是按页来分配的，这样当实际只需要很小内存的时候，也会分配至少是 4K 大小的页面，而内核中有很多需要以字节为单位分配内存的场景，这样本来只想要几个字节而已却不得不分配一页内存，除去用掉的字节剩下的就形成了内部碎片。</p>
-<p><img src="/posts/d0683ba8/neibu.pnf" alt="Image"></p>
-<h3 id="Buddy（伙伴）分配算法-gt-外部碎片"><a href="#Buddy（伙伴）分配算法-gt-外部碎片" class="headerlink" title="Buddy（伙伴）分配算法 -&gt; 外部碎片"></a>Buddy（伙伴）分配算法 -&gt; 外部碎片</h3><p>相同大小的页框块用链表串起来，页框块就像手拉手的好伙伴，也是这个算法名字的由来。</p>
-<h3 id="slab分配器-gt-内部碎片"><a href="#slab分配器-gt-内部碎片" class="headerlink" title="slab分配器 - &gt; 内部碎片"></a>slab分配器 - &gt; 内部碎片</h3><p>通过将内存按使用对象不同<strong>再划分</strong>成不同大小的空间，应用于内核对象的缓存。</p>
-<h1 id="NUMA"><a href="#NUMA" class="headerlink" title="NUMA"></a>NUMA</h1><p>Node，Zone，Page</p>
-<p><img src="/posts/d0683ba8/numa.jgp" alt="uma-numa"></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">cat /proc/zoneinfo | grep Node</span><br><span class="line">Node 0, zone      DMA</span><br><span class="line">Node 0, zone    DMA32 # 64 bit system</span><br><span class="line">Node 0, zone   Normal</span><br><span class="line">Node 0, zone  Movable # 防止内存碎片化的ZONE_MOVABLE</span><br><span class="line">Node 0, zone   Device # 支持设备热插拔的ZONE_DEVICE</span><br><span class="line">Node 1, zone      DMA</span><br><span class="line">Node 1, zone    DMA32</span><br><span class="line">Node 1, zone   Normal</span><br><span class="line">Node 1, zone  Movable</span><br><span class="line">Node 1, zone   Device</span><br><span class="line"><span class="meta">#</span><span class="bash"> 没有 zone highmem， 因为是64位系统，可以直接映射</span></span><br></pre></td></tr></table></figure>
-
-
-
-
-
-
-
-
-
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> lscpu</span></span><br><span class="line">Architecture:                    x86_64</span><br><span class="line">CPU op-mode(s):                  32-bit, 64-bit</span><br><span class="line">Byte Order:                      Little Endian</span><br><span class="line">Address sizes:                   46 bits physical, 48 bits virtual</span><br><span class="line">CPU(s):                          32  # cores per socket * sockets * thread per core </span><br><span class="line">On-line CPU(s) list:             0-31</span><br><span class="line">Thread(s) per core:              2</span><br><span class="line">Core(s) per socket:              8</span><br><span class="line">Socket(s):                       2</span><br><span class="line">NUMA node(s):                    2</span><br><span class="line">Vendor ID:                       GenuineIntel</span><br><span class="line">CPU family:                      6</span><br><span class="line">Model:                           45</span><br><span class="line">Model name:                      Intel(R) Xeon(R) CPU E5-2670 0 @ 2.60GHz</span><br><span class="line">Stepping:                        7</span><br><span class="line">CPU MHz:                         1207.495</span><br><span class="line">CPU max MHz:                     3300.0000</span><br><span class="line">CPU min MHz:                     1200.0000</span><br><span class="line">BogoMIPS:                        5187.02</span><br><span class="line">Virtualization:                  VT-x</span><br><span class="line">L1d cache:                       512 KiB  # instruction cache</span><br><span class="line">L1i cache:                       512 KiB  # data cache</span><br><span class="line">L2 cache:                        4 MiB</span><br><span class="line">L3 cache:                        40 MiB</span><br><span class="line">NUMA node0 CPU(s):               0-7,16-23</span><br><span class="line">NUMA node1 CPU(s):               8-15,24-31</span><br><span class="line">Vulnerability Itlb multihit:     KVM: Mitigation: Split huge pages</span><br><span class="line">Vulnerability L1tf:              Mitigation; PTE Inversion; VMX conditional cache flushes, SMT vulnerable</span><br><span class="line">Vulnerability Mds:               Mitigation; Clear CPU buffers; SMT vulnerable</span><br><span class="line">Vulnerability Meltdown:          Mitigation; PTI</span><br><span class="line">Vulnerability Spec store bypass: Mitigation; Speculative Store Bypass disabled via prctl and seccomp</span><br><span class="line">Vulnerability Spectre v1:        Mitigation; usercopy/swapgs barriers and __user pointer sanitization</span><br><span class="line">Vulnerability Spectre v2:        Mitigation; Full generic retpoline, IBPB conditional, IBRS_FW, STIBP conditional, RSB filling</span><br><span class="line">Vulnerability Srbds:             Not affected</span><br><span class="line">Vulnerability Tsx async abort:   Not affected</span><br><span class="line">Flags:                           fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxs</span><br><span class="line">                                 r sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good</span><br><span class="line">                                  nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2</span><br><span class="line">                                  ssse3 cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic popcnt tsc_deadline_timer aes xsave avx lahf</span><br><span class="line">                                 _lm epb pti ssbd ibrs ibpb stib</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p><img src="/posts/d0683ba8/image-20210429154000972.png" alt="image-20210429154000972"></p>
-<img src="/posts/d0683ba8/image-20210429154341590.png" alt="image-20210429154341590" style="zoom:67%;">
-
-<h3 id><a href="#" class="headerlink" title></a></h3>
+           
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/d0683ba8.html">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -452,7 +335,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-08 16:56:01" itemprop="dateModified" datetime="2021-05-08T16:56:01+08:00">2021-05-08</time>
+                <time title="修改时间：2021-05-08 17:43:51" itemprop="dateModified" datetime="2021-05-08T17:43:51+08:00">2021-05-08</time>
               </span>
 
           <br>
@@ -480,26 +363,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <a id="more"></a>
-
-<p>目前流行的几种模式：pass through, sriov, 半虚拟化（mdev passthrough： Intel gvt-g, Nvidia GRID vGPU), 全虚拟化（VMware： vSGA）</p>
-<p>学习路径</p>
-<p>pci -》 pci dma -》 iommu -》 passthrough</p>
-<p>内存页表 - 》 tlb</p>
-<p>cache -》 内存</p>
-<h1 id="PCI"><a href="#PCI" class="headerlink" title="PCI"></a>PCI</h1><p>Linux PCI设备驱动实际包括<strong>Linux PCI设备驱动</strong>和<strong>设备本身驱动</strong>两部分。</p>
-<p>PCI(Periheral Component Interconnect)有三种地址空间：<strong>PCI I/O空间、PCI内存地址空间和PCI配置空间</strong>。</p>
-<p>PCI I/O空间和PCI内存地址空间由设备驱动程序使用</p>
-<p>而PCI配置空间由Linux PCI初始化代码使用，用于配置PCI设备，比如中断号以及I/O或内存基地址。</p>
-<p>内核：遍历和配置</p>
-<p>遍历顺序：从host-pci开始，遇到pci bridge就到下一级pci总线继续遍历，直到遍历完成。（深度优先？）</p>
-<p>配置：PCI设备中一般都带有一些RAM和ROM 空间，通常的控制/状态寄存器和数据寄存器也往往以RAM区间的形式出现，而这些区间的地址在设备内部一般都是从0开始编址的，那么当总线上挂接了多个设备时，对这些空间的访问就会产生冲突。所以，这些地址都要先映射到系统总线上，再进一步映射到内核的虚拟地址空间。配置就是通过对PCI配置空间的寄存器进行操作从而完成地址的映射。 device physical address -&gt; system virtual address??</p>
-<h1 id="DMA"><a href="#DMA" class="headerlink" title="DMA"></a>DMA</h1><p><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1194593">https://cloud.tencent.com/developer/article/1194593</a></p>
-<h2 id="Passthrough"><a href="#Passthrough" class="headerlink" title="Passthrough"></a>Passthrough</h2><p><strong>直通模式</strong>的实现依赖于IOMMU的功能。VTD对IOVA的地址转换使得直通设备可以在硬件层次直接使用GPA（Guest Physical Address）地址。GPU直通技术相对于任何其他设备来说，会有额外的PCI 配置空间模拟和MMIO的拦截（参见QEMU VFIO quirk机制）。比如Hypervisor或者Device Module 不会允许虚拟机对GPU硬件关键寄存器的完全的访问权限，一些高权限的操作会被直接拦截。大家或许已经意识到原来直通设备也是有MMIO模拟和拦截的。这对于我们理解GPU 半虚拟化很有帮助。</p>
-<h3 id="libvirt-layer"><a href="#libvirt-layer" class="headerlink" title="libvirt layer"></a>libvirt layer</h3><p>将PCI设备直接分配给guest os时，如果不先从guest中hot-unplug该设备，将无法进行migration。</p>
-<p>managed: guest启动时会自动从host上detach， guest shutdown时又重新attach回host。（implict）</p>
-<p>unmanged：需要手动从host detach，之后手动re-attach回host。不然libvirt会refuse。（explict）</p>
-
+           
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/204fd6f0.html">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -549,7 +421,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-08 16:56:04" itemprop="dateModified" datetime="2021-05-08T16:56:04+08:00">2021-05-08</time>
+                <time title="修改时间：2021-05-08 17:43:54" itemprop="dateModified" datetime="2021-05-08T17:43:54+08:00">2021-05-08</time>
               </span>
 
           <br>
@@ -577,27 +449,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <a id="more"></a>
-
-<p>bpf - bakerly profiling filter</p>
-<p>最早是抓包用的，最经典的应用：tcpdump就用bpf。</p>
-<p>没有bpf之前，抓包要抓nic上所有的包，然后再进行分析</p>
-<p>有了bpf之后，可以插入一段小的代码可以指定tcp port，ip等。</p>
-<p>ebpf - extension bpf</p>
-<p>主要做网络，但远不止网络领域。可以抓system call，linux kernel的function call</p>
-<p>kprobe -&gt; fetch kernel</p>
-<p>uprobe -&gt; fetch user space</p>
-<p>perf events</p>
-<p>XDP/AF_XDP</p>
-<p>bpf vs ebpf vm - &gt; java vm / webassembly</p>
-<p>c  -&gt; 编译成ebpf backend  -&gt; kernel native??</p>
-<p>程序方面：</p>
-<p>bpf只有两个32bit寄存器，16个32bit内存</p>
-<p>ebpf有11个64bit寄存器，512个stack。没有堆的概念，因为在ebpf里面不能new。</p>
-<p><img src="/posts/85f2c2fa/image-20210423154407377.png" alt="image-20210423154407377"></p>
-<p>maps：user space /kernel space shares data through maps (k-v)。</p>
-<p>bpftrace vs bcc vs c program </p>
-
+           
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/85f2c2fa.html">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -647,7 +507,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-08 16:56:29" itemprop="dateModified" datetime="2021-05-08T16:56:29+08:00">2021-05-08</time>
+                <time title="修改时间：2021-05-08 17:44:22" itemprop="dateModified" datetime="2021-05-08T17:44:22+08:00">2021-05-08</time>
               </span>
 
           <br>
@@ -675,14 +535,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <a id="more"></a>
-
-<p><img src="https://en.wikichip.org/w/images/thumb/e/ee/skylake_server_block_diagram.svg/950px-skylake_server_block_diagram.svg.png" alt="skylake server block diagram.svg"></p>
-<p>front end：取值，解码</p>
-<p>execution engine：计算</p>
-<p>memory subsystem： 读写内存</p>
-<p>L1， L2 per core</p>
-
+           
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/f1d93d2c.html">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -732,7 +593,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-08 16:54:02" itemprop="dateModified" datetime="2021-05-08T16:54:02+08:00">2021-05-08</time>
+                <time title="修改时间：2021-05-08 17:41:10" itemprop="dateModified" datetime="2021-05-08T17:41:10+08:00">2021-05-08</time>
               </span>
 
           <br>
@@ -760,23 +621,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <a id="more"></a>
-
-<h2 id="TLS"><a href="#TLS" class="headerlink" title="TLS"></a>TLS</h2><p>源于SSL，后改名TLS（Transport Layer Security）</p>
-<ol>
-<li>可以实现通讯双方的身份认证，应用数据加密。</li>
-<li>与上层的应用层协议无耦合，应用层协议能透明地运行在TLS协议构建的安全通道之上。</li>
-</ol>
-<p>TLS由记录层（记录协议， record protocol）和握手协议层（握手协议、密钥变更协议、告警协议，应用数据协议）组成。</p>
-<img src="/posts/425c0d17/image-20210329145853869.png" alt="image-20210329145853869" style="zoom:80%;">
-
-
-
-<p><img src="https://segmentfault.com/img/bVbCCMD/view" alt="preview"></p>
-<p>HTTPS = HTTP over TLS.</p>
-<p>散列函数 Hash、对称加密和非对称加密，其利用非对称加密实现身份认证和密钥协商，对称加密算法采用协商的密钥对数据加密，基于散列函数验证信息的完整性</p>
-<p>mTLS</p>
-
+           
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/425c0d17.html">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -826,7 +679,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-08 16:56:23" itemprop="dateModified" datetime="2021-05-08T16:56:23+08:00">2021-05-08</time>
+                <time title="修改时间：2021-05-08 17:44:21" itemprop="dateModified" datetime="2021-05-08T17:44:21+08:00">2021-05-08</time>
               </span>
 
           <br>
@@ -854,16 +707,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <a id="more"></a>
-
-<p>cpu运行阶段：取值，解码，执行，写回。</p>
-<p>cpu从内存或者cache里提取指令，放入指令寄存器，并对指令译码，执行。</p>
-<p>主要参数：</p>
-<p>主频：时钟频率</p>
-<p>倍频</p>
-<p>外频：cpu的基准频率，cpu和其他部件通讯的频率，决定着整块主板的运行速度。因为cpu的频率太高，其他部件跟不上。</p>
-<p>超频：</p>
-
+           
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/fe9b70.html">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -913,7 +765,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-08 16:56:19" itemprop="dateModified" datetime="2021-05-08T16:56:19+08:00">2021-05-08</time>
+                <time title="修改时间：2021-05-08 17:44:18" itemprop="dateModified" datetime="2021-05-08T17:44:18+08:00">2021-05-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -952,81 +804,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <a id="more"></a>
-
-<h2 id="dapr简介"><a href="#dapr简介" class="headerlink" title="dapr简介"></a>dapr简介</h2><h2 id="dapr安装"><a href="#dapr安装" class="headerlink" title="dapr安装"></a>dapr安装</h2><p>dapr支持多种运行环境：</p>
-<ol>
-<li>在本机上，相当于一个process</li>
-<li>在kubernetes中，和业务容器在一个pod里，作为sidecar</li>
-</ol>
-<p>我们先尝试在第一种环境里安装dapr。</p>
-<h4 id="Prerequisites"><a href="#Prerequisites" class="headerlink" title="Prerequisites"></a>Prerequisites</h4><p>Docker installed</p>
-<h4 id="安装dapr-CLI"><a href="#安装dapr-CLI" class="headerlink" title="安装dapr CLI"></a>安装dapr CLI</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> wget -q https://raw.githubusercontent.com/dapr/cli/master/install/install.sh -O - | /bin/bash</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> verify</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> dapr --version</span></span><br></pre></td></tr></table></figure>
-<h4 id="初始化dapr"><a href="#初始化dapr" class="headerlink" title="初始化dapr"></a>初始化dapr</h4><p>因为dapr在host上直接运行，相当于需要在host上运行一个process。所以dapr的初始化包括下载dapr二进制包并且安装运行。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> dapr init</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 在k8s上运行 dapr init --kubernetes</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> verify</span> </span><br><span class="line"><span class="meta">$</span><span class="bash"> docker ps</span></span><br><span class="line">CONTAINER ID        IMAGE                                 COMMAND                  CREATED             STATUS                 PORTS                                                                                                                                  NAMES</span><br><span class="line">caa1ac7a14c4        openzipkin/zipkin                     &quot;start-zipkin&quot;           2 hours ago         Up 2 hours (healthy)   9410/tcp, 0.0.0.0:9411-&gt;9411/tcp                                                                                                       dapr_zipkin</span><br><span class="line">1fa7739631a3        redis                                 &quot;docker-entrypoint.s…&quot;   2 hours ago         Up 2 hours             0.0.0.0:6379-&gt;6379/tcp                                                                                                                 dapr_redis</span><br><span class="line">f48ee8e3d872        daprio/dapr                           &quot;./placement&quot;            2 hours ago         Up 2 hours             0.0.0.0:50005-&gt;50005/tcp                                                                                                               dapr_placement</span><br></pre></td></tr></table></figure>
-<p>可以看到有三个容器在运行，Redis容器是做state management和messaging的，Zipkin容器是为了收集traces的。</p>
-<p>在<code>docker init</code>的时候，同时还创建了一些文件。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ls <span class="variable">$HOME</span>/.dapr</span></span><br><span class="line">bin/  components/  config.yaml</span><br></pre></td></tr></table></figure>
-
-
-<h3 id="使用dapr-API，run-sample"><a href="#使用dapr-API，run-sample" class="headerlink" title="使用dapr API，run sample"></a>使用dapr API，run sample</h3><p>业务代码通过调用dapr API来完成一些业务之外的分布式服务的功能，所以我们可以通过直接调用dapr API来看看dapr API是怎么被使用的。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> dapr run --<span class="built_in">help</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Run a Python application that listens to port 3000:</span></span><br><span class="line">  dapr run --app-id myapp --app-port 3000 -- python myapp.py</span><br><span class="line"><span class="meta">#</span><span class="bash"> Run sidecar only:</span></span><br><span class="line">  dapr run --app-id myapp</span><br><span class="line"></span><br><span class="line">Flags:</span><br><span class="line"><span class="meta"> #</span><span class="bash"> 需要研究这个app-id有啥用？？？</span></span><br><span class="line">  -a, --app-id string                   The id for your application, used for service discovery</span><br><span class="line">      --app-max-concurrency int         The concurrency level of the application, otherwise is unlimited (default -1)</span><br><span class="line"><span class="meta"> #</span><span class="bash"> 业务程序监听的端口</span></span><br><span class="line">  -p, --app-port int                    The port your application is listening on (default -1)</span><br><span class="line"><span class="meta"> #</span><span class="bash"> dapr和app之间的protocol</span></span><br><span class="line">  -P, --app-protocol string             The protocol (gRPC or HTTP) Dapr uses to talk to the application (default &quot;http&quot;)</span><br><span class="line">      --app-ssl                         Enable https when Dapr invokes the application</span><br><span class="line">  -d, --components-path string          The path for components directory (default &quot;/home/ubuntu/.dapr/components&quot;)</span><br><span class="line"> -c, --config string                   Dapr configuration file (default &quot;/home/ubuntu/.dapr/config.yaml&quot;)</span><br><span class="line"><span class="meta"> #</span><span class="bash"> dapr程序监听的端口s</span></span><br><span class="line">  -G, --dapr-grpc-port int              The gRPC port for Dapr to listen on (default -1)</span><br><span class="line">  -H, --dapr-http-port int              The HTTP port for Dapr to listen on (default -1)</span><br><span class="line">      --enable-profiling                Enable pprof profiling via an HTTP endpoint</span><br><span class="line">  -h, --help                            Print this help message</span><br><span class="line">      --log-level string                The log verbosity. Valid values are: debug, info, warn, error, fatal, or panic (default &quot;info&quot;)</span><br><span class="line">  -M, --metrics-port int                The port of metrics on dapr (default -1)</span><br><span class="line">      --placement-host-address string   The host on which the placement service resides (default &quot;localhost&quot;)</span><br><span class="line">      --profile-port int                The port for the profile server to listen on (default -1)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> launch a Dapr sidecar that will listen on port 3500 <span class="keyword">for</span> a blank application named myapp</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 因为没有--config和-d，所以用的就是default的`<span class="variable">$HOME</span>/.dapr`下的配置文件。</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> dapr run --app-id myapp --dapr-http-port 3500</span></span><br></pre></td></tr></table></figure>
-<p><strong>调用dapr API去写state，然后读：</strong></p>
-<p>这里是写state，所以url是/v1.0/state/statestore，这个statestore是<code>$HOME/.dapr/components/statestore.yaml</code>里面定义的。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> curl -X POST -H <span class="string">&quot;Content-Type: application/json&quot;</span> -d <span class="string">&#x27;[&#123; &quot;key&quot;: &quot;name&quot;, &quot;value&quot;: &quot;Bruce Wayne&quot;&#125;]&#x27;</span> http://localhost:3500/v1.0/state/statestore</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> curl http://localhost:3500/v1.0/state/statestore/name</span></span><br><span class="line">&quot;Bruce Wayne&quot;</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 进入redis容器查看在redis中的存储形式</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> -it dapr_redis redis-cli</span></span><br><span class="line">127.0.0.1:6379&gt; keys *</span><br><span class="line">1) &quot;myapp||name&quot;   # key使用的是“app的名字||name”</span><br><span class="line">127.0.0.1:6379&gt; hgetall &quot;myapp||name&quot;</span><br><span class="line">1) &quot;data&quot;</span><br><span class="line">2) &quot;\&quot;Bruce Wayne\&quot;&quot;</span><br><span class="line">3) &quot;version&quot;</span><br><span class="line">4) &quot;2&quot;</span><br></pre></td></tr></table></figure>
-<h3 id="自己定义component"><a href="#自己定义component" class="headerlink" title="自己定义component"></a>自己定义component</h3><p>上述我们用的都是dapr init时生成的简单的config例子。现在我们想自己定义新的component并使用dapr API去调用它（们）？</p>
-<p>我们将：</p>
-<ol>
-<li>创建一个本地的json的secret store</li>
-<li>把这个secret store写在component的定义里，向dapr注册。</li>
-<li>通过dapr API获得这个secret store里的内容。</li>
-</ol>
-<h4 id="创建本地secret-store"><a href="#创建本地secret-store" class="headerlink" title="创建本地secret store"></a>创建本地secret store</h4><p>创建json文件</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> cat mysecrets.json</span></span><br><span class="line">&#123;</span><br><span class="line">     &quot;my-secret&quot; : &quot;I&#x27;m Batman&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">~/.dapr/my-components$ cat localSecretStore.yaml</span><br><span class="line">apiVersion: dapr.io/v1alpha1</span><br><span class="line">kind: Component</span><br><span class="line">metadata:</span><br><span class="line">  name: my-secret-store  # secret store的名字，在api调用时要用到</span><br><span class="line">  namespace: default</span><br><span class="line">spec:</span><br><span class="line">  type: secretstores.local.file  # 指定类型时secretstore，而且是本地文件存储</span><br><span class="line">  version: v1</span><br><span class="line">  metadata:</span><br><span class="line">  - name: secretsFile</span><br><span class="line">    value: /home/ubuntu/.dapr/my-components/mysecrets.json</span><br><span class="line">  - name: nestedSeparator</span><br><span class="line">    value: &quot;:&quot;</span><br></pre></td></tr></table></figure>
-<h4 id="运行一个dapr的process"><a href="#运行一个dapr的process" class="headerlink" title="运行一个dapr的process"></a>运行一个dapr的process</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> dapr run --app-id myapp --dapr-http-port 3500 --components-path ./my-components</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> verify</span> </span><br><span class="line"><span class="meta">$</span><span class="bash"> curl localhost:3500/v1.0/secrets/my-secret-store/my-secret</span></span><br><span class="line">&#123;&quot;my-secret&quot;:&quot;I&#x27;m Batman&quot;&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>问题：怎么知道一个component时secret还是state还是别的？</p>
-<p>答：通过yaml文件定义component是指定的type，这样在call API时就知道URL怎么写了。（是/v1.0/secrets还是v1.0/state等等）</p>
-</blockquote>
-<h2 id="在kubernetes集群上安装dapr"><a href="#在kubernetes集群上安装dapr" class="headerlink" title="在kubernetes集群上安装dapr"></a>在kubernetes集群上安装dapr</h2><p>minikube</p>
-<p><img src="/posts/c02c2ddc/Architecture_Diagram.png" alt="Architecture Diagram"></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> dapr init -k</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> dapr status -k</span></span><br><span class="line">  NAME                   NAMESPACE    HEALTHY  STATUS   REPLICAS  VERSION  AGE  CREATED</span><br><span class="line">  dapr-placement-server  dapr-system  True     Running  1         1.0.1    2m   2021-03-09 15:02.06</span><br><span class="line">  dapr-dashboard         dapr-system  True     Running  1         0.6.0    2m   2021-03-09 15:02.05</span><br><span class="line">  dapr-sentry            dapr-system  True     Running  1         1.0.1    2m   2021-03-09 15:02.05</span><br><span class="line">  dapr-sidecar-injector  dapr-system  True     Running  1         1.0.1    2m   2021-03-09 15:02.05</span><br><span class="line">  dapr-operator          dapr-system  True     Running  1         1.0.1    2m   2021-03-09 15:02.05</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 5个dapr的组件</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> k get pods -ndapr-system</span></span><br><span class="line">NAME                                    READY   STATUS    RESTARTS   AGE</span><br><span class="line">dapr-dashboard-6bb75f9645-8f28z         1/1     Running   0          6m24s</span><br><span class="line">dapr-operator-5f84d9fd4-7smdf           1/1     Running   0          6m24s</span><br><span class="line">dapr-placement-server-0                 1/1     Running   0          6m23s</span><br><span class="line">dapr-sentry-5d67bfbfdc-fzsb6            1/1     Running   0          6m24s</span><br><span class="line">dapr-sidecar-injector-7b556f95d-kpxnc   1/1     Running   0          6m24s</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 注意： placment 没有deployment，只有pod和service。</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> k get deploy -ndapr-system</span></span><br><span class="line">NAME                    READY   UP-TO-DATE   AVAILABLE   AGE</span><br><span class="line">dapr-dashboard          1/1     1            1           12d</span><br><span class="line">dapr-operator           1/1     1            1           12d</span><br><span class="line">dapr-sentry             1/1     1            1           12d</span><br><span class="line">dapr-sidecar-injector   1/1     1            1           12d</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="运行helloworld-sample"><a href="#运行helloworld-sample" class="headerlink" title="运行helloworld sample"></a>运行helloworld sample</h3><h4 id="安装redis作为state-store"><a href="#安装redis作为state-store" class="headerlink" title="安装redis作为state store"></a>安装redis作为state store</h4><h5 id="安装helm"><a href="#安装helm" class="headerlink" title="安装helm"></a>安装helm</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">curl https://baltocdn.com/helm/signing.asc | sudo apt-key add -</span><br><span class="line">sudo apt-get install apt-transport-https --yes</span><br><span class="line">echo &quot;deb https://baltocdn.com/helm/stable/debian/ all main&quot; | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list</span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install helm</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h5 id="安装redis"><a href="#安装redis" class="headerlink" title="安装redis"></a>安装redis</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">helm repo add bitnami https://charts.bitnami.com/bitnami</span><br><span class="line">helm repo update</span><br><span class="line">helm install redis bitnami/redis</span><br><span class="line"></span><br><span class="line">To get your password run:</span><br><span class="line"></span><br><span class="line">    export REDIS_PASSWORD=$(kubectl get secret --namespace default redis -o jsonpath=&quot;&#123;.data.redis-password&#125;&quot; | base64 --decode)</span><br><span class="line"></span><br><span class="line">To connect to your Redis(TM) server:</span><br><span class="line"></span><br><span class="line">1. Run a Redis(TM) pod that you can use as a client:</span><br><span class="line">   kubectl run --namespace default redis-client --rm --tty -i --restart=&#x27;Never&#x27; \</span><br><span class="line">    --env REDIS_PASSWORD=$REDIS_PASSWORD \</span><br><span class="line">   --image docker.io/bitnami/redis:6.0.12-debian-10-r3 -- bash</span><br><span class="line"></span><br><span class="line">2. Connect using the Redis(TM) CLI:</span><br><span class="line">   redis-cli -h redis-master -a $REDIS_PASSWORD</span><br><span class="line">   redis-cli -h redis-slave -a $REDIS_PASSWORD</span><br><span class="line"></span><br><span class="line">To connect to your database from outside the cluster execute the following commands:</span><br><span class="line"></span><br><span class="line">    kubectl port-forward --namespace default svc/redis-master 6379:6379 &amp;</span><br><span class="line">    redis-cli -h 127.0.0.1 -p 6379 -a $REDIS_PASSWORD</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> k get pods</span> </span><br><span class="line">default       redis-headless          ClusterIP   None             &lt;none&gt;        6379/TCP                 96s</span><br><span class="line">default       redis-master            ClusterIP   10.107.253.143   &lt;none&gt;        6379/TCP                 96s</span><br><span class="line">default       redis-slave             ClusterIP   10.102.228.172   &lt;none&gt;        6379/TCP                 96s</span><br><span class="line"><span class="meta">$</span><span class="bash"> k get secrets</span></span><br><span class="line">NAME                          TYPE                                  DATA   AGE</span><br><span class="line">default-token-hnmgm           kubernetes.io/service-account-token   3      155m</span><br><span class="line">redis                         Opaque                                1      3m4s</span><br><span class="line">sh.helm.release.v1.redis.v1   helm.sh/release.v1                    1      3m4s</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> k get svc -owide</span></span><br><span class="line">NAME             TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE     SELECTOR</span><br><span class="line">kubernetes       ClusterIP   10.96.0.1        &lt;none&gt;        443/TCP    5d13h   &lt;none&gt;</span><br><span class="line">redis-headless   ClusterIP   None             &lt;none&gt;        6379/TCP   5d10h   app=redis,release=redis</span><br><span class="line">redis-master     ClusterIP   10.107.253.143   &lt;none&gt;        6379/TCP   5d10h   app=redis,release=redis,role=master</span><br><span class="line">redis-slave      ClusterIP   10.102.228.172   &lt;none&gt;        6379/TCP   5d10h   app=redis,release=redis,role=slave</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash">  k get ep</span></span><br><span class="line">NAME             ENDPOINTS                                          AGE</span><br><span class="line">kubernetes       192.168.49.2:8443                                  5d13h</span><br><span class="line">redis-headless   172.17.0.10:6379,172.17.0.8:6379,172.17.0.9:6379   5d10h</span><br><span class="line">redis-master     172.17.0.9:6379                                    5d10h</span><br><span class="line">redis-slave      172.17.0.10:6379,172.17.0.8:6379                   5d10h</span><br></pre></td></tr></table></figure>
-
-
-
-
-<p><img src="/posts/c02c2ddc/image-20210309233804291.png" alt="image-20210309233804291"></p>
-<p>minikube user</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> minikube service nodeapp</span></span><br><span class="line">|-----------|---------|-------------|---------------------------|</span><br><span class="line">| NAMESPACE |  NAME   | TARGET PORT |            URL            |</span><br><span class="line">|-----------|---------|-------------|---------------------------|</span><br><span class="line">| default   | nodeapp |          80 | http://192.168.49.2:32108 |</span><br><span class="line">|-----------|---------|-------------|---------------------------|</span><br><span class="line">* Opening service default/nodeapp in default browser...</span><br><span class="line">  - http://192.168.49.2:32108</span><br><span class="line">  </span><br><span class="line"><span class="meta">#</span><span class="bash"> curl localhost:32108不通，因为用的是minikube</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> curl http://192.168.49.2:32108/ports</span></span><br><span class="line">&#123;&quot;DAPR_HTTP_PORT&quot;:&quot;3500&quot;,&quot;DAPR_GRPC_PORT&quot;:&quot;50001&quot;&#125;</span><br><span class="line"></span><br><span class="line">export NODE_APP=192.168.49.2:32108</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>Next submit an order to the app</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl <span class="operator">--</span>request <span class="type">POST</span> <span class="operator">--</span>data <span class="string">&quot;&#123;<span class="subst">\&quot;</span>data<span class="subst">\&quot;</span>: &#123; <span class="subst">\&quot;</span>orderId<span class="subst">\&quot;</span>: <span class="subst">\&quot;</span>42<span class="subst">\&quot;</span> &#125; &#125;&quot;</span> <span class="operator">--</span>header <span class="string">&quot;Content-Type:application/json&quot;</span> http:<span class="comment">//$NODE_APP/neworder</span></span><br></pre></td></tr></table></figure>
-<p>Expected output: Empty reply from server</p>
-<p>Confirm the order was persisted by requesting it from the app</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl http:<span class="regexp">//</span><span class="variable">$NODE_APP</span>/order</span><br></pre></td></tr></table></figure>
-<p>Expected output:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&quot;orderId&quot;:&quot;42&quot;&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-
-
-
-<p>dapr cli</p>
-<p>dapr host</p>
-<p>dapr API</p>
-<p>dapr runtime</p>
-<p>dapr operator </p>
-<p>dapr sidecar injector</p>
-<p>dapr placement service</p>
-<p>dapr sentry</p>
-<p>building blocks</p>
-
+           
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/c02c2ddc.html">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1076,7 +862,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-08 16:55:32" itemprop="dateModified" datetime="2021-05-08T16:55:32+08:00">2021-05-08</time>
+                <time title="修改时间：2021-05-08 17:42:37" itemprop="dateModified" datetime="2021-05-08T17:42:37+08:00">2021-05-08</time>
               </span>
 
           <br>
@@ -1104,22 +890,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <a id="more"></a>
-<p><img src="/posts/def4f008/image-20210309150445057.png" alt="image-20210309150445057"></p>
-<p>serviceentry：也可以访问外部服务。</p>
-<h2 id="gateway简介"><a href="#gateway简介" class="headerlink" title="gateway简介"></a>gateway简介</h2><ol>
-<li><p>L4-L6的负载均衡</p>
-</li>
-<li><p>提供对外的mtls</p>
-</li>
-</ol>
-<p>在istio网格中，gateway可以部署任意多个，可以共用一个，也可以每个租户，namespace单独隔离。</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">networking.istio.io/v1alpha3</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Gateway</span> <span class="comment"># istio的一个CRD对象</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">bookinfo-gateway</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">istio:</span> <span class="string">ingressgateway</span> <span class="comment"># use istio default controller</span></span><br><span class="line">  <span class="attr">servers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">port:</span></span><br><span class="line">      <span class="attr">number:</span> <span class="number">80</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">http</span></span><br><span class="line">      <span class="attr">protocol:</span> <span class="string">HTTP</span></span><br><span class="line">    <span class="attr">hosts:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">bookinfo.com</span>       <span class="comment"># 允许通过外部访问的域名</span></span><br></pre></td></tr></table></figure>
-<p><strong>VirtualService</strong>定义gateway L7路由，为访问bookinfo.com的http流量，提供路由匹配转发策略。</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">networking.istio.io/v1alpha3</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">VirtualService</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">bookinfo</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">hosts:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">bookinfo.com</span>      <span class="comment"># 和上面的host字段一样</span></span><br><span class="line">  <span class="attr">gateways:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">bookinfo-gateway</span>  <span class="comment"># 绑定到上面的gateway</span></span><br><span class="line">  <span class="attr">http:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">match:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">exact:</span> <span class="string">/productpage</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">prefix:</span> <span class="string">/static</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">exact:</span> <span class="string">/login</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">exact:</span> <span class="string">/logout</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">prefix:</span> <span class="string">/api/v1/products</span></span><br><span class="line">    <span class="attr">route:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">destination:</span>   <span class="comment"># 如果上述条件之一满足，则去一个叫“productpage”的destinationrule</span></span><br><span class="line">        <span class="attr">host:</span> <span class="string">productpage</span></span><br><span class="line">        <span class="attr">port:</span></span><br><span class="line">          <span class="attr">number:</span> <span class="number">9080</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p><strong>kubernetes Ingress</strong> vs <strong>Isito gateway</strong></p>
-<p><img src="/posts/def4f008/image-20210309151602156.png" alt="image-20210309151602156"></p>
-<h2 id="gateway原理及实现"><a href="#gateway原理及实现" class="headerlink" title="gateway原理及实现"></a>gateway原理及实现</h2><figure class="highlight haml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">pilot-agent</span><br><span class="line">-<span class="ruby"> <span class="symbol">args:</span></span></span><br><span class="line"><span class="ruby">   - proxy</span></span><br><span class="line"><span class="ruby">   - router</span></span><br><span class="line"><span class="ruby">   - --domain</span></span><br><span class="line"><span class="ruby">   - <span class="variable">$(</span>POD_NAMESPACE).svc.cluster.local</span></span><br><span class="line"><span class="ruby">   - --proxyLogLevel=warning</span></span><br><span class="line"><span class="ruby">   - --proxyComponentLogLevel=<span class="symbol">misc:</span>error</span></span><br><span class="line"><span class="ruby">   - --log_output_level=<span class="symbol">default:</span>info</span></span><br><span class="line"><span class="ruby">   - --serviceCluster</span></span><br><span class="line"><span class="ruby">   - istio-ingressgateway</span></span><br></pre></td></tr></table></figure>
+           
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/def4f008.html">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1169,7 +948,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-08 16:54:40" itemprop="dateModified" datetime="2021-05-08T16:54:40+08:00">2021-05-08</time>
+                <time title="修改时间：2021-05-08 17:39:23" itemprop="dateModified" datetime="2021-05-08T17:39:23+08:00">2021-05-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1208,72 +987,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <a id="more"></a>
-
-<p>本文会通过container中的应用的几种访问方式来解释containerPort, targetPort, port, nodePort的关系和区别。</p>
-<h2 id="containerPort"><a href="#containerPort" class="headerlink" title="containerPort"></a>containerPort</h2><p>容器暴露的端口，在container spec里声明。</p>
-<img src="/posts/3836ec52/image-20210308182307042.png" alt="image-20210308182307042" style="zoom:50%;">
-
-<p>可以通过podIP:containerPort来访问容器内应用。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> k get pod -owide</span></span><br><span class="line">NAME    READY   STATUS    RESTARTS   AGE    IP                  NODE  </span><br><span class="line">pod1    2/2     Running   0          133m   192.168.227.89   otcloud-node1   </span><br><span class="line">pod2    2/2     Running   0          47m    192.168.227.97   otcloud-node1   </span><br></pre></td></tr></table></figure>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">可以访问容器内应用</span></span><br><span class="line">curl 192.168.227.97:9080</span><br></pre></td></tr></table></figure>
-<p><strong>Notes：</strong></p>
-<p>如果一个pod里声明了多个容器，那么每个容器暴露的端口必须不同，否则容器启动会失败。（Address already in use）</p>
-<p><strong>更进一步</strong>，因为一个pod里的所有容器都共享网络namespace，所以它们共享IP，和端口。</p>
-<h2 id="targetPort"><a href="#targetPort" class="headerlink" title="targetPort"></a>targetPort</h2><p>是<strong>Service</strong>资源里的一个概念，在service的声明中使用。</p>
-<p>targetPort是Pod上的端口，从port/nodePort上来的数据，经过kube-proxy流入到后端pod的targetPort上，最后进入容器。</p>
-<p>如果不指明targetPort，默认targetPort和service暴露的port一致。</p>
-<p>下面是一个service的声明：</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">productpage</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">productpage</span></span><br><span class="line">    <span class="attr">service:</span> <span class="string">productpage</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">port:</span> <span class="number">9999</span>  <span class="comment"># clusterip:port </span></span><br><span class="line">    <span class="comment"># targetPort: 9080 # 如果不写，默认是9999</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">http</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">productpage</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"> k describe svc productpage</span><br><span class="line">Name:              productpage</span><br><span class="line">Namespace:         default</span><br><span class="line">Labels:            app=productpage</span><br><span class="line">                   service=productpage</span><br><span class="line">Annotations:       &lt;none&gt;</span><br><span class="line">Selector:          app=productpage</span><br><span class="line">Type:              ClusterIP</span><br><span class="line">IP Families:       &lt;none&gt;</span><br><span class="line">IP:                10.97.239.58</span><br><span class="line">IPs:               10.97.239.58</span><br><span class="line">Port:              http  9999/TCP  </span><br><span class="line">TargetPort:        9999/TCP  # 9999 和上面container暴露的接口不一致，访问一定会失败</span><br><span class="line">Endpoints:         192.168.227.97:9999</span><br><span class="line">Session Affinity:  None</span><br><span class="line">Events:            &lt;none&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p><strong>解决方法：</strong></p>
-<ol>
-<li>显式地声明targetPort: 9080</li>
-<li>使用9080作为port，这样targetport也是9080，就可以和container port连接起来。</li>
-</ol>
-<p>这里我们把targetPort显式的写成9080，会得到：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"> k describe svc productpage</span><br><span class="line">Name:              productpage</span><br><span class="line">Namespace:         default</span><br><span class="line">Labels:            app=productpage</span><br><span class="line">                   service=productpage</span><br><span class="line">Annotations:       &lt;none&gt;</span><br><span class="line">Selector:          app=productpage</span><br><span class="line">Type:              ClusterIP</span><br><span class="line">IP Families:       &lt;none&gt;</span><br><span class="line">IP:                10.97.239.58 # cluster IP！</span><br><span class="line">IPs:               10.97.239.58</span><br><span class="line">Port:              http  9999/TCP # 注意！</span><br><span class="line">TargetPort:        9080/TCP  # 注意！</span><br><span class="line">Endpoints:         192.168.227.97:9080 # 注意！</span><br><span class="line">Session Affinity:  None</span><br><span class="line">Events:            &lt;none&gt;</span><br></pre></td></tr></table></figure>
-<p>这个service的细节要好好研究一下。</p>
-<p><strong>IP：</strong>Service的cluster IP。</p>
-<p><strong>Port：</strong>Service的cluster IP暴露的接口。</p>
-<p><strong>TargetPort：</strong>容器暴露的接口。</p>
-<p><strong>Endpoint：</strong> podIP:targetPort，注意这里是targetPort，不是containerPort。</p>
-<p>又有访问容器内应用的新方式：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> clusterIP:port</span></span><br><span class="line">curl 10.97.239.58:9999</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> by endpoint, 跟containerPort里讲到的实际是一样的</span></span><br><span class="line">curl 192.168.227.97:9080</span><br></pre></td></tr></table></figure>
-
-
-<h2 id="Port"><a href="#Port" class="headerlink" title="Port"></a>Port</h2><p>上面讲的差不多了，也是<strong>service</strong>里的概念，是指在clusterIP上暴露的端口，是一个虚拟的东西。</p>
-<p>clusterIP：虚拟的IP，在集群内可以相互访问。它只是存在service的规则当中。 <strong>注意，它不是podIP。</strong></p>
-<h2 id="nodePort"><a href="#nodePort" class="headerlink" title="nodePort"></a>nodePort</h2><p>nodePort 提供了<strong>集群外</strong>部客户端访问 Service 的一种方式，nodePort 提供了集群外部客户端访问 Service 的端口，通过 <code>nodeIP:nodePort</code> 提供了外部流量访问k8s集群中service的入口。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> k get svc -owide</span></span><br><span class="line">NAME          TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)         AGE    SELECTOR</span><br><span class="line">productpage   NodePort    10.97.239.58   &lt;none&gt;       9999:30066/TCP  25m app=productpage</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> k describe svc productpage</span></span><br><span class="line">Name:                     productpage</span><br><span class="line">Namespace:                default</span><br><span class="line">Labels:                   app=productpage</span><br><span class="line">                          service=productpage</span><br><span class="line">Annotations:              &lt;none&gt;</span><br><span class="line">Selector:                 app=productpage</span><br><span class="line">Type:                     NodePort</span><br><span class="line">IP Families:              &lt;none&gt;</span><br><span class="line">IP:                       10.97.239.58</span><br><span class="line">IPs:                      10.97.239.58</span><br><span class="line">Port:                     http  9999/TCP</span><br><span class="line">TargetPort:               9080/TCP</span><br><span class="line">NodePort:                 http  30066/TCP  # 在host node上暴露的端口</span><br><span class="line">Endpoints:                192.168.227.97:9080</span><br><span class="line">Session Affinity:         None</span><br><span class="line">External Traffic Policy:  Cluster</span><br><span class="line">Events:                   &lt;none&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>又一种新的访问方式：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">hostIP:nodeport</span></span><br><span class="line">curl localhost:30066</span><br></pre></td></tr></table></figure>
-
-
-<p>总结：</p>
-<p><img src="/posts/3836ec52/image-20210308190947963.png" alt="image-20210308190947963"></p>
-<p>三种访问方式以及范围：</p>
-<table>
-<thead>
-<tr>
-<th>方式</th>
-<th>范围</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>podIP:targetPort</td>
-<td>和pod在同一个网络下</td>
-</tr>
-<tr>
-<td>clusterIP:port</td>
-<td>在集群中</td>
-</tr>
-<tr>
-<td>hostIP:nodeport</td>
-<td>主机之间也可以访问</td>
-</tr>
-</tbody></table>
-
+           
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/3836ec52.html">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1323,7 +1045,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-08 16:55:35" itemprop="dateModified" datetime="2021-05-08T16:55:35+08:00">2021-05-08</time>
+                <time title="修改时间：2021-05-08 17:43:46" itemprop="dateModified" datetime="2021-05-08T17:43:46+08:00">2021-05-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1362,35 +1084,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <a id="more"></a>
-
-<p>之前搭建了istio的生产环境，这次搭建开发环境。</p>
-<blockquote>
-<p>参考文档: <a target="_blank" rel="noopener" href="https://github.com/istio/istio/wiki/Preparing-for-Development">https://github.com/istio/istio/wiki/Preparing-for-Development</a></p>
-</blockquote>
-<h2 id="建立本地docker-registry"><a href="#建立本地docker-registry" class="headerlink" title="建立本地docker registry"></a>建立本地docker registry</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 把container的5000端口，映射到localhost:5000</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> mounty本地的/mnt/docker_imgs到容器里的/var/lib/registry</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 用官方的registry镜像即可</span></span><br><span class="line">docker run -d   -p 5000:5000   --restart=always   --name registry   -v /mnt/docker_imgs:/var/lib/registry   registry</span><br></pre></td></tr></table></figure>
-<h3 id="安装Isito开发环境"><a href="#安装Isito开发环境" class="headerlink" title="安装Isito开发环境"></a>安装Isito开发环境</h3><h4 id="设置一些环境变量"><a href="#设置一些环境变量" class="headerlink" title="设置一些环境变量"></a>设置一些环境变量</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> User specific environment and startup programs</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> This defines the docker hub to use when running integration tests and building docker images</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> eg: HUB=<span class="string">&quot;docker.io/istio&quot;</span>, HUB=<span class="string">&quot;gcr.io/istio-testing&quot;</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 这里的docker registry就是我们上一步设置的本地仓库</span></span><br><span class="line">export HUB=&quot;localhost:5000/xinranwang&quot;</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> This defines the docker tag to use when running integration tests and</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> building docker images to be your user id. You may also <span class="built_in">set</span> this variable</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> this to any other legitimate docker tag.</span></span><br><span class="line">export TAG=devel</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> This defines a shortcut to change directories to <span class="variable">$HOME</span>/istio.io</span></span><br><span class="line">export ISTIO=$HOME/istio.io</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> mkdir ~/go/src/istio.io/</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> https://github.com/istio/istio.git</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> ~/go/src/istio.io/istio</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> make DEBUG=1 build</span></span><br><span class="line">Unable to find image &#x27;gcr.io/istio-testing/build-tools:master-2021-03-01T22-30-49&#x27; locally</span><br><span class="line">master-2021-03-01T22-30-49: Pulling from istio-testing/build-tools</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> build docker images，with HUB and TAG environment variable.</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> make DEBUG=1 docker</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> push images to registry</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 会读取环境变量，就push到本地仓库了</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> make docker.push</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 可以看到本地仓库里有build好的docker image</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ls /mnt/docker_imgs/docker/registry/v2/repositories/xinranwang/</span></span><br><span class="line">app                   app_sidecar_debian_10      app_sidecar_ubuntu_focal   istioctl  proxyv2</span><br><span class="line">app_sidecar_centos_7  app_sidecar_debian_9       app_sidecar_ubuntu_xenial  operator</span><br><span class="line">app_sidecar_centos_8  app_sidecar_ubuntu_bionic  install-cni                pilot</span><br></pre></td></tr></table></figure>
-<img src="/posts/702f5168/image-20210308154035936.png" alt="image-20210308154035936" style="zoom:80%;">
-
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ubuntu@otcloud-node1:~/istio-1.9.1/manifests/profiles$ istioctl install -f default-local-registry.yaml</span><br><span class="line">This will install the Istio 1.9.1  profile with [&quot;Istio core&quot; &quot;Istiod&quot; &quot;Ingress gateways&quot;] components into the cluster. Proceed? (y/N) y</span><br><span class="line">✔ Istio core installed</span><br><span class="line">✔ Istiod installed</span><br><span class="line">✔ Ingress gateways installed</span><br><span class="line">✔ Installation complete</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">k get pods -nistio-system</span><br><span class="line">NAME                                    READY   STATUS    RESTARTS   AGE</span><br><span class="line">istio-ingressgateway-58844f985b-mdckr   1/1     Running   0          34s</span><br><span class="line">istiod-6f846c944f-zwqxf                 1/1     Running   0          38s</span><br></pre></td></tr></table></figure>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl label namespace default istio-injection=enabled</span><br></pre></td></tr></table></figure>
-
-
-<img src="/posts/702f5168/image-20210308164345265.png" alt="image-20210308164345265" style="zoom:80%;">
-
-
-
-
-
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br></pre></td><td class="code"><pre><span class="line">Environment:</span><br><span class="line">------------</span><br><span class="line">ENVOY_PORT=</span><br><span class="line">INBOUND_CAPTURE_PORT=</span><br><span class="line">ISTIO_INBOUND_INTERCEPTION_MODE=</span><br><span class="line">ISTIO_INBOUND_TPROXY_MARK=</span><br><span class="line">ISTIO_INBOUND_TPROXY_ROUTE_TABLE=</span><br><span class="line">ISTIO_INBOUND_PORTS=</span><br><span class="line">ISTIO_OUTBOUND_PORTS=</span><br><span class="line">ISTIO_LOCAL_EXCLUDE_PORTS=</span><br><span class="line">ISTIO_SERVICE_CIDR=</span><br><span class="line">ISTIO_SERVICE_EXCLUDE_CIDR=</span><br><span class="line">ISTIO_META_DNS_CAPTURE=</span><br><span class="line"></span><br><span class="line">Variables:</span><br><span class="line">----------</span><br><span class="line">PROXY_PORT=15001</span><br><span class="line">PROXY_INBOUND_CAPTURE_PORT=15006</span><br><span class="line">PROXY_TUNNEL_PORT=15008</span><br><span class="line">PROXY_UID=1337</span><br><span class="line">PROXY_GID=1337</span><br><span class="line">INBOUND_INTERCEPTION_MODE=REDIRECT</span><br><span class="line">INBOUND_TPROXY_MARK=1337</span><br><span class="line">INBOUND_TPROXY_ROUTE_TABLE=133</span><br><span class="line">INBOUND_PORTS_INCLUDE=*</span><br><span class="line">INBOUND_PORTS_EXCLUDE=15090,15021,15020</span><br><span class="line">OUTBOUND_IP_RANGES_INCLUDE=*</span><br><span class="line">OUTBOUND_IP_RANGES_EXCLUDE=</span><br><span class="line">OUTBOUND_PORTS_INCLUDE=</span><br><span class="line">OUTBOUND_PORTS_EXCLUDE=</span><br><span class="line">KUBEVIRT_INTERFACES=</span><br><span class="line">ENABLE_INBOUND_IPV6=false</span><br><span class="line">DNS_CAPTURE=false</span><br><span class="line">DNS_SERVERS=[],[]</span><br><span class="line"></span><br><span class="line">Writing following contents to rules file:  /tmp/iptables-rules-1615191401124723984.txt833457753</span><br><span class="line">* nat</span><br><span class="line">-N ISTIO_INBOUND</span><br><span class="line">-N ISTIO_REDIRECT</span><br><span class="line">-N ISTIO_IN_REDIRECT</span><br><span class="line">-N ISTIO_OUTPUT</span><br><span class="line">-A ISTIO_INBOUND -p tcp --dport 15008 -j RETURN</span><br><span class="line">-A ISTIO_REDIRECT -p tcp -j REDIRECT --to-ports 15001</span><br><span class="line">-A ISTIO_IN_REDIRECT -p tcp -j REDIRECT --to-ports 15006</span><br><span class="line">-A PREROUTING -p tcp -j ISTIO_INBOUND</span><br><span class="line">-A ISTIO_INBOUND -p tcp --dport 22 -j RETURN</span><br><span class="line">-A ISTIO_INBOUND -p tcp --dport 15090 -j RETURN</span><br><span class="line">-A ISTIO_INBOUND -p tcp --dport 15021 -j RETURN</span><br><span class="line">-A ISTIO_INBOUND -p tcp --dport 15020 -j RETURN</span><br><span class="line">-A ISTIO_INBOUND -p tcp -j ISTIO_IN_REDIRECT</span><br><span class="line">-A OUTPUT -p tcp -j ISTIO_OUTPUT</span><br><span class="line">-A ISTIO_OUTPUT -o lo -s 127.0.0.6/32 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -o lo ! -d 127.0.0.1/32 -m owner --uid-owner 1337 -j ISTIO_IN_REDIRECT</span><br><span class="line">-A ISTIO_OUTPUT -o lo -m owner ! --uid-owner 1337 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -m owner --uid-owner 1337 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -o lo ! -d 127.0.0.1/32 -m owner --gid-owner 1337 -j ISTIO_IN_REDIRECT</span><br><span class="line">-A ISTIO_OUTPUT -o lo -m owner ! --gid-owner 1337 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -m owner --gid-owner 1337 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -d 127.0.0.1/32 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -j ISTIO_REDIRECT</span><br><span class="line">COMMIT</span><br><span class="line"></span><br><span class="line">iptables-restore --noflush /tmp/iptables-rules-1615191401124723984.txt833457753</span><br><span class="line">Writing following contents to rules file:  /tmp/ip6tables-rules-1615191401199424850.txt857904100</span><br><span class="line"></span><br><span class="line">ip6tables-restore --noflush /tmp/ip6tables-rules-1615191401199424850.txt857904100</span><br><span class="line">iptables-save </span><br><span class="line"><span class="meta">#</span><span class="bash"> Generated by iptables-save v1.6.1 on Mon Mar  8 08:16:41 2021</span></span><br><span class="line">*nat</span><br><span class="line">:PREROUTING ACCEPT [0:0]</span><br><span class="line">:INPUT ACCEPT [0:0]</span><br><span class="line">:OUTPUT ACCEPT [0:0]</span><br><span class="line">:POSTROUTING ACCEPT [0:0]</span><br><span class="line">:ISTIO_INBOUND - [0:0]</span><br><span class="line">:ISTIO_IN_REDIRECT - [0:0]</span><br><span class="line">:ISTIO_OUTPUT - [0:0]</span><br><span class="line">:ISTIO_REDIRECT - [0:0]</span><br><span class="line">-A PREROUTING -p tcp -j ISTIO_INBOUND</span><br><span class="line">-A OUTPUT -p tcp -j ISTIO_OUTPUT</span><br><span class="line">-A ISTIO_INBOUND -p tcp -m tcp --dport 15008 -j RETURN</span><br><span class="line">-A ISTIO_INBOUND -p tcp -m tcp --dport 22 -j RETURN</span><br><span class="line">-A ISTIO_INBOUND -p tcp -m tcp --dport 15090 -j RETURN</span><br><span class="line">-A ISTIO_INBOUND -p tcp -m tcp --dport 15021 -j RETURN</span><br><span class="line">-A ISTIO_INBOUND -p tcp -m tcp --dport 15020 -j RETURN</span><br><span class="line">-A ISTIO_INBOUND -p tcp -j ISTIO_IN_REDIRECT</span><br><span class="line">-A ISTIO_IN_REDIRECT -p tcp -j REDIRECT --to-ports 15006</span><br><span class="line">-A ISTIO_OUTPUT -s 127.0.0.6/32 -o lo -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT ! -d 127.0.0.1/32 -o lo -m owner --uid-owner 1337 -j ISTIO_IN_REDIRECT</span><br><span class="line">-A ISTIO_OUTPUT -o lo -m owner ! --uid-owner 1337 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -m owner --uid-owner 1337 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT ! -d 127.0.0.1/32 -o lo -m owner --gid-owner 1337 -j ISTIO_IN_REDIRECT</span><br><span class="line">-A ISTIO_OUTPUT -o lo -m owner ! --gid-owner 1337 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -m owner --gid-owner 1337 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -d 127.0.0.1/32 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -j ISTIO_REDIRECT</span><br><span class="line">-A ISTIO_REDIRECT -p tcp -j REDIRECT --to-ports 15001</span><br><span class="line">COMMIT</span><br><span class="line"><span class="meta">#</span><span class="bash"> Completed on Mon Mar  8 08:16:41 2021</span></span><br></pre></td></tr></table></figure>
-
+           
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/702f5168.html">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1477,7 +1179,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-count">30</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1535,12 +1237,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">72k</span>
+    <span title="站点总字数">74k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:05</span>
+    <span title="站点阅读时长">1:07</span>
 </div>
 
         

@@ -49,17 +49,18 @@
 </script>
 
   <meta property="og:type" content="article">
-<meta property="og:title" content="hexo+github">
-<meta property="og:url" content="http://xxinran.github.io/posts/ebeabd53.html">
+<meta property="og:title" content="在centos上修改源并安装docker">
+<meta property="og:url" content="http://xxinran.github.io/posts/8d209cf6.html">
 <meta property="og:site_name" content="Xinran&#39;s Blog">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-01-27T11:15:38.000Z">
-<meta property="article:modified_time" content="2021-05-08T09:43:49.782Z">
+<meta property="article:published_time" content="2021-01-30T10:05:57.000Z">
+<meta property="article:modified_time" content="2021-05-08T09:40:10.971Z">
 <meta property="article:author" content="Xinran Wang">
-<meta property="article:tag" content="hexo">
+<meta property="article:tag" content="docker">
+<meta property="article:tag" content="deploy">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://xxinran.github.io/posts/ebeabd53.html">
+<link rel="canonical" href="http://xxinran.github.io/posts/8d209cf6.html">
 
 
 <script id="page-configurations">
@@ -71,7 +72,7 @@
   };
 </script>
 
-  <title>hexo+github | Xinran's Blog</title>
+  <title>在centos上修改源并安装docker | Xinran's Blog</title>
   
 
 
@@ -210,7 +211,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://xxinran.github.io/posts/ebeabd53.html">
+    <link itemprop="mainEntityOfPage" href="http://xxinran.github.io/posts/8d209cf6.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/a.jpg">
@@ -223,7 +224,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          hexo+github
+          在centos上修改源并安装docker
         </h1>
 
         <div class="post-meta">
@@ -233,14 +234,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2021-01-27 19:15:38" itemprop="dateCreated datePublished" datetime="2021-01-27T19:15:38+08:00">2021-01-27</time>
+              <time title="创建时间：2021-01-30 18:05:57" itemprop="dateCreated datePublished" datetime="2021-01-30T18:05:57+08:00">2021-01-30</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-08 17:43:49" itemprop="dateModified" datetime="2021-05-08T17:43:49+08:00">2021-05-08</time>
+                <time title="修改时间：2021-05-08 17:40:10" itemprop="dateModified" datetime="2021-05-08T17:40:10+08:00">2021-05-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -248,8 +249,8 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/hexo/" itemprop="url" rel="index">
-                    <span itemprop="name">hexo</span>
+                  <a href="/categories/deploy/" itemprop="url" rel="index">
+                    <span itemprop="name">deploy</span>
                   </a>
                 </span>
             </span>
@@ -267,7 +268,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>2.1k</span>
+              <span>2.3k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -287,57 +288,56 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="安装nodejs，git"><a href="#安装nodejs，git" class="headerlink" title="安装nodejs，git"></a>安装nodejs，git</h3><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt <span class="keyword">install</span> npm</span><br><span class="line">sudo apt <span class="keyword">install</span> nodejs</span><br><span class="line">sudo apt <span class="keyword">install</span> git</span><br></pre></td></tr></table></figure>
-<h3 id="注册github帐号，创建github-repo，命名为xxinran-github-io"><a href="#注册github帐号，创建github-repo，命名为xxinran-github-io" class="headerlink" title="注册github帐号，创建github repo，命名为xxinran.github.io"></a>注册github帐号，创建github repo，命名为<code>xxinran.github.io</code></h3><h3 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h3><figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo npm install -g hexo-<span class="keyword">cli</span></span><br></pre></td></tr></table></figure>
-<p>检查各项都已经成功安装：</p>
-<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">node</span> <span class="title">-v</span></span><br><span class="line">hexo -v</span><br></pre></td></tr></table></figure>
-<h3 id="创建本地博客的repo"><a href="#创建本地博客的repo" class="headerlink" title="创建本地博客的repo"></a>创建本地博客的repo</h3><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo <span class="keyword">init</span> blog</span><br></pre></td></tr></table></figure>
-<p>运行后在当前目录下会生成一个blog目录。未来所有的博客主题，博文，配置都在这个目录里。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> blog</span><br></pre></td></tr></table></figure>
-<p>会发现目录结构如下：</p>
-<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">├── _config.yml  <span class="meta"># hexo的配置文件，主题，标题，格式等都在这里指定</span></span><br><span class="line">├── db.json</span><br><span class="line">├── node_modules/</span><br><span class="line">├── <span class="keyword">package</span>.json</span><br><span class="line">├── <span class="keyword">package</span>-lock.json</span><br><span class="line">├── <span class="keyword">public</span>/</span><br><span class="line">├── scaffolds/</span><br><span class="line">├── source/ <span class="meta"># 博客的静态页面的源文件，博文的md文件就存放在这里</span></span><br><span class="line">└── themes/ <span class="meta"># 存放各种主题的源码</span></span><br></pre></td></tr></table></figure>
-<p>接下来在<code>blog</code>目录下运行<code>npm install</code> 来安装hexo所需的依赖。</p>
-<p>在<code>blog/source/_posts/hello-world.md</code>里有一个例子，我们先用这个例子，看看效果，运行：</p>
-<figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo <span class="keyword">server</span> </span><br><span class="line">or</span><br><span class="line">hexo s</span><br></pre></td></tr></table></figure>
-<p>可以看到Hexo运行在本地的4000端口，在浏览器中访问<code>localhost:4000</code>，就会看到上述hello-world的示例页面。</p>
-<p>我们也可以通过 <code>hexo new first-try</code>去创建一个新的md文件，可以在这个md文件里写博文，这时在4000端口我们就可以看到新的博文。（应该是需要重新运行<code>hexo s</code>，这里没有验证）</p>
-<h3 id="连接gihub和hexo"><a href="#连接gihub和hexo" class="headerlink" title="连接gihub和hexo"></a>连接gihub和hexo</h3><h4 id="上传SSH公钥"><a href="#上传SSH公钥" class="headerlink" title="上传SSH公钥"></a>上传SSH公钥</h4><figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen</span><br><span class="line"># <span class="keyword">copy</span> ssh <span class="keyword">public</span> <span class="keyword">to</span> Github Account</span><br></pre></td></tr></table></figure>
-<p>输入<code>ssh -T git@github.com</code>，测试添加ssh是否成功。如果看到Hi后面是你的用户名，就说明成功了.</p>
-<h4 id="在Hexo的配置文件中指定向Github-Page部署"><a href="#在Hexo的配置文件中指定向Github-Page部署" class="headerlink" title="在Hexo的配置文件中指定向Github Page部署"></a>在Hexo的配置文件中指定向Github Page部署</h4><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ～<span class="regexp">/blog/</span>_config.yml</span><br></pre></td></tr></table></figure>
-<p>在deploy选项中填写Github信息， 例如：</p>
-<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">deploy</span>:</span><br><span class="line"><span class="attribute">type</span>: git</span><br><span class="line"><span class="attribute">repository</span>: git<span class="variable">@github</span>.<span class="attribute">com</span>:xxinran/xxinran.github.io.git</span><br><span class="line"><span class="attribute">branch</span>: main # 原来是master</span><br></pre></td></tr></table></figure>
-<h4 id="生成静态文件，并部署到gihub上去。"><a href="#生成静态文件，并部署到gihub上去。" class="headerlink" title="生成静态文件，并部署到gihub上去。"></a>生成静态文件，并部署到gihub上去。</h4><figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># <span class="keyword">generate</span> <span class="keyword">static</span> files</span><br><span class="line">hexo <span class="keyword">generate</span></span><br><span class="line"><span class="keyword">or</span> </span><br><span class="line">hexo g</span><br><span class="line"></span><br><span class="line"># deploy to Github</span><br><span class="line">hexo deploy</span><br><span class="line"><span class="keyword">or</span></span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
-<p>这一步有可能会报错<code>Deployer not found: git</code>：</p>
-<ul>
-<li>需要安装<code>npm install hexo-deployer-git --save</code>。</li>
-<li>需要配置gitconfig。</li>
-</ul>
-<h4 id="打开Github-Page验证。"><a href="#打开Github-Page验证。" class="headerlink" title="打开Github Page验证。"></a>打开<a href="https://xxinran.github.io/">Github Page</a>验证。</h4><h3 id="Notes"><a href="#Notes" class="headerlink" title="Notes"></a>Notes</h3><ul>
-<li>每次修改完blog的配置，或者新建删除post，draft等，都需要先<code>hexo clean</code>，在重新<code>hexo g &amp; hexo d</code>。</li>
-</ul>
-<blockquote>
-<p> 参考文档： <a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/configuration.html">https://hexo.io/zh-cn/docs/configuration.html</a><br> <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/71164003">https://zhuanlan.zhihu.com/p/71164003</a></p>
+        <h3 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h3><p>在mac上用vagrant起了一个centos8的vm。</p>
+<h3 id="换系统yum源"><a href="#换系统yum源" class="headerlink" title="换系统yum源"></a>换系统yum源</h3><blockquote>
+<p>这里换的是清华的源。</p>
+<p> 参考：<a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/help/centos/">https://mirrors.tuna.tsinghua.edu.cn/help/centos/</a></p>
 </blockquote>
-<h1 id="主题配置"><a href="#主题配置" class="headerlink" title="主题配置"></a>主题配置</h1><ul>
-<li>在blog目录下拉取想要应用的主题</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/iissnan/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure>
-<ul>
-<li><p>打开站点配置文件 _config.yml，找到 theme 字段，并将其值更改为 next。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">theme: next</span><br></pre></td></tr></table></figure></li>
-<li><p>切换Schema</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scheme: Pisces</span><br></pre></td></tr></table></figure></li>
-<li><p>更新github上的主题</p>
-<p>改完配置之后都要运行hexo clean &amp; hexo generate &amp; hexo deploy，为了方便，可以在blog目录下加入一个新的脚本deploy.sh：</p>
-<blockquote>
-<p>这里涉及到 “push hexo code”, 在多设备管理中会讲到 ）</p>
+<p>建议先备份 <code>/etc/yum.repos.d/</code> 内的文件（CentOS 7 及之前为 <code>CentOS-Base.repo</code>，CentOS 8 为<code>CentOS-Linux-*.repo</code>）</p>
+<p>然后编辑 <code>/etc/yum.repos.d/</code> 中的相应文件，在 <code>mirrorlist=</code> 开头行前面加 <code>#</code> 注释掉；并将 <code>baseurl=</code> 开头行取消注释（如果被注释的话），把该行内的域名（例如<code>mirror.centos.org</code>）替换为 <code>mirrors.tuna.tsinghua.edu.cn</code>。</p>
+<p>以上步骤可以被下方的命令一步完成</p>
+<figure class="highlight coq"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo sed -e &#x27;s|<span class="type">^mirrorlist</span>=|<span class="type">#mirrorlist</span>=|<span class="type">g</span>&#x27; \</span><br><span class="line">         -e &#x27;s|<span class="type">^#baseurl</span>=http://mirror.centos.org|<span class="type">baseurl</span>=https://mirrors.tuna.tsinghua.edu.cn|<span class="type">g</span>&#x27; \</span><br><span class="line">         -i.bak \</span><br><span class="line">         /etc/yum.repos.d/CentOS-*.repo</span><br></pre></td></tr></table></figure>
+<p>注意其中的<code>*</code>通配符，如果只需要替换一些文件中的源，请自行增删。</p>
+<p>注意，如果需要启用其中一些 repo，需要将其中的 <code>enabled=0</code> 改为 <code>enabled=1</code>。</p>
+<p>最后，更新软件包缓存</p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">sudo yum makecache</span></span><br></pre></td></tr></table></figure>
+<p>这时下载常用的软件包就已经变快了。</p>
+<h3 id="换下载docker的源"><a href="#换下载docker的源" class="headerlink" title="换下载docker的源"></a>换下载docker的源</h3><blockquote>
+<p>参考：<a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/help/docker-ce/">https://mirrors.tuna.tsinghua.edu.cn/help/docker-ce/</a></p>
 </blockquote>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">DIR=`dirname $0`</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Generate blog</span></span><br><span class="line">echo &quot;Generate and deploy...&quot;</span><br><span class="line">hexo clean</span><br><span class="line">hexo generate &amp; hexo deploy</span><br><span class="line"><span class="meta">#</span><span class="bash"> hexo d -g</span></span><br><span class="line"></span><br><span class="line">sleep 10</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Push hexo code</span></span><br><span class="line">echo &quot;Push hexo code&quot;</span><br><span class="line">git add .</span><br><span class="line">current_date=`date &quot;+%Y-%m-%d %H:%M:%S&quot;`</span><br><span class="line">git commit -m &quot;Blog updated: $current_date&quot;</span><br><span class="line"></span><br><span class="line">sleep 2</span><br><span class="line">git push origin hexo</span><br><span class="line"></span><br><span class="line">echo &quot;=====&gt;Finish!&lt;=====&quot;</span><br></pre></td></tr></table></figure></li>
-<li><p>更新脚本权限：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod 755 deploy.sh</span><br></pre></td></tr></table></figure>
-<p>以后每次推送只要运行./deploy.sh即可。</p>
-</li>
-</ul>
+<p>然后我根据docker的官方文档安装docker，发现yum install docker-ce的时候特别慢。原因是官方文档配置的docker源repo是国外的，国外访问很慢。于是去网上找了清华的源。</p>
+<p>如果你之前安装过 docker，请先删掉</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum <span class="builtin-name">remove</span> docker docker-common docker-selinux docker-engine</span><br></pre></td></tr></table></figure>
+<p>安装一些依赖</p>
+<figure class="highlight gml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install -<span class="symbol">y</span> yum-utils device-mapper-<span class="symbol">persistent</span>-data lvm2</span><br></pre></td></tr></table></figure>
+<p>根据你的发行版下载repo文件: CentOS/RHEL Fedora</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -O <span class="regexp">/etc/yum</span>.repos.d<span class="regexp">/docker-ce.repo https:/</span><span class="regexp">/download.docker.com/</span>linux<span class="regexp">/centos/</span>docker-ce.repo</span><br></pre></td></tr></table></figure>
+<p>把软件仓库地址替换为 TUNA，这一步很关键，大部分网上的博客都没有提到，如果没有这一步，其实还是使用的国外的docker官方的源:</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo sed -i <span class="string">&#x27;s+download.docker.com+mirrors.tuna.tsinghua.edu.cn/docker-ce+&#x27;</span> <span class="regexp">/etc/yum</span>.repos.d/docker-ce.repo</span><br></pre></td></tr></table></figure>
+<p>最后安装:</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo yum makecache</span><br><span class="line">sudo yum <span class="keyword">install</span> docker-ce</span><br></pre></td></tr></table></figure>
+<h3 id="换docker镜像源"><a href="#换docker镜像源" class="headerlink" title="换docker镜像源"></a>换docker镜像源</h3><p>docker默认源在国外，同样很慢。我们可以通过修改docker配置更改docker image的源。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 查看docker daemon config</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ls /etc/docker/daemon.json</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 如果文件不存在就创建一个</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo touch /etc/docker/daemon.json</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vi /etc/docker/daemon.json</span></span><br><span class="line">&#123;</span><br><span class="line">    &quot;registry-mirrors&quot; : [</span><br><span class="line">    &quot;https://registry.docker-cn.com&quot;,</span><br><span class="line">    &quot;https://docker.mirrors.ustc.edu.cn&quot;,</span><br><span class="line">    &quot;http://hub-mirror.c.163.com&quot;,</span><br><span class="line">    &quot;https://cr.console.aliyun.com/&quot;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo systemctl restart docker.service</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="docker-permission-denied"><a href="#docker-permission-denied" class="headerlink" title="docker permission denied"></a>docker permission denied</h3><p>这个问题特别常见，就是我们在安装完docker之后，发现docker指令必须在root权限下运行，这时因为我们当前的用户没有被加入到docker组里。</p>
+<h4 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h4><p>2.1、添加docker用户组</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">groupadd docker </span><br><span class="line"><span class="meta">#</span><span class="bash"> 一般都会提示docker用户组存在了。</span></span><br></pre></td></tr></table></figure>
+<p>2.2、把当前用户加入docker用户组</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gpasswd -a $&#123;USER&#125; docker</span><br><span class="line"><span class="meta">#</span><span class="bash"> 或者 sudo usermod -aG docker <span class="variable">$&#123;USER&#125;</span> (未验证)</span></span><br></pre></td></tr></table></figure>
+<p>3、查看是否添加成功：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/group | grep ^docker</span><br></pre></td></tr></table></figure>
+<p>4、重启docker</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">serivce docker restart</span><br></pre></td></tr></table></figure>
+<p>5、更新用户组</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">newgrp docker </span><br></pre></td></tr></table></figure>
+<p>6、测试docker命令是否可以使用sudo正常使用</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps</span><br></pre></td></tr></table></figure>
+
+
+
+
+<h1 id="docker-graph是什么东西啊"><a href="#docker-graph是什么东西啊" class="headerlink" title="docker graph是什么东西啊"></a>docker graph是什么东西啊</h1><p>The <code>-g</code> or <code>--graph</code> flag for the <code>dockerd</code> or <code>docker daemon</code> command was used to indicate the directory in which to store persistent data and resource configuration and has been replaced with the more descriptive <code>--data-root</code> flag.</p>
 
     </div>
 
@@ -367,7 +367,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/hexo/" rel="tag"># hexo</a>
+              <a href="/tags/docker/" rel="tag"># docker</a>
+              <a href="/tags/deploy/" rel="tag"># deploy</a>
           </div>
 
         
@@ -380,10 +381,13 @@
 
         
     <div class="post-nav">
-      <div class="post-nav-item"></div>
       <div class="post-nav-item">
-    <a href="/posts/461bb783.html" rel="next" title="QAT在Ubuntu18.04上的安装和虚拟化">
-      QAT在Ubuntu18.04上的安装和虚拟化 <i class="fa fa-chevron-right"></i>
+    <a href="/posts/65bbead6.html" rel="prev" title="代理服务器基本介绍">
+      <i class="fa fa-chevron-left"></i> 代理服务器基本介绍
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/3e6a7048.html" rel="next" title="浅析docker网络">
+      浅析docker网络 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -445,7 +449,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85nodejs%EF%BC%8Cgit"><span class="nav-number">1.</span> <span class="nav-text">安装nodejs，git</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E5%86%8Cgithub%E5%B8%90%E5%8F%B7%EF%BC%8C%E5%88%9B%E5%BB%BAgithub-repo%EF%BC%8C%E5%91%BD%E5%90%8D%E4%B8%BAxxinran-github-io"><span class="nav-number">2.</span> <span class="nav-text">注册github帐号，创建github repo，命名为xxinran.github.io</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85Hexo"><span class="nav-number">3.</span> <span class="nav-text">安装Hexo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%9C%AC%E5%9C%B0%E5%8D%9A%E5%AE%A2%E7%9A%84repo"><span class="nav-number">4.</span> <span class="nav-text">创建本地博客的repo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5gihub%E5%92%8Chexo"><span class="nav-number">5.</span> <span class="nav-text">连接gihub和hexo</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8A%E4%BC%A0SSH%E5%85%AC%E9%92%A5"><span class="nav-number">5.1.</span> <span class="nav-text">上传SSH公钥</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%A8Hexo%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E4%B8%AD%E6%8C%87%E5%AE%9A%E5%90%91Github-Page%E9%83%A8%E7%BD%B2"><span class="nav-number">5.2.</span> <span class="nav-text">在Hexo的配置文件中指定向Github Page部署</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E9%9D%99%E6%80%81%E6%96%87%E4%BB%B6%EF%BC%8C%E5%B9%B6%E9%83%A8%E7%BD%B2%E5%88%B0gihub%E4%B8%8A%E5%8E%BB%E3%80%82"><span class="nav-number">5.3.</span> <span class="nav-text">生成静态文件，并部署到gihub上去。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%93%E5%BC%80Github-Page%E9%AA%8C%E8%AF%81%E3%80%82"><span class="nav-number">5.4.</span> <span class="nav-text">打开Github Page验证。</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Notes"><span class="nav-number">6.</span> <span class="nav-text">Notes</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BB%E9%A2%98%E9%85%8D%E7%BD%AE"><span class="nav-number"></span> <span class="nav-text">主题配置</span></a></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83"><span class="nav-number">1.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8D%A2%E7%B3%BB%E7%BB%9Fyum%E6%BA%90"><span class="nav-number">2.</span> <span class="nav-text">换系统yum源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8D%A2%E4%B8%8B%E8%BD%BDdocker%E7%9A%84%E6%BA%90"><span class="nav-number">3.</span> <span class="nav-text">换下载docker的源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8D%A2docker%E9%95%9C%E5%83%8F%E6%BA%90"><span class="nav-number">4.</span> <span class="nav-text">换docker镜像源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-permission-denied"><span class="nav-number">5.</span> <span class="nav-text">docker permission denied</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95"><span class="nav-number">5.1.</span> <span class="nav-text">解决办法</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker-graph%E6%98%AF%E4%BB%80%E4%B9%88%E4%B8%9C%E8%A5%BF%E5%95%8A"><span class="nav-number"></span> <span class="nav-text">docker graph是什么东西啊</span></a></div>
       </div>
       <!--/noindex-->
 
@@ -644,7 +648,7 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
       repo: 'xxinran.github.io',
       owner: 'xxinran',
       admin: ['xxinran'],
-      id: 'fe4b29278464347b3ae31e2f0bd0e687',
+      id: '594561186f828d7e1375bd5dc7847a57',
         language: '',
       distractionFreeMode: 'true'
     });

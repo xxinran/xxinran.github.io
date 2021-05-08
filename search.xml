@@ -3,9 +3,7 @@
   <entry>
     <title>cpu基础</title>
     <url>/posts/fe9b70.html</url>
-    <content><![CDATA[<a id="more"></a>
-
-<p>cpu运行阶段：取值，解码，执行，写回。</p>
+    <content><![CDATA[<p>cpu运行阶段：取值，解码，执行，写回。</p>
 <p>cpu从内存或者cache里提取指令，放入指令寄存器，并对指令译码，执行。</p>
 <p>主要参数：</p>
 <p>主频：时钟频率</p>
@@ -17,9 +15,7 @@
   <entry>
     <title>cpu-microarch</title>
     <url>/posts/f1d93d2c.html</url>
-    <content><![CDATA[<a id="more"></a>
-
-<p><img src="https://en.wikichip.org/w/images/thumb/e/ee/skylake_server_block_diagram.svg/950px-skylake_server_block_diagram.svg.png" alt="skylake server block diagram.svg"></p>
+    <content><![CDATA[<p><img src="https://en.wikichip.org/w/images/thumb/e/ee/skylake_server_block_diagram.svg/950px-skylake_server_block_diagram.svg.png" alt="skylake server block diagram.svg"></p>
 <p>front end：取值，解码</p>
 <p>execution engine：计算</p>
 <p>memory subsystem： 读写内存</p>
@@ -29,9 +25,7 @@
   <entry>
     <title>dapr-intro</title>
     <url>/posts/c02c2ddc.html</url>
-    <content><![CDATA[<a id="more"></a>
-
-<h2 id="dapr简介"><a href="#dapr简介" class="headerlink" title="dapr简介"></a>dapr简介</h2><h2 id="dapr安装"><a href="#dapr安装" class="headerlink" title="dapr安装"></a>dapr安装</h2><p>dapr支持多种运行环境：</p>
+    <content><![CDATA[<h2 id="dapr简介"><a href="#dapr简介" class="headerlink" title="dapr简介"></a>dapr简介</h2><h2 id="dapr安装"><a href="#dapr安装" class="headerlink" title="dapr安装"></a>dapr安装</h2><p>dapr支持多种运行环境：</p>
 <ol>
 <li>在本机上，相当于一个process</li>
 <li>在kubernetes中，和业务容器在一个pod里，作为sidecar</li>
@@ -111,8 +105,7 @@
   <entry>
     <title>如何构建docker image</title>
     <url>/posts/85a08636.html</url>
-    <content><![CDATA[<a id="more"></a>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker image inspect ubuntu</span></span><br><span class="line">        &quot;RootFS&quot;: &#123;</span><br><span class="line">            &quot;Type&quot;: &quot;layers&quot;,</span><br><span class="line">            &quot;Layers&quot;: [</span><br><span class="line">                &quot;sha256:bacd3af13903e13a43fe87b6944acd1ff21024132aad6e74b4452d984fb1a99a&quot;,</span><br><span class="line">                &quot;sha256:9069f84dbbe96d4c50a656a05bbe6b6892722b0d1116a8f7fd9d274f4e991bf6&quot;,</span><br><span class="line">                &quot;sha256:f6253634dc78da2f2e3bee9c8063593f880dc35d701307f30f65553e0f50c18c&quot;</span><br><span class="line">            ]</span><br><span class="line">        &#125;,</span><br></pre></td></tr></table></figure>
+    <content><![CDATA[<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker image inspect ubuntu</span></span><br><span class="line">        &quot;RootFS&quot;: &#123;</span><br><span class="line">            &quot;Type&quot;: &quot;layers&quot;,</span><br><span class="line">            &quot;Layers&quot;: [</span><br><span class="line">                &quot;sha256:bacd3af13903e13a43fe87b6944acd1ff21024132aad6e74b4452d984fb1a99a&quot;,</span><br><span class="line">                &quot;sha256:9069f84dbbe96d4c50a656a05bbe6b6892722b0d1116a8f7fd9d274f4e991bf6&quot;,</span><br><span class="line">                &quot;sha256:f6253634dc78da2f2e3bee9c8063593f880dc35d701307f30f65553e0f50c18c&quot;</span><br><span class="line">            ]</span><br><span class="line">        &#125;,</span><br></pre></td></tr></table></figure>
 
 
 <p>rootfs</p>
@@ -149,7 +142,7 @@
 
 
 <h4 id="COPY和ADD的区别"><a href="#COPY和ADD的区别" class="headerlink" title="COPY和ADD的区别"></a>COPY和ADD的区别</h4><p>add会自动解压</p>
-<h5 id="COPY测试"><a href="#COPY测试" class="headerlink" title="COPY测试"></a>COPY测试</h5><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[vagrant@localhost dockerfile]$ tree .</span><br><span class="line">.</span><br><span class="line">|-- copy01</span><br><span class="line">|-- copy02</span><br><span class="line">|-- test-dir/</span><br><span class="line">    |-- sub-dir/</span><br><span class="line">    |   |-- test3</span><br><span class="line">    |-- test1</span><br><span class="line">    |-- test2</span><br><span class="line">[vagrant@localhost dockerfile]$ cat docker-copy</span><br><span class="line">FROM centos</span><br><span class="line">COPY copy01 .</span><br><span class="line">COPY copy02 /home</span><br><span class="line">COPY test-dir .  # 不会拷贝目录，只拷贝目录下的文件和目录</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 如果不指定WORKDIR，默认是在跟目录下面</span></span><br><span class="line">[root@e4a55c64ff8f /]# ls</span><br><span class="line">bin  copy01  dev  etc  home  lib  lib64  lost+found  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> COPY可以指定目的路径</span></span><br><span class="line">[root@e4a55c64ff8f home]# ls</span><br><span class="line">copy02</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 不会拷贝目录，只拷贝目录下的文件和目录</span></span><br><span class="line">[root@e8be2eb3f129 /]# ls</span><br><span class="line">bin  copy01  dev  etc  home  lib  lib64  lost+found  media  mnt  opt  proc  root  run  sbin  srv  sub-dir  sys  test1  test2  tmp  usr  var</span><br><span class="line">[root@e8be2eb3f129 /]# cd sub-dir/</span><br><span class="line">[root@e8be2eb3f129 sub-dir]# ls</span><br><span class="line">test3</span><br></pre></td></tr></table></figure>
+<h5 id="COPY测试"><a href="#COPY测试" class="headerlink" title="COPY测试"></a>COPY测试</h5><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[vagrant@localhost dockerfile]$ tree .</span><br><span class="line">.</span><br><span class="line">|-- copy01</span><br><span class="line">|-- copy02</span><br><span class="line">|-- test-dir/</span><br><span class="line">    |-- sub-dir/</span><br><span class="line">    |   |-- test3</span><br><span class="line">    |-- test1</span><br><span class="line">    |-- test2</span><br><span cl��跟目录下面</span></span><br><span class="line">[root@e4a55c64ff8f /]# ls</span><br><span class="line">bin  copy01  dev  etc  home  lib  lib64  lost+found  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> COPY可以指定目的路径</span></span><br><span class="line">[root@e4a55c64ff8f home]# ls</span><br><span class="line">copy02</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 不会拷贝目录，只拷贝目录下的文件和目录</span></span><br><span class="line">[root@e8be2eb3f129 /]# ls</span><br><span class="line">bin  copy01  dev  etc  home  lib  lib64  lost+found  media  mnt  opt  proc  root  run  sbin  srv  sub-dir  sys  test1  test2  tmp  usr  var</span><br><span class="line">[root@e8be2eb3f129 /]# cd sub-dir/</span><br><span class="line">[root@e8be2eb3f129 sub-dir]# ls</span><br><span class="line">test3</span><br></pre></td></tr></table></figure>
 <p>此外，COPY还可以用来实现<a href="https://www.cnblogs.com/sparkdev/p/8508435.html">multi-stage(多阶段构建)</a>，就是一个dockerfile里有多个FROM，每个 FROM 指令代表一个 stage 的开始部分。我们可以把一个 stage 的产物拷贝到另一个 stage 中。</p>
 <h5 id="ADD测试"><a href="#ADD测试" class="headerlink" title="ADD测试"></a>ADD测试</h5><p>除了不能用在 multistage 的场景下，ADD 命令可以完成 COPY 命令的所有功能，并且还可以完成两类超酷的功能：</p>
 <ul>
@@ -169,9 +162,7 @@
   <entry>
     <title>浅析docker网络</title>
     <url>/posts/3e6a7048.html</url>
-    <content><![CDATA[<a id="more"></a>
-
-<h3 id="docker0"><a href="#docker0" class="headerlink" title="docker0"></a>docker0</h3><p>先来查看一下host的网络：</p>
+    <content><![CDATA[<h3 id="docker0"><a href="#docker0" class="headerlink" title="docker0"></a>docker0</h3><p>先来查看一下host的网络：</p>
 <img src="/posts/3e6a7048/image-20210201164717688.png" alt="image-20210201164717688" style="zoom:50%;">
 
 
@@ -239,10 +230,7 @@
   <entry>
     <title>容器volume基本介绍</title>
     <url>/posts/4b81a639.html</url>
-    <content><![CDATA[<a id="more"></a>
-
-
-<h2 id="容器volume"><a href="#容器volume" class="headerlink" title="容器volume"></a>容器volume</h2><h3 id="匿名挂载，具名挂载和指定路径挂载"><a href="#匿名挂载，具名挂载和指定路径挂载" class="headerlink" title="匿名挂载，具名挂载和指定路径挂载"></a>匿名挂载，具名挂载和指定路径挂载</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 匿名挂载</span></span><br><span class="line">-v 容器内路径</span><br><span class="line">docker run -d -P --name nginx01 -v /etc/nginx nginx</span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看node 上的volume</span></span><br><span class="line">ubuntu@xinrantest01:~$ docker volume ls</span><br><span class="line">DRIVER              VOLUME NAME</span><br><span class="line">local               cf411242c0f1d323d2d2ab8a81d144caa6d536d992954231f426c35221adf2e3</span><br><span class="line"><span class="meta">#</span><span class="bash"> 可以发现，匿名挂载只写容器里的路径，没有写host上的路径</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 具名挂载</span></span><br><span class="line">-v host路径：容器内路径 （与-p相似）</span><br><span class="line">ubuntu@xinrantest01:~$ docker run -d -P --name nginx02 -v juming-nginx:/etc/nginx nginx</span><br><span class="line">5f61a3a6d01cd8db3bd99fa1738d0b6cfc74df366dc8ba8b1f4cbe0c97b2cc72</span><br><span class="line">ubuntu@xinrantest01:~$ docker volume ls</span><br><span class="line">DRIVER              VOLUME NAME</span><br><span class="line">local               cf411242c0f1d323d2d2ab8a81d144caa6d536d992954231f426c35221adf2e3</span><br><span class="line">local               juming-nginx</span><br><span class="line"><span class="meta">#</span><span class="bash">这里指定了juming-nginx为host上要挂载的目录，这个目录在docker run时被创建</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看volume在host上的路径</span></span><br></pre></td></tr></table></figure>
+    <content><![CDATA[<h2 id="容器volume"><a href="#容器volume" class="headerlink" title="容器volume"></a>容器volume</h2><h3 id="匿名挂载，具名挂载和指定路径挂载"><a href="#匿名挂载，具名挂载和指定路径挂载" class="headerlink" title="匿名挂载，具名挂载和指定路径挂载"></a>匿名挂载，具名挂载和指定路径挂载</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 匿名挂载</span></span><br><span class="line">-v 容器内路径</span><br><span class="line">docker run -d -P --name nginx01 -v /etc/nginx nginx</span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看node 上的volume</span></span><br><span class="line">ubuntu@xinrantest01:~$ docker volume ls</span><br><span class="line">DRIVER              VOLUME NAME</span><br><span class="line">local               cf411242c0f1d323d2d2ab8a81d144caa6d536d992954231f426c35221adf2e3</span><br><span class="line"><span class="meta">#</span><span class="bash"> 可以发现，匿名挂载只写容器里的路径，没有写host上的路径</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 具名挂载</span></span><br><span class="line">-v host路径：容器内路径 （与-p相似）</span><br><span class="line">ubuntu@xinrantest01:~$ docker run -d -P --name nginx02 -v juming-nginx:/etc/nginx nginx</span><br><span class="line">5f61a3a6d01cd8db3bd99fa1738d0b6cfc74df366dc8ba8b1f4cbe0c97b2cc72</span><br><span class="line">ubuntu@xinrantest01:~$ docker volume ls</span><br><span class="line">DRIVER              VOLUME NAME</span><br><span class="line">local               cf411242c0f1d323d2d2ab8a81d144caa6d536d992954231f426c35221adf2e3</span><br><span class="line">local               juming-nginx</span><br><span class="line"><span class="meta">#</span><span class="bash">这里指定了juming-nginx为host上要挂载的目录，这个目录在docker run时被创建</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看volume在host上的路径</span></span><br></pre></td></tr></table></figure>
 <p><img src="/posts/4b81a639/image-20210128164757688.png" alt="image-20210128164757688"></p>
 <p><img src="/posts/4b81a639/image-20210128164837865.png" alt="image-20210128164837865"></p>
 <p>所有docker 容器内的卷，没有指定目录的情况下，都是在<code>/var/lib/docker/volumes/xxxx/_data</code></p>
@@ -273,9 +261,7 @@
   <entry>
     <title>ebpf-intro</title>
     <url>/posts/85f2c2fa.html</url>
-    <content><![CDATA[<a id="more"></a>
-
-<p>bpf - bakerly profiling filter</p>
+    <content><![CDATA[<p>bpf - bakerly profiling filter</p>
 <p>最早是抓包用的，最经典的应用：tcpdump就用bpf。</p>
 <p>没有bpf之前，抓包要抓nic上所有的包，然后再进行分析</p>
 <p>有了bpf之后，可以插入一段小的代码可以指定tcp port，ip等。</p>
@@ -296,35 +282,9 @@
 ]]></content>
   </entry>
   <entry>
-    <title>GPU虚拟化</title>
-    <url>/posts/204fd6f0.html</url>
-    <content><![CDATA[<a id="more"></a>
-
-<p>目前流行的几种模式：pass through, sriov, 半虚拟化（mdev passthrough： Intel gvt-g, Nvidia GRID vGPU), 全虚拟化（VMware： vSGA）</p>
-<p>学习路径</p>
-<p>pci -》 pci dma -》 iommu -》 passthrough</p>
-<p>内存页表 - 》 tlb</p>
-<p>cache -》 内存</p>
-<h1 id="PCI"><a href="#PCI" class="headerlink" title="PCI"></a>PCI</h1><p>Linux PCI设备驱动实际包括<strong>Linux PCI设备驱动</strong>和<strong>设备本身驱动</strong>两部分。</p>
-<p>PCI(Periheral Component Interconnect)有三种地址空间：<strong>PCI I/O空间、PCI内存地址空间和PCI配置空间</strong>。</p>
-<p>PCI I/O空间和PCI内存地址空间由设备驱动程序使用</p>
-<p>而PCI配置空间由Linux PCI初始化代码使用，用于配置PCI设备，比如中断号以及I/O或内存基地址。</p>
-<p>内核：遍历和配置</p>
-<p>遍历顺序：从host-pci开始，遇到pci bridge就到下一级pci总线继续遍历，直到遍历完成。（深度优先？）</p>
-<p>配置：PCI设备中一般都带有一些RAM和ROM 空间，通常的控制/状态寄存器和数据寄存器也往往以RAM区间的形式出现，而这些区间的地址在设备内部一般都是从0开始编址的，那么当总线上挂接了多个设备时，对这些空间的访问就会产生冲突。所以，这些地址都要先映射到系统总线上，再进一步映射到内核的虚拟地址空间。配置就是通过对PCI配置空间的寄存器进行操作从而完成地址的映射。 device physical address -&gt; system virtual address??</p>
-<h1 id="DMA"><a href="#DMA" class="headerlink" title="DMA"></a>DMA</h1><p><a href="https://cloud.tencent.com/developer/article/1194593">https://cloud.tencent.com/developer/article/1194593</a></p>
-<h2 id="Passthrough"><a href="#Passthrough" class="headerlink" title="Passthrough"></a>Passthrough</h2><p><strong>直通模式</strong>的实现依赖于IOMMU的功能。VTD对IOVA的地址转换使得直通设备可以在硬件层次直接使用GPA（Guest Physical Address）地址。GPU直通技术相对于任何其他设备来说，会有额外的PCI 配置空间模拟和MMIO的拦截（参见QEMU VFIO quirk机制）。比如Hypervisor或者Device Module 不会允许虚拟机对GPU硬件关键寄存器的完全的访问权限，一些高权限的操作会被直接拦截。大家或许已经意识到原来直通设备也是有MMIO模拟和拦截的。这对于我们理解GPU 半虚拟化很有帮助。</p>
-<h3 id="libvirt-layer"><a href="#libvirt-layer" class="headerlink" title="libvirt layer"></a>libvirt layer</h3><p>将PCI设备直接分配给guest os时，如果不先从guest中hot-unplug该设备，将无法进行migration。</p>
-<p>managed: guest启动时会自动从host上detach， guest shutdown时又重新attach回host。（implict）</p>
-<p>unmanged：需要手动从host detach，之后手动re-attach回host。不然libvirt会refuse。（explict）</p>
-]]></content>
-  </entry>
-  <entry>
     <title>hexo+github</title>
     <url>/posts/ebeabd53.html</url>
-    <content><![CDATA[<a id="more"></a>
-
-<h3 id="安装nodejs，git"><a href="#安装nodejs，git" class="headerlink" title="安装nodejs，git"></a>安装nodejs，git</h3><figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line">sudo apt <span class="keyword">install</span> npm</span><br><span class="line">sudo apt <span class="keyword">install</span> nodejs</span><br><span class="line">sudo apt <span class="keyword">install</span> git</span><br></pre></td></tr></table></figure>
+    <content><![CDATA[<h3 id="安装nodejs，git"><a href="#安装nodejs，git" class="headerlink" title="安装nodejs，git"></a>安装nodejs，git</h3><figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line">sudo apt <span class="keyword">install</span> npm</span><br><span class="line">sudo apt <span class="keyword">install</span> nodejs</span><br><span class="line">sudo apt <span class="keyword">install</span> git</span><br></pre></td></tr></table></figure>
 <h3 id="注册github帐号，创建github-repo，命名为xxinran-github-io"><a href="#注册github帐号，创建github-repo，命名为xxinran-github-io" class="headerlink" title="注册github帐号，创建github repo，命名为xxinran.github.io"></a>注册github帐号，创建github repo，命名为<code>xxinran.github.io</code></h3><h3 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h3><figure class="highlight avrasm"><table><tr><td class="code"><pre><span class="line">sudo npm install -g hexo-<span class="keyword">cli</span></span><br></pre></td></tr></table></figure>
 <p>检查各项都已经成功安装：</p>
 <figure class="highlight crmsh"><table><tr><td class="code"><pre><span class="line"><span class="keyword">node</span> <span class="title">-v</span></span><br><span class="line">hexo -v</span><br></pre></td></tr></table></figure>
@@ -386,9 +346,7 @@
   <entry>
     <title>部署istio+k8s+kiali</title>
     <url>/posts/f5beba55.html</url>
-    <content><![CDATA[<a id="more"></a>
-
-<h3 id="环境："><a href="#环境：" class="headerlink" title="环境："></a>环境：</h3><p>ubuntu20.04</p>
+    <content><![CDATA[<h3 id="环境："><a href="#环境：" class="headerlink" title="环境："></a>环境：</h3><p>ubuntu20.04</p>
 <p>kubernete 1.20</p>
 <h3 id="Deploy-K8s-all-in-one-using-Kubeadm"><a href="#Deploy-K8s-all-in-one-using-Kubeadm" class="headerlink" title="Deploy K8s(all in one) using Kubeadm"></a>Deploy K8s(all in one) using Kubeadm</h3><h4 id="Install-docker"><a href="#Install-docker" class="headerlink" title="Install docker"></a>Install docker</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get install docker.io</span><br><span class="line">sudo groupadd docker</span><br><span class="line">sudo usermod -aG docker <span class="variable">$&#123;USER&#125;</span>  <span class="comment"># To resolve permission errors</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># check </span></span><br><span class="line">docker ps -a</span><br><span class="line"></span><br><span class="line"><span class="comment"># docker hub login</span></span><br><span class="line">docker login</span><br><span class="line">username: xinranwang</span><br><span class="line">password: xxxxxxXf</span><br></pre></td></tr></table></figure>
 <h4 id="Install-Kubeadm"><a href="#Install-Kubeadm" class="headerlink" title="Install Kubeadm"></a>Install Kubeadm</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo apt-get update &amp;&amp; sudo apt-get install -y apt-transport-https curl</span><br><span class="line">curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -</span><br><span class="line">cat &lt;&lt;EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list</span><br><span class="line">deb https://apt.kubernetes.io/ kubernetes-xenial main</span><br><span class="line">EOF</span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install -y kubelet kubeadm kubectl</span><br><span class="line">sudo apt-mark hold kubelet kubeadm kubectl</span><br></pre></td></tr></table></figure>
@@ -433,9 +391,7 @@
   <entry>
     <title>istio开发环境搭建</title>
     <url>/posts/702f5168.html</url>
-    <content><![CDATA[<a id="more"></a>
-
-<p>之前搭建了istio的生产环境，这次搭建开发环境。</p>
+    <content><![CDATA[<p>之前搭建了istio的生产环境，这次搭建开发环境。</p>
 <blockquote>
 <p>参考文档: <a href="https://github.com/istio/istio/wiki/Preparing-for-Development">https://github.com/istio/istio/wiki/Preparing-for-Development</a></p>
 </blockquote>
@@ -473,8 +429,7 @@
   <entry>
     <title>istio-gateway</title>
     <url>/posts/def4f008.html</url>
-    <content><![CDATA[<a id="more"></a>
-<p><img src="/posts/def4f008/image-20210309150445057.png" alt="image-20210309150445057"></p>
+    <content><![CDATA[<p><img src="/posts/def4f008/image-20210309150445057.png" alt="image-20210309150445057"></p>
 <p>serviceentry：也可以访问外部服务。</p>
 <h2 id="gateway简介"><a href="#gateway简介" class="headerlink" title="gateway简介"></a>gateway简介</h2><ol>
 <li><p>L4-L6的负载均衡</p>
@@ -491,11 +446,31 @@
 <h2 id="gateway原理及实现"><a href="#gateway原理及实现" class="headerlink" title="gateway原理及实现"></a>gateway原理及实现</h2><figure class="highlight haml"><table><tr><td class="code"><pre><span class="line">pilot-agent</span><br><span class="line">-<span class="ruby"> <span class="symbol">args:</span></span></span><br><span class="line"><span class="ruby">   - proxy</span></span><br><span class="line"><span class="ruby">   - router</span></span><br><span class="line"><span class="ruby">   - --domain</span></span><br><span class="line"><span class="ruby">   - <span class="variable">$(</span>POD_NAMESPACE).svc.cluster.local</span></span><br><span class="line"><span class="ruby">   - --proxyLogLevel=warning</span></span><br><span class="line"><span class="ruby">   - --proxyComponentLogLevel=<span class="symbol">misc:</span>error</span></span><br><span class="line"><span class="ruby">   - --log_output_level=<span class="symbol">default:</span>info</span></span><br><span class="line"><span class="ruby">   - --serviceCluster</span></span><br><span class="line"><span class="ruby">   - istio-ingressgateway</span></span><br></pre></td></tr></table></figure>]]></content>
   </entry>
   <entry>
+    <title>GPU虚拟化</title>
+    <url>/posts/204fd6f0.html</url>
+    <content><![CDATA[<p>目前流行的几种模式：pass through, sriov, 半虚拟化（mdev passthrough： Intel gvt-g, Nvidia GRID vGPU), 全虚拟化（VMware： vSGA）</p>
+<p>学习路径</p>
+<p>pci -》 pci dma -》 iommu -》 passthrough</p>
+<p>内存页表 - 》 tlb</p>
+<p>cache -》 内存</p>
+<h1 id="PCI"><a href="#PCI" class="headerlink" title="PCI"></a>PCI</h1><p>Linux PCI设备驱动实际包括<strong>Linux PCI设备驱动</strong>和<strong>设备本身驱动</strong>两部分。</p>
+<p>PCI(Periheral Component Interconnect)有三种地址空间：<strong>PCI I/O空间、PCI内存地址空间和PCI配置空间</strong>。</p>
+<p>PCI I/O空间和PCI内存地址空间由设备驱动程序使用</p>
+<p>而PCI配置空间由Linux PCI初始化代码使用，用于配置PCI设备，比如中断号以及I/O或内存基地址。</p>
+<p>内核：遍历和配置</p>
+<p>遍历顺序：从host-pci开始，遇到pci bridge就到下一级pci总线继续遍历，直到遍历完成。（深度优先？）</p>
+<p>配置：PCI设备中一般都带有一些RAM和ROM 空间，通常的控制/状态寄存器和数据寄存器也往往以RAM区间的形式出现，而这些区间的地址在设备内部一般都是从0开始编址的，那么当总线上挂接了多个设备时，对这些空间的访问就会产生冲突。所以，这些地址都要先映射到系统总线上，再进一步映射到内核的虚拟地址空间。配置就是通过对PCI配置空间的寄存器进行操作从而完成地址的映射。 device physical address -&gt; system virtual address??</p>
+<h1 id="DMA"><a href="#DMA" class="headerlink" title="DMA"></a>DMA</h1><p><a href="https://cloud.tencent.com/developer/article/1194593">https://cloud.tencent.com/developer/article/1194593</a></p>
+<h2 id="Passthrough"><a href="#Passthrough" class="headerlink" title="Passthrough"></a>Passthrough</h2><p><strong>直通模式</strong>的实现依赖于IOMMU的功能。VTD对IOVA的地址转换使得直通设备可以在硬件层次直接使用GPA（Guest Physical Address）地址。GPU直通技术相对于任何其他设备来说，会有额外的PCI 配置空间模拟和MMIO的拦截（参见QEMU VFIO quirk机制）。比如Hypervisor或者Device Module 不会允许虚拟机对GPU硬件关键寄存器的完全的访问权限，一些高权限的操作会被直接拦截。大家或许已经意识到原来直通设备也是有MMIO模拟和拦截的。这对于我们理解GPU 半虚拟化很有帮助。</p>
+<h3 id="libvirt-layer"><a href="#libvirt-layer" class="headerlink" title="libvirt layer"></a>libvirt layer</h3><p>将PCI设备直接分配给guest os时，如果不先从guest中hot-unplug该设备，将无法进行migration。</p>
+<p>managed: guest启动时会自动从host上detach， guest shutdown时又重新attach回host。（implict）</p>
+<p>unmanged：需要手动从host detach，之后手动re-attach回host。不然libvirt会refuse。（explict）</p>
+]]></content>
+  </entry>
+  <entry>
     <title>istio学习（1）-pilot</title>
     <url>/posts/a94c45db.html</url>
-    <content><![CDATA[<a id="more"></a>
-
-<h2 id="service-mesh（服务网格）"><a href="#service-mesh（服务网格）" class="headerlink" title="service mesh（服务网格）"></a>service mesh（服务网格）</h2><p>Service Mesh通过一个个”代理” 来为微服务转发/接收所有流量，通过控制这些代理，就可以实现服务连接，注册，发现，负载均衡，熔断，监控等等一系列服务治理相关功能，从而微服务的代码不再需要服务治理的实现，换句话说，也就是服务治理对于微服务开发者而言是透明的。如下图所示：绿色方块为微服务，蓝色方块为 service mesh 的代理，蓝色线条为服务间通讯。可以看到蓝色的方块和线条组成了整个网格。这个网络就是 Service Mesh。</p>
+    <content><![CDATA[<h2 id="service-mesh（服务网格）"><a href="#service-mesh（服务网格）" class="headerlink" title="service mesh（服务网格）"></a>service mesh（服务网格）</h2><p>Service Mesh通过一个个”代理” 来为微服务转发/接收所有流量，通过控制这些代理，就可以实现服务连接，注册，发现，负载均衡，熔断，监控等等一系列服务治理相关功能，从而微服务的代码不再需要服务治理的实现，换句话说，也就是服务治理对于微服务开发者而言是透明的。如下图所示：绿色方块为微服务，蓝色方块为 service mesh 的代理，蓝色线条为服务间通讯。可以看到蓝色的方块和线条组成了整个网格。这个网络就是 Service Mesh。</p>
 <img src="/posts/a94c45db/v2-638a9d12e8a7406b7a733f2eadf989f5_1440w.jpg" alt="img" style="zoom:30%;">
 
 <h2 id="Istio"><a href="#Istio" class="headerlink" title="Istio"></a>Istio</h2><p>Go编写，控制面。对应的数据面是通常是envoy（基于C++）</p>
@@ -574,11 +549,90 @@
       </tags>
   </entry>
   <entry>
+    <title>markdown基本语法</title>
+    <url>/posts/47caaf1e.html</url>
+    <content><![CDATA[<h1 id="一级标题"><a href="#一级标题" class="headerlink" title="一级标题"></a>一级标题</h1><h2 id="二级"><a href="#二级" class="headerlink" title="二级"></a>二级</h2><h3 id="三级-（CTRL-3-或者-）"><a href="#三级-（CTRL-3-或者-）" class="headerlink" title="三级 （CTRL +3 或者 ### ）"></a>三级 （CTRL +3 或者 ### ）</h3><h4 id="四级"><a href="#四级" class="headerlink" title="四级"></a>四级</h4><h6 id="最多支持到六级"><a href="#最多支持到六级" class="headerlink" title="最多支持到六级"></a>最多支持到六级</h6><h2 id="字体"><a href="#字体" class="headerlink" title="字体"></a>字体</h2><p><strong>hello world</strong></p>
+<p>CTRL + B 或者 两边加**</p>
+<p><em>hello world</em></p>
+<p>CTRL + I 或者两边加* </p>
+<p><em><strong>hello world</strong></em></p>
+<p>CTRL + B + I 或者 两边加***</p>
+<p><del>hello world</del></p>
+<p>ALT + SHIFT + 5  或者~~ </p>
+<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><blockquote>
+<p>这是一个引用， 用&gt;开始 </p>
+</blockquote>
+<h2 id="分割线"><a href="#分割线" class="headerlink" title="分割线"></a>分割线</h2><hr>
+<hr>
+<p>三个-， 或者三个*</p>
+<h2 id="图片"><a href="#图片" class="headerlink" title="图片"></a>图片</h2><p><img src="https://www.w3schools.com/images/w3schools_green.jpg" alt="图片名字"></p>
+<p>感叹号[图片名字]+ (图片地址)</p>
+<h2 id="超链接"><a href="#超链接" class="headerlink" title="超链接"></a>超链接</h2><p><a href="https://kubernetes.io/docs/concepts/services-networking/service/#ips-and-vips">超级链接</a></p>
+<p>方括号里面写链接名字，后面加()写链接地址。</p>
+<h2 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h2><h3 id="有序列表"><a href="#有序列表" class="headerlink" title="有序列表"></a>有序列表</h3><ol>
+<li>A</li>
+<li>B</li>
+<li>C</li>
+</ol>
+<h3 id="无序列表"><a href="#无序列表" class="headerlink" title="无序列表"></a>无序列表</h3><p>减号 + space</p>
+<ul>
+<li>A</li>
+<li>B</li>
+</ul>
+<p>CTRL + [  回到上一级<br>CTRL + ]  回到下一级</p>
+<h2 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h2><table>
+<thead>
+<tr>
+<th>名字</th>
+<th>性别</th>
+<th>生日</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>张三</td>
+<td>男</td>
+<td>1997.1</td>
+</tr>
+</tbody></table>
+<p>名字 | 性别| 生日|</p>
+<p>–|–|–</p>
+<p>xx|xx|xx|</p>
+<p>进入源代码模式(CTRL + /)，删除行间空行，就可以生成表格了。</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">public</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>language</category>
+      </categories>
+      <tags>
+        <tag>markdown</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>多设备同步hexoy</title>
+    <url>/posts/c9d1870c.html</url>
+    <content><![CDATA[<h1 id="多个设备之间同步hexo"><a href="#多个设备之间同步hexo" class="headerlink" title="多个设备之间同步hexo"></a>多个设备之间同步hexo</h1><p><strong>原理</strong></p>
+<p>hexo deploy会将本地创建好的目录blog里面的文件生成对应的静态文件（html等），并且将它上传到xxx.github.com repo中。<br>在_config.yml中设置了deploy要操作的repo和branch，这里我使用的是xxinran.github.io的main branch。</p>
+]]></content>
+      <categories>
+        <category>hexo</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>cpu-microarch</title>
+    <url>/posts/f1d93d2c.html</url>
+    <content><![CDATA[<p><img src="https://en.wikichip.org/w/images/thumb/e/ee/skylake_server_block_diagram.svg/950px-skylake_server_block_diagram.svg.png" alt="skylake server block diagram.svg"></p>
+<p>front end：取值，解码</p>
+<p>execution engine：计算</p>
+<p>memory subsystem： 读写内存</p>
+<p>L1， L2 per core</p>
+]]></content>
+  </entry>
+  <entry>
     <title>linux内存管理</title>
     <url>/posts/d0683ba8.html</url>
-    <content><![CDATA[<a id="more"></a>
-
-<h1 id="主流存储设备"><a href="#主流存储设备" class="headerlink" title="主流存储设备"></a>主流存储设备</h1><p><img src="/posts/d0683ba8/%E5%AD%98%E5%82%A8%20(1).svg"></p>
+    <content><![CDATA[<h1 id="主流存储设备"><a href="#主流存储设备" class="headerlink" title="主流存储设备"></a>主流存储设备</h1><p><img src="/posts/d0683ba8/%E5%AD%98%E5%82%A8%20(1).svg"></p>
 <h1 id="物理内存"><a href="#物理内存" class="headerlink" title="物理内存"></a>物理内存</h1><p>我们不讨论cache，flash，rom这些，只讨论memory也就是通常所说的主存，现在一般是DDR4.</p>
 <img src="/posts/d0683ba8/image-20210428163238359.png" alt="image-20210428163238359" style="zoom:67%;">
 
@@ -710,86 +764,23 @@
       </tags>
   </entry>
   <entry>
-    <title>markdown基本语法</title>
-    <url>/posts/47caaf1e.html</url>
-    <content><![CDATA[<a id="more"></a>
+    <title>网络虚拟化简介</title>
+    <url>/posts/e41fb1bd.html</url>
+    <content><![CDATA[<img src="/posts/e41fb1bd/image-20210201221242667.png" alt="image-20210201221242667" style="zoom:70%;">
 
-<h1 id="一级标题"><a href="#一级标题" class="headerlink" title="一级标题"></a>一级标题</h1><h2 id="二级"><a href="#二级" class="headerlink" title="二级"></a>二级</h2><h3 id="三级-（CTRL-3-或者-）"><a href="#三级-（CTRL-3-或者-）" class="headerlink" title="三级 （CTRL +3 或者 ### ）"></a>三级 （CTRL +3 或者 ### ）</h3><h4 id="四级"><a href="#四级" class="headerlink" title="四级"></a>四级</h4><h6 id="最多支持到六级"><a href="#最多支持到六级" class="headerlink" title="最多支持到六级"></a>最多支持到六级</h6><h2 id="字体"><a href="#字体" class="headerlink" title="字体"></a>字体</h2><p><strong>hello world</strong></p>
-<p>CTRL + B 或者 两边加**</p>
-<p><em>hello world</em></p>
-<p>CTRL + I 或者两边加* </p>
-<p><em><strong>hello world</strong></em></p>
-<p>CTRL + B + I 或者 两边加***</p>
-<p><del>hello world</del></p>
-<p>ALT + SHIFT + 5  或者~~ </p>
-<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><blockquote>
-<p>这是一个引用， 用&gt;开始 </p>
-</blockquote>
-<h2 id="分割线"><a href="#分割线" class="headerlink" title="分割线"></a>分割线</h2><hr>
-<hr>
-<p>三个-， 或者三个*</p>
-<h2 id="图片"><a href="#图片" class="headerlink" title="图片"></a>图片</h2><p><img src="https://www.w3schools.com/images/w3schools_green.jpg" alt="图片名字"></p>
-<p>感叹号[图片名字]+ (图片地址)</p>
-<h2 id="超链接"><a href="#超链接" class="headerlink" title="超链接"></a>超链接</h2><p><a href="https://kubernetes.io/docs/concepts/services-networking/service/#ips-and-vips">超级链接</a></p>
-<p>方括号里面写链接名字，后面加()写链接地址。</p>
-<h2 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h2><h3 id="有序列表"><a href="#有序列表" class="headerlink" title="有序列表"></a>有序列表</h3><ol>
-<li>A</li>
-<li>B</li>
-<li>C</li>
-</ol>
-<h3 id="无序列表"><a href="#无序列表" class="headerlink" title="无序列表"></a>无序列表</h3><p>减号 + space</p>
-<ul>
-<li>A</li>
-<li>B</li>
-</ul>
-<p>CTRL + [  回到上一级<br>CTRL + ]  回到下一级</p>
-<h2 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h2><table>
-<thead>
-<tr>
-<th>名字</th>
-<th>性别</th>
-<th>生日</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>张三</td>
-<td>男</td>
-<td>1997.1</td>
-</tr>
-</tbody></table>
-<p>名字 | 性别| 生日|</p>
-<p>–|–|–</p>
-<p>xx|xx|xx|</p>
-<p>进入源代码模式(CTRL + /)，删除行间空行，就可以生成表格了。</p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">public</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>language</category>
-      </categories>
-      <tags>
-        <tag>markdown</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>多设备同步hexoy</title>
-    <url>/posts/c9d1870c.html</url>
-    <content><![CDATA[<a id="more"></a>
-
-<h1 id="多个设备之间同步hexo"><a href="#多个设备之间同步hexo" class="headerlink" title="多个设备之间同步hexo"></a>多个设备之间同步hexo</h1><p><strong>原理</strong></p>
-<p>hexo deploy会将本地创建好的目录blog里面的文件生成对应的静态文件（html等），并且将它上传到xxx.github.com repo中。<br>在_config.yml中设置了deploy要操作的repo和branch，这里我使用的是xxinran.github.io的main branch。</p>
 ]]></content>
       <categories>
-        <category>hexo</category>
+        <category>虚拟化</category>
       </categories>
       <tags>
-        <tag>hexo</tag>
+        <tag>network</tag>
+        <tag>virtualization</tag>
       </tags>
   </entry>
   <entry>
     <title>容器的namespace和cgroups</title>
     <url>/posts/b56963ac.html</url>
-    <content><![CDATA[<a id="more"></a>
-
-<h2 id="namespace"><a href="#namespace" class="headerlink" title="namespace"></a>namespace</h2><h4 id="PID-namespace"><a href="#PID-namespace" class="headerlink" title="PID namespace"></a>PID namespace</h4><p>一个容器就是是一个进程，在启动下面的容器的时候：</p>
+    <content><![CDATA[<h2 id="namespace"><a href="#namespace" class="headerlink" title="namespace"></a>namespace</h2><h4 id="PID-namespace"><a href="#PID-namespace" class="headerlink" title="PID namespace"></a>PID namespace</h4><p>一个容器就是是一个进程，在启动下面的容器的时候：</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker run -it busybox sh  <span class="comment"># sh是容器的第一个进程</span></span></span><br><span class="line">/ # ps</span><br><span class="line">PID   USER     TIME  COMMAND</span><br><span class="line">    1 root      0:00 sh #PID=1</span><br><span class="line">    7 root      0:00 ps #PID=7</span><br></pre></td></tr></table></figure>
 <p>Linux在创建新进程的时候，它的系统调用是</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> pid = clone(main_function, stack_size, SIGCHLD, <span class="literal">NULL</span>); </span><br></pre></td></tr></table></figure>
@@ -844,9 +835,7 @@
   <entry>
     <title>计算机网络概述</title>
     <url>/posts/7c4ca347.html</url>
-    <content><![CDATA[<a id="more"></a>
-
-<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><h3 id="1-速率相关性能指标"><a href="#1-速率相关性能指标" class="headerlink" title="1. 速率相关性能指标"></a>1. 速率相关性能指标</h3><h4 id="速率"><a href="#速率" class="headerlink" title="速率"></a>速率</h4><p>在数字信道上传输数据位的速度。单位: b/s,Kb/s,Mb/s,Tb/s，<br>如果用字节表示，则是B/s,KB/s,MB/s,TB/s（1Byte=8Bit）</p>
+    <content><![CDATA[<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><h3 id="1-速率相关性能指标"><a href="#1-速率相关性能指标" class="headerlink" title="1. 速率相关性能指标"></a>1. 速率相关性能指标</h3><h4 id="速率"><a href="#速率" class="headerlink" title="速率"></a>速率</h4><p>在数字信道上传输数据位的速度。单位: b/s,Kb/s,Mb/s,Tb/s，<br>如果用字节表示，则是B/s,KB/s,MB/s,TB/s（1Byte=8Bit）</p>
 <h4 id="带宽"><a href="#带宽" class="headerlink" title="带宽"></a>带宽</h4><p>单位同速率，指理想条件下的最高速率。</p>
 <h4 id="吞吐量"><a href="#吞吐量" class="headerlink" title="吞吐量"></a>吞吐量</h4><p>单位时间内通过某个网络的数据总量。</p>
 <h4 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h4><p>比如说1000M宽带的路由器连着三部手机，每部手机都是10mb/s看片，那么速率就是10mb/s，带宽是宽带的1000m，路由器吞吐量是30mb/s。</p>
@@ -932,25 +921,9 @@
       </tags>
   </entry>
   <entry>
-    <title>网络虚拟化简介</title>
-    <url>/posts/e41fb1bd.html</url>
-    <content><![CDATA[<a id="more"></a><img src="/posts/e41fb1bd/image-20210201221242667.png" alt="image-20210201221242667" style="zoom:70%;">
-
-]]></content>
-      <categories>
-        <category>虚拟化</category>
-      </categories>
-      <tags>
-        <tag>network</tag>
-        <tag>virtualization</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Nginx简介</title>
     <url>/posts/cc1b6e67.html</url>
-    <content><![CDATA[<a id="more"></a>
-
-<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><ul>
+    <content><![CDATA[<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><ul>
 <li>反向代理</li>
 <li>负载均衡</li>
 <li>动静分离</li>
@@ -980,84 +953,9 @@
 ]]></content>
   </entry>
   <entry>
-    <title>containerPort, targetPort, port, nodePort等的区别</title>
-    <url>/posts/3836ec52.html</url>
-    <content><![CDATA[<a id="more"></a>
-
-<p>本文会通过container中的应用的几种访问方式来解释containerPort, targetPort, port, nodePort的关系和区别。</p>
-<h2 id="containerPort"><a href="#containerPort" class="headerlink" title="containerPort"></a>containerPort</h2><p>容器暴露的端口，在container spec里声明。</p>
-<img src="/posts/3836ec52/image-20210308182307042.png" alt="image-20210308182307042" style="zoom:50%;">
-
-<p>可以通过podIP:containerPort来访问容器内应用。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> k get pod -owide</span></span><br><span class="line">NAME    READY   STATUS    RESTARTS   AGE    IP                  NODE  </span><br><span class="line">pod1    2/2     Running   0          133m   192.168.227.89   otcloud-node1   </span><br><span class="line">pod2    2/2     Running   0          47m    192.168.227.97   otcloud-node1   </span><br></pre></td></tr></table></figure>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">可以访问容器内应用</span></span><br><span class="line">curl 192.168.227.97:9080</span><br></pre></td></tr></table></figure>
-<p><strong>Notes：</strong></p>
-<p>如果一个pod里声明了多个容器，那么每个容器暴露的端口必须不同，否则容器启动会失败。（Address already in use）</p>
-<p><strong>更进一步</strong>，因为一个pod里的所有容器都共享网络namespace，所以它们共享IP，和端口。</p>
-<h2 id="targetPort"><a href="#targetPort" class="headerlink" title="targetPort"></a>targetPort</h2><p>是<strong>Service</strong>资源里的一个概念，在service的声明中使用。</p>
-<p>targetPort是Pod上的端口，从port/nodePort上来的数据，经过kube-proxy流入到后端pod的targetPort上，最后进入容器。</p>
-<p>如果不指明targetPort，默认targetPort和service暴露的port一致。</p>
-<p>下面是一个service的声明：</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">productpage</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">productpage</span></span><br><span class="line">    <span class="attr">service:</span> <span class="string">productpage</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">port:</span> <span class="number">9999</span>  <span class="comment"># clusterip:port </span></span><br><span class="line">    <span class="comment"># targetPort: 9080 # 如果不写，默认是9999</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">http</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">productpage</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"> k describe svc productpage</span><br><span class="line">Name:              productpage</span><br><span class="line">Namespace:         default</span><br><span class="line">Labels:            app=productpage</span><br><span class="line">                   service=productpage</span><br><span class="line">Annotations:       &lt;none&gt;</span><br><span class="line">Selector:          app=productpage</span><br><span class="line">Type:              ClusterIP</span><br><span class="line">IP Families:       &lt;none&gt;</span><br><span class="line">IP:                10.97.239.58</span><br><span class="line">IPs:               10.97.239.58</span><br><span class="line">Port:              http  9999/TCP  </span><br><span class="line">TargetPort:        9999/TCP  # 9999 和上面container暴露的接口不一致，访问一定会失败</span><br><span class="line">Endpoints:         192.168.227.97:9999</span><br><span class="line">Session Affinity:  None</span><br><span class="line">Events:            &lt;none&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p><strong>解决方法：</strong></p>
-<ol>
-<li>显式地声明targetPort: 9080</li>
-<li>使用9080作为port，这样targetport也是9080，就可以和container port连接起来。</li>
-</ol>
-<p>这里我们把targetPort显式的写成9080，会得到：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"> k describe svc productpage</span><br><span class="line">Name:              productpage</span><br><span class="line">Namespace:         default</span><br><span class="line">Labels:            app=productpage</span><br><span class="line">                   service=productpage</span><br><span class="line">Annotations:       &lt;none&gt;</span><br><span class="line">Selector:          app=productpage</span><br><span class="line">Type:              ClusterIP</span><br><span class="line">IP Families:       &lt;none&gt;</span><br><span class="line">IP:                10.97.239.58 # cluster IP！</span><br><span class="line">IPs:               10.97.239.58</span><br><span class="line">Port:              http  9999/TCP # 注意！</span><br><span class="line">TargetPort:        9080/TCP  # 注意！</span><br><span class="line">Endpoints:         192.168.227.97:9080 # 注意！</span><br><span class="line">Session Affinity:  None</span><br><span class="line">Events:            &lt;none&gt;</span><br></pre></td></tr></table></figure>
-<p>这个service的细节要好好研究一下。</p>
-<p><strong>IP：</strong>Service的cluster IP。</p>
-<p><strong>Port：</strong>Service的cluster IP暴露的接口。</p>
-<p><strong>TargetPort：</strong>容器暴露的接口。</p>
-<p><strong>Endpoint：</strong> podIP:targetPort，注意这里是targetPort，不是containerPort。</p>
-<p>又有访问容器内应用的新方式：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> clusterIP:port</span></span><br><span class="line">curl 10.97.239.58:9999</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> by endpoint, 跟containerPort里讲到的实际是一样的</span></span><br><span class="line">curl 192.168.227.97:9080</span><br></pre></td></tr></table></figure>
-
-
-<h2 id="Port"><a href="#Port" class="headerlink" title="Port"></a>Port</h2><p>上面讲的差不多了，也是<strong>service</strong>里的概念，是指在clusterIP上暴露的端口，是一个虚拟的东西。</p>
-<p>clusterIP：虚拟的IP，在集群内可以相互访问。它只是存在service的规则当中。 <strong>注意，它不是podIP。</strong></p>
-<h2 id="nodePort"><a href="#nodePort" class="headerlink" title="nodePort"></a>nodePort</h2><p>nodePort 提供了<strong>集群外</strong>部客户端访问 Service 的一种方式，nodePort 提供了集群外部客户端访问 Service 的端口，通过 <code>nodeIP:nodePort</code> 提供了外部流量访问k8s集群中service的入口。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> k get svc -owide</span></span><br><span class="line">NAME          TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)         AGE    SELECTOR</span><br><span class="line">productpage   NodePort    10.97.239.58   &lt;none&gt;       9999:30066/TCP  25m app=productpage</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> k describe svc productpage</span></span><br><span class="line">Name:                     productpage</span><br><span class="line">Namespace:                default</span><br><span class="line">Labels:                   app=productpage</span><br><span class="line">                          service=productpage</span><br><span class="line">Annotations:              &lt;none&gt;</span><br><span class="line">Selector:                 app=productpage</span><br><span class="line">Type:                     NodePort</span><br><span class="line">IP Families:              &lt;none&gt;</span><br><span class="line">IP:                       10.97.239.58</span><br><span class="line">IPs:                      10.97.239.58</span><br><span class="line">Port:                     http  9999/TCP</span><br><span class="line">TargetPort:               9080/TCP</span><br><span class="line">NodePort:                 http  30066/TCP  # 在host node上暴露的端口</span><br><span class="line">Endpoints:                192.168.227.97:9080</span><br><span class="line">Session Affinity:         None</span><br><span class="line">External Traffic Policy:  Cluster</span><br><span class="line">Events:                   &lt;none&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>又一种新的访问方式：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">hostIP:nodeport</span></span><br><span class="line">curl localhost:30066</span><br></pre></td></tr></table></figure>
-
-
-<p>总结：</p>
-<p><img src="/posts/3836ec52/image-20210308190947963.png" alt="image-20210308190947963"></p>
-<p>三种访问方式以及范围：</p>
-<table>
-<thead>
-<tr>
-<th>方式</th>
-<th>范围</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>podIP:targetPort</td>
-<td>和pod在同一个网络下</td>
-</tr>
-<tr>
-<td>clusterIP:port</td>
-<td>在集群中</td>
-</tr>
-<tr>
-<td>hostIP:nodeport</td>
-<td>主机之间也可以访问</td>
-</tr>
-</tbody></table>
-]]></content>
-      <categories>
-        <category>kubernetes</category>
-      </categories>
-  </entry>
-  <entry>
     <title>进程和线程</title>
     <url>/posts/6ac22eb.html</url>
-    <content><![CDATA[<a id="more"></a>
-
-<img src="/posts/6ac22eb/image-20210225180738908.png" alt="image-20210225180738908" style="zoom:67%;">
+    <content><![CDATA[<img src="/posts/6ac22eb/image-20210225180738908.png" alt="image-20210225180738908" style="zoom:67%;">
 
 <blockquote>
 <p>参考：<a href="https://cloud.tencent.com/developer/article/1688297">https://cloud.tencent.com/developer/article/1688297</a></p>
@@ -1113,9 +1011,7 @@
   <entry>
     <title>代理服务器基本介绍</title>
     <url>/posts/65bbead6.html</url>
-    <content><![CDATA[<a id="more"></a>
-
-<h2 id="为什么需要proxy-server"><a href="#为什么需要proxy-server" class="headerlink" title="为什么需要proxy server?"></a>为什么需要proxy server?</h2><ol>
+    <content><![CDATA[<h2 id="为什么需要proxy-server"><a href="#为什么需要proxy-server" class="headerlink" title="为什么需要proxy server?"></a>为什么需要proxy server?</h2><ol>
 <li><p>监控，内容过滤</p>
 <ul>
 <li>公司的proxy server可以清楚的知道，你的流量要访问什么网站。proxy server可以禁掉一些网址，或者redirect到一些提示页面。</li>
@@ -1189,49 +1085,80 @@
       </tags>
   </entry>
   <entry>
-    <title>QAT在Ubuntu18.04上的安装和虚拟化</title>
-    <url>/posts/461bb783.html</url>
-    <content><![CDATA[<a id="more"></a>
+    <title>containerPort, targetPort, port, nodePort等的区别</title>
+    <url>/posts/3836ec52.html</url>
+    <content><![CDATA[<p>本文会通过container中的应用的几种访问方式来解释containerPort, targetPort, port, nodePort的关系和区别。</p>
+<h2 id="containerPort"><a href="#containerPort" class="headerlink" title="containerPort"></a>containerPort</h2><p>容器暴露的端口，在container spec里声明。</p>
+<img src="/posts/3836ec52/image-20210308182307042.png" alt="image-20210308182307042" style="zoom:50%;">
 
-<p>本文将介绍QAT c62xx设备在Ubuntu 18.04上的安装部署和虚拟化。</p>
-<blockquote>
-<p>参考网站：<a href="https://01.org/intel-quickassist-technology">https://01.org/intel-quickassist-technology</a></p>
-</blockquote>
-<h3 id="Prerequisite"><a href="#Prerequisite" class="headerlink" title="Prerequisite"></a>Prerequisite</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> uname -a</span></span><br><span class="line">Linux tme-prc002 5.3.0-53-generic #47~18.04.1-Ubuntu SMP Thu May 7 13:10:50 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux</span><br></pre></td></tr></table></figure>
-<h3 id="Updating-grub-Configuration-File"><a href="#Updating-grub-Configuration-File" class="headerlink" title="Updating grub Configuration File"></a>Updating grub Configuration File</h3><p>To enable IOMMU and SRIOV</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo vim /etc/default/grub</span><br></pre></td></tr></table></figure>
-<p>Modify <code>GRUB_CMDLINE_LINUX_DEFAULT=&quot;quiet splash&quot;</code> to <code>&quot;quiet splash intel_iommu=on&quot;</code></p>
-<p>Update grub and reboot:</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">update-grub</span><br><span class="line">sudo reboot</span><br></pre></td></tr></table></figure>
-<h3 id="Building-and-Installing-Software"><a href="#Building-and-Installing-Software" class="headerlink" title="Building and Installing Software"></a>Building and Installing Software</h3><h4 id="Create-a-working-directory-for-the-software-This-directory-can-be-user-defined-but"><a href="#Create-a-working-directory-for-the-software-This-directory-can-be-user-defined-but" class="headerlink" title="Create a working directory for the software. This directory can be user defined, but"></a>Create a working directory for the software. This directory can be user defined, but</h4><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="variable">$</span> <span class="built_in">cd</span> <span class="variable">$HOME</span> </span><br><span class="line"><span class="variable">$</span> mkdir /QAT</span><br><span class="line"><span class="variable">$</span> <span class="built_in">cd</span> /QAT</span><br></pre></td></tr></table></figure>
-<h4 id="Download-the-software"><a href="#Download-the-software" class="headerlink" title="Download the software."></a>Download the software.</h4><figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">curl -O https:<span class="regexp">//</span><span class="number">01</span>.org<span class="regexp">/sites/</span>default<span class="regexp">/files/</span>downloads<span class="regexp">/intelr-quickassist-technology/</span>qat1.<span class="number">7</span>.l.<span class="number">4.3</span>.<span class="number">0</span>-<span class="number">00033</span>.tar.gz</span><br></pre></td></tr></table></figure>
-<h4 id="Unpack-the-software"><a href="#Unpack-the-software" class="headerlink" title="Unpack the software."></a>Unpack the software.</h4><figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>tar -zxof &lt;QAT tarball name&gt;  </span><br><span class="line"><span class="variable">$ </span>chmod -R o-rwx *</span><br></pre></td></tr></table></figure>
-<h4 id="Install-dependencies-if-needed"><a href="#Install-dependencies-if-needed" class="headerlink" title="Install dependencies if needed."></a>Install dependencies if needed.</h4><p>For CentOS:</p>
-<figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>yum -y groupinstall <span class="string">&quot;Development Tools&quot;</span></span><br><span class="line"><span class="variable">$ </span>yum -y install pciutils</span><br><span class="line"><span class="variable">$ </span>yum -y install libudev-devel</span><br><span class="line"><span class="variable">$ </span>yum -y install kernel-devel-<span class="variable">$(</span>uname -r)</span><br><span class="line"><span class="variable">$ </span>yum -y install gcc</span><br><span class="line"><span class="variable">$ </span>yum -y install openssl-devel</span><br></pre></td></tr></table></figure>
-<p>For Ubuntu:</p>
-<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">$ apt-<span class="builtin-name">get</span> update</span><br><span class="line">$ apt-<span class="builtin-name">get</span> install pciutils-dev</span><br><span class="line">$ apt-<span class="builtin-name">get</span> install g++</span><br><span class="line">$ apt-<span class="builtin-name">get</span> install pkg-config</span><br><span class="line">$ apt-<span class="builtin-name">get</span> install libssl-dev</span><br></pre></td></tr></table></figure>
-<h4 id="configure-make-and-make-install-the-software-packages"><a href="#configure-make-and-make-install-the-software-packages" class="headerlink" title="configure, make and make install the software packages."></a>configure, make and make install the software packages.</h4><figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="comment"># suggest to clear up the env if there is a previous or modified version installed</span></span><br><span class="line"><span class="variable">$ </span>make uninstall</span><br><span class="line"><span class="variable">$ </span>./configure --enable-icp-sriov=host  <span class="comment"># It fails if missing dependency package.</span></span><br><span class="line"><span class="variable">$ </span>make</span><br><span class="line"><span class="variable">$ </span>make install  </span><br><span class="line"><span class="variable">$ </span>service qat_service start  </span><br><span class="line"><span class="variable">$ </span>service qat_service_vfs start</span><br></pre></td></tr></table></figure>
-<p>NOTE: in Guest OS, enable the SR-IOV build on the host by using:</p>
-<figure class="highlight jboss-cli"><table><tr><td class="code"><pre><span class="line">$ <span class="string">./configure</span> <span class="params">--enable-icp-sriov=guest</span></span><br></pre></td></tr></table></figure>
-<h4 id="Verifying-SR-IOV-On-The-Host"><a href="#Verifying-SR-IOV-On-The-Host" class="headerlink" title="Verifying SR-IOV On The Host"></a>Verifying SR-IOV On The Host</h4><figure class="highlight llvm"><table><tr><td class="code"><pre><span class="line">$ lspci | grep <span class="number">37</span><span class="keyword">c</span><span class="number">9</span>  </span><br><span class="line"># <span class="keyword">or</span> </span><br><span class="line">$ lspci -d <span class="number">8086</span>:<span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line">$ lspci -d:<span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line">...</span><br><span class="line"><span class="number">01</span>:<span class="number">01.0</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">01.1</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">01.2</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line">...</span><br><span class="line"><span class="number">01</span>:<span class="number">01.7</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">02.0</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">02.1</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line">...</span><br><span class="line"><span class="number">01</span>:<span class="number">02.6</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">02.7</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br></pre></td></tr></table></figure>
-<p>Or using <code>adf_ctl</code></p>
-<figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>adf_ctl status</span><br></pre></td></tr></table></figure>
-<p>This utility can bring up/down device by ourselves.</p>
-<h4 id="Detailed-SR-IOV-enabling-please-refer-to-the-guide"><a href="#Detailed-SR-IOV-enabling-please-refer-to-the-guide" class="headerlink" title="Detailed SR-IOV enabling please refer to the guide."></a>Detailed SR-IOV enabling please refer to the guide.</h4><p>Please refer to:<br><a href="https://01.org/sites/default/files/downloads/330689qatvirtualizationappnoterev008us.pdf">https://01.org/sites/default/files/downloads/330689qatvirtualizationappnoterev008us.pdf</a></p>
+<p>可以通过podIP:containerPort来访问容器内应用。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> k get pod -owide</span></span><br><span class="line">NAME    READY   STATUS    RESTARTS   AGE    IP                  NODE  </span><br><span class="line">pod1    2/2     Running   0          133m   192.168.227.89   otcloud-node1   </span><br><span class="line">pod2    2/2     Running   0          47m    192.168.227.97   otcloud-node1   </span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">可以访问容器内应用</span></span><br><span class="line">curl 192.168.227.97:9080</span><br></pre></td></tr></table></figure>
+<p><strong>Notes：</strong></p>
+<p>如果一个pod里声明了多个容器，那么每个容器暴露的端口必须不同，否则容器启动会失败。（Address already in use）</p>
+<p><strong>更进一步</strong>，因为一个pod里的所有容器都共享网络namespace，所以它们共享IP，和端口。</p>
+<h2 id="targetPort"><a href="#targetPort" class="headerlink" title="targetPort"></a>targetPort</h2><p>是<strong>Service</strong>资源里的一个概念，在service的声明中使用。</p>
+<p>targetPort是Pod上的端口，从port/nodePort上来的数据，经过kube-proxy流入到后端pod的targetPort上，最后进入容器。</p>
+<p>如果不指明targetPort，默认targetPort和service暴露的port一致。</p>
+<p>下面是一个service的声明：</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">productpage</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">productpage</span></span><br><span class="line">    <span class="attr">service:</span> <span class="string">productpage</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">port:</span> <span class="number">9999</span>  <span class="comment"># clusterip:port </span></span><br><span class="line">    <span class="comment"># targetPort: 9080 # 如果不写，默认是9999</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">http</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">productpage</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"> k describe svc productpage</span><br><span class="line">Name:              productpage</span><br><span class="line">Namespace:         default</span><br><span class="line">Labels:            app=productpage</span><br><span class="line">                   service=productpage</span><br><span class="line">Annotations:       &lt;none&gt;</span><br><span class="line">Selector:          app=productpage</span><br><span class="line">Type:              ClusterIP</span><br><span class="line">IP Families:       &lt;none&gt;</span><br><span class="line">IP:                10.97.239.58</span><br><span class="line">IPs:               10.97.239.58</span><br><span class="line">Port:              http  9999/TCP  </span><br><span class="line">TargetPort:        9999/TCP  # 9999 和上面container暴露的接口不一致，访问一定会失败</span><br><span class="line">Endpoints:         192.168.227.97:9999</span><br><span class="line">Session Affinity:  None</span><br><span class="line">Events:            &lt;none&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><strong>解决方法：</strong></p>
+<ol>
+<li>显式地声明targetPort: 9080</li>
+<li>使用9080作为port，这样targetport也是9080，就可以和container port连接起来。</li>
+</ol>
+<p>这里我们把targetPort显式的写成9080，会得到：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"> k describe svc productpage</span><br><span class="line">Name:              productpage</span><br><span class="line">Namespace:         default</span><br><span class="line">Labels:            app=productpage</span><br><span class="line">                   service=productpage</span><br><span class="line">Annotations:       &lt;none&gt;</span><br><span class="line">Selector:          app=productpage</span><br><span class="line">Type:              ClusterIP</span><br><span class="line">IP Families:       &lt;none&gt;</span><br><span class="line">IP:                10.97.239.58 # cluster IP！</span><br><span class="line">IPs:               10.97.239.58</span><br><span class="line">Port:              http  9999/TCP # 注意！</span><br><span class="line">TargetPort:        9080/TCP  # 注意！</span><br><span class="line">Endpoints:         192.168.227.97:9080 # 注意！</span><br><span class="line">Session Affinity:  None</span><br><span class="line">Events:            &lt;none&gt;</span><br></pre></td></tr></table></figure>
+<p>这个service的细节要好好研究一下。</p>
+<p><strong>IP：</strong>Service的cluster IP。</p>
+<p><strong>Port：</strong>Service的cluster IP暴露的接口。</p>
+<p><strong>TargetPort：</strong>容器暴露的接口。</p>
+<p><strong>Endpoint：</strong> podIP:targetPort，注意这里是targetPort，不是containerPort。</p>
+<p>又有访问容器内应用的新方式：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> clusterIP:port</span></span><br><span class="line">curl 10.97.239.58:9999</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> by endpoint, 跟containerPort里讲到的实际是一样的</span></span><br><span class="line">curl 192.168.227.97:9080</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="Port"><a href="#Port" class="headerlink" title="Port"></a>Port</h2><p>上面讲的差不多了，也是<strong>service</strong>里的概念，是指在clusterIP上暴露的端口，是一个虚拟的东西。</p>
+<p>clusterIP：虚拟的IP，在集群内可以相互访问。它只是存在service的规则当中。 <strong>注意，它不是podIP。</strong></p>
+<h2 id="nodePort"><a href="#nodePort" class="headerlink" title="nodePort"></a>nodePort</h2><p>nodePort 提供了<strong>集群外</strong>部客户端访问 Service 的一种方式，nodePort 提供了集群外部客户端访问 Service 的端口，通过 <code>nodeIP:nodePort</code> 提供了外部流量访问k8s集群中service的入口。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> k get svc -owide</span></span><br><span class="line">NAME          TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)         AGE    SELECTOR</span><br><span class="line">productpage   NodePort    10.97.239.58   &lt;none&gt;       9999:30066/TCP  25m app=productpage</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> k describe svc productpage</span></span><br><span class="line">Name:                     productpage</span><br><span class="line">Namespace:                default</span><br><span class="line">Labels:                   app=productpage</span><br><span class="line">                          service=productpage</span><br><span class="line">Annotations:              &lt;none&gt;</span><br><span class="line">Selector:                 app=productpage</span><br><span class="line">Type:                     NodePort</span><br><span class="line">IP Families:              &lt;none&gt;</span><br><span class="line">IP:                       10.97.239.58</span><br><span class="line">IPs:                      10.97.239.58</span><br><span class="line">Port:                     http  9999/TCP</span><br><span class="line">TargetPort:               9080/TCP</span><br><span class="line">NodePort:                 http  30066/TCP  # 在host node上暴露的端口</span><br><span class="line">Endpoints:                192.168.227.97:9080</span><br><span class="line">Session Affinity:         None</span><br><span class="line">External Traffic Policy:  Cluster</span><br><span class="line">Events:                   &lt;none&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>又一种新的访问方式：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">hostIP:nodeport</span></span><br><span class="line">curl localhost:30066</span><br></pre></td></tr></table></figure>
+
+
+<p>总结：</p>
+<p><img src="/posts/3836ec52/image-20210308190947963.png" alt="image-20210308190947963"></p>
+<p>三种访问方式以及范围：</p>
+<table>
+<thead>
+<tr>
+<th>方式</th>
+<th>范围</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>podIP:targetPort</td>
+<td>和pod在同一个网络下</td>
+</tr>
+<tr>
+<td>clusterIP:port</td>
+<td>在集群中</td>
+</tr>
+<tr>
+<td>hostIP:nodeport</td>
+<td>主机之间也可以访问</td>
+</tr>
+</tbody></table>
 ]]></content>
       <categories>
-        <category>deploy</category>
+        <category>kubernetes</category>
       </categories>
-      <tags>
-        <tag>qat</tag>
-      </tags>
   </entry>
   <entry>
     <title>公司内部ssh设置socks代理</title>
     <url>/posts/a9be766e.html</url>
-    <content><![CDATA[<a id="more"></a>
-
-<blockquote>
+    <content><![CDATA[<blockquote>
 <p><a href="https://intelpedia.intel.com/Proxy_at_Intel">Proxy at Intel - Intelpedia</a></p>
 <p>因为公司设置了vpn，所以通过公司电脑访问外网时需要通过代理（http, https, socks等）。</p>
 </blockquote>
@@ -1265,8 +1192,6 @@
     <content><![CDATA[<blockquote>
 <p>工具：<br>shadowsocks-libev<br>google vm</p>
 </blockquote>
-<a id="more"></a>
-
 <h2 id="google-vm的基本配置"><a href="#google-vm的基本配置" class="headerlink" title="google vm的基本配置"></a>google vm的基本配置</h2><h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><p>具体创建步骤略，需要一个绑定一个海外银行卡。</p>
 <p>下面是我创建的虚拟机。</p>
 <p><img src="/posts/a838020d/image-20210220162859580.png" alt="image-20210220162859580"></p>
@@ -1290,9 +1215,7 @@
   <entry>
     <title>tls和mtls比较</title>
     <url>/posts/425c0d17.html</url>
-    <content><![CDATA[<a id="more"></a>
-
-<h2 id="TLS"><a href="#TLS" class="headerlink" title="TLS"></a>TLS</h2><p>源于SSL，后改名TLS（Transport Layer Security）</p>
+    <content><![CDATA[<h2 id="TLS"><a href="#TLS" class="headerlink" title="TLS"></a>TLS</h2><p>源于SSL，后改名TLS（Transport Layer Security）</p>
 <ol>
 <li>可以实现通讯双方的身份认证，应用数据加密。</li>
 <li>与上层的应用层协议无耦合，应用层协议能透明地运行在TLS协议构建的安全通道之上。</li>
@@ -1309,11 +1232,45 @@
 ]]></content>
   </entry>
   <entry>
+    <title>QAT在Ubuntu18.04上的安装和虚拟化</title>
+    <url>/posts/461bb783.html</url>
+    <content><![CDATA[<p>本文将介绍QAT c62xx设备在Ubuntu 18.04上的安装部署和虚拟化。</p>
+<blockquote>
+<p>参考网站：<a href="https://01.org/intel-quickassist-technology">https://01.org/intel-quickassist-technology</a></p>
+</blockquote>
+<h3 id="Prerequisite"><a href="#Prerequisite" class="headerlink" title="Prerequisite"></a>Prerequisite</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> uname -a</span></span><br><span class="line">Linux tme-prc002 5.3.0-53-generic #47~18.04.1-Ubuntu SMP Thu May 7 13:10:50 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux</span><br></pre></td></tr></table></figure>
+<h3 id="Updating-grub-Configuration-File"><a href="#Updating-grub-Configuration-File" class="headerlink" title="Updating grub Configuration File"></a>Updating grub Configuration File</h3><p>To enable IOMMU and SRIOV</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo vim /etc/default/grub</span><br></pre></td></tr></table></figure>
+<p>Modify <code>GRUB_CMDLINE_LINUX_DEFAULT=&quot;quiet splash&quot;</code> to <code>&quot;quiet splash intel_iommu=on&quot;</code></p>
+<p>Update grub and reboot:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">update-grub</span><br><span class="line">sudo reboot</span><br></pre></td></tr></table></figure>
+<h3 id="Building-and-Installing-Software"><a href="#Building-and-Installing-Software" class="headerlink" title="Building and Installing Software"></a>Building and Installing Software</h3><h4 id="Create-a-working-directory-for-the-software-This-directory-can-be-user-defined-but"><a href="#Create-a-working-directory-for-the-software-This-directory-can-be-user-defined-but" class="headerlink" title="Create a working directory for the software. This directory can be user defined, but"></a>Create a working directory for the software. This directory can be user defined, but</h4><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="variable">$</span> <span class="built_in">cd</span> <span class="variable">$HOME</span> </span><br><span class="line"><span class="variable">$</span> mkdir /QAT</span><br><span class="line"><span class="variable">$</span> <span class="built_in">cd</span> /QAT</span><br></pre></td></tr></table></figure>
+<h4 id="Download-the-software"><a href="#Download-the-software" class="headerlink" title="Download the software."></a>Download the software.</h4><figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">curl -O https:<span class="regexp">//</span><span class="number">01</span>.org<span class="regexp">/sites/</span>default<span class="regexp">/files/</span>downloads<span class="regexp">/intelr-quickassist-technology/</span>qat1.<span class="number">7</span>.l.<span class="number">4.3</span>.<span class="number">0</span>-<span class="number">00033</span>.tar.gz</span><br></pre></td></tr></table></figure>
+<h4 id="Unpack-the-software"><a href="#Unpack-the-software" class="headerlink" title="Unpack the software."></a>Unpack the software.</h4><figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>tar -zxof &lt;QAT tarball name&gt;  </span><br><span class="line"><span class="variable">$ </span>chmod -R o-rwx *</span><br></pre></td></tr></table></figure>
+<h4 id="Install-dependencies-if-needed"><a href="#Install-dependencies-if-needed" class="headerlink" title="Install dependencies if needed."></a>Install dependencies if needed.</h4><p>For CentOS:</p>
+<figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>yum -y groupinstall <span class="string">&quot;Development Tools&quot;</span></span><br><span class="line"><span class="variable">$ </span>yum -y install pciutils</span><br><span class="line"><span class="variable">$ </span>yum -y install libudev-devel</span><br><span class="line"><span class="variable">$ </span>yum -y install kernel-devel-<span class="variable">$(</span>uname -r)</span><br><span class="line"><span class="variable">$ </span>yum -y install gcc</span><br><span class="line"><span class="variable">$ </span>yum -y install openssl-devel</span><br></pre></td></tr></table></figure>
+<p>For Ubuntu:</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">$ apt-<span class="builtin-name">get</span> update</span><br><span class="line">$ apt-<span class="builtin-name">get</span> install pciutils-dev</span><br><span class="line">$ apt-<span class="builtin-name">get</span> install g++</span><br><span class="line">$ apt-<span class="builtin-name">get</span> install pkg-config</span><br><span class="line">$ apt-<span class="builtin-name">get</span> install libssl-dev</span><br></pre></td></tr></table></figure>
+<h4 id="configure-make-and-make-install-the-software-packages"><a href="#configure-make-and-make-install-the-software-packages" class="headerlink" title="configure, make and make install the software packages."></a>configure, make and make install the software packages.</h4><figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="comment"># suggest to clear up the env if there is a previous or modified version installed</span></span><br><span class="line"><span class="variable">$ </span>make uninstall</span><br><span class="line"><span class="variable">$ </span>./configure --enable-icp-sriov=host  <span class="comment"># It fails if missing dependency package.</span></span><br><span class="line"><span class="variable">$ </span>make</span><br><span class="line"><span class="variable">$ </span>make install  </span><br><span class="line"><span class="variable">$ </span>service qat_service start  </span><br><span class="line"><span class="variable">$ </span>service qat_service_vfs start</span><br></pre></td></tr></table></figure>
+<p>NOTE: in Guest OS, enable the SR-IOV build on the host by using:</p>
+<figure class="highlight jboss-cli"><table><tr><td class="code"><pre><span class="line">$ <span class="string">./configure</span> <span class="params">--enable-icp-sriov=guest</span></span><br></pre></td></tr></table></figure>
+<h4 id="Verifying-SR-IOV-On-The-Host"><a href="#Verifying-SR-IOV-On-The-Host" class="headerlink" title="Verifying SR-IOV On The Host"></a>Verifying SR-IOV On The Host</h4><figure class="highlight llvm"><table><tr><td class="code"><pre><span class="line">$ lspci | grep <span class="number">37</span><span class="keyword">c</span><span class="number">9</span>  </span><br><span class="line"># <span class="keyword">or</span> </span><br><span class="line">$ lspci -d <span class="number">8086</span>:<span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line">$ lspci -d:<span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line">...</span><br><span class="line"><span class="number">01</span>:<span class="number">01.0</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">01.1</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">01.2</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line">...</span><br><span class="line"><span class="number">01</span>:<span class="number">01.7</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">02.0</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">02.1</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line">...</span><br><span class="line"><span class="number">01</span>:<span class="number">02.6</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">02.7</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br></pre></td></tr></table></figure>
+<p>Or using <code>adf_ctl</code></p>
+<figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>adf_ctl status</span><br></pre></td></tr></table></figure>
+<p>This utility can bring up/down device by ourselves.</p>
+<h4 id="Detailed-SR-IOV-enabling-please-refer-to-the-guide"><a href="#Detailed-SR-IOV-enabling-please-refer-to-the-guide" class="headerlink" title="Detailed SR-IOV enabling please refer to the guide."></a>Detailed SR-IOV enabling please refer to the guide.</h4><p>Please refer to:<br><a href="https://01.org/sites/default/files/downloads/330689qatvirtualizationappnoterev008us.pdf">https://01.org/sites/default/files/downloads/330689qatvirtualizationappnoterev008us.pdf</a></p>
+]]></content>
+      <categories>
+        <category>deploy</category>
+      </categories>
+      <tags>
+        <tag>qat</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>在mac上用vagrant和virtualbox创建虚拟机</title>
     <url>/posts/e1d7a8.html</url>
-    <content><![CDATA[<a id="more"></a>
-
-<h2 id="vagrant介绍"><a href="#vagrant介绍" class="headerlink" title="vagrant介绍"></a>vagrant介绍</h2><p>基于ruby，用于创建和部署虚拟化开发环境。它 使用Oracle的开源<a href="https://baike.baidu.com/item/VirtualBox">VirtualBox</a>虚拟化系统，使用 Chef创建自动化虚拟环境。我们可以使用它来干如下这些事：</p>
+    <content><![CDATA[<h2 id="vagrant介绍"><a href="#vagrant介绍" class="headerlink" title="vagrant介绍"></a>vagrant介绍</h2><p>基于ruby，用于创建和部署虚拟化开发环境。它 使用Oracle的开源<a href="https://baike.baidu.com/item/VirtualBox">VirtualBox</a>虚拟化系统，使用 Chef创建自动化虚拟环境。我们可以使用它来干如下这些事：</p>
 <ul>
 <li><p>建立和删除虚拟机</p>
 </li>
@@ -1357,9 +1314,7 @@
   <entry>
     <title>在centos8上使能vca-a卡</title>
     <url>/posts/dd7abf56.html</url>
-    <content><![CDATA[<a id="more"></a>
-
-<h2 id="vca卡的内部结构"><a href="#vca卡的内部结构" class="headerlink" title="vca卡的内部结构"></a>vca卡的内部结构</h2><p><img src="/posts/dd7abf56/image-20210202160154068.png" alt="image-20210202160154068"></p>
+    <content><![CDATA[<h2 id="vca卡的内部结构"><a href="#vca卡的内部结构" class="headerlink" title="vca卡的内部结构"></a>vca卡的内部结构</h2><p><img src="/posts/dd7abf56/image-20210202160154068.png" alt="image-20210202160154068"></p>
 <ul>
 <li><p>一块kabylake CPU，上面带一个Intel GFX 610集成显卡。</p>
 </li>
@@ -1422,6 +1377,68 @@
       <tags>
         <tag>device</tag>
         <tag>intel</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>在centos上修改源并安装docker</title>
+    <url>/posts/8d209cf6.html</url>
+    <content><![CDATA[<h3 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h3><p>在mac上用vagrant起了一个centos8的vm。</p>
+<h3 id="换系统yum源"><a href="#换系统yum源" class="headerlink" title="换系统yum源"></a>换系统yum源</h3><blockquote>
+<p>这里换的是清华的源。</p>
+<p> 参考：<a href="https://mirrors.tuna.tsinghua.edu.cn/help/centos/">https://mirrors.tuna.tsinghua.edu.cn/help/centos/</a></p>
+</blockquote>
+<p>建议先备份 <code>/etc/yum.repos.d/</code> 内的文件（CentOS 7 及之前为 <code>CentOS-Base.repo</code>，CentOS 8 为<code>CentOS-Linux-*.repo</code>）</p>
+<p>然后编辑 <code>/etc/yum.repos.d/</code> 中的相应文件，在 <code>mirrorlist=</code> 开头行前面加 <code>#</code> 注释掉；并将 <code>baseurl=</code> 开头行取消注释（如果被注释的话），把该行内的域名（例如<code>mirror.centos.org</code>）替换为 <code>mirrors.tuna.tsinghua.edu.cn</code>。</p>
+<p>以上步骤可以被下方的命令一步完成</p>
+<figure class="highlight coq"><table><tr><td class="code"><pre><span class="line">sudo sed -e &#x27;s|<span class="type">^mirrorlist</span>=|<span class="type">#mirrorlist</span>=|<span class="type">g</span>&#x27; \</span><br><span class="line">         -e &#x27;s|<span class="type">^#baseurl</span>=http://mirror.centos.org|<span class="type">baseurl</span>=https://mirrors.tuna.tsinghua.edu.cn|<span class="type">g</span>&#x27; \</span><br><span class="line">         -i.bak \</span><br><span class="line">         /etc/yum.repos.d/CentOS-*.repo</span><br></pre></td></tr></table></figure>
+<p>注意其中的<code>*</code>通配符，如果只需要替换一些文件中的源，请自行增删。</p>
+<p>注意，如果需要启用其中一些 repo，需要将其中的 <code>enabled=0</code> 改为 <code>enabled=1</code>。</p>
+<p>最后，更新软件包缓存</p>
+<figure class="highlight ebnf"><table><tr><td class="code"><pre><span class="line"><span class="attribute">sudo yum makecache</span></span><br></pre></td></tr></table></figure>
+<p>这时下载常用的软件包就已经变快了。</p>
+<h3 id="换下载docker的源"><a href="#换下载docker的源" class="headerlink" title="换下载docker的源"></a>换下载docker的源</h3><blockquote>
+<p>参考：<a href="https://mirrors.tuna.tsinghua.edu.cn/help/docker-ce/">https://mirrors.tuna.tsinghua.edu.cn/help/docker-ce/</a></p>
+</blockquote>
+<p>然后我根据docker的官方文档安装docker，发现yum install docker-ce的时候特别慢。原因是官方文档配置的docker源repo是国外的，国外访问很慢。于是去网上找了清华的源。</p>
+<p>如果你之前安装过 docker，请先删掉</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">sudo yum <span class="builtin-name">remove</span> docker docker-common docker-selinux docker-engine</span><br></pre></td></tr></table></figure>
+<p>安装一些依赖</p>
+<figure class="highlight gml"><table><tr><td class="code"><pre><span class="line">sudo yum install -<span class="symbol">y</span> yum-utils device-mapper-<span class="symbol">persistent</span>-data lvm2</span><br></pre></td></tr></table></figure>
+<p>根据你的发行版下载repo文件: CentOS/RHEL Fedora</p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">wget -O <span class="regexp">/etc/yum</span>.repos.d<span class="regexp">/docker-ce.repo https:/</span><span class="regexp">/download.docker.com/</span>linux<span class="regexp">/centos/</span>docker-ce.repo</span><br></pre></td></tr></table></figure>
+<p>把软件仓库地址替换为 TUNA，这一步很关键，大部分网上的博客都没有提到，如果没有这一步，其实还是使用的国外的docker官方的源:</p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">sudo sed -i <span class="string">&#x27;s+download.docker.com+mirrors.tuna.tsinghua.edu.cn/docker-ce+&#x27;</span> <span class="regexp">/etc/yum</span>.repos.d/docker-ce.repo</span><br></pre></td></tr></table></figure>
+<p>最后安装:</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line">sudo yum makecache</span><br><span class="line">sudo yum <span class="keyword">install</span> docker-ce</span><br></pre></td></tr></table></figure>
+<h3 id="换docker镜像源"><a href="#换docker镜像源" class="headerlink" title="换docker镜像源"></a>换docker镜像源</h3><p>docker默认源在国外，同样很慢。我们可以通过修改docker配置更改docker image的源。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 查看docker daemon config</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ls /etc/docker/daemon.json</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 如果文件不存在就创建一个</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo touch /etc/docker/daemon.json</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vi /etc/docker/daemon.json</span></span><br><span class="line">&#123;</span><br><span class="line">    &quot;registry-mirrors&quot; : [</span><br><span class="line">    &quot;https://registry.docker-cn.com&quot;,</span><br><span class="line">    &quot;https://docker.mirrors.ustc.edu.cn&quot;,</span><br><span class="line">    &quot;http://hub-mirror.c.163.com&quot;,</span><br><span class="line">    &quot;https://cr.console.aliyun.com/&quot;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo systemctl restart docker.service</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="docker-permission-denied"><a href="#docker-permission-denied" class="headerlink" title="docker permission denied"></a>docker permission denied</h3><p>这个问题特别常见，就是我们在安装完docker之后，发现docker指令必须在root权限下运行，这时因为我们当前的用户没有被加入到docker组里。</p>
+<h4 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h4><p>2.1、添加docker用户组</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">groupadd docker </span><br><span class="line"><span class="meta">#</span><span class="bash"> 一般都会提示docker用户组存在了。</span></span><br></pre></td></tr></table></figure>
+<p>2.2、把当前用户加入docker用户组</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">gpasswd -a $&#123;USER&#125; docker</span><br><span class="line"><span class="meta">#</span><span class="bash"> 或者 sudo usermod -aG docker <span class="variable">$&#123;USER&#125;</span> (未验证)</span></span><br></pre></td></tr></table></figure>
+<p>3、查看是否添加成功：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">cat /etc/group | grep ^docker</span><br></pre></td></tr></table></figure>
+<p>4、重启docker</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">serivce docker restart</span><br></pre></td></tr></table></figure>
+<p>5、更新用户组</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">newgrp docker </span><br></pre></td></tr></table></figure>
+<p>6、测试docker命令是否可以使用sudo正常使用</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker ps</span><br></pre></td></tr></table></figure>
+
+
+
+
+<h1 id="docker-graph是什么东西啊"><a href="#docker-graph是什么东西啊" class="headerlink" title="docker graph是什么东西啊"></a>docker graph是什么东西啊</h1><p>The <code>-g</code> or <code>--graph</code> flag for the <code>dockerd</code> or <code>docker daemon</code> command was used to indicate the directory in which to store persistent data and resource configuration and has been replaced with the more descriptive <code>--data-root</code> flag.</p>
+]]></content>
+      <categories>
+        <category>deploy</category>
+      </categories>
+      <tags>
+        <tag>docker</tag>
+        <tag>deploy</tag>
       </tags>
   </entry>
 </search>

@@ -238,7 +238,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-08 16:55:37" itemprop="dateModified" datetime="2021-05-08T16:55:37+08:00">2021-05-08</time>
+                <time title="修改时间：2021-05-08 17:42:34" itemprop="dateModified" datetime="2021-05-08T17:42:34+08:00">2021-05-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -277,42 +277,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <a id="more"></a>
-
-<h3 id="环境："><a href="#环境：" class="headerlink" title="环境："></a>环境：</h3><p>ubuntu20.04</p>
-<p>kubernete 1.20</p>
-<h3 id="Deploy-K8s-all-in-one-using-Kubeadm"><a href="#Deploy-K8s-all-in-one-using-Kubeadm" class="headerlink" title="Deploy K8s(all in one) using Kubeadm"></a>Deploy K8s(all in one) using Kubeadm</h3><h4 id="Install-docker"><a href="#Install-docker" class="headerlink" title="Install docker"></a>Install docker</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install docker.io</span><br><span class="line">sudo groupadd docker</span><br><span class="line">sudo usermod -aG docker <span class="variable">$&#123;USER&#125;</span>  <span class="comment"># To resolve permission errors</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># check </span></span><br><span class="line">docker ps -a</span><br><span class="line"></span><br><span class="line"><span class="comment"># docker hub login</span></span><br><span class="line">docker login</span><br><span class="line">username: xinranwang</span><br><span class="line">password: xxxxxxXf</span><br></pre></td></tr></table></figure>
-<h4 id="Install-Kubeadm"><a href="#Install-Kubeadm" class="headerlink" title="Install Kubeadm"></a>Install Kubeadm</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update &amp;&amp; sudo apt-get install -y apt-transport-https curl</span><br><span class="line">curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -</span><br><span class="line">cat &lt;&lt;EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list</span><br><span class="line">deb https://apt.kubernetes.io/ kubernetes-xenial main</span><br><span class="line">EOF</span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install -y kubelet kubeadm kubectl</span><br><span class="line">sudo apt-mark hold kubelet kubeadm kubectl</span><br></pre></td></tr></table></figure>
-<h4 id="Run-kubeadm"><a href="#Run-kubeadm" class="headerlink" title="Run kubeadm"></a>Run kubeadm</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo kubeadm init --pod-network-cidr=192.168.0.0/16</span><br><span class="line"></span><br><span class="line">mkdir -p $HOME/.kube</span><br><span class="line">sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config</span><br><span class="line">sudo chown $(id -u):$(id -g) $HOME/.kube/config</span><br></pre></td></tr></table></figure>
-<h4 id="Install-Calico"><a href="#Install-Calico" class="headerlink" title="Install Calico"></a>Install Calico</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">kubectl create -f https://docs.projectcalico.org/manifests/tigera-operator.yaml</span><br><span class="line">kubectl create -f https://docs.projectcalico.org/manifests/custom-resources.yaml</span><br><span class="line">watch kubectl get pods -n calico-system</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> untaint master node</span></span><br><span class="line">kubectl taint nodes --all node-role.kubernetes.io/master-</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> check</span></span><br><span class="line">kubectl get nodes -o wide</span><br></pre></td></tr></table></figure>
-<h4 id="Install-Istio"><a href="#Install-Istio" class="headerlink" title="Install Istio"></a>Install Istio</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">curl -L https://istio.io/downloadIstio | sh -</span><br><span class="line">export PATH=&quot;$PATH:/home/ubuntu/istio-1.9.0/bin&quot;</span><br><span class="line">cd istio-1.9.0</span><br><span class="line">istioctl install </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> all pods <span class="keyword">in</span> <span class="string">&quot;default&quot;</span> ns will have the sidecar</span></span><br><span class="line">kubectl label namespace default istio-injection=enabled</span><br></pre></td></tr></table></figure>
-<h4 id="Deploy-sample"><a href="#Deploy-sample" class="headerlink" title="Deploy sample"></a>Deploy sample</h4><p><a target="_blank" rel="noopener" href="https://istio.io/latest/docs/setup/getting-started/#bookinfo">https://istio.io/latest/docs/setup/getting-started/#bookinfo</a></p>
-<p><img src="/posts/f5beba55/image-20210303143623822.png" alt="image-20210303143623822"></p>
-<p>本机上（集群内），可以通过cluster IP访问：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> curl 10.106.23.203:9080</span></span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">  &lt;head&gt;</span><br><span class="line">    &lt;title&gt;Simple Bookstore App&lt;/title&gt;</span><br><span class="line">&lt;meta charset=&quot;utf-8&quot;&gt;</span><br><span class="line">&lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;</span><br><span class="line">&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- Latest compiled and minified CSS --&gt;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-
-
-<h5 id="集群外访问服务"><a href="#集群外访问服务" class="headerlink" title="集群外访问服务"></a>集群外访问服务</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> kubectl apply -f samples/bookinfo/networking/bookinfo-gateway.yaml</span></span><br><span class="line">gateway.networking.istio.io/bookinfo-gateway created</span><br><span class="line">virtualservice.networking.istio.io/bookinfo created</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> istioctl analyze</span></span><br><span class="line">✔ No validation issues found when analyzing namespace: default.</span><br></pre></td></tr></table></figure>
-<p><img src="/posts/f5beba55/image-20210303144837821.png" alt="image-20210303144837821"></p>
-<p>因为我的系统不支持external loadbalancer，所以要通过nodeport的方式暴露host的接口，才可以在本机用<code>localhost:nodeport</code>来访问。</p>
-<img src="/posts/f5beba55/image-20210303144916013.png" alt="image-20210303144916013" style="zoom:80%;">
-
-<h4 id="Install-Dashboard"><a href="#Install-Dashboard" class="headerlink" title="Install Dashboard"></a>Install Dashboard</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> kubectl apply -f samples/addons $ kubectl rollout status deployment/kiali -n istio-system</span></span><br><span class="line"></span><br><span class="line">Waiting for deployment &quot;kiali&quot; rollout to finish: 0 of 1 updated replicas are available... deployment &quot;kiali&quot; successfully rolled out</span><br></pre></td></tr></table></figure>
- <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> istioctl dashboard kiali</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 因为是remote server，需要建立一个tunnel</span></span><br><span class="line">http://localhost:20001/kiali</span><br><span class="line">Failed to open browser; open http://localhost:20001/kiali in your browser.</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h5 id="建立tunnel"><a href="#建立tunnel" class="headerlink" title="建立tunnel"></a>建立tunnel</h5><p><img src="/posts/f5beba55/image-20210303145356395.png" alt="image-20210303145356395"></p>
-<p><img src="/posts/f5beba55/image-20210303145757231.png" alt="image-20210303145757231"></p>
-<p>解释上图：把remote上的所有开放端口，都通过跳板机jumper的22端口转发到本地机器的<strong>8888</strong>端口。在本地的浏览器里设置socks proxy，将本地机器的访问全部转发到<strong>8888</strong>端口，这样就可以完成通过跳板机的端口转发。</p>
-<h5 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h5><p>即使按上述设置了，还是访问不到kiali dashboard。追查到原因是：</p>
-<p><code>~/istio-xxxx/samples/addons/kiali.yaml</code></p>
-<p>这个文件里声明了kiali service:</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">kiali</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">istio-system</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">helm.sh/chart:</span> <span class="string">kiali-server-1.29.0</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">kiali</span></span><br><span class="line">    <span class="attr">app.kubernetes.io/name:</span> <span class="string">kiali</span></span><br><span class="line">    <span class="attr">app.kubernetes.io/instance:</span> <span class="string">kiali-server</span></span><br><span class="line">    <span class="attr">version:</span> <span class="string">&quot;v1.29.0&quot;</span></span><br><span class="line">    <span class="attr">app.kubernetes.io/version:</span> <span class="string">&quot;v1.29.0&quot;</span></span><br><span class="line">    <span class="attr">app.kubernetes.io/managed-by:</span> <span class="string">Helm</span></span><br><span class="line">    <span class="attr">app.kubernetes.io/part-of:</span> <span class="string">&quot;kiali&quot;</span></span><br><span class="line">  <span class="attr">annotations:</span></span><br><span class="line">    <span class="attr">kiali.io/api-spec:</span> <span class="string">https://kiali.io/api</span></span><br><span class="line">    <span class="attr">kiali.io/api-type:</span> <span class="string">rest</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">http</span></span><br><span class="line">    <span class="attr">protocol:</span> <span class="string">TCP</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">20001</span></span><br><span class="line">    <span class="attr">nodePort:</span> <span class="number">30007</span>   <span class="comment"># 增加nodeport</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">http-metrics</span></span><br><span class="line">    <span class="attr">protocol:</span> <span class="string">TCP</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">9090</span></span><br><span class="line">    <span class="comment"># nodePort: 30008  # 增加nodeport</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app.kubernetes.io/name:</span> <span class="string">kiali</span></span><br><span class="line">    <span class="attr">app.kubernetes.io/instance:</span> <span class="string">kiali-server</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">NodePort</span> <span class="comment"># 指定service的类型是nodeport，这样可以从cluster外访问（通过hostip/locahost）</span></span><br></pre></td></tr></table></figure>
-
-
-<p>可以通过<strong>remote_server_ip:nodeport</strong>访问dashboar。</p>
-<p><img src="/posts/f5beba55/image-20210303151337851.png" alt="image-20210303151337851"></p>
-<h4 id="卸载Uninstall"><a href="#卸载Uninstall" class="headerlink" title="卸载Uninstall"></a>卸载Uninstall</h4><p>Remove sample‘s resouces: <a target="_blank" rel="noopener" href="https://istio.io/latest/docs/examples/bookinfo/#cleanup">https://istio.io/latest/docs/examples/bookinfo/#cleanup</a></p>
-<p>Uninstall istio: <a target="_blank" rel="noopener" href="https://istio.io/latest/docs/setup/getting-started/#uninstall">https://istio.io/latest/docs/setup/getting-started/#uninstall</a></p>
-
+           
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/f5beba55.html">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -362,7 +335,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-08 16:55:24" itemprop="dateModified" datetime="2021-05-08T16:55:24+08:00">2021-05-08</time>
+                <time title="修改时间：2021-05-08 17:43:40" itemprop="dateModified" datetime="2021-05-08T17:43:40+08:00">2021-05-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -401,78 +374,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <a id="more"></a>
-
-<h2 id="service-mesh（服务网格）"><a href="#service-mesh（服务网格）" class="headerlink" title="service mesh（服务网格）"></a>service mesh（服务网格）</h2><p>Service Mesh通过一个个”代理” 来为微服务转发/接收所有流量，通过控制这些代理，就可以实现服务连接，注册，发现，负载均衡，熔断，监控等等一系列服务治理相关功能，从而微服务的代码不再需要服务治理的实现，换句话说，也就是服务治理对于微服务开发者而言是透明的。如下图所示：绿色方块为微服务，蓝色方块为 service mesh 的代理，蓝色线条为服务间通讯。可以看到蓝色的方块和线条组成了整个网格。这个网络就是 Service Mesh。</p>
-<img src="/posts/a94c45db/v2-638a9d12e8a7406b7a733f2eadf989f5_1440w.jpg" alt="img" style="zoom:30%;">
-
-<h2 id="Istio"><a href="#Istio" class="headerlink" title="Istio"></a>Istio</h2><p>Go编写，控制面。对应的数据面是通常是envoy（基于C++）</p>
-<h3 id="架构图"><a href="#架构图" class="headerlink" title="架构图"></a>架构图</h3><p><img src="/posts/a94c45db/arch.svg" alt="The overall architecture of an Istio-based application."></p>
-<h3 id="基本组件"><a href="#基本组件" class="headerlink" title="基本组件"></a>基本组件</h3><h4 id="envoy"><a href="#envoy" class="headerlink" title="envoy"></a>envoy</h4><p>以sidecar的形式运行在服务所在的pod中，所有service的流量进出都必须通过envoy proxy，用来控制service之间的访问，service是感知不到envoy proxy的存在。</p>
-<p>envoy可以和控制平面（istio的组件）双向交互，可以从istio拿到一些策略和服务发现的信息，同时也可以给istio传回一些监控的数据等等。</p>
-<h4 id="Istiod"><a href="#Istiod" class="headerlink" title="Istiod"></a>Istiod</h4><p>Istiod提供服务发现, 服务配置和证书管理。</p>
-<p>stiod acts as a Certificate Authority (CA) and generates certificates to allow secure mTLS communication in the data plane.</p>
-<h2 id="Istio的服务发现流程"><a href="#Istio的服务发现流程" class="headerlink" title="Istio的服务发现流程"></a>Istio的服务发现流程</h2><p><img src="/posts/a94c45db/image-20210226160141651.png" alt="image-20210226160141651"></p>
-<p>istio的pilot组件时负责服务发现的。在pilot里只有服务发现的定义，但是没有服务发现的实现，服务发现的实现是在pilot adapter对接的platform（比如k8s）里的。pilot adapter可以对接不同的平台，比如cloudfoudary，eurake，kubernetes，consul等等，但是k8s的适配最好，也是istio社区的重点。</p>
-<h3 id="isito和kubernetes服务概念对应关系"><a href="#isito和kubernetes服务概念对应关系" class="headerlink" title="isito和kubernetes服务概念对应关系"></a>isito和kubernetes服务概念对应关系</h3><table>
-<thead>
-<tr>
-<th align="center">isito</th>
-<th align="center">kubernetes</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">service</td>
-<td align="center">service</td>
-</tr>
-<tr>
-<td align="center">instance</td>
-<td align="center">endpoint</td>
-</tr>
-<tr>
-<td align="center">version</td>
-<td align="center">deployment</td>
-</tr>
-</tbody></table>
-<img src="/posts/a94c45db/image-20210309105852832.png" alt="image-20210309105852832" style="zoom:80%;">
-
-<p>每个envoy里都有全量的规则。（现在也是吗？？）</p>
-<p>Envoy （C++），CNCF毕业（kubernets，Prometheus之后）。</p>
-<p>xDS：</p>
-<p>listener（LDS）：</p>
-<p>routes（RDS）：</p>
-<p>cluster（CDS）：</p>
-<p>endpoint（EDS）：</p>
-<p>Envoy目前支持的三种LB：</p>
-<ol>
-<li>轮询round robin</li>
-<li>随机random</li>
-<li>加权weighted least request.</li>
-</ol>
-<p>Istio：</p>
-<p>用户可以配置（通过rules API）的CRD：</p>
-<p>gateway：</p>
-<p>virtualservice：</p>
-<p>destinationrule：</p>
-<p>serviceEntry：</p>
-<h3 id="Pilot"><a href="#Pilot" class="headerlink" title="Pilot"></a>Pilot</h3><p><img src="/posts/a94c45db/image-20210423095618162.png" alt="image-20210423095618162"></p>
-<ol>
-<li>平台适配层: 将不同的平台资源和istio的抽象模型相互转换。</li>
-<li>xds API： envoy API</li>
-</ol>
-<h3 id="citadel："><a href="#citadel：" class="headerlink" title="citadel："></a>citadel：</h3><p>没有citadel的时候，就是end to end的非对称密钥交换，然后对称加密传输数据。</p>
-<p>citadel：就是存储证书，发放证书的一个东西。</p>
-<h3 id="Galley"><a href="#Galley" class="headerlink" title="Galley"></a>Galley</h3><p>istio自身创建的CRD有50多种，可以理解成验证，解析，管理CRD的东西。</p>
-<h3 id="Mixer"><a href="#Mixer" class="headerlink" title="Mixer"></a>Mixer</h3><p>1.7之后弃用，下放到envoy里。telemetry v2是在istio里？</p>
-<h3 id="其他解决方案"><a href="#其他解决方案" class="headerlink" title="其他解决方案"></a>其他解决方案</h3><p>sofamesh蚂蚁金服，用<strong>mosn</strong>替换envoy，golang，合并mixer，增强pilot，增加对sofa rpc， dubbo的支持。</p>
-<p>linkerd =  control plane + data plane</p>
-<p>linkerd v1可以脱离k8s</p>
-<p>linkerd v2和k8s紧耦合</p>
-<p>consul</p>
-<p>192.168.0.195 zhang</p>
-<p>192.168.0.196 ci</p>
-<p>192.168.0.199 zhang</p>
-
+           
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/a94c45db.html">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -522,7 +432,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-08 16:54:37" itemprop="dateModified" datetime="2021-05-08T16:54:37+08:00">2021-05-08</time>
+                <time title="修改时间：2021-05-08 17:43:17" itemprop="dateModified" datetime="2021-05-08T17:43:17+08:00">2021-05-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -561,57 +471,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <a id="more"></a>
-
-<img src="/posts/6ac22eb/image-20210225180738908.png" alt="image-20210225180738908" style="zoom:67%;">
-
-<blockquote>
-<p>参考：<a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1688297">https://cloud.tencent.com/developer/article/1688297</a></p>
-</blockquote>
-<h2 id="简单的理解"><a href="#简单的理解" class="headerlink" title="简单的理解"></a>简单的理解</h2><p>对于操作系统来说，一个任务就是一个进程（<strong>Process</strong>），比如打开一个浏览器就是启动一个浏览器进程，打开一个记事本就启动了一个记事本进程，打开两个记事本就启动了两个记事本进程，打开一个Word就启动了一个Word进程。</p>
-<p>有些进程还不止同时干一件事，比如Word，它可以同时进行打字、拼写检查、打印等事情。在一个进程内部，要同时干多件事，就需要同时运行多个“子任务”，我们把进程内的这些“子任务”称为线程（<strong>Thread</strong>）。</p>
-<h2 id="并行和并发"><a href="#并行和并发" class="headerlink" title="并行和并发"></a>并行和并发</h2><p>并行是真正的同时运行，需要多核。</p>
-<p>并发只是看起来同时运行，最常见的就是<strong>时间片轮转调度算法</strong>。</p>
-<h2 id="进程和线程的区别"><a href="#进程和线程的区别" class="headerlink" title="进程和线程的区别"></a>进程和线程的区别</h2><p><strong>共享同一地址空间</strong>（也就是同样的<strong>动态内存，映射文件，目标代码等等</strong>），<strong>打开的文件队列和其他内核资源</strong>。</p>
-<h5 id><a href="#" class="headerlink" title></a></h5><table>
-<thead>
-<tr>
-<th align="center">进程</th>
-<th align="center">线程</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">有独立的地址空间</td>
-<td align="center">有自己的栈和局部变量，但没有单独的地址空间。<br>同一进程中的多个线程共享代码段（代码和常量），数据段（全局变量和静态变量），扩展段（堆存储）。<br>但是每个线程拥有自己的栈段，栈段又叫运行时段，用来存放所有局部变量和临时变量。）</td>
-</tr>
-<tr>
-<td align="center">在保护模式下不会对其它进程产生影响</td>
-<td align="center">一个线程死掉就等于整个进程死掉</td>
-</tr>
-<tr>
-<td align="center">拥有独立的内存单元</td>
-<td align="center">共享进程的内存</td>
-</tr>
-<tr>
-<td align="center">管道、系统IPC（包括<a target="_blank" rel="noopener" href="https://cloud.tencent.com/product/cmq?from=10680">消息队列</a>、信号量、信号、共享内存等）、以及套接字socket</td>
-<td align="center">可以直接读写进程数据段和全局变量（互斥锁，信号量）</td>
-</tr>
-<tr>
-<td align="center">上下文切换慢</td>
-<td align="center">进程上下文切换快</td>
-</tr>
-<tr>
-<td align="center"><strong>进程是操作系统分配资源的单位</strong></td>
-<td align="center"><strong>是CPU调度和分派执行的基本单位</strong></td>
-</tr>
-<tr>
-<td align="center">进程编程调试简单可靠性高，但是创建销毁开销大</td>
-<td align="center">线程正相反，开销小，切换速度快，但是编程调试相对复杂</td>
-</tr>
-</tbody></table>
-<p>创建线程的代价比创建进程的代价小很多，如下图：</p>
-<p><img src="/posts/6ac22eb/image-20210225181636565.png" alt="image-20210225181636565"></p>
-
+           
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/6ac22eb.html">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -661,7 +529,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-08 16:54:05" itemprop="dateModified" datetime="2021-05-08T16:54:05+08:00">2021-05-08</time>
+                <time title="修改时间：2021-05-08 17:41:36" itemprop="dateModified" datetime="2021-05-08T17:41:36+08:00">2021-05-08</time>
               </span>
 
           <br>
@@ -689,12 +557,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <blockquote>
-<p>工具：<br>shadowsocks-libev<br>google vm</p>
-</blockquote>
+           
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/posts/a838020d.html#more" rel="contents">
+              <a class="btn" href="/posts/a838020d.html">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -749,7 +615,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-08 16:55:06" itemprop="dateModified" datetime="2021-05-08T16:55:06+08:00">2021-05-08</time>
+                <time title="修改时间：2021-05-08 17:43:28" itemprop="dateModified" datetime="2021-05-08T17:43:28+08:00">2021-05-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -788,86 +654,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <a id="more"></a>
-
-<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><h3 id="1-速率相关性能指标"><a href="#1-速率相关性能指标" class="headerlink" title="1. 速率相关性能指标"></a>1. 速率相关性能指标</h3><h4 id="速率"><a href="#速率" class="headerlink" title="速率"></a>速率</h4><p>在数字信道上传输数据位的速度。单位: b/s,Kb/s,Mb/s,Tb/s，<br>如果用字节表示，则是B/s,KB/s,MB/s,TB/s（1Byte=8Bit）</p>
-<h4 id="带宽"><a href="#带宽" class="headerlink" title="带宽"></a>带宽</h4><p>单位同速率，指理想条件下的最高速率。</p>
-<h4 id="吞吐量"><a href="#吞吐量" class="headerlink" title="吞吐量"></a>吞吐量</h4><p>单位时间内通过某个网络的数据总量。</p>
-<h4 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h4><p>比如说1000M宽带的路由器连着三部手机，每部手机都是10mb/s看片，那么速率就是10mb/s，带宽是宽带的1000m，路由器吞吐量是30mb/s。</p>
-<img src="/posts/7c4ca347/image-20210208111213048.png" alt="image-20210208111213048" style="zoom:50%;">
-
-
-
-<h3 id="2-时延相关性能指标"><a href="#2-时延相关性能指标" class="headerlink" title="2. 时延相关性能指标"></a>2. 时延相关性能指标</h3><h4 id="时延"><a href="#时延" class="headerlink" title="时延"></a>时延</h4><table>
-<thead>
-<tr>
-<th>名称</th>
-<th>描述</th>
-<th>计算公式</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>发送时延</td>
-<td>数据从主机到信道上所用的时间</td>
-<td>发送的数据长度/发送速率</td>
-</tr>
-<tr>
-<td>传播时延</td>
-<td>数据在信道上传播所花费的时间</td>
-<td>信道长度/电磁波在信道上传播的速率</td>
-</tr>
-<tr>
-<td>排队时延</td>
-<td>数据在路由器前等待前面数据处理的时间</td>
-<td>无计算方式</td>
-</tr>
-<tr>
-<td>处理时延</td>
-<td>数据在路由器中处理需求的时间</td>
-<td>无计算方式</td>
-</tr>
-</tbody></table>
-<h4 id="时延带宽积"><a href="#时延带宽积" class="headerlink" title="时延带宽积"></a>时延带宽积</h4><p>传播时延*带宽</p>
-<p>表示整个链路上总共有多少bit的数据。</p>
-<h4 id="往返时间RTT"><a href="#往返时间RTT" class="headerlink" title="往返时间RTT"></a>往返时间RTT</h4><p>从发送方发送数据开始，到接受方确认接受到数据为止花费的时间</p>
-<p>= 传播时延*2 + 处理时延</p>
-<h3 id="3-利用率"><a href="#3-利用率" class="headerlink" title="3. 利用率"></a>3. 利用率</h3><h4 id="信道利用率"><a href="#信道利用率" class="headerlink" title="信道利用率"></a>信道利用率</h4><p>=  有数据通过的时间/（有+无数据通过的时间）</p>
-<h4 id="网络利用率"><a href="#网络利用率" class="headerlink" title="网络利用率"></a>网络利用率</h4><p>= 所有信道利用率加权求平均值</p>
-<h4 id="时延和利用率的关系"><a href="#时延和利用率的关系" class="headerlink" title="时延和利用率的关系"></a>时延和利用率的关系</h4><img src="/posts/7c4ca347/image-20210208111943694.png" alt="image-20210208111943694">
-
-
-
-<h3 id="4-网络的分层结构"><a href="#4-网络的分层结构" class="headerlink" title="4. 网络的分层结构"></a>4. 网络的分层结构</h3><p><img src="/posts/7c4ca347/image-20210208112313439.png" alt="image-20210208112313439"></p>
-<p>结合TCP/IP参考模型和OSI参考模型，现在广泛使用的是五层参考模型，如下图：</p>
-<p><img src="/posts/7c4ca347/image-20210208112446492.png" alt="image-20210208112446492"></p>
-<p>下面将按照这五层一次介绍。</p>
-<h2 id="物理层"><a href="#物理层" class="headerlink" title="物理层"></a>物理层</h2><p>主要负责传输数据比特流。</p>
-<h4 id="码元"><a href="#码元" class="headerlink" title="码元"></a>码元</h4><p>一个码元就是一个脉冲信号，如果这个脉冲信号是矩形脉冲，只有高低两个电平，则只能表示0或者1，也就是一个比特位。如果这个脉冲信号有8种变化（可以是电平高低，相位变化等），则可以表示3位比特位（000-111）一共八种。</p>
-<p><strong>结论</strong>：一个码元就是一个脉冲，一个脉冲有N中变化，则可以表示log<sub>2</sub>N位bit。</p>
-<h4 id="波特（Baud）"><a href="#波特（Baud）" class="headerlink" title="波特（Baud）"></a>波特（Baud）</h4><p>一秒可以传输多少个码元。</p>
-<h4 id="速率-1"><a href="#速率-1" class="headerlink" title="速率"></a>速率</h4><p>分为<strong>码元传输速率</strong>和<strong>信息传输速率</strong></p>
-<p>信息传输速率就是b/s，就是我们平常说的<strong>网速</strong></p>
-<p>码元可以理解为几个比特的<strong>集合</strong>，所以信息传输速率（网速）=码元传输速率x码元所带信息量（多少比特）</p>
-<h4 id="三种通讯模式"><a href="#三种通讯模式" class="headerlink" title="三种通讯模式"></a>三种通讯模式</h4><p>单工：只能一个发一个收，需要1条信道</p>
-<p>半双工：都可以发或者收，但同一时间只能进行一个，需要2条信道</p>
-<p>全双工：可以同时收和发，需要2条信道</p>
-<h4 id="两种数据传输模式"><a href="#两种数据传输模式" class="headerlink" title="两种数据传输模式"></a>两种数据传输模式</h4><p>串行：速度慢，省钱，适合远距离 </p>
-<p>并行：速度快，花钱，适合近距离</p>
-<p><img src="/posts/7c4ca347/image-20210208115132757.png" alt="image-20210208115132757"></p>
-<h4 id="工作在物理层的设备"><a href="#工作在物理层的设备" class="headerlink" title="工作在物理层的设备"></a>工作在物理层的设备</h4><h5 id="中继器"><a href="#中继器" class="headerlink" title="中继器"></a>中继器</h5><p>当数据离开源在网络上传送时，它是转换为能够沿着网络介质传输的电脉冲或光脉冲的——这些脉冲称为信号（signal）。当信号沿着网络介质进行传送时， 随着经过的线缆越来越长，信号就会变得越来越弱，越来越差。中继器的目的是在<strong>比特级别</strong>对网络信号进行<strong>再生和重定</strong>时，从而使得它们能够在网络上传输更长的距离。</p>
-<p>作用：对信号进行放大和整形，仅适用于以太网。</p>
-<img src="/posts/7c4ca347/image-20210208161145175.png" alt="image-20210208161145175" style="zoom:150%;">
-
-<h5 id="集线器（HUB）"><a href="#集线器（HUB）" class="headerlink" title="集线器（HUB）"></a>集线器（HUB）</h5><p>也有放大和整形的功能，可以看作是一个多端口的中继器。</p>
-<p>HUB是网络中各个设备的通用连接点，它通常用于连接LAN的分段。HUB含有多个端口。每一个分组到达某个端口时，都会被复制到其他所有端口（广播），以便所有的LAN分段都能看见所有的分组。集线器并不认识信号、地址或数据中任何信息模式。</p>
-<h6 id="集线器产生的思路："><a href="#集线器产生的思路：" class="headerlink" title="集线器产生的思路："></a>集线器产生的思路：</h6><p>一开始，电脑之前就通过网线连接，当电脑数量增多时，就会很乱，网络变得异常复杂。<img src="/posts/7c4ca347/image-20210208161725908.png" alt="image-20210208161725908" style="zoom:50%;"></p>
-<p>所以我们在这些电脑的中间加一个设备——集线器。</p>
-<img src="/posts/7c4ca347/image-20210208162211908.png" alt="image-20210208162211908" style="zoom:67%;">
-
-
-
-<p>每个电脑插在集线器的一个端口上。这样每台电脑发送数据都要通过集线器。比如A要给E发消息，那么A发出一个包，这个包到达hub之后，会被hub发往各个端口，BCDE都能收到，只有E收到这个包，发现包头的MAC标识的时自己，于是接收这个包，其他的BCD都丢弃这个包。</p>
-
+           
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/7c4ca347.html">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -917,7 +712,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-08 16:55:11" itemprop="dateModified" datetime="2021-05-08T16:55:11+08:00">2021-05-08</time>
+                <time title="修改时间：2021-05-08 17:42:41" itemprop="dateModified" datetime="2021-05-08T17:42:41+08:00">2021-05-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -956,52 +751,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <a id="more"></a>
-
-<h2 id="namespace"><a href="#namespace" class="headerlink" title="namespace"></a>namespace</h2><h4 id="PID-namespace"><a href="#PID-namespace" class="headerlink" title="PID namespace"></a>PID namespace</h4><p>一个容器就是是一个进程，在启动下面的容器的时候：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker run -it busybox sh  <span class="comment"># sh是容器的第一个进程</span></span></span><br><span class="line">/ # ps</span><br><span class="line">PID   USER     TIME  COMMAND</span><br><span class="line">    1 root      0:00 sh #PID=1</span><br><span class="line">    7 root      0:00 ps #PID=7</span><br></pre></td></tr></table></figure>
-<p>Linux在创建新进程的时候，它的系统调用是</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> pid = clone(main_function, stack_size, SIGCHLD, <span class="literal">NULL</span>); </span><br></pre></td></tr></table></figure>
-<p>我们可以在系统调用的时候，传入一个<code>CLONE_NEWPID</code>参数。这样这个进程就是在一个全新的namespace里，塔是1号进程。上述的<code>docker run</code>命令的底层，实则也是调用了：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> pid = clone(main_function, stack_size, CLONE_NEWPID | SIGCHLD, <span class="literal">NULL</span>); </span><br></pre></td></tr></table></figure>
-<p>这只是Linux提供的namespace的一种，叫做PID namespace。</p>
-<p>在新的命名空间里创建的进程，在命名空间里的PID=1，但是在host上查看，PID就不等于1了。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ps -aux | grep sh</span></span><br><span class="line">root       36046  0.0  0.0   1324     4 pts/0    Ss+  01:15   0:00 sh  # PID=36046</span><br></pre></td></tr></table></figure>
-<p>此外，Linux 操作系统还提供了 <strong>Mount</strong>、<strong>UTS</strong>、<strong>IPC</strong>、<strong>Network</strong> 和 <strong>User</strong> 这些 Namespace，用来对各种不同的进程上下文进行“障眼法”操作。</p>
-<h4 id="Mount-namespace"><a href="#Mount-namespace" class="headerlink" title="Mount namespace"></a>Mount namespace</h4><p>用于让被隔离进程只看到当前 Namespace 里的挂载点信息</p>
-<h4 id="Network-Namespace"><a href="#Network-Namespace" class="headerlink" title="Network Namespace"></a>Network Namespace</h4><p>用于让被隔离进程看到当前 Namespace 里的网络设备和配置。</p>
-<h2 id="虚拟机-vs-容器"><a href="#虚拟机-vs-容器" class="headerlink" title="虚拟机 vs 容器"></a>虚拟机 vs 容器</h2><h4 id="hypervisor和docker-engine"><a href="#hypervisor和docker-engine" class="headerlink" title="hypervisor和docker engine"></a>hypervisor和docker engine</h4><img src="/posts/b56963ac/image-20210203222905761.png" alt="image-20210203222905761" style="zoom:50%;">
-
-<p><strong>hypervisor</strong>：对应用进程的隔离环境负责</p>
-<p><strong>docker engine</strong>：对隔离性不负责任，真正对隔离性负责的是linux os（namespace）。</p>
-<h4 id="VM和container"><a href="#VM和container" class="headerlink" title="VM和container"></a>VM和container</h4><table>
-<thead>
-<tr>
-<th>VM</th>
-<th>Container</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>性能损耗比较大，一个VM自己就要占100-200MB。在做系统调用时，还需要经过hypervisor层的拦截和处理，这又是一层性能损耗</td>
-<td>没有因为虚拟化带来的性能损耗，也没有guest os，除了容器本身之外，其他资源占用可以几乎不计。</td>
-</tr>
-<tr>
-<td>隔离性高，不共享内核，linux集群可以起Window VM，反之亦然</td>
-<td>隔离的不彻底，共享内核，不能在linux上起window容器，反之亦然</td>
-</tr>
-<tr>
-<td>对用户要求低</td>
-<td>对用户要求高，用户要知道，在容器里，什么能做，什么不能做，不然有可能改了容器里的东西，host上的东西也变了</td>
-</tr>
-</tbody></table>
-<p><strong>例子</strong>：在 Linux 内核中，有很多资源和对象是不能被 Namespace 化的，最典型的例子就是：<strong>时间</strong>。这就意味着，如果你的容器中的程序使用 settimeofday(2) 系统调用修改了时间，整个宿主机的时间都会被随之修改，这显然不符合用户的预期。</p>
-<h2 id="Cgroups"><a href="#Cgroups" class="headerlink" title="Cgroups"></a>Cgroups</h2><p>知道了namespace技术之后，我们知道一个容器就是一个进程，和host上其他进程一样。那么如果这个容器进程占用了host上的所有资源，那么这个host就卡死了。这显然是不合理的。我们需要限制容器的资源上限，这就是cgroups做的事情。</p>
-<p> <strong>Linux Cgroups 就是 Linux 内核中用来为进程设置资源限制的一个重要功能。</strong>主要限制CPU，内存，磁盘，网络带宽等等。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> cgroups给用户暴露出来的操作接口是文件系统</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ll /sys/fs/cgroup/</span></span><br><span class="line">total 0</span><br><span class="line">dr-xr-xr-x. 6 root root  0 Jan 30 10:16 blkio  # 为块设备制定IO限制</span><br><span class="line">lrwxrwxrwx. 1 root root 11 Jan 30 10:16 cpu -&gt; cpu,cpuacct  # cpu限制</span><br><span class="line">dr-xr-xr-x. 6 root root  0 Jan 30 10:16 cpu,cpuacct</span><br><span class="line">lrwxrwxrwx. 1 root root 11 Jan 30 10:16 cpuacct -&gt; cpu,cpuacct</span><br><span class="line">dr-xr-xr-x. 3 root root  0 Jan 30 10:16 cpuset  # 为进程分配单独的cpu核和对应的内存节点</span><br><span class="line">dr-xr-xr-x. 6 root root  0 Jan 30 10:16 devices</span><br><span class="line">dr-xr-xr-x. 3 root root  0 Jan 30 10:16 freezer</span><br><span class="line">dr-xr-xr-x. 3 root root  0 Jan 30 10:16 hugetlb</span><br><span class="line">dr-xr-xr-x. 6 root root  0 Jan 30 10:16 memory  # 内存限制</span><br><span class="line">lrwxrwxrwx. 1 root root 16 Jan 30 10:16 net_cls -&gt; net_cls,net_prio</span><br><span class="line">dr-xr-xr-x. 3 root root  0 Jan 30 10:16 net_cls,net_prio</span><br><span class="line">lrwxrwxrwx. 1 root root 16 Jan 30 10:16 net_prio -&gt; net_cls,net_prio</span><br><span class="line">dr-xr-xr-x. 3 root root  0 Jan 30 10:16 perf_event</span><br><span class="line">dr-xr-xr-x. 6 root root  0 Jan 30 10:16 pids</span><br><span class="line">dr-xr-xr-x. 2 root root  0 Jan 30 10:16 rdma</span><br><span class="line">dr-xr-xr-x. 6 root root  0 Jan 30 10:16 systemd</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo mount -t cgroup</span></span><br><span class="line">cgroup on /sys/fs/cgroup/systemd type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,xattr,release_agent=/usr/lib/systemd/systemd-cgroups-agent,name=systemd)</span><br><span class="line">cgroup on /sys/fs/cgroup/perf_event type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,perf_event)</span><br><span class="line">cgroup on /sys/fs/cgroup/memory type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,memory)</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-<h4 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> /sys/fs/cgroup/cpu</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> mkdir <span class="built_in">test</span> &amp;&amp; <span class="built_in">cd</span> <span class="built_in">test</span> &amp;&amp; ls</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 发现新建的<span class="built_in">test</span>目录里已经有自动生成的一些文件了，我们可以写这些文件来限制某一个进程的资源上限</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 我们先来运行一个进程，死循环，把CPU占满，可以通过top查看</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="keyword">while</span> : ; <span class="keyword">do</span> : ; <span class="keyword">done</span></span> </span><br><span class="line">&amp;[1] 226</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 然后我们可以通过写cgroup fs来限制这个进程的cpu资源上限</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> tasks里面是要限制的进程的PID</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> 226 &gt; tasks</span> </span><br><span class="line"><span class="meta">#</span><span class="bash"> 默认-1，表示没有上限</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat /sys/fs/cgroup/cpu/container/cpu.cfs_quota_us</span> </span><br><span class="line">-1</span><br><span class="line"><span class="meta">#</span><span class="bash"> 100ms</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat /sys/fs/cgroup/cpu/container/cpu.cfs_period_us</span> </span><br><span class="line">100000</span><br><span class="line"><span class="meta">#</span><span class="bash">20ms</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> 20000 &gt; /sys/fs/cgroup/cpu/container/cpu.cfs_quota_us</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 说明：每100ms里，被这个cgroup控制的进程，也就是226，只能使用20ms的时间。尽管是个死循环，加了限制之后cpu占用率不会高于20%，牛！</span></span><br></pre></td></tr></table></figure>
-<h4 id="cgroup的一些限制"><a href="#cgroup的一些限制" class="headerlink" title="cgroup的一些限制"></a>cgroup的一些限制</h4><p>上来我们用到的<code>top</code>命令，主要的数据来源都是<code>/proc</code>目录下。这个/proc目录记录当前内核运行状态的数据，它并不知道cgroup限制了一个容器什么。</p>
-<p>所以在容器里运行top时，它也会显示host的cpu，内存信息。</p>
-
+           
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/b56963ac.html">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1051,7 +809,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-08 16:53:57" itemprop="dateModified" datetime="2021-05-08T16:53:57+08:00">2021-05-08</time>
+                <time title="修改时间：2021-05-08 17:40:25" itemprop="dateModified" datetime="2021-05-08T17:40:25+08:00">2021-05-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1090,65 +848,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <a id="more"></a>
-
-<h2 id="vca卡的内部结构"><a href="#vca卡的内部结构" class="headerlink" title="vca卡的内部结构"></a>vca卡的内部结构</h2><p><img src="/posts/dd7abf56/image-20210202160154068.png" alt="image-20210202160154068"></p>
-<ul>
-<li><p>一块kabylake CPU，上面带一个Intel GFX 610集成显卡。</p>
-</li>
-<li><p>12个movidius VPU：</p>
-<ul>
-<li>其中两个通过USB连接到CPU上</li>
-<li>剩下的10个通过PCI-USB bridge和CPU通信<ul>
-<li>PCI-USB bridge ：The <strong>ASM1042A</strong> is ASMedia’s new generation of Universal Serial Bus 3.0 extended host controller, bridging PCI Express to two ports of USB3.0</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>一个PCIe switch：为host提供NTB</p>
-<ul>
-<li>NTB（Non-Transparent-Bridge）</li>
-</ul>
-</li>
-</ul>
-<h2 id="Host上vca-software安装"><a href="#Host上vca-software安装" class="headerlink" title="Host上vca software安装"></a>Host上vca software安装</h2><p><img src="/posts/dd7abf56/image-20210202162348217.png" alt="image-20210202162348217"></p>
-<p>service跑在host上，agent和其他的workload都跑在vca卡上，卡上有个单独的os，ubuntu1804。</p>
-<h3 id="下载software-packages源码"><a href="#下载software-packages源码" class="headerlink" title="下载software packages源码"></a>下载software packages源码</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> https://github.com/OpenVisualCloud/VCAC-SW-Analytics.git -b release/VCAC-A/R6</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> tree -L 2</span></span><br><span class="line">.</span><br><span class="line">├── Documents                   # 平平无奇的文档</span><br><span class="line">│   ├── VCAC-Analytics-releasenotes-rev6-0.pdf</span><br><span class="line">│   └── VCAC-Analytics-software-installation-guide-rev6-0.pdf</span><br><span class="line">├── Intel_Media_Analytics_Host  # Host files</span><br><span class="line">│   ├── scripts                 # scripts to build kernel and vca driver module</span><br><span class="line">│   └── tar                     # kernel patch, vca driver patch and utilities</span><br><span class="line">└── Intel_Media_Analytics_Node  # Software packages</span><br><span class="line">    ├── scripts                 # scripte to build ubunut1804 image and dockerfiles </span><br><span class="line">    └── tar                     # patch for kernel on card, install pkg for VPU metrics</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="使用docker在容器里build安装包"><a href="#使用docker在容器里build安装包" class="headerlink" title="使用docker在容器里build安装包"></a>使用docker在容器里build安装包</h3><p>在host上 用docker启动容器，去build一些软件包，等等。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker info | grep Dir</span></span><br><span class="line">Docker Root Dir: /var/lib/docker</span><br></pre></td></tr></table></figure>
-<p>这个docker目录最多只有50GB，不够去build vcad，可能会报错<code>&quot;no space left on device&quot; </code>, 所以我们需要换一个Docker Root Dir。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vim /usr/lib/systemd/system/docker.service<span class="string">&quot;</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> add <span class="string">&quot;--graph /home/docker&quot;</span> after <span class="string">&quot;ExecStart=/user/bin/dockerd</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat /usr/lib/systemd/system/docker.service | grep graph</span></span><br><span class="line">ExecStart=/usr/bin/dockerd --graph /home/docker -H fd:// --containerd=/run/containerd/containerd.sock</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 重启</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> systemctl daemon-reload</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> systemctl restart docker</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 再查看一下，已经改好了</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker info  | grep Dir</span></span><br><span class="line">Docker Root Dir: /home/docker</span><br></pre></td></tr></table></figure>
-
-
-<p>拉取centos8的image</p>
-<p><img src="/posts/dd7abf56/image-20210202170918413.png" alt="image-20210202170918413"></p>
-<p>安装一些需要的pkg</p>
-<p><img src="/posts/dd7abf56/image-20210202171007593.png" alt="image-20210202171007593"></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[space@inspurserver CentOS8]$ docker ps</span><br><span class="line">CONTAINER ID   IMAGE                      COMMAND                  CREATED              STATUS              PORTS     NAMES</span><br><span class="line">d4ecdebab101   vcaa/centos-8.1-test:1.0   &quot;/home/space/VCAC-SW…&quot;   About a minute ago   Up About a minute             sleepy_ride</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">pwd</span>: /home/space/VCAC-SW-Analytics/VCAC-A/Intel_Media_Analytics_Host/scripts</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo ./build.sh</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">pwd</span>: /home/space/VCAC-SW-Analytics/VCAC-A/Intel_Media_Analytics_Node/scripts</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo ./vcad_build.sh -o EXTENDED  <span class="comment"># EXTENDED可以在ubuntu os里装上openvino等软件。</span></span></span><br></pre></td></tr></table></figure>
-<h3 id="安装新kernel，vca软件等"><a href="#安装新kernel，vca软件等" class="headerlink" title="安装新kernel，vca软件等"></a>安装新kernel，vca软件等</h3><p>用生成的包，去换kernel，安装host上的vca daemon，vca cli， kernel， kernel-devel等等。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 安装kernel包</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo yum -y localinstall kernel-4.18.0-147_1.fb4dfe2.VCA+-1.x86_64.rpm</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo yum -y localinstall kernel-devel-4.18.0-147_1.fb4dfe2.VCA+-1.x86_64.rpm</span></span><br><span class="line"><span class="meta">#</span><span class="bash">安装vca driver module</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo yum -y localinstall vcass-modules-4.18.0-147_1.fb4dfe2.VCA</span></span><br><span class="line">+-1.690990a-0.x86_64.rpm</span><br><span class="line"><span class="meta">#</span><span class="bash"> 安装vca daemon</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo yum -y localinstall daemon-vca-2.7.3-centos8-x86_64.rpm</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo yum -y localinstall ../../tar/Centos8/vca_query-1.0_centos8-1.x86_64.rpm</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 换default kernel，参考 https://www.golinuxcloud.com/change-default-kernel-version-rhel-centos-8/</span></span><br><span class="line">sudo grubby --set-default &quot;/boot/vmlinuz-4.18.0.0e222f9.VCA+&quot; </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> reboot</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo reboot</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 开机之后验证kernel更换成功</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> uname -r</span></span><br><span class="line">4.18.0.0e222f9.VCA+</span><br></pre></td></tr></table></figure>
-<h3 id="enable-iommu"><a href="#enable-iommu" class="headerlink" title="enable iommu"></a>enable iommu</h3><p>其实我之前设置了<code>intel_iommu=on </code>，但是由于换了kernel，之前那个kernel的cmdline不起作用了。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 在这里重新设置一下</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat /boot/grub2/grubenv</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> GRUB Environment Block</span></span><br><span class="line">saved_entry=4f71b0d5929445139ae33f60b7e05767-4.18.0.0e222f9.VCA+</span><br><span class="line">kernelopts=root=LABEL=cloudimg-rootfs ro console=ttyS0,115200n8 no_timer_check net.ifnames=0 crashkernel=auto rd.auto=1 intel_iommu=on</span><br><span class="line">boot_success=1</span><br><span class="line">boot_indeterminate=0</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo reboot</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 然后就可以看到使能好的iommu groups了！</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ls /sys/kernel/iommu_groups/</span></span><br><span class="line">0   11  14  17  2   22  25  28  30  33  36  39  41  44  47  5   52  55  58  60  63  66 </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">check cmdline</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat /proc/cmdline</span></span><br><span class="line">BOOT_IMAGE=(hd0,gpt1)/boot/vmlinuz-4.18.0.0e222f9.VCA+ root=LABEL=cloudimg-rootfs ro console=ttyS0,115200n8 no_timer_check net.ifnames=0 crashkernel=auto rd.auto=1 intel_iommu=on</span><br></pre></td></tr></table></figure>
-<h3 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 报错！因为不是root权限</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl info BIOS 0 0</span></span><br><span class="line">ERROR: could not parse vca configuration file!</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo su</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 成功！</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl status</span></span><br><span class="line">Card: 0 Cpu: 0  STATE: bios_up</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 报错，这个时候ubuntu1804和host的网络还没有配置好</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo vcactl network ip</span></span><br><span class="line">ERROR: Card: 0 Cpu: 0 - Card needs to be in &quot;os_ready&quot;, &quot;net_device_ready&quot;, &quot;dhcp_error&quot;, &quot;net_device_no_ip&quot;, &quot;dhcp_in_progress&quot; or &quot;dhcp_done&quot; state!</span><br></pre></td></tr></table></figure>
-<h3 id="在vca卡上载入ubuntu-os"><a href="#在vca卡上载入ubuntu-os" class="headerlink" title="在vca卡上载入ubuntu os"></a>在vca卡上载入ubuntu os</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 关闭已打开的块设备</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl blockio close 0 0 vcablk0</span></span><br><span class="line">WARNING: Card: 0 Cpu: 0 - Block device vcablk0 is not open. You do not need to close it.</span><br><span class="line"><span class="meta">#</span><span class="bash"> 在build好的ubuntu的image加载进vca卡中</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl blockio open 0 0 vcablk0 RW /home/space/VCAC-SW-Analytics/VCAC-A/Intel_Media_Analytics_Node/build/vcad/INSTALL/vca_disk48_k5.3_ubuntu18.04_1.0.1.vcad</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">查看</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl status</span></span><br><span class="line">Card: 0 Cpu: 0  STATE: bios_ready</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 在bios_ready之后，需要重启一下vca卡，使其生效</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 关机</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl pwrbtn-long 0 0</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl status</span></span><br><span class="line">Card: 0 Cpu: 0  STATE: power_off</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 开机</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl pwrbtn-short 0 0</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl reset 0 0 --force</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl boot 0 0 vcablk0 --force</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl status</span></span><br><span class="line">Card: 0 Cpu: 0  STATE: booting</span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl status</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vcactl network ip</span></span><br><span class="line">Card 0 Cpu 0:</span><br><span class="line">172.32.1.1</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 密码是vista1</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ssh root@172.32.1.1</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 到这里，vca卡的os也安装完毕了！</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>vca卡上os，可以和host相互ping通，</p>
-<p>但连接不上internet。dns也没有设置好。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">root@vca_node_00:~# wget www.baidu.com</span><br><span class="line">--2021-02-02 15:06:13--  http://www.baidu.com/</span><br><span class="line">Resolving www.baidu.com (www.baidu.com)... failed: Temporary failure in name resolution.</span><br><span class="line">wget: unable to resolve host address &#x27;www.baidu.com&#x27;</span><br><span class="line">root@vca_node_00:~# ping baidu.com</span><br><span class="line">ping: baidu.com: Temporary failure in name resolution</span><br></pre></td></tr></table></figure>
-<h3 id="vca-amp-host-网络配置"><a href="#vca-amp-host-网络配置" class="headerlink" title="vca &amp; host 网络配置"></a>vca &amp; host 网络配置</h3><p><strong>在host上</strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> config proxy</span></span><br><span class="line">touch /etc/yum.repos.d/10proxy</span><br><span class="line">vim 10proxy</span><br><span class="line">Acquire::http::Proxy &quot; local network http proxy &quot;;</span><br><span class="line">scp /etc/yum.repos.d/10proxy root@172.32.1.1:/etc/apt/apt.conf.d/10proxy  </span><br></pre></td></tr></table></figure>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> config dns</span></span><br><span class="line">scp /etc/resolv.conf root@172.32.1.1:/etc</span><br></pre></td></tr></table></figure>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">disable</span> firewall</span></span><br><span class="line">systemctl stop firewalld.service</span><br><span class="line">systemctl disable firewalld.service</span><br><span class="line">systemctl status firewalld.service</span><br></pre></td></tr></table></figure>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">enable</span> ip forwarding <span class="keyword">in</span> host kernel</span></span><br><span class="line">echo 1 &gt; /proc/sys/net/ipv4/ip_forward</span><br></pre></td></tr></table></figure>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> add rules to NAT</span></span><br><span class="line">iptables -t nat -A POSTROUTING -s 172.32.1.1 -d 0/0 -j MASQUERADE</span><br></pre></td></tr></table></figure>
-<p><strong>在VCA卡上</strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">ssh root@172.32.1.1</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> configure proxy</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> host没有proxy的时候，可以不设置</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vim ~/.bashrc</span></span><br><span class="line">export https_proxy=&quot; local network https proxy&quot;</span><br><span class="line">export http_proxy=&quot; local network http proxy&quot;</span><br><span class="line">export ftp_proxy=&quot; local network ftp proxy&quot;</span><br></pre></td></tr></table></figure>
-<h4 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget www.baidu.com</span><br><span class="line">wget www.google.com</span><br></pre></td></tr></table></figure>
-<p>VCA卡应该和host有一样的网络连通能力。</p>
-<h2 id="在vca卡上安装software"><a href="#在vca卡上安装software" class="headerlink" title="在vca卡上安装software"></a>在vca卡上安装software</h2><p><strong>Load SMBus driver</strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> apt update</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> modprobe i2c-i801</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> modprobe i2c-dev</span>  </span><br></pre></td></tr></table></figure>
-<p><strong>Load HDDL driver</strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> insmod /lib/modules/5.3.18-1.9bf7f75.vca+/kernel/drivers/ion/myd_ion.ko</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> insmod /lib/modules/5.3.18-1.9bf7f75.vca+/kernel/drivers/usb/myd/myd_vsc.ko</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> lsmod | grep myd</span></span><br><span class="line">myd_vsc                24576  0</span><br><span class="line">myd_ion                49152  0</span><br></pre></td></tr></table></figure>
-
+           
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/dd7abf56.html">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1198,7 +906,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-08 16:54:46" itemprop="dateModified" datetime="2021-05-08T16:54:46+08:00">2021-05-08</time>
+                <time title="修改时间：2021-05-08 17:42:16" itemprop="dateModified" datetime="2021-05-08T17:42:16+08:00">2021-05-08</time>
               </span>
 
           <br>
@@ -1226,36 +934,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <a id="more"></a>
-
-<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><ul>
-<li>反向代理</li>
-<li>负载均衡</li>
-<li>动静分离</li>
-</ul>
-<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo yum install nginx</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo systemctl start nginx.service</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 访问成功</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> curl localhost:80</span></span><br></pre></td></tr></table></figure>
-<p><strong>测试安装成功</strong></p>
-<p>因为我的测试环境是vagrant vm，所以需要做一个端口映射，这样我们可以在host上访问。</p>
-<img src="/posts/cc1b6e67/image-20210201230936553.png" alt="image-20210201230936553" style="zoom:50%;">
-
-<p>成功！</p>
-<img src="/posts/cc1b6e67/image-20210201231043622.png" alt="image-20210201231043622" style="zoom:50%;">
-
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> nginx -h</span></span><br><span class="line">nginx version: nginx/1.14.1</span><br><span class="line">Usage: nginx [-?hvVtTq] [-s signal] [-c filename] [-p prefix] [-g directives]</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">...</span><br><span class="line">  -s signal     : send signal to a master process: stop, quit, reopen, reload</span><br><span class="line">  -p prefix     : set prefix path (default: /usr/share/nginx/)</span><br><span class="line">  -c filename   : set configuration file (default: /etc/nginx/nginx.conf)</span><br><span class="line">  -g directives : set global directives out of configuration file</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> nginx -s stop 停止</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> nginx -s quit 安全退出</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> nginx -s reload 重新加载配置文件</span></span><br></pre></td></tr></table></figure>
-<h3 id="nginx配置文件"><a href="#nginx配置文件" class="headerlink" title="nginx配置文件"></a>nginx配置文件</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vim /etc/nginx/nginx.conf</span></span><br></pre></td></tr></table></figure>
-<p>可以看到nginx server是监听在80端口的，我们可以修改端口，然后用<code>nginx -s reload</code>来生效。</p>
-<img src="/posts/cc1b6e67/image-20210201231634344.png" alt="image-20210201231634344" style="zoom:50%;">
-
-
-
-<h3 id="详解nginx-conf"><a href="#详解nginx-conf" class="headerlink" title="详解nginx.conf"></a>详解nginx.conf</h3><p> 三部分</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">user  www;# 工作进程的属主</span><br><span class="line"> worker_processes  4;# 工作进程数，一般与 CPU 核数等同</span><br><span class="line"> </span><br><span class="line"><span class="meta"> #</span><span class="bash">error_log  logs/error.log;</span></span><br><span class="line"><span class="meta"> #</span><span class="bash">error_log  logs/error.log  notice;</span></span><br><span class="line"><span class="meta"> #</span><span class="bash">error_log  logs/error.log  info;</span></span><br><span class="line"> </span><br><span class="line"><span class="meta"> #</span><span class="bash">pid        logs/nginx.pid;</span></span><br><span class="line"> </span><br><span class="line"> events &#123;</span><br><span class="line">    use epoll;#Linux 下性能最好的 event 模式</span><br><span class="line">    worker_connections  2048;# 每个工作进程允许最大的同时连接数</span><br><span class="line"> &#125;</span><br><span class="line"> </span><br><span class="line"> http &#123;</span><br><span class="line">		upstream xxx&#123;</span><br><span class="line">				server1:port1</span><br><span class="line">				server2:port3</span><br><span class="line">		&#125; </span><br><span class="line">		</span><br><span class="line">		server &#123;</span><br><span class="line">				location / &#123;</span><br><span class="line">						proxy_pass xxx</span><br><span class="line">				&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
-<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/fengzhongzhuzu/p/8848115.html">https://www.cnblogs.com/fengzhongzhuzu/p/8848115.html</a></p>
-<h3 id="Nginx的负载均衡调度算法"><a href="#Nginx的负载均衡调度算法" class="headerlink" title="Nginx的负载均衡调度算法"></a>Nginx的负载均衡调度算法</h3><h4 id="weight轮询-默认，常用"><a href="#weight轮询-默认，常用" class="headerlink" title="weight轮询(默认，常用)"></a>weight轮询(默认，常用)</h4><p>收到的请求<strong>按照权重分配</strong>到不同的后端服务器，即使在使用过程中，某一台后端服务器宕机，Nginx会自动将该服务器剔除出队列，请求受理情况不会受到任何影响。这种方式下，可以给不同的后端服务器设置一个权重值(weight)，用于调整不同的服务器上请求的分配率；权重数据越大，被分配到请求的几率越大；该权重值，主要是针对实际工作环境中不同的后端服务器硬件配置进行调整的。</p>
-<h4 id="ip-hash（常用）"><a href="#ip-hash（常用）" class="headerlink" title="ip_hash（常用）"></a>ip_hash（常用）</h4><p>每个请求按照发起客户端的ip的hash结果进行匹配，这样的算法下一个固定ip地址的客户端总会访问到同一个后端服务器，这也在一定程度上解决了集群部署环境下<strong>session共享的</strong>问题。</p>
-<h4 id="fair智能调整调度算法"><a href="#fair智能调整调度算法" class="headerlink" title="fair智能调整调度算法"></a>fair智能调整调度算法</h4><p>动态的根据后端服务器的请求处理到响应的时间进行均衡分配，响应时间短处理效率高的服务器分配到请求的概率高，响应时间长处理效率低的服务器分配到的请求少；结合了前两者的优点的一种调度算法。但是需要注意的是Nginx默认不支持fair算法，如果要使用这种调度算法，请安装upstream_fair模块。</p>
-<h4 id="url-hash"><a href="#url-hash" class="headerlink" title="url_hash"></a>url_hash</h4><p>按照访问的url的hash结果分配请求，每个请求的url会指向后端固定的某个服务器，可以在Nginx作为静态服务器的情况下提高缓存效率。同样要注意Nginx默认不支持这种调度算法，要使用的话需要安装Nginx的hash软件包。</p>
-
+           
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/cc1b6e67.html">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1305,7 +992,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-08 16:55:03" itemprop="dateModified" datetime="2021-05-08T16:55:03+08:00">2021-05-08</time>
+                <time title="修改时间：2021-05-08 17:42:45" itemprop="dateModified" datetime="2021-05-08T17:42:45+08:00">2021-05-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1344,9 +1031,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <a id="more"></a><img src="/posts/e41fb1bd/image-20210201221242667.png" alt="image-20210201221242667" style="zoom:70%;">
-
-
+           
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/e41fb1bd.html">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1396,7 +1089,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-08 16:56:08" itemprop="dateModified" datetime="2021-05-08T16:56:08+08:00">2021-05-08</time>
+                <time title="修改时间：2021-05-08 17:42:31" itemprop="dateModified" datetime="2021-05-08T17:42:31+08:00">2021-05-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1435,65 +1128,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <a id="more"></a>
-
-<h3 id="docker0"><a href="#docker0" class="headerlink" title="docker0"></a>docker0</h3><p>先来查看一下host的网络：</p>
-<img src="/posts/3e6a7048/image-20210201164717688.png" alt="image-20210201164717688" style="zoom:50%;">
-
-
-
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 启动一个tomcat容器</span></span><br><span class="line">[vagrant@localhost ~]$ docker run -d -P --name tomcat01 tomcat</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看容器里的网络，发现有一个 eth0@if37（172.17.0.2）和host上的docker0（172.17.0.1）在同一个网段。</span></span><br><span class="line">[vagrant@localhost dockerfile]$ docker exec -it ef59e03b0b34 ip a</span><br><span class="line">1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000</span><br><span class="line">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</span><br><span class="line">    inet 127.0.0.1/8 scope host lo</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">36: eth0@if37: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default</span><br><span class="line">    link/ether 02:42:ac:11:00:02 brd ff:ff:ff:ff:ff:ff link-netnsid 0</span><br><span class="line">    inet 172.17.0.2/16 brd 172.17.255.255 scope global eth0</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">     </span><br><span class="line"><span class="meta">#</span><span class="bash"> 从host上ping容器的eth0@if37，可以ping通。</span></span><br><span class="line">[vagrant@localhost dockerfile]$ ping 172.17.0.2</span><br><span class="line">PING 172.17.0.2 (172.17.0.2) 56(84) bytes of data.</span><br><span class="line">64 bytes from 172.17.0.2: icmp_seq=1 ttl=64 time=0.083 ms</span><br><span class="line">64 bytes from 172.17.0.2: icmp_seq=2 ttl=64 time=0.061 ms</span><br></pre></td></tr></table></figure>
-<p>我们每启动一个docker容器，docker就会给容器分配一个ip，我们只要安装的docker，就会有一个docker0网卡，这个网卡是桥接模式，使用的技术是ve th-pair技术。</p>
-<p>启动完tomcat容器后，再在host上查看网络接口，会发现多了一个接口：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[vagrant@localhost ~]$ ip a</span><br><span class="line">...</span><br><span class="line"><span class="meta">#</span><span class="bash"> </span></span><br><span class="line">37: veth9f8a1b7@if36: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue master docker0 state UP group default</span><br><span class="line">    link/ether 0a:6f:15:99:d0:b8 brd ff:ff:ff:ff:ff:ff link-netnsid 0</span><br><span class="line">    inet6 fe80::86f:15ff:fe99:d0b8/64 scope link</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br></pre></td></tr></table></figure>
-<h3 id="veth-pair技术"><a href="#veth-pair技术" class="headerlink" title="veth-pair技术"></a>veth-pair技术</h3><p>是一对虚拟设备接口，都是成对出现的。</p>
-<p>我们再起一个tomcat，现在有两个容器，tomcat01和tomcat02。看一下他们的网络接口和host的网络。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> -it tomcat01 ip a</span></span><br><span class="line">1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000</span><br><span class="line">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</span><br><span class="line">    inet 127.0.0.1/8 scope host lo</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">36: eth0@if37: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default</span><br><span class="line">    link/ether 02:42:ac:11:00:02 brd ff:ff:ff:ff:ff:ff link-netnsid 0</span><br><span class="line">    inet 172.17.0.2/16 brd 172.17.255.255 scope global eth0</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">       </span><br><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> -it tomcat02 ip a</span></span><br><span class="line">1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000</span><br><span class="line">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</span><br><span class="line">    inet 127.0.0.1/8 scope host lo</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">38: eth0@if39: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default</span><br><span class="line">    link/ether 02:42:ac:11:00:03 brd ff:ff:ff:ff:ff:ff link-netnsid 0</span><br><span class="line">    inet 172.17.0.3/16 brd 172.17.255.255 scope global eth0</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    </span><br><span class="line"><span class="meta">$</span><span class="bash"> ip a</span></span><br><span class="line">...</span><br><span class="line">3: docker0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default</span><br><span class="line">    link/ether 02:42:95:5a:03:dc brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 fe80::42:95ff:fe5a:3dc/64 scope link</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">37: veth9f8a1b7@if36: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue master docker0 state UP group default</span><br><span class="line">    link/ether 0a:6f:15:99:d0:b8 brd ff:ff:ff:ff:ff:ff link-netnsid 0</span><br><span class="line">    inet6 fe80::86f:15ff:fe99:d0b8/64 scope link</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">39: veth11e4e0f@if38: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue master docker0 state UP group default</span><br><span class="line">    link/ether ba:3b:43:24:29:92 brd ff:ff:ff:ff:ff:ff link-netnsid 1</span><br><span class="line">    inet6 fe80::b83b:43ff:fe24:2992/64 scope link</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br></pre></td></tr></table></figure>
-<p>网络模型如下，每个容器在创建的时候会建立一对veth pair，用于和docker0通信，不同容器间的通信也是通过docker0网桥。</p>
-<img src="/posts/3e6a7048/image-20210201170031892.png" alt="image-20210201170031892" style="zoom:50%;">
-
-<h3 id="limitation"><a href="#limitation" class="headerlink" title="limitation"></a>limitation</h3><p>测试两个容器的连通性</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> ping容器名是ping不通的</span></span><br><span class="line">vagrant@localhost ~]$ docker exec -it tomcat01 ping tomcat02</span><br><span class="line">ping: tomcat02: No address associated with hostname</span><br><span class="line"><span class="meta">#</span><span class="bash"> ping ip可以ping通</span></span><br><span class="line">[vagrant@localhost ~]$ docker exec -it tomcat01 ping 172.17.0.3</span><br><span class="line">PING 172.17.0.3 (172.17.0.3) 56(84) bytes of data.</span><br><span class="line">64 bytes from 172.17.0.3: icmp_seq=1 ttl=64 time=0.058 ms</span><br><span class="line">64 bytes from 172.17.0.3: icmp_seq=2 ttl=64 time=0.066 ms</span><br></pre></td></tr></table></figure>
-<p>这就是docker0网桥的局限性，<strong>不支持容器名访问</strong>。这里我们可以通过<code>--link</code>来实现通过容器名来连通。</p>
-<h4 id="–link"><a href="#–link" class="headerlink" title="–link"></a>–link</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 删除tomcat02，并且重新创建</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker run -d -P --name tomcat02 --link tomcat01 tomcat</span></span><br><span class="line">a9a926b40eb97a28d39ec67418efaa05b362b9917f7375620da18e8f13607282</span><br><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> -it tomcat02 ping tomcat01</span></span><br><span class="line">PING tomcat01 (172.17.0.2) 56(84) bytes of data.</span><br><span class="line">64 bytes from tomcat01 (172.17.0.2): icmp_seq=1 ttl=64 time=0.090 ms</span><br><span class="line">64 bytes from tomcat01 (172.17.0.2): icmp_seq=2 ttl=64 time=0.060 ms</span><br><span class="line">^C</span><br><span class="line">--- tomcat01 ping statistics ---</span><br><span class="line">2 packets transmitted, 2 received, 0% packet loss, time 11ms</span><br><span class="line">rtt min/avg/max/mdev = 0.060/0.075/0.090/0.015 ms</span><br></pre></td></tr></table></figure>
-<p>发现可以通过容器名ping通了，但是反向ping还是不通。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> -it tomcat01 ping tomcat02</span></span><br><span class="line">ping: tomcat02: No address associated with hostname</span><br></pre></td></tr></table></figure>
-<p>原因是因为我们只是在docker run tomcat02的时候加了<code>--link</code>,相当于只对tomcat02设置了针对tomcat01的连通性，反之则没有，所以tomcat01并不知道如何处理tomcat02这个域名。</p>
-<p>那么，<code>--link</code>  到底在tomcat02里配置了什么呢？ 下面是<code>docker inspect tomcat02</code>的输出，可以看到在HostConfig中有一个关于tomcat01的设置。</p>
-<img src="/posts/3e6a7048/image-20210201171348699.png" alt="image-20210201171348699" style="zoom:50%;">
-
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> --link主要干了两件事</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 1. 设置tomcat01（被link容器）的环境变量</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span>  -it tomcat02 env | grep -i tomcat01</span></span><br><span class="line">TOMCAT01_PORT=tcp://172.17.0.2:8080</span><br><span class="line">TOMCAT01_PORT_8080_TCP=tcp://172.17.0.2:8080</span><br><span class="line">TOMCAT01_PORT_8080_TCP_ADDR=172.17.0.2</span><br><span class="line">TOMCAT01_PORT_8080_TCP_PORT=8080</span><br><span class="line">TOMCAT01_PORT_8080_TCP_PROTO=tcp</span><br><span class="line">TOMCAT01_NAME=/tomcat02/tomcat01</span><br><span class="line">TOMCAT01_ENV_LANG=C.UTF-8</span><br><span class="line">TOMCAT01_ENV_JAVA_HOME=/usr/local/openjdk-11</span><br><span class="line">TOMCAT01_ENV_JAVA_VERSION=11.0.9.1</span><br><span class="line">TOMCAT01_ENV_CATALINA_HOME=/usr/local/tomcat</span><br><span class="line">TOMCAT01_ENV_TOMCAT_NATIVE_LIBDIR=/usr/local/tomcat/native-jni-lib</span><br><span class="line">TOMCAT01_ENV_LD_LIBRARY_PATH=/usr/local/tomcat/native-jni-lib</span><br><span class="line">TOMCAT01_ENV_GPG_KEYS=05AB33110949707C93A279E3D3EFE6B686867BA6 07E48665A34DCAFAE522E5E6266191C37C037D42 47309207D818FFD8DCD3F83F1931D684307A10A5 541FBE7D8F78B25E055DDEE13C370389288584E7 61B832AC2F1C5A90F0F9B00A1C506407564C17A3 79F7026C690BAA50B92CD8B66A3AD3F4F22C4FED 9BA44C2621385CB966EBA586F72C284D731FABEE A27677289986DB50844682F8ACB77FC2E86E29AC A9C5DF4D22E99998D9875A5110C01C5A2F6059E7 DCFD35E0BF8CA7344752DE8B6FB21E8933C60243 F3A04C595DB5B6A5F1ECA43E3B7BBB100D811BBE F7DA48BB64BCB84ECBA7EE6935CD23C10D498E23</span><br><span class="line">TOMCAT01_ENV_TOMCAT_MAJOR=9</span><br><span class="line">TOMCAT01_ENV_TOMCAT_VERSION=9.0.41</span><br><span class="line">TOMCAT01_ENV_TOMCAT_SHA512=b6450e590a37c5bccf049b1176c441f0964796995e80d4c7c7d9fb74f9ad817107c303b6b83ed3d71c9251b2b8acf334b90a4abdf9deea122e338643cece0766</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 2. 设置/etc/hosts</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span>  -it tomcat02 cat /etc/hosts</span></span><br><span class="line">127.0.0.1       localhost</span><br><span class="line">::1     localhost ip6-localhost ip6-loopback</span><br><span class="line">fe00::0 ip6-localnet</span><br><span class="line">ff00::0 ip6-mcastprefix</span><br><span class="line">ff02::1 ip6-allnodes</span><br><span class="line">ff02::2 ip6-allrouters</span><br><span class="line">172.17.0.2      tomcat01 ef59e03b0b34  # 这里设置了tomcat01的IP映射关系</span><br><span class="line">172.17.0.3      a9a926b40eb9</span><br></pre></td></tr></table></figure>
-<h3 id="自定义网络"><a href="#自定义网络" class="headerlink" title="自定义网络"></a>自定义网络</h3><p>在docker 安装的时候，有</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker network ls</span></span><br><span class="line">NETWORK ID     NAME      DRIVER    SCOPE</span><br><span class="line">b3d482ea68aa   bridge    bridge    local  # veth pair - &gt; docker0 桥接模式（缺省模式）</span><br><span class="line">70901896d6a3   host      host      local  # 和host共享网络</span><br><span class="line">51ec536b7953   none      null      local  # 不配置网络，一般不用</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 还有一种container模式，容器内网络连通（不常用）。</span></span><br></pre></td></tr></table></figure>
-<p>bridge网络里面配置了gateway， subnet，并且可以看到连接在这个网络上的容器。</p>
-<p>这里的gateway就说doker0网桥（172.17.0.1）</p>
-<img src="/posts/3e6a7048/image-20210201164519343.png" alt="image-20210201164519343" style="zoom:50%;">
-
-<h4 id="创建一个新的网络"><a href="#创建一个新的网络" class="headerlink" title="创建一个新的网络"></a>创建一个新的网络</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 默认driver就是bridge</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> --driver bridge</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> --subnet 192.168.0.0/16 (192.168.0.1- 192.168.255.255)</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker network create -d bridge --gateway 192.168.0.1 --subnet 192.168.0.0/16 mynet</span></span><br><span class="line">49025b4d0eaa1303c112bbec9290a306fac466b9bc56aa81237d823476d86ada</span><br><span class="line"><span class="meta">$</span><span class="bash"> docker network ls</span></span><br><span class="line">NETWORK ID     NAME      DRIVER    SCOPE</span><br><span class="line">b3d482ea68aa   bridge    bridge    local</span><br><span class="line">70901896d6a3   host      host      local</span><br><span class="line">49025b4d0eaa   mynet     bridge    local</span><br><span class="line">51ec536b7953   none      null      local</span><br></pre></td></tr></table></figure>
-<h4 id="在mynet网络里创建两个新的tomcat"><a href="#在mynet网络里创建两个新的tomcat" class="headerlink" title="在mynet网络里创建两个新的tomcat"></a>在mynet网络里创建两个新的tomcat</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 起两个在mynet里的tomcat</span></span><br><span class="line">[vagrant@localhost ~]$ docker run -d -P --name tomcat-net-01 --net mynet tomcat</span><br><span class="line">8151712ef76b6315018f969b6c0b8116b297a8391793736f7d7825c88a89cc8c</span><br><span class="line">[vagrant@localhost ~]$ docker run -d -P --name tomcat-net-02 --net mynet tomcat</span><br><span class="line">8dada8500e5c3c7993b649984f64c0bb8266a52d6e38256a73807a8e99d901cd</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 发现这两个容器可以通过容器名互通。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 这就是自定义网络比docker默认的bridge网络（docker0）更高级的地方。</span></span><br><span class="line">[vagrant@localhost ~]$ docker exec -it tomcat-net-01 ping tomcat-net-02</span><br><span class="line">PING tomcat-net-02 (192.168.0.3) 56(84) bytes of data.</span><br><span class="line">64 bytes from tomcat-net-02.mynet (192.168.0.3): icmp_seq=1 ttl=64 time=0.082 ms</span><br><span class="line">64 bytes from tomcat-net-02.mynet (192.168.0.3): icmp_seq=2 ttl=64 time=0.078 ms</span><br><span class="line">^C</span><br><span class="line">--- tomcat-net-02 ping statistics ---</span><br><span class="line">2 packets transmitted, 2 received, 0% packet loss, time 2ms</span><br><span class="line">rtt min/avg/max/mdev = 0.078/0.080/0.082/0.002 ms</span><br><span class="line">[vagrant@localhost ~]$ docker exec -it tomcat-net-02 ping tomcat-net-01</span><br><span class="line">PING tomcat-net-01 (192.168.0.2) 56(84) bytes of data.</span><br><span class="line">64 bytes from tomcat-net-01.mynet (192.168.0.2): icmp_seq=1 ttl=64 time=0.059 ms</span><br><span class="line">64 bytes from tomcat-net-01.mynet (192.168.0.2): icmp_seq=2 ttl=64 time=0.068 ms</span><br><span class="line"></span><br><span class="line">64 bytes from tomcat-net-01.mynet (192.168.0.2): icmp_seq=3 ttl=64 time=0.216 ms</span><br><span class="line">^C</span><br><span class="line">--- tomcat-net-01 ping statistics ---</span><br><span class="line">3 packets transmitted, 3 received, 0% packet loss, time 90ms</span><br><span class="line">rtt min/avg/max/mdev = 0.059/0.114/0.216/0.072 ms</span><br></pre></td></tr></table></figure>
-<h4 id="不同docker网络里的容器连通（跨网络）"><a href="#不同docker网络里的容器连通（跨网络）" class="headerlink" title="不同docker网络里的容器连通（跨网络）"></a>不同docker网络里的容器连通（跨网络）</h4><p>这时又有一个问题。现在我的host上的容器如图所示。</p>
-<img src="/posts/3e6a7048/image-20210201173721626.png" alt="image-20210201173721626" style="zoom:50%;">
-
-<p>tomcat01和tomcat02是在默认的docker0的网络里，tomcat-net-01和tomcat-net-02在我新创建的mynet里。如果我需要tomcat01和tomcat-net-0连通，应该怎么做呢。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker network connect mynet tomcat01</span> </span><br><span class="line"><span class="meta">#</span><span class="bash"> 把tomcat容器连接到mynet网络中</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 现在就可以ping通了</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> -it tomcat01 ping tomcat-net-02</span> </span><br><span class="line">PING tomcat-net-02 (192.168.0.3) 56(84) bytes of data.</span><br><span class="line">64 bytes from tomcat-net-02.mynet (192.168.0.3): icmp_seq=1 ttl=64 time=0.235 ms</span><br><span class="line">64 bytes from tomcat-net-02.mynet (192.168.0.3): icmp_seq=2 ttl=64 time=0.160 ms</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 看一下tomcat01的网卡，发现多了一个eth1@if48，对应IP是 192.168.0.4，在mynet网段中。</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> -it tomcat01 ip a</span></span><br><span class="line">1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000</span><br><span class="line">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</span><br><span class="line">    inet 127.0.0.1/8 scope host lo</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">36: eth0@if37: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default</span><br><span class="line">    link/ether 02:42:ac:11:00:02 brd ff:ff:ff:ff:ff:ff link-netnsid 0</span><br><span class="line">    inet 172.17.0.2/16 brd 172.17.255.255 scope global eth0</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">47: eth1@if48: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default</span><br><span class="line">    link/ether 02:42:c0:a8:00:04 brd ff:ff:ff:ff:ff:ff link-netnsid 0</span><br><span class="line">    inet 192.168.0.4/16 brd 192.168.255.255 scope global eth1</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br></pre></td></tr></table></figure>
-
-
-<h3 id="docker的几种网络模式"><a href="#docker的几种网络模式" class="headerlink" title="docker的几种网络模式"></a>docker的几种网络模式</h3><h4 id="host模式"><a href="#host模式" class="headerlink" title="host模式"></a>host模式</h4><p>当我们在容器中执行任何类似ifconfig命令查看网络环境时，看到的都是宿主机上的信息。而外界访问容器中的应用，则直接使用10.10.101.105:80即可，不用任何NAT转换，就如直接跑在宿主机中一样。但是，容器的其他方面，如文件系统、进程列表等还是和宿主机隔离的。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 和host一样，共享</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> -it bb-host ip ad</span></span><br><span class="line">1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue qlen 1000</span><br><span class="line">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</span><br><span class="line">    inet 127.0.0.1/8 scope host lo</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 ::1/128 scope host</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">2: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc fq_codel qlen 1000</span><br><span class="line">    link/ether 52:54:00:27:8b:50 brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 10.0.2.15/24 brd 10.0.2.255 scope global dynamic eth0</span><br><span class="line">       valid_lft 44372sec preferred_lft 44372sec</span><br><span class="line">    inet6 fe80::5054:ff:fe27:8b50/64 scope link</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">3: docker0: &lt;NO-CARRIER,BROADCAST,MULTICAST,UP&gt; mtu 1500 qdisc noqueue</span><br><span class="line">    link/ether 02:42:95:5a:03:dc brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 fe80::42:95ff:fe5a:3dc/64 scope link</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">42: br-49025b4d0eaa: &lt;NO-CARRIER,BROADCAST,MULTICAST,UP&gt; mtu 1500 qdisc noqueue</span><br><span class="line">    link/ether 02:42:ad:cf:bc:6f brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 192.168.0.1/16 brd 192.168.255.255 scope global br-49025b4d0eaa</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 fe80::42:adff:fecf:bc6f/64 scope link</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br></pre></td></tr></table></figure>
-<h4 id="container模式"><a href="#container模式" class="headerlink" title="container模式"></a>container模式</h4><p>这个模式指定新创建的容器和已经存在的一个容器共享一个Network Namespace，而不是和宿主机共享。新创建的容器不会创建自己的网卡，配置自己的IP，而是和一个指定的容器共享IP、端口范围等。同样，两个容器除了网络方面，其他的如文件系统、进程列表等还是隔离的。两个容器的进程可以通过lo网卡设备通信。</p>
-<h4 id="none模式"><a href="#none模式" class="headerlink" title="none模式"></a>none模式</h4><p>这个模式和前两个不同。在这种模式下，Docker容器拥有自己的Network Namespace，但是，并不为Docker容器进行任何网络配置。也就是说，这个Docker容器没有网卡、IP、路由等信息。需要我们自己为Docker容器添加网卡、配置IP等。</p>
-<h4 id="bridge模式"><a href="#bridge模式" class="headerlink" title="bridge模式"></a>bridge模式</h4><p>bridge模式是Docker默认的网络设置，就是docker0的模式。此模式会为每一个容器分配Network Namespace、设置IP等，并将一个主机上的Docker容器连接到一个虚拟网桥上。</p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
-<li><p>Docker0：默认网络，缺点是不能通过容器名访问。</p>
-</li>
-<li><p>–link可以解决，但是太麻烦，是单向的。</p>
-</li>
-<li><p>一般需要自定义网络，这个可以通过容器名访问。</p>
-</li>
-<li><p>如果不同网络里的容器需要互联，则需要<code>docker network connect</code>，这个命令可以把network1中的容器连接到network2中，此时容器有两个IP，分别对应network1和2。</p>
-</li>
-</ul>
-
+           
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/3e6a7048.html">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1580,7 +1223,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-count">30</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1638,12 +1281,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">72k</span>
+    <span title="站点总字数">74k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:05</span>
+    <span title="站点阅读时长">1:07</span>
 </div>
 
         
