@@ -282,6 +282,32 @@
 ]]></content>
   </entry>
   <entry>
+    <title>GPU虚拟化</title>
+    <url>/posts/204fd6f0.html</url>
+    <content><![CDATA[<p>目前流行的几种模式：</p>
+<p>pass through</p>
+<p>sriov</p>
+<p>半虚拟化（mdev passthrough： Intel gvt-g, Nvidia GRID vGPU)</p>
+<p>全虚拟化（VMware： vSGA）</p>
+<p>学习路径</p>
+<p>pci -》 pci dma -》 iommu -》 passthrough</p>
+<p>内存页表 - 》 tlb</p>
+<p>cache -》 内存</p>
+<h1 id="PCI"><a href="#PCI" class="headerlink" title="PCI"></a>PCI</h1><p>Linux PCI设备驱动实际包括<strong>Linux PCI设备驱动</strong>和<strong>设备本身驱动</strong>两部分。</p>
+<p>PCI(Periheral Component Interconnect)有三种地址空间：<strong>PCI I/O空间、PCI内存地址空间和PCI配置空间</strong>。</p>
+<p>PCI I/O空间和PCI内存地址空间由设备驱动程序使用</p>
+<p>而PCI配置空间由Linux PCI初始化代码使用，用于配置PCI设备，比如中断号以及I/O或内存基地址。</p>
+<p>内核：遍历和配置</p>
+<p>遍历顺序：从host-pci开始，遇到pci bridge就到下一级pci总线继续遍历，直到遍历完成。（深度优先？）</p>
+<p>配置：PCI设备中一般都带有一些RAM和ROM 空间，通常的控制/状态寄存器和数据寄存器也往往以RAM区间的形式出现，而这些区间的地址在设备内部一般都是从0开始编址的，那么当总线上挂接了多个设备时，对这些空间的访问就会产生冲突。所以，这些地址都要先映射到系统总线上，再进一步映射到内核的虚拟地址空间。配置就是通过对PCI配置空间的寄存器进行操作从而完成地址的映射。 device physical address -&gt; system virtual address??</p>
+<h1 id="DMA"><a href="#DMA" class="headerlink" title="DMA"></a>DMA</h1><p><a href="https://cloud.tencent.com/developer/article/1194593">https://cloud.tencent.com/developer/article/1194593</a></p>
+<h2 id="Passthrough"><a href="#Passthrough" class="headerlink" title="Passthrough"></a>Passthrough</h2><p><strong>直通模式</strong>的实现依赖于IOMMU的功能。VTD对IOVA的地址转换使得直通设备可以在硬件层次直接使用GPA（Guest Physical Address）地址。GPU直通技术相对于任何其他设备来说，会有额外的PCI 配置空间模拟和MMIO的拦截（参见QEMU VFIO quirk机制）。比如Hypervisor或者Device Module 不会允许虚拟机对GPU硬件关键寄存器的完全的访问权限，一些高权限的操作会被直接拦截。大家或许已经意识到原来直通设备也是有MMIO模拟和拦截的。这对于我们理解GPU 半虚拟化很有帮助。</p>
+<h3 id="libvirt-layer"><a href="#libvirt-layer" class="headerlink" title="libvirt layer"></a>libvirt layer</h3><p>将PCI设备直接分配给guest os时，如果不先从guest中hot-unplug该设备，将无法进行migration。</p>
+<p>managed: guest启动时会自动从host上detach， guest shutdown时又重新attach回host。（implict）</p>
+<p>unmanged：需要手动从host detach，之后手动re-attach回host。不然libvirt会refuse。（explict）</p>
+]]></content>
+  </entry>
+  <entry>
     <title>hexo+github</title>
     <url>/posts/ebeabd53.html</url>
     <content><![CDATA[<h3 id="安装nodejs，git"><a href="#安装nodejs，git" class="headerlink" title="安装nodejs，git"></a>安装nodejs，git</h3><figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line">sudo apt <span class="keyword">install</span> npm</span><br><span class="line">sudo apt <span class="keyword">install</span> nodejs</span><br><span class="line">sudo apt <span class="keyword">install</span> git</span><br></pre></td></tr></table></figure>
@@ -344,30 +370,42 @@
       </tags>
   </entry>
   <entry>
-    <title>GPU虚拟化</title>
-    <url>/posts/204fd6f0.html</url>
-    <content><![CDATA[<p>目前流行的几种模式：</p>
-<p>pass through</p>
-<p>sriov</p>
-<p>半虚拟化（mdev passthrough： Intel gvt-g, Nvidia GRID vGPU)</p>
-<p>全虚拟化（VMware： vSGA）</p>
-<p>学习路径</p>
-<p>pci -》 pci dma -》 iommu -》 passthrough</p>
-<p>内存页表 - 》 tlb</p>
-<p>cache -》 内存</p>
-<h1 id="PCI"><a href="#PCI" class="headerlink" title="PCI"></a>PCI</h1><p>Linux PCI设备驱动实际包括<strong>Linux PCI设备驱动</strong>和<strong>设备本身驱动</strong>两部分。</p>
-<p>PCI(Periheral Component Interconnect)有三种地址空间：<strong>PCI I/O空间、PCI内存地址空间和PCI配置空间</strong>。</p>
-<p>PCI I/O空间和PCI内存地址空间由设备驱动程序使用</p>
-<p>而PCI配置空间由Linux PCI初始化代码使用，用于配置PCI设备，比如中断号以及I/O或内存基地址。</p>
-<p>内核：遍历和配置</p>
-<p>遍历顺序：从host-pci开始，遇到pci bridge就到下一级pci总线继续遍历，直到遍历完成。（深度优先？）</p>
-<p>配置：PCI设备中一般都带有一些RAM和ROM 空间，通常的控制/状态寄存器和数据寄存器也往往以RAM区间的形式出现，而这些区间的地址在设备内部一般都是从0开始编址的，那么当总线上挂接了多个设备时，对这些空间的访问就会产生冲突。所以，这些地址都要先映射到系统总线上，再进一步映射到内核的虚拟地址空间。配置就是通过对PCI配置空间的寄存器进行操作从而完成地址的映射。 device physical address -&gt; system virtual address??</p>
-<h1 id="DMA"><a href="#DMA" class="headerlink" title="DMA"></a>DMA</h1><p><a href="https://cloud.tencent.com/developer/article/1194593">https://cloud.tencent.com/developer/article/1194593</a></p>
-<h2 id="Passthrough"><a href="#Passthrough" class="headerlink" title="Passthrough"></a>Passthrough</h2><p><strong>直通模式</strong>的实现依赖于IOMMU的功能。VTD对IOVA的地址转换使得直通设备可以在硬件层次直接使用GPA（Guest Physical Address）地址。GPU直通技术相对于任何其他设备来说，会有额外的PCI 配置空间模拟和MMIO的拦截（参见QEMU VFIO quirk机制）。比如Hypervisor或者Device Module 不会允许虚拟机对GPU硬件关键寄存器的完全的访问权限，一些高权限的操作会被直接拦截。大家或许已经意识到原来直通设备也是有MMIO模拟和拦截的。这对于我们理解GPU 半虚拟化很有帮助。</p>
-<h3 id="libvirt-layer"><a href="#libvirt-layer" class="headerlink" title="libvirt layer"></a>libvirt layer</h3><p>将PCI设备直接分配给guest os时，如果不先从guest中hot-unplug该设备，将无法进行migration。</p>
-<p>managed: guest启动时会自动从host上detach， guest shutdown时又重新attach回host。（implict）</p>
-<p>unmanged：需要手动从host detach，之后手动re-attach回host。不然libvirt会refuse。（explict）</p>
+    <title>istio开发环境搭建</title>
+    <url>/posts/702f5168.html</url>
+    <content><![CDATA[<p>之前搭建了istio的生产环境，这次搭建开发环境。</p>
+<blockquote>
+<p>参考文档: <a href="https://github.com/istio/istio/wiki/Preparing-for-Development">https://github.com/istio/istio/wiki/Preparing-for-Development</a></p>
+</blockquote>
+<h2 id="建立本地docker-registry"><a href="#建立本地docker-registry" class="headerlink" title="建立本地docker registry"></a>建立本地docker registry</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 把container的5000端口，映射到localhost:5000</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> mounty本地的/mnt/docker_imgs到容器里的/var/lib/registry</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 用官方的registry镜像即可</span></span><br><span class="line">docker run -d   -p 5000:5000   --restart=always   --name registry   -v /mnt/docker_imgs:/var/lib/registry   registry</span><br></pre></td></tr></table></figure>
+<h3 id="安装Isito开发环境"><a href="#安装Isito开发环境" class="headerlink" title="安装Isito开发环境"></a>安装Isito开发环境</h3><h4 id="设置一些环境变量"><a href="#设置一些环境变量" class="headerlink" title="设置一些环境变量"></a>设置一些环境变量</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> User specific environment and startup programs</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> This defines the docker hub to use when running integration tests and building docker images</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> eg: HUB=<span class="string">&quot;docker.io/istio&quot;</span>, HUB=<span class="string">&quot;gcr.io/istio-testing&quot;</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 这里的docker registry就是我们上一步设置的本地仓库</span></span><br><span class="line">export HUB=&quot;localhost:5000/xinranwang&quot;</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> This defines the docker tag to use when running integration tests and</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> building docker images to be your user id. You may also <span class="built_in">set</span> this variable</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> this to any other legitimate docker tag.</span></span><br><span class="line">export TAG=devel</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> This defines a shortcut to change directories to <span class="variable">$HOME</span>/istio.io</span></span><br><span class="line">export ISTIO=$HOME/istio.io</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> mkdir ~/go/src/istio.io/</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> https://github.com/istio/istio.git</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> ~/go/src/istio.io/istio</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> make DEBUG=1 build</span></span><br><span class="line">Unable to find image &#x27;gcr.io/istio-testing/build-tools:master-2021-03-01T22-30-49&#x27; locally</span><br><span class="line">master-2021-03-01T22-30-49: Pulling from istio-testing/build-tools</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> build docker images，with HUB and TAG environment variable.</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> make DEBUG=1 docker</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> push images to registry</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 会读取环境变量，就push到本地仓库了</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> make docker.push</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 可以看到本地仓库里有build好的docker image</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ls /mnt/docker_imgs/docker/registry/v2/repositories/xinranwang/</span></span><br><span class="line">app                   app_sidecar_debian_10      app_sidecar_ubuntu_focal   istioctl  proxyv2</span><br><span class="line">app_sidecar_centos_7  app_sidecar_debian_9       app_sidecar_ubuntu_xenial  operator</span><br><span class="line">app_sidecar_centos_8  app_sidecar_ubuntu_bionic  install-cni                pilot</span><br></pre></td></tr></table></figure>
+<img src="/posts/702f5168/image-20210308154035936.png" alt="image-20210308154035936" style="zoom:80%;">
+
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">ubuntu@otcloud-node1:~/istio-1.9.1/manifests/profiles$ istioctl install -f default-local-registry.yaml</span><br><span class="line">This will install the Istio 1.9.1  profile with [&quot;Istio core&quot; &quot;Istiod&quot; &quot;Ingress gateways&quot;] components into the cluster. Proceed? (y/N) y</span><br><span class="line">✔ Istio core installed</span><br><span class="line">✔ Istiod installed</span><br><span class="line">✔ Ingress gateways installed</span><br><span class="line">✔ Installation complete</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">k get pods -nistio-system</span><br><span class="line">NAME                                    READY   STATUS    RESTARTS   AGE</span><br><span class="line">istio-ingressgateway-58844f985b-mdckr   1/1     Running   0          34s</span><br><span class="line">istiod-6f846c944f-zwqxf                 1/1     Running   0          38s</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">kubectl label namespace default istio-injection=enabled</span><br></pre></td></tr></table></figure>
+
+
+<img src="/posts/702f5168/image-20210308164345265.png" alt="image-20210308164345265" style="zoom:80%;">
+
+
+
+
+
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">Environment:</span><br><span class="line">------------</span><br><span class="line">ENVOY_PORT=</span><br><span class="line">INBOUND_CAPTURE_PORT=</span><br><span class="line">ISTIO_INBOUND_INTERCEPTION_MODE=</span><br><span class="line">ISTIO_INBOUND_TPROXY_MARK=</span><br><span class="line">ISTIO_INBOUND_TPROXY_ROUTE_TABLE=</span><br><span class="line">ISTIO_INBOUND_PORTS=</span><br><span class="line">ISTIO_OUTBOUND_PORTS=</span><br><span class="line">ISTIO_LOCAL_EXCLUDE_PORTS=</span><br><span class="line">ISTIO_SERVICE_CIDR=</span><br><span class="line">ISTIO_SERVICE_EXCLUDE_CIDR=</span><br><span class="line">ISTIO_META_DNS_CAPTURE=</span><br><span class="line"></span><br><span class="line">Variables:</span><br><span class="line">----------</span><br><span class="line">PROXY_PORT=15001</span><br><span class="line">PROXY_INBOUND_CAPTURE_PORT=15006</span><br><span class="line">PROXY_TUNNEL_PORT=15008</span><br><span class="line">PROXY_UID=1337</span><br><span class="line">PROXY_GID=1337</span><br><span class="line">INBOUND_INTERCEPTION_MODE=REDIRECT</span><br><span class="line">INBOUND_TPROXY_MARK=1337</span><br><span class="line">INBOUND_TPROXY_ROUTE_TABLE=133</span><br><span class="line">INBOUND_PORTS_INCLUDE=*</span><br><span class="line">INBOUND_PORTS_EXCLUDE=15090,15021,15020</span><br><span class="line">OUTBOUND_IP_RANGES_INCLUDE=*</span><br><span class="line">OUTBOUND_IP_RANGES_EXCLUDE=</span><br><span class="line">OUTBOUND_PORTS_INCLUDE=</span><br><span class="line">OUTBOUND_PORTS_EXCLUDE=</span><br><span class="line">KUBEVIRT_INTERFACES=</span><br><span class="line">ENABLE_INBOUND_IPV6=false</span><br><span class="line">DNS_CAPTURE=false</span><br><span class="line">DNS_SERVERS=[],[]</span><br><span class="line"></span><br><span class="line">Writing following contents to rules file:  /tmp/iptables-rules-1615191401124723984.txt833457753</span><br><span class="line">* nat</span><br><span class="line">-N ISTIO_INBOUND</span><br><span class="line">-N ISTIO_REDIRECT</span><br><span class="line">-N ISTIO_IN_REDIRECT</span><br><span class="line">-N ISTIO_OUTPUT</span><br><span class="line">-A ISTIO_INBOUND -p tcp --dport 15008 -j RETURN</span><br><span class="line">-A ISTIO_REDIRECT -p tcp -j REDIRECT --to-ports 15001</span><br><span class="line">-A ISTIO_IN_REDIRECT -p tcp -j REDIRECT --to-ports 15006</span><br><span class="line">-A PREROUTING -p tcp -j ISTIO_INBOUND</span><br><span class="line">-A ISTIO_INBOUND -p tcp --dport 22 -j RETURN</span><br><span class="line">-A ISTIO_INBOUND -p tcp --dport 15090 -j RETURN</span><br><span class="line">-A ISTIO_INBOUND -p tcp --dport 15021 -j RETURN</span><br><span class="line">-A ISTIO_INBOUND -p tcp --dport 15020 -j RETURN</span><br><span class="line">-A ISTIO_INBOUND -p tcp -j ISTIO_IN_REDIRECT</span><br><span class="line">-A OUTPUT -p tcp -j ISTIO_OUTPUT</span><br><span class="line">-A ISTIO_OUTPUT -o lo -s 127.0.0.6/32 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -o lo ! -d 127.0.0.1/32 -m owner --uid-owner 1337 -j ISTIO_IN_REDIRECT</span><br><span class="line">-A ISTIO_OUTPUT -o lo -m owner ! --uid-owner 1337 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -m owner --uid-owner 1337 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -o lo ! -d 127.0.0.1/32 -m owner --gid-owner 1337 -j ISTIO_IN_REDIRECT</span><br><span class="line">-A ISTIO_OUTPUT -o lo -m owner ! --gid-owner 1337 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -m owner --gid-owner 1337 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -d 127.0.0.1/32 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -j ISTIO_REDIRECT</span><br><span class="line">COMMIT</span><br><span class="line"></span><br><span class="line">iptables-restore --noflush /tmp/iptables-rules-1615191401124723984.txt833457753</span><br><span class="line">Writing following contents to rules file:  /tmp/ip6tables-rules-1615191401199424850.txt857904100</span><br><span class="line"></span><br><span class="line">ip6tables-restore --noflush /tmp/ip6tables-rules-1615191401199424850.txt857904100</span><br><span class="line">iptables-save </span><br><span class="line"><span class="meta">#</span><span class="bash"> Generated by iptables-save v1.6.1 on Mon Mar  8 08:16:41 2021</span></span><br><span class="line">*nat</span><br><span class="line">:PREROUTING ACCEPT [0:0]</span><br><span class="line">:INPUT ACCEPT [0:0]</span><br><span class="line">:OUTPUT ACCEPT [0:0]</span><br><span class="line">:POSTROUTING ACCEPT [0:0]</span><br><span class="line">:ISTIO_INBOUND - [0:0]</span><br><span class="line">:ISTIO_IN_REDIRECT - [0:0]</span><br><span class="line">:ISTIO_OUTPUT - [0:0]</span><br><span class="line">:ISTIO_REDIRECT - [0:0]</span><br><span class="line">-A PREROUTING -p tcp -j ISTIO_INBOUND</span><br><span class="line">-A OUTPUT -p tcp -j ISTIO_OUTPUT</span><br><span class="line">-A ISTIO_INBOUND -p tcp -m tcp --dport 15008 -j RETURN</span><br><span class="line">-A ISTIO_INBOUND -p tcp -m tcp --dport 22 -j RETURN</span><br><span class="line">-A ISTIO_INBOUND -p tcp -m tcp --dport 15090 -j RETURN</span><br><span class="line">-A ISTIO_INBOUND -p tcp -m tcp --dport 15021 -j RETURN</span><br><span class="line">-A ISTIO_INBOUND -p tcp -m tcp --dport 15020 -j RETURN</span><br><span class="line">-A ISTIO_INBOUND -p tcp -j ISTIO_IN_REDIRECT</span><br><span class="line">-A ISTIO_IN_REDIRECT -p tcp -j REDIRECT --to-ports 15006</span><br><span class="line">-A ISTIO_OUTPUT -s 127.0.0.6/32 -o lo -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT ! -d 127.0.0.1/32 -o lo -m owner --uid-owner 1337 -j ISTIO_IN_REDIRECT</span><br><span class="line">-A ISTIO_OUTPUT -o lo -m owner ! --uid-owner 1337 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -m owner --uid-owner 1337 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT ! -d 127.0.0.1/32 -o lo -m owner --gid-owner 1337 -j ISTIO_IN_REDIRECT</span><br><span class="line">-A ISTIO_OUTPUT -o lo -m owner ! --gid-owner 1337 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -m owner --gid-owner 1337 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -d 127.0.0.1/32 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -j ISTIO_REDIRECT</span><br><span class="line">-A ISTIO_REDIRECT -p tcp -j REDIRECT --to-ports 15001</span><br><span class="line">COMMIT</span><br><span class="line"><span class="meta">#</span><span class="bash"> Completed on Mon Mar  8 08:16:41 2021</span></span><br></pre></td></tr></table></figure>
 ]]></content>
+      <categories>
+        <category>deploy</category>
+      </categories>
+      <tags>
+        <tag>deploy</tag>
+        <tag>service mesh</tag>
+      </tags>
   </entry>
   <entry>
     <title>部署istio+k8s+kiali</title>
@@ -410,8 +448,8 @@
         <category>deploy</category>
       </categories>
       <tags>
-        <tag>service-mesh</tag>
         <tag>deploy</tag>
+        <tag>service-mesh</tag>
       </tags>
   </entry>
   <entry>
@@ -432,6 +470,87 @@
 <p><strong>kubernetes Ingress</strong> vs <strong>Isito gateway</strong></p>
 <p><img src="/posts/def4f008/image-20210309151602156.png" alt="image-20210309151602156"></p>
 <h2 id="gateway原理及实现"><a href="#gateway原理及实现" class="headerlink" title="gateway原理及实现"></a>gateway原理及实现</h2><figure class="highlight haml"><table><tr><td class="code"><pre><span class="line">pilot-agent</span><br><span class="line">-<span class="ruby"> <span class="symbol">args:</span></span></span><br><span class="line"><span class="ruby">   - proxy</span></span><br><span class="line"><span class="ruby">   - router</span></span><br><span class="line"><span class="ruby">   - --domain</span></span><br><span class="line"><span class="ruby">   - <span class="variable">$(</span>POD_NAMESPACE).svc.cluster.local</span></span><br><span class="line"><span class="ruby">   - --proxyLogLevel=warning</span></span><br><span class="line"><span class="ruby">   - --proxyComponentLogLevel=<span class="symbol">misc:</span>error</span></span><br><span class="line"><span class="ruby">   - --log_output_level=<span class="symbol">default:</span>info</span></span><br><span class="line"><span class="ruby">   - --serviceCluster</span></span><br><span class="line"><span class="ruby">   - istio-ingressgateway</span></span><br></pre></td></tr></table></figure>]]></content>
+  </entry>
+  <entry>
+    <title>istio学习（1）-pilot</title>
+    <url>/posts/a94c45db.html</url>
+    <content><![CDATA[<h2 id="service-mesh（服务网格）"><a href="#service-mesh（服务网格）" class="headerlink" title="service mesh（服务网格）"></a>service mesh（服务网格）</h2><p>Service Mesh通过一个个”代理” 来为微服务转发/接收所有流量，通过控制这些代理，就可以实现服务连接，注册，发现，负载均衡，熔断，监控等等一系列服务治理相关功能，从而微服务的代码不再需要服务治理的实现，换句话说，也就是服务治理对于微服务开发者而言是透明的。如下图所示：绿色方块为微服务，蓝色方块为 service mesh 的代理，蓝色线条为服务间通讯。可以看到蓝色的方块和线条组成了整个网格。这个网络就是 Service Mesh。</p>
+<img src="/posts/a94c45db/v2-638a9d12e8a7406b7a733f2eadf989f5_1440w.jpg" alt="img" style="zoom:30%;">
+
+<h2 id="Istio"><a href="#Istio" class="headerlink" title="Istio"></a>Istio</h2><p>Go编写，控制面。对应的数据面是通常是envoy（基于C++）</p>
+<h3 id="架构图"><a href="#架构图" class="headerlink" title="架构图"></a>架构图</h3><p><img src="/posts/a94c45db/arch.svg" alt="The overall architecture of an Istio-based application."></p>
+<h3 id="基本组件"><a href="#基本组件" class="headerlink" title="基本组件"></a>基本组件</h3><h4 id="envoy"><a href="#envoy" class="headerlink" title="envoy"></a>envoy</h4><p>以sidecar的形式运行在服务所在的pod中，所有service的流量进出都必须通过envoy proxy，用来控制service之间的访问，service是感知不到envoy proxy的存在。</p>
+<p>envoy可以和控制平面（istio的组件）双向交互，可以从istio拿到一些策略和服务发现的信息，同时也可以给istio传回一些监控的数据等等。</p>
+<h4 id="Istiod"><a href="#Istiod" class="headerlink" title="Istiod"></a>Istiod</h4><p>Istiod提供服务发现, 服务配置和证书管理。</p>
+<p>stiod acts as a Certificate Authority (CA) and generates certificates to allow secure mTLS communication in the data plane.</p>
+<h2 id="Istio的服务发现流程"><a href="#Istio的服务发现流程" class="headerlink" title="Istio的服务发现流程"></a>Istio的服务发现流程</h2><p><img src="/posts/a94c45db/image-20210226160141651.png" alt="image-20210226160141651"></p>
+<p>istio的pilot组件时负责服务发现的。在pilot里只有服务发现的定义，但是没有服务发现的实现，服务发现的实现是在pilot adapter对接的platform（比如k8s）里的。pilot adapter可以对接不同的平台，比如cloudfoudary，eurake，kubernetes，consul等等，但是k8s的适配最好，也是istio社区的重点。</p>
+<h3 id="isito和kubernetes服务概念对应关系"><a href="#isito和kubernetes服务概念对应关系" class="headerlink" title="isito和kubernetes服务概念对应关系"></a>isito和kubernetes服务概念对应关系</h3><table>
+<thead>
+<tr>
+<th align="center">isito</th>
+<th align="center">kubernetes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">service</td>
+<td align="center">service</td>
+</tr>
+<tr>
+<td align="center">instance</td>
+<td align="center">endpoint</td>
+</tr>
+<tr>
+<td align="center">version</td>
+<td align="center">deployment</td>
+</tr>
+</tbody></table>
+<img src="/posts/a94c45db/image-20210309105852832.png" alt="image-20210309105852832" style="zoom:80%;">
+
+<p>每个envoy里都有全量的规则。（现在也是吗？？）</p>
+<p>Envoy （C++），CNCF毕业（kubernets，Prometheus之后）。</p>
+<p>xDS：</p>
+<p>listener（LDS）：</p>
+<p>routes（RDS）：</p>
+<p>cluster（CDS）：</p>
+<p>endpoint（EDS）：</p>
+<p>Envoy目前支持的三种LB：</p>
+<ol>
+<li>轮询round robin</li>
+<li>随机random</li>
+<li>加权weighted least request.</li>
+</ol>
+<p>Istio：</p>
+<p>用户可以配置（通过rules API）的CRD：</p>
+<p>gateway：</p>
+<p>virtualservice：</p>
+<p>destinationrule：</p>
+<p>serviceEntry：</p>
+<h3 id="Pilot"><a href="#Pilot" class="headerlink" title="Pilot"></a>Pilot</h3><p><img src="/posts/a94c45db/image-20210423095618162.png" alt="image-20210423095618162"></p>
+<ol>
+<li>平台适配层: 将不同的平台资源和istio的抽象模型相互转换。</li>
+<li>xds API： envoy API</li>
+</ol>
+<h3 id="citadel："><a href="#citadel：" class="headerlink" title="citadel："></a>citadel：</h3><p>没有citadel的时候，就是end to end的非对称密钥交换，然后对称加密传输数据。</p>
+<p>citadel：就是存储证书，发放证书的一个东西。</p>
+<h3 id="Galley"><a href="#Galley" class="headerlink" title="Galley"></a>Galley</h3><p>istio自身创建的CRD有50多种，可以理解成验证，解析，管理CRD的东西。</p>
+<h3 id="Mixer"><a href="#Mixer" class="headerlink" title="Mixer"></a>Mixer</h3><p>1.7之后弃用，下放到envoy里。telemetry v2是在istio里？</p>
+<h3 id="其他解决方案"><a href="#其他解决方案" class="headerlink" title="其他解决方案"></a>其他解决方案</h3><p>sofamesh蚂蚁金服，用<strong>mosn</strong>替换envoy，golang，合并mixer，增强pilot，增加对sofa rpc， dubbo的支持。</p>
+<p>linkerd =  control plane + data plane</p>
+<p>linkerd v1可以脱离k8s</p>
+<p>linkerd v2和k8s紧耦合</p>
+<p>consul</p>
+<p>192.168.0.195 zhang</p>
+<p>192.168.0.196 ci</p>
+<p>192.168.0.199 zhang</p>
+]]></content>
+      <categories>
+        <category>service-mesh</category>
+      </categories>
+      <tags>
+        <tag>service-mesh</tag>
+        <tag>istio</tag>
+      </tags>
   </entry>
   <entry>
     <title>linux内存管理</title>
@@ -559,19 +678,6 @@
       </tags>
   </entry>
   <entry>
-    <title>多设备同步hexoy</title>
-    <url>/posts/c9d1870c.html</url>
-    <content><![CDATA[<h1 id="多个设备之间同步hexo"><a href="#多个设备之间同步hexo" class="headerlink" title="多个设备之间同步hexo"></a>多个设备之间同步hexo</h1><p><strong>原理</strong></p>
-<p>hexo deploy会将本地创建好的目录blog里面的文件生成对应的静态文件（html等），并且将它上传到xxx.github.com repo中。<br>在_config.yml中设置了deploy要操作的repo和branch，这里我使用的是xxinran.github.io的main branch。</p>
-]]></content>
-      <categories>
-        <category>hexo</category>
-      </categories>
-      <tags>
-        <tag>hexo</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>markdown基本语法</title>
     <url>/posts/47caaf1e.html</url>
     <content><![CDATA[<h1 id="一级标题"><a href="#一级标题" class="headerlink" title="一级标题"></a>一级标题</h1><h2 id="二级"><a href="#二级" class="headerlink" title="二级"></a>二级</h2><h3 id="三级-（CTRL-3-或者-）"><a href="#三级-（CTRL-3-或者-）" class="headerlink" title="三级 （CTRL +3 或者 ### ）"></a>三级 （CTRL +3 或者 ### ）</h3><h4 id="四级"><a href="#四级" class="headerlink" title="四级"></a>四级</h4><h6 id="最多支持到六级"><a href="#最多支持到六级" class="headerlink" title="最多支持到六级"></a>最多支持到六级</h6><h2 id="字体"><a href="#字体" class="headerlink" title="字体"></a>字体</h2><p><strong>hello world</strong></p>
@@ -630,6 +736,19 @@
       </tags>
   </entry>
   <entry>
+    <title>多设备同步hexoy</title>
+    <url>/posts/c9d1870c.html</url>
+    <content><![CDATA[<h1 id="多个设备之间同步hexo"><a href="#多个设备之间同步hexo" class="headerlink" title="多个设备之间同步hexo"></a>多个设备之间同步hexo</h1><p><strong>原理</strong></p>
+<p>hexo deploy会将本地创建好的目录blog里面的文件生成对应的静态文件（html等），并且将它上传到xxx.github.com repo中。<br>在_config.yml中设置了deploy要操作的repo和branch，这里我使用的是xxinran.github.io的main branch。</p>
+]]></content>
+      <categories>
+        <category>hexo</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>容器的namespace和cgroups</title>
     <url>/posts/b56963ac.html</url>
     <content><![CDATA[<h2 id="namespace"><a href="#namespace" class="headerlink" title="namespace"></a>namespace</h2><h4 id="PID-namespace"><a href="#PID-namespace" class="headerlink" title="PID namespace"></a>PID namespace</h4><p>一个容器就是是一个进程，在启动下面的容器的时候：</p>
@@ -682,125 +801,6 @@
       <tags>
         <tag>docker</tag>
         <tag>linux</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>istio学习（1）-pilot</title>
-    <url>/posts/a94c45db.html</url>
-    <content><![CDATA[<h2 id="service-mesh（服务网格）"><a href="#service-mesh（服务网格）" class="headerlink" title="service mesh（服务网格）"></a>service mesh（服务网格）</h2><p>Service Mesh通过一个个”代理” 来为微服务转发/接收所有流量，通过控制这些代理，就可以实现服务连接，注册，发现，负载均衡，熔断，监控等等一系列服务治理相关功能，从而微服务的代码不再需要服务治理的实现，换句话说，也就是服务治理对于微服务开发者而言是透明的。如下图所示：绿色方块为微服务，蓝色方块为 service mesh 的代理，蓝色线条为服务间通讯。可以看到蓝色的方块和线条组成了整个网格。这个网络就是 Service Mesh。</p>
-<img src="/posts/a94c45db/v2-638a9d12e8a7406b7a733f2eadf989f5_1440w.jpg" alt="img" style="zoom:30%;">
-
-<h2 id="Istio"><a href="#Istio" class="headerlink" title="Istio"></a>Istio</h2><p>Go编写，控制面。对应的数据面是通常是envoy（基于C++）</p>
-<h3 id="架构图"><a href="#架构图" class="headerlink" title="架构图"></a>架构图</h3><p><img src="/posts/a94c45db/arch.svg" alt="The overall architecture of an Istio-based application."></p>
-<h3 id="基本组件"><a href="#基本组件" class="headerlink" title="基本组件"></a>基本组件</h3><h4 id="envoy"><a href="#envoy" class="headerlink" title="envoy"></a>envoy</h4><p>以sidecar的形式运行在服务所在的pod中，所有service的流量进出都必须通过envoy proxy，用来控制service之间的访问，service是感知不到envoy proxy的存在。</p>
-<p>envoy可以和控制平面（istio的组件）双向交互，可以从istio拿到一些策略和服务发现的信息，同时也可以给istio传回一些监控的数据等等。</p>
-<h4 id="Istiod"><a href="#Istiod" class="headerlink" title="Istiod"></a>Istiod</h4><p>Istiod提供服务发现, 服务配置和证书管理。</p>
-<p>stiod acts as a Certificate Authority (CA) and generates certificates to allow secure mTLS communication in the data plane.</p>
-<h2 id="Istio的服务发现流程"><a href="#Istio的服务发现流程" class="headerlink" title="Istio的服务发现流程"></a>Istio的服务发现流程</h2><p><img src="/posts/a94c45db/image-20210226160141651.png" alt="image-20210226160141651"></p>
-<p>istio的pilot组件时负责服务发现的。在pilot里只有服务发现的定义，但是没有服务发现的实现，服务发现的实现是在pilot adapter对接的platform（比如k8s）里的。pilot adapter可以对接不同的平台，比如cloudfoudary，eurake，kubernetes，consul等等，但是k8s的适配最好，也是istio社区的重点。</p>
-<h3 id="isito和kubernetes服务概念对应关系"><a href="#isito和kubernetes服务概念对应关系" class="headerlink" title="isito和kubernetes服务概念对应关系"></a>isito和kubernetes服务概念对应关系</h3><table>
-<thead>
-<tr>
-<th align="center">isito</th>
-<th align="center">kubernetes</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">service</td>
-<td align="center">service</td>
-</tr>
-<tr>
-<td align="center">instance</td>
-<td align="center">endpoint</td>
-</tr>
-<tr>
-<td align="center">version</td>
-<td align="center">deployment</td>
-</tr>
-</tbody></table>
-<img src="/posts/a94c45db/image-20210309105852832.png" alt="image-20210309105852832" style="zoom:80%;">
-
-<p>每个envoy里都有全量的规则。（现在也是吗？？）</p>
-<p>Envoy （C++），CNCF毕业（kubernets，Prometheus之后）。</p>
-<p>xDS：</p>
-<p>listener（LDS）：</p>
-<p>routes（RDS）：</p>
-<p>cluster（CDS）：</p>
-<p>endpoint（EDS）：</p>
-<p>Envoy目前支持的三种LB：</p>
-<ol>
-<li>轮询round robin</li>
-<li>随机random</li>
-<li>加权weighted least request.</li>
-</ol>
-<p>Istio：</p>
-<p>用户可以配置（通过rules API）的CRD：</p>
-<p>gateway：</p>
-<p>virtualservice：</p>
-<p>destinationrule：</p>
-<p>serviceEntry：</p>
-<h3 id="Pilot"><a href="#Pilot" class="headerlink" title="Pilot"></a>Pilot</h3><p><img src="/posts/a94c45db/image-20210423095618162.png" alt="image-20210423095618162"></p>
-<ol>
-<li>平台适配层: 将不同的平台资源和istio的抽象模型相互转换。</li>
-<li>xds API： envoy API</li>
-</ol>
-<h3 id="citadel："><a href="#citadel：" class="headerlink" title="citadel："></a>citadel：</h3><p>没有citadel的时候，就是end to end的非对称密钥交换，然后对称加密传输数据。</p>
-<p>citadel：就是存储证书，发放证书的一个东西。</p>
-<h3 id="Galley"><a href="#Galley" class="headerlink" title="Galley"></a>Galley</h3><p>istio自身创建的CRD有50多种，可以理解成验证，解析，管理CRD的东西。</p>
-<h3 id="Mixer"><a href="#Mixer" class="headerlink" title="Mixer"></a>Mixer</h3><p>1.7之后弃用，下放到envoy里。telemetry v2是在istio里？</p>
-<h3 id="其他解决方案"><a href="#其他解决方案" class="headerlink" title="其他解决方案"></a>其他解决方案</h3><p>sofamesh蚂蚁金服，用<strong>mosn</strong>替换envoy，golang，合并mixer，增强pilot，增加对sofa rpc， dubbo的支持。</p>
-<p>linkerd =  control plane + data plane</p>
-<p>linkerd v1可以脱离k8s</p>
-<p>linkerd v2和k8s紧耦合</p>
-<p>consul</p>
-<p>192.168.0.195 zhang</p>
-<p>192.168.0.196 ci</p>
-<p>192.168.0.199 zhang</p>
-]]></content>
-      <categories>
-        <category>service-mesh</category>
-      </categories>
-      <tags>
-        <tag>service-mesh</tag>
-        <tag>istio</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>istio开发环境搭建</title>
-    <url>/posts/702f5168.html</url>
-    <content><![CDATA[<p>之前搭建了istio的生产环境，这次搭建开发环境。</p>
-<blockquote>
-<p>参考文档: <a href="https://github.com/istio/istio/wiki/Preparing-for-Development">https://github.com/istio/istio/wiki/Preparing-for-Development</a></p>
-</blockquote>
-<h2 id="建立本地docker-registry"><a href="#建立本地docker-registry" class="headerlink" title="建立本地docker registry"></a>建立本地docker registry</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 把container的5000端口，映射到localhost:5000</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> mounty本地的/mnt/docker_imgs到容器里的/var/lib/registry</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 用官方的registry镜像即可</span></span><br><span class="line">docker run -d   -p 5000:5000   --restart=always   --name registry   -v /mnt/docker_imgs:/var/lib/registry   registry</span><br></pre></td></tr></table></figure>
-<h3 id="安装Isito开发环境"><a href="#安装Isito开发环境" class="headerlink" title="安装Isito开发环境"></a>安装Isito开发环境</h3><h4 id="设置一些环境变量"><a href="#设置一些环境变量" class="headerlink" title="设置一些环境变量"></a>设置一些环境变量</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> User specific environment and startup programs</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> This defines the docker hub to use when running integration tests and building docker images</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> eg: HUB=<span class="string">&quot;docker.io/istio&quot;</span>, HUB=<span class="string">&quot;gcr.io/istio-testing&quot;</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 这里的docker registry就是我们上一步设置的本地仓库</span></span><br><span class="line">export HUB=&quot;localhost:5000/xinranwang&quot;</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> This defines the docker tag to use when running integration tests and</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> building docker images to be your user id. You may also <span class="built_in">set</span> this variable</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> this to any other legitimate docker tag.</span></span><br><span class="line">export TAG=devel</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> This defines a shortcut to change directories to <span class="variable">$HOME</span>/istio.io</span></span><br><span class="line">export ISTIO=$HOME/istio.io</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> mkdir ~/go/src/istio.io/</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> https://github.com/istio/istio.git</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> ~/go/src/istio.io/istio</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> make DEBUG=1 build</span></span><br><span class="line">Unable to find image &#x27;gcr.io/istio-testing/build-tools:master-2021-03-01T22-30-49&#x27; locally</span><br><span class="line">master-2021-03-01T22-30-49: Pulling from istio-testing/build-tools</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> build docker images，with HUB and TAG environment variable.</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> make DEBUG=1 docker</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> push images to registry</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 会读取环境变量，就push到本地仓库了</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> make docker.push</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 可以看到本地仓库里有build好的docker image</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ls /mnt/docker_imgs/docker/registry/v2/repositories/xinranwang/</span></span><br><span class="line">app                   app_sidecar_debian_10      app_sidecar_ubuntu_focal   istioctl  proxyv2</span><br><span class="line">app_sidecar_centos_7  app_sidecar_debian_9       app_sidecar_ubuntu_xenial  operator</span><br><span class="line">app_sidecar_centos_8  app_sidecar_ubuntu_bionic  install-cni                pilot</span><br></pre></td></tr></table></figure>
-<img src="/posts/702f5168/image-20210308154035936.png" alt="image-20210308154035936" style="zoom:80%;">
-
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">ubuntu@otcloud-node1:~/istio-1.9.1/manifests/profiles$ istioctl install -f default-local-registry.yaml</span><br><span class="line">This will install the Istio 1.9.1  profile with [&quot;Istio core&quot; &quot;Istiod&quot; &quot;Ingress gateways&quot;] components into the cluster. Proceed? (y/N) y</span><br><span class="line">✔ Istio core installed</span><br><span class="line">✔ Istiod installed</span><br><span class="line">✔ Ingress gateways installed</span><br><span class="line">✔ Installation complete</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">k get pods -nistio-system</span><br><span class="line">NAME                                    READY   STATUS    RESTARTS   AGE</span><br><span class="line">istio-ingressgateway-58844f985b-mdckr   1/1     Running   0          34s</span><br><span class="line">istiod-6f846c944f-zwqxf                 1/1     Running   0          38s</span><br></pre></td></tr></table></figure>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">kubectl label namespace default istio-injection=enabled</span><br></pre></td></tr></table></figure>
-
-
-<img src="/posts/702f5168/image-20210308164345265.png" alt="image-20210308164345265" style="zoom:80%;">
-
-
-
-
-
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">Environment:</span><br><span class="line">------------</span><br><span class="line">ENVOY_PORT=</span><br><span class="line">INBOUND_CAPTURE_PORT=</span><br><span class="line">ISTIO_INBOUND_INTERCEPTION_MODE=</span><br><span class="line">ISTIO_INBOUND_TPROXY_MARK=</span><br><span class="line">ISTIO_INBOUND_TPROXY_ROUTE_TABLE=</span><br><span class="line">ISTIO_INBOUND_PORTS=</span><br><span class="line">ISTIO_OUTBOUND_PORTS=</span><br><span class="line">ISTIO_LOCAL_EXCLUDE_PORTS=</span><br><span class="line">ISTIO_SERVICE_CIDR=</span><br><span class="line">ISTIO_SERVICE_EXCLUDE_CIDR=</span><br><span class="line">ISTIO_META_DNS_CAPTURE=</span><br><span class="line"></span><br><span class="line">Variables:</span><br><span class="line">----------</span><br><span class="line">PROXY_PORT=15001</span><br><span class="line">PROXY_INBOUND_CAPTURE_PORT=15006</span><br><span class="line">PROXY_TUNNEL_PORT=15008</span><br><span class="line">PROXY_UID=1337</span><br><span class="line">PROXY_GID=1337</span><br><span class="line">INBOUND_INTERCEPTION_MODE=REDIRECT</span><br><span class="line">INBOUND_TPROXY_MARK=1337</span><br><span class="line">INBOUND_TPROXY_ROUTE_TABLE=133</span><br><span class="line">INBOUND_PORTS_INCLUDE=*</span><br><span class="line">INBOUND_PORTS_EXCLUDE=15090,15021,15020</span><br><span class="line">OUTBOUND_IP_RANGES_INCLUDE=*</span><br><span class="line">OUTBOUND_IP_RANGES_EXCLUDE=</span><br><span class="line">OUTBOUND_PORTS_INCLUDE=</span><br><span class="line">OUTBOUND_PORTS_EXCLUDE=</span><br><span class="line">KUBEVIRT_INTERFACES=</span><br><span class="line">ENABLE_INBOUND_IPV6=false</span><br><span class="line">DNS_CAPTURE=false</span><br><span class="line">DNS_SERVERS=[],[]</span><br><span class="line"></span><br><span class="line">Writing following contents to rules file:  /tmp/iptables-rules-1615191401124723984.txt833457753</span><br><span class="line">* nat</span><br><span class="line">-N ISTIO_INBOUND</span><br><span class="line">-N ISTIO_REDIRECT</span><br><span class="line">-N ISTIO_IN_REDIRECT</span><br><span class="line">-N ISTIO_OUTPUT</span><br><span class="line">-A ISTIO_INBOUND -p tcp --dport 15008 -j RETURN</span><br><span class="line">-A ISTIO_REDIRECT -p tcp -j REDIRECT --to-ports 15001</span><br><span class="line">-A ISTIO_IN_REDIRECT -p tcp -j REDIRECT --to-ports 15006</span><br><span class="line">-A PREROUTING -p tcp -j ISTIO_INBOUND</span><br><span class="line">-A ISTIO_INBOUND -p tcp --dport 22 -j RETURN</span><br><span class="line">-A ISTIO_INBOUND -p tcp --dport 15090 -j RETURN</span><br><span class="line">-A ISTIO_INBOUND -p tcp --dport 15021 -j RETURN</span><br><span class="line">-A ISTIO_INBOUND -p tcp --dport 15020 -j RETURN</span><br><span class="line">-A ISTIO_INBOUND -p tcp -j ISTIO_IN_REDIRECT</span><br><span class="line">-A OUTPUT -p tcp -j ISTIO_OUTPUT</span><br><span class="line">-A ISTIO_OUTPUT -o lo -s 127.0.0.6/32 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -o lo ! -d 127.0.0.1/32 -m owner --uid-owner 1337 -j ISTIO_IN_REDIRECT</span><br><span class="line">-A ISTIO_OUTPUT -o lo -m owner ! --uid-owner 1337 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -m owner --uid-owner 1337 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -o lo ! -d 127.0.0.1/32 -m owner --gid-owner 1337 -j ISTIO_IN_REDIRECT</span><br><span class="line">-A ISTIO_OUTPUT -o lo -m owner ! --gid-owner 1337 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -m owner --gid-owner 1337 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -d 127.0.0.1/32 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -j ISTIO_REDIRECT</span><br><span class="line">COMMIT</span><br><span class="line"></span><br><span class="line">iptables-restore --noflush /tmp/iptables-rules-1615191401124723984.txt833457753</span><br><span class="line">Writing following contents to rules file:  /tmp/ip6tables-rules-1615191401199424850.txt857904100</span><br><span class="line"></span><br><span class="line">ip6tables-restore --noflush /tmp/ip6tables-rules-1615191401199424850.txt857904100</span><br><span class="line">iptables-save </span><br><span class="line"><span class="meta">#</span><span class="bash"> Generated by iptables-save v1.6.1 on Mon Mar  8 08:16:41 2021</span></span><br><span class="line">*nat</span><br><span class="line">:PREROUTING ACCEPT [0:0]</span><br><span class="line">:INPUT ACCEPT [0:0]</span><br><span class="line">:OUTPUT ACCEPT [0:0]</span><br><span class="line">:POSTROUTING ACCEPT [0:0]</span><br><span class="line">:ISTIO_INBOUND - [0:0]</span><br><span class="line">:ISTIO_IN_REDIRECT - [0:0]</span><br><span class="line">:ISTIO_OUTPUT - [0:0]</span><br><span class="line">:ISTIO_REDIRECT - [0:0]</span><br><span class="line">-A PREROUTING -p tcp -j ISTIO_INBOUND</span><br><span class="line">-A OUTPUT -p tcp -j ISTIO_OUTPUT</span><br><span class="line">-A ISTIO_INBOUND -p tcp -m tcp --dport 15008 -j RETURN</span><br><span class="line">-A ISTIO_INBOUND -p tcp -m tcp --dport 22 -j RETURN</span><br><span class="line">-A ISTIO_INBOUND -p tcp -m tcp --dport 15090 -j RETURN</span><br><span class="line">-A ISTIO_INBOUND -p tcp -m tcp --dport 15021 -j RETURN</span><br><span class="line">-A ISTIO_INBOUND -p tcp -m tcp --dport 15020 -j RETURN</span><br><span class="line">-A ISTIO_INBOUND -p tcp -j ISTIO_IN_REDIRECT</span><br><span class="line">-A ISTIO_IN_REDIRECT -p tcp -j REDIRECT --to-ports 15006</span><br><span class="line">-A ISTIO_OUTPUT -s 127.0.0.6/32 -o lo -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT ! -d 127.0.0.1/32 -o lo -m owner --uid-owner 1337 -j ISTIO_IN_REDIRECT</span><br><span class="line">-A ISTIO_OUTPUT -o lo -m owner ! --uid-owner 1337 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -m owner --uid-owner 1337 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT ! -d 127.0.0.1/32 -o lo -m owner --gid-owner 1337 -j ISTIO_IN_REDIRECT</span><br><span class="line">-A ISTIO_OUTPUT -o lo -m owner ! --gid-owner 1337 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -m owner --gid-owner 1337 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -d 127.0.0.1/32 -j RETURN</span><br><span class="line">-A ISTIO_OUTPUT -j ISTIO_REDIRECT</span><br><span class="line">-A ISTIO_REDIRECT -p tcp -j REDIRECT --to-ports 15001</span><br><span class="line">COMMIT</span><br><span class="line"><span class="meta">#</span><span class="bash"> Completed on Mon Mar  8 08:16:41 2021</span></span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>deploy</category>
-      </categories>
-      <tags>
-        <tag>deploy</tag>
-        <tag>service mesh</tag>
       </tags>
   </entry>
   <entry>
@@ -906,62 +906,6 @@
       </tags>
   </entry>
   <entry>
-    <title>进程和线程</title>
-    <url>/posts/6ac22eb.html</url>
-    <content><![CDATA[<img src="/posts/6ac22eb/image-20210225180738908.png" alt="image-20210225180738908" style="zoom:67%;">
-
-<blockquote>
-<p>参考：<a href="https://cloud.tencent.com/developer/article/1688297">https://cloud.tencent.com/developer/article/1688297</a></p>
-</blockquote>
-<h2 id="简单的理解"><a href="#简单的理解" class="headerlink" title="简单的理解"></a>简单的理解</h2><p>对于操作系统来说，一个任务就是一个进程（<strong>Process</strong>），比如打开一个浏览器就是启动一个浏览器进程，打开一个记事本就启动了一个记事本进程，打开两个记事本就启动了两个记事本进程，打开一个Word就启动了一个Word进程。</p>
-<p>有些进程还不止同时干一件事，比如Word，它可以同时进行打字、拼写检查、打印等事情。在一个进程内部，要同时干多件事，就需要同时运行多个“子任务”，我们把进程内的这些“子任务”称为线程（<strong>Thread</strong>）。</p>
-<h2 id="并行和并发"><a href="#并行和并发" class="headerlink" title="并行和并发"></a>并行和并发</h2><p>并行是真正的同时运行，需要多核。</p>
-<p>并发只是看起来同时运行，最常见的就是<strong>时间片轮转调度算法</strong>。</p>
-<h2 id="进程和线程的区别"><a href="#进程和线程的区别" class="headerlink" title="进程和线程的区别"></a>进程和线程的区别</h2><p><strong>共享同一地址空间</strong>（也就是同样的<strong>动态内存，映射文件，目标代码等等</strong>），<strong>打开的文件队列和其他内核资源</strong>。</p>
-<h5 id><a href="#" class="headerlink" title></a></h5><table>
-<thead>
-<tr>
-<th align="center">进程</th>
-<th align="center">线程</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">有独立的地址空间</td>
-<td align="center">有自己的栈和局部变量，但没有单独的地址空间。<br>同一进程中的多个线程共享代码段（代码和常量），数据段（全局变量和静态变量），扩展段（堆存储）。<br>但是每个线程拥有自己的栈段，栈段又叫运行时段，用来存放所有局部变量和临时变量。）</td>
-</tr>
-<tr>
-<td align="center">在保护模式下不会对其它进程产生影响</td>
-<td align="center">一个线程死掉就等于整个进程死掉</td>
-</tr>
-<tr>
-<td align="center">拥有独立的内存单元</td>
-<td align="center">共享进程的内存</td>
-</tr>
-<tr>
-<td align="center">管道、系统IPC（包括<a href="https://cloud.tencent.com/product/cmq?from=10680">消息队列</a>、信号量、信号、共享内存等）、以及套接字socket</td>
-<td align="center">可以直接读写进程数据段和全局变量（互斥锁，信号量）</td>
-</tr>
-<tr>
-<td align="center">上下文切换慢</td>
-<td align="center">进程上下文切换快</td>
-</tr>
-<tr>
-<td align="center"><strong>进程是操作系统分配资源的单位</strong></td>
-<td align="center"><strong>是CPU调度和分派执行的基本单位</strong></td>
-</tr>
-<tr>
-<td align="center">进程编程调试简单可靠性高，但是创建销毁开销大</td>
-<td align="center">线程正相反，开销小，切换速度快，但是编程调试相对复杂</td>
-</tr>
-</tbody></table>
-<p>创建线程的代价比创建进程的代价小很多，如下图：</p>
-<p><img src="/posts/6ac22eb/image-20210225181636565.png" alt="image-20210225181636565"></p>
-]]></content>
-      <categories>
-        <category>linux</category>
-      </categories>
-  </entry>
-  <entry>
     <title>Nginx简介</title>
     <url>/posts/cc1b6e67.html</url>
     <content><![CDATA[<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><ul>
@@ -1065,40 +1009,60 @@
       </categories>
   </entry>
   <entry>
-    <title>QAT在Ubuntu18.04上的安装和虚拟化</title>
-    <url>/posts/461bb783.html</url>
-    <content><![CDATA[<p>本文将介绍QAT c62xx设备在Ubuntu 18.04上的安装部署和虚拟化。</p>
+    <title>进程和线程</title>
+    <url>/posts/6ac22eb.html</url>
+    <content><![CDATA[<img src="/posts/6ac22eb/image-20210225180738908.png" alt="image-20210225180738908" style="zoom:67%;">
+
 <blockquote>
-<p>参考网站：<a href="https://01.org/intel-quickassist-technology">https://01.org/intel-quickassist-technology</a></p>
+<p>参考：<a href="https://cloud.tencent.com/developer/article/1688297">https://cloud.tencent.com/developer/article/1688297</a></p>
 </blockquote>
-<h3 id="Prerequisite"><a href="#Prerequisite" class="headerlink" title="Prerequisite"></a>Prerequisite</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> uname -a</span></span><br><span class="line">Linux tme-prc002 5.3.0-53-generic #47~18.04.1-Ubuntu SMP Thu May 7 13:10:50 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux</span><br></pre></td></tr></table></figure>
-<h3 id="Updating-grub-Configuration-File"><a href="#Updating-grub-Configuration-File" class="headerlink" title="Updating grub Configuration File"></a>Updating grub Configuration File</h3><p>To enable IOMMU and SRIOV</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo vim /etc/default/grub</span><br></pre></td></tr></table></figure>
-<p>Modify <code>GRUB_CMDLINE_LINUX_DEFAULT=&quot;quiet splash&quot;</code> to <code>&quot;quiet splash intel_iommu=on&quot;</code></p>
-<p>Update grub and reboot:</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">update-grub</span><br><span class="line">sudo reboot</span><br></pre></td></tr></table></figure>
-<h3 id="Building-and-Installing-Software"><a href="#Building-and-Installing-Software" class="headerlink" title="Building and Installing Software"></a>Building and Installing Software</h3><h4 id="Create-a-working-directory-for-the-software-This-directory-can-be-user-defined-but"><a href="#Create-a-working-directory-for-the-software-This-directory-can-be-user-defined-but" class="headerlink" title="Create a working directory for the software. This directory can be user defined, but"></a>Create a working directory for the software. This directory can be user defined, but</h4><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="variable">$</span> <span class="built_in">cd</span> <span class="variable">$HOME</span> </span><br><span class="line"><span class="variable">$</span> mkdir /QAT</span><br><span class="line"><span class="variable">$</span> <span class="built_in">cd</span> /QAT</span><br></pre></td></tr></table></figure>
-<h4 id="Download-the-software"><a href="#Download-the-software" class="headerlink" title="Download the software."></a>Download the software.</h4><figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">curl -O https:<span class="regexp">//</span><span class="number">01</span>.org<span class="regexp">/sites/</span>default<span class="regexp">/files/</span>downloads<span class="regexp">/intelr-quickassist-technology/</span>qat1.<span class="number">7</span>.l.<span class="number">4.3</span>.<span class="number">0</span>-<span class="number">00033</span>.tar.gz</span><br></pre></td></tr></table></figure>
-<h4 id="Unpack-the-software"><a href="#Unpack-the-software" class="headerlink" title="Unpack the software."></a>Unpack the software.</h4><figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>tar -zxof &lt;QAT tarball name&gt;  </span><br><span class="line"><span class="variable">$ </span>chmod -R o-rwx *</span><br></pre></td></tr></table></figure>
-<h4 id="Install-dependencies-if-needed"><a href="#Install-dependencies-if-needed" class="headerlink" title="Install dependencies if needed."></a>Install dependencies if needed.</h4><p>For CentOS:</p>
-<figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>yum -y groupinstall <span class="string">&quot;Development Tools&quot;</span></span><br><span class="line"><span class="variable">$ </span>yum -y install pciutils</span><br><span class="line"><span class="variable">$ </span>yum -y install libudev-devel</span><br><span class="line"><span class="variable">$ </span>yum -y install kernel-devel-<span class="variable">$(</span>uname -r)</span><br><span class="line"><span class="variable">$ </span>yum -y install gcc</span><br><span class="line"><span class="variable">$ </span>yum -y install openssl-devel</span><br></pre></td></tr></table></figure>
-<p>For Ubuntu:</p>
-<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">$ apt-<span class="builtin-name">get</span> update</span><br><span class="line">$ apt-<span class="builtin-name">get</span> install pciutils-dev</span><br><span class="line">$ apt-<span class="builtin-name">get</span> install g++</span><br><span class="line">$ apt-<span class="builtin-name">get</span> install pkg-config</span><br><span class="line">$ apt-<span class="builtin-name">get</span> install libssl-dev</span><br></pre></td></tr></table></figure>
-<h4 id="configure-make-and-make-install-the-software-packages"><a href="#configure-make-and-make-install-the-software-packages" class="headerlink" title="configure, make and make install the software packages."></a>configure, make and make install the software packages.</h4><figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="comment"># suggest to clear up the env if there is a previous or modified version installed</span></span><br><span class="line"><span class="variable">$ </span>make uninstall</span><br><span class="line"><span class="variable">$ </span>./configure --enable-icp-sriov=host  <span class="comment"># It fails if missing dependency package.</span></span><br><span class="line"><span class="variable">$ </span>make</span><br><span class="line"><span class="variable">$ </span>make install  </span><br><span class="line"><span class="variable">$ </span>service qat_service start  </span><br><span class="line"><span class="variable">$ </span>service qat_service_vfs start</span><br></pre></td></tr></table></figure>
-<p>NOTE: in Guest OS, enable the SR-IOV build on the host by using:</p>
-<figure class="highlight jboss-cli"><table><tr><td class="code"><pre><span class="line">$ <span class="string">./configure</span> <span class="params">--enable-icp-sriov=guest</span></span><br></pre></td></tr></table></figure>
-<h4 id="Verifying-SR-IOV-On-The-Host"><a href="#Verifying-SR-IOV-On-The-Host" class="headerlink" title="Verifying SR-IOV On The Host"></a>Verifying SR-IOV On The Host</h4><figure class="highlight llvm"><table><tr><td class="code"><pre><span class="line">$ lspci | grep <span class="number">37</span><span class="keyword">c</span><span class="number">9</span>  </span><br><span class="line"># <span class="keyword">or</span> </span><br><span class="line">$ lspci -d <span class="number">8086</span>:<span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line">$ lspci -d:<span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line">...</span><br><span class="line"><span class="number">01</span>:<span class="number">01.0</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">01.1</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">01.2</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line">...</span><br><span class="line"><span class="number">01</span>:<span class="number">01.7</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">02.0</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">02.1</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line">...</span><br><span class="line"><span class="number">01</span>:<span class="number">02.6</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">02.7</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br></pre></td></tr></table></figure>
-<p>Or using <code>adf_ctl</code></p>
-<figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>adf_ctl status</span><br></pre></td></tr></table></figure>
-<p>This utility can bring up/down device by ourselves.</p>
-<h4 id="Detailed-SR-IOV-enabling-please-refer-to-the-guide"><a href="#Detailed-SR-IOV-enabling-please-refer-to-the-guide" class="headerlink" title="Detailed SR-IOV enabling please refer to the guide."></a>Detailed SR-IOV enabling please refer to the guide.</h4><p>Please refer to:<br><a href="https://01.org/sites/default/files/downloads/330689qatvirtualizationappnoterev008us.pdf">https://01.org/sites/default/files/downloads/330689qatvirtualizationappnoterev008us.pdf</a></p>
+<h2 id="简单的理解"><a href="#简单的理解" class="headerlink" title="简单的理解"></a>简单的理解</h2><p>对于操作系统来说，一个任务就是一个进程（<strong>Process</strong>），比如打开一个浏览器就是启动一个浏览器进程，打开一个记事本就启动了一个记事本进程，打开两个记事本就启动了两个记事本进程，打开一个Word就启动了一个Word进程。</p>
+<p>有些进程还不止同时干一件事，比如Word，它可以同时进行打字、拼写检查、打印等事情。在一个进程内部，要同时干多件事，就需要同时运行多个“子任务”，我们把进程内的这些“子任务”称为线程（<strong>Thread</strong>）。</p>
+<h2 id="并行和并发"><a href="#并行和并发" class="headerlink" title="并行和并发"></a>并行和并发</h2><p>并行是真正的同时运行，需要多核。</p>
+<p>并发只是看起来同时运行，最常见的就是<strong>时间片轮转调度算法</strong>。</p>
+<h2 id="进程和线程的区别"><a href="#进程和线程的区别" class="headerlink" title="进程和线程的区别"></a>进程和线程的区别</h2><p><strong>共享同一地址空间</strong>（也就是同样的<strong>动态内存，映射文件，目标代码等等</strong>），<strong>打开的文件队列和其他内核资源</strong>。</p>
+<h5 id><a href="#" class="headerlink" title></a></h5><table>
+<thead>
+<tr>
+<th align="center">进程</th>
+<th align="center">线程</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">有独立的地址空间</td>
+<td align="center">有自己的栈和局部变量，但没有单独的地址空间。<br>同一进程中的多个线程共享代码段（代码和常量），数据段（全局变量和静态变量），扩展段（堆存储）。<br>但是每个线程拥有自己的栈段，栈段又叫运行时段，用来存放所有局部变量和临时变量。）</td>
+</tr>
+<tr>
+<td align="center">在保护模式下不会对其它进程产生影响</td>
+<td align="center">一个线程死掉就等于整个进程死掉</td>
+</tr>
+<tr>
+<td align="center">拥有独立的内存单元</td>
+<td align="center">共享进程的内存</td>
+</tr>
+<tr>
+<td align="center">管道、系统IPC（包括<a href="https://cloud.tencent.com/product/cmq?from=10680">消息队列</a>、信号量、信号、共享内存等）、以及套接字socket</td>
+<td align="center">可以直接读写进程数据段和全局变量（互斥锁，信号量）</td>
+</tr>
+<tr>
+<td align="center">上下文切换慢</td>
+<td align="center">进程上下文切换快</td>
+</tr>
+<tr>
+<td align="center"><strong>进程是操作系统分配资源的单位</strong></td>
+<td align="center"><strong>是CPU调度和分派执行的基本单位</strong></td>
+</tr>
+<tr>
+<td align="center">进程编程调试简单可靠性高，但是创建销毁开销大</td>
+<td align="center">线程正相反，开销小，切换速度快，但是编程调试相对复杂</td>
+</tr>
+</tbody></table>
+<p>创建线程的代价比创建进程的代价小很多，如下图：</p>
+<p><img src="/posts/6ac22eb/image-20210225181636565.png" alt="image-20210225181636565"></p>
 ]]></content>
       <categories>
-        <category>deploy</category>
+        <category>linux</category>
       </categories>
-      <tags>
-        <tag>qat</tag>
-      </tags>
   </entry>
   <entry>
     <title>代理服务器基本介绍</title>
@@ -1177,6 +1141,42 @@
       </tags>
   </entry>
   <entry>
+    <title>QAT在Ubuntu18.04上的安装和虚拟化</title>
+    <url>/posts/461bb783.html</url>
+    <content><![CDATA[<p>本文将介绍QAT c62xx设备在Ubuntu 18.04上的安装部署和虚拟化。</p>
+<blockquote>
+<p>参考网站：<a href="https://01.org/intel-quickassist-technology">https://01.org/intel-quickassist-technology</a></p>
+</blockquote>
+<h3 id="Prerequisite"><a href="#Prerequisite" class="headerlink" title="Prerequisite"></a>Prerequisite</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> uname -a</span></span><br><span class="line">Linux tme-prc002 5.3.0-53-generic #47~18.04.1-Ubuntu SMP Thu May 7 13:10:50 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux</span><br></pre></td></tr></table></figure>
+<h3 id="Updating-grub-Configuration-File"><a href="#Updating-grub-Configuration-File" class="headerlink" title="Updating grub Configuration File"></a>Updating grub Configuration File</h3><p>To enable IOMMU and SRIOV</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo vim /etc/default/grub</span><br></pre></td></tr></table></figure>
+<p>Modify <code>GRUB_CMDLINE_LINUX_DEFAULT=&quot;quiet splash&quot;</code> to <code>&quot;quiet splash intel_iommu=on&quot;</code></p>
+<p>Update grub and reboot:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">update-grub</span><br><span class="line">sudo reboot</span><br></pre></td></tr></table></figure>
+<h3 id="Building-and-Installing-Software"><a href="#Building-and-Installing-Software" class="headerlink" title="Building and Installing Software"></a>Building and Installing Software</h3><h4 id="Create-a-working-directory-for-the-software-This-directory-can-be-user-defined-but"><a href="#Create-a-working-directory-for-the-software-This-directory-can-be-user-defined-but" class="headerlink" title="Create a working directory for the software. This directory can be user defined, but"></a>Create a working directory for the software. This directory can be user defined, but</h4><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="variable">$</span> <span class="built_in">cd</span> <span class="variable">$HOME</span> </span><br><span class="line"><span class="variable">$</span> mkdir /QAT</span><br><span class="line"><span class="variable">$</span> <span class="built_in">cd</span> /QAT</span><br></pre></td></tr></table></figure>
+<h4 id="Download-the-software"><a href="#Download-the-software" class="headerlink" title="Download the software."></a>Download the software.</h4><figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">curl -O https:<span class="regexp">//</span><span class="number">01</span>.org<span class="regexp">/sites/</span>default<span class="regexp">/files/</span>downloads<span class="regexp">/intelr-quickassist-technology/</span>qat1.<span class="number">7</span>.l.<span class="number">4.3</span>.<span class="number">0</span>-<span class="number">00033</span>.tar.gz</span><br></pre></td></tr></table></figure>
+<h4 id="Unpack-the-software"><a href="#Unpack-the-software" class="headerlink" title="Unpack the software."></a>Unpack the software.</h4><figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>tar -zxof &lt;QAT tarball name&gt;  </span><br><span class="line"><span class="variable">$ </span>chmod -R o-rwx *</span><br></pre></td></tr></table></figure>
+<h4 id="Install-dependencies-if-needed"><a href="#Install-dependencies-if-needed" class="headerlink" title="Install dependencies if needed."></a>Install dependencies if needed.</h4><p>For CentOS:</p>
+<figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>yum -y groupinstall <span class="string">&quot;Development Tools&quot;</span></span><br><span class="line"><span class="variable">$ </span>yum -y install pciutils</span><br><span class="line"><span class="variable">$ </span>yum -y install libudev-devel</span><br><span class="line"><span class="variable">$ </span>yum -y install kernel-devel-<span class="variable">$(</span>uname -r)</span><br><span class="line"><span class="variable">$ </span>yum -y install gcc</span><br><span class="line"><span class="variable">$ </span>yum -y install openssl-devel</span><br></pre></td></tr></table></figure>
+<p>For Ubuntu:</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">$ apt-<span class="builtin-name">get</span> update</span><br><span class="line">$ apt-<span class="builtin-name">get</span> install pciutils-dev</span><br><span class="line">$ apt-<span class="builtin-name">get</span> install g++</span><br><span class="line">$ apt-<span class="builtin-name">get</span> install pkg-config</span><br><span class="line">$ apt-<span class="builtin-name">get</span> install libssl-dev</span><br></pre></td></tr></table></figure>
+<h4 id="configure-make-and-make-install-the-software-packages"><a href="#configure-make-and-make-install-the-software-packages" class="headerlink" title="configure, make and make install the software packages."></a>configure, make and make install the software packages.</h4><figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="comment"># suggest to clear up the env if there is a previous or modified version installed</span></span><br><span class="line"><span class="variable">$ </span>make uninstall</span><br><span class="line"><span class="variable">$ </span>./configure --enable-icp-sriov=host  <span class="comment"># It fails if missing dependency package.</span></span><br><span class="line"><span class="variable">$ </span>make</span><br><span class="line"><span class="variable">$ </span>make install  </span><br><span class="line"><span class="variable">$ </span>service qat_service start  </span><br><span class="line"><span class="variable">$ </span>service qat_service_vfs start</span><br></pre></td></tr></table></figure>
+<p>NOTE: in Guest OS, enable the SR-IOV build on the host by using:</p>
+<figure class="highlight jboss-cli"><table><tr><td class="code"><pre><span class="line">$ <span class="string">./configure</span> <span class="params">--enable-icp-sriov=guest</span></span><br></pre></td></tr></table></figure>
+<h4 id="Verifying-SR-IOV-On-The-Host"><a href="#Verifying-SR-IOV-On-The-Host" class="headerlink" title="Verifying SR-IOV On The Host"></a>Verifying SR-IOV On The Host</h4><figure class="highlight llvm"><table><tr><td class="code"><pre><span class="line">$ lspci | grep <span class="number">37</span><span class="keyword">c</span><span class="number">9</span>  </span><br><span class="line"># <span class="keyword">or</span> </span><br><span class="line">$ lspci -d <span class="number">8086</span>:<span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line">$ lspci -d:<span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line">...</span><br><span class="line"><span class="number">01</span>:<span class="number">01.0</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">01.1</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">01.2</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line">...</span><br><span class="line"><span class="number">01</span>:<span class="number">01.7</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">02.0</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">02.1</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line">...</span><br><span class="line"><span class="number">01</span>:<span class="number">02.6</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">02.7</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br></pre></td></tr></table></figure>
+<p>Or using <code>adf_ctl</code></p>
+<figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>adf_ctl status</span><br></pre></td></tr></table></figure>
+<p>This utility can bring up/down device by ourselves.</p>
+<h4 id="Detailed-SR-IOV-enabling-please-refer-to-the-guide"><a href="#Detailed-SR-IOV-enabling-please-refer-to-the-guide" class="headerlink" title="Detailed SR-IOV enabling please refer to the guide."></a>Detailed SR-IOV enabling please refer to the guide.</h4><p>Please refer to:<br><a href="https://01.org/sites/default/files/downloads/330689qatvirtualizationappnoterev008us.pdf">https://01.org/sites/default/files/downloads/330689qatvirtualizationappnoterev008us.pdf</a></p>
+]]></content>
+      <categories>
+        <category>deploy</category>
+      </categories>
+      <tags>
+        <tag>qat</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>公司内部ssh设置socks代理</title>
     <url>/posts/a9be766e.html</url>
     <content><![CDATA[<blockquote>
@@ -1234,6 +1234,25 @@
       </tags>
   </entry>
   <entry>
+    <title>tls和mtls比较</title>
+    <url>/posts/425c0d17.html</url>
+    <content><![CDATA[<h2 id="TLS"><a href="#TLS" class="headerlink" title="TLS"></a>TLS</h2><p>源于SSL，后改名TLS（Transport Layer Security）</p>
+<ol>
+<li>可以实现通讯双方的身份认证，应用数据加密。</li>
+<li>与上层的应用层协议无耦合，应用层协议能透明地运行在TLS协议构建的安全通道之上。</li>
+</ol>
+<p>TLS由记录层（记录协议， record protocol）和握手协议层（握手协议、密钥变更协议、告警协议，应用数据协议）组成。</p>
+<img src="/posts/425c0d17/image-20210329145853869.png" alt="image-20210329145853869" style="zoom:80%;">
+
+
+
+<p><img src="https://segmentfault.com/img/bVbCCMD/view" alt="preview"></p>
+<p>HTTPS = HTTP over TLS.</p>
+<p>散列函数 Hash、对称加密和非对称加密，其利用非对称加密实现身份认证和密钥协商，对称加密算法采用协商的密钥对数据加密，基于散列函数验证信息的完整性</p>
+<p>mTLS</p>
+]]></content>
+  </entry>
+  <entry>
     <title>在mac上用vagrant和virtualbox创建虚拟机</title>
     <url>/posts/e1d7a8.html</url>
     <content><![CDATA[<h2 id="vagrant介绍"><a href="#vagrant介绍" class="headerlink" title="vagrant介绍"></a>vagrant介绍</h2><p>基于ruby，用于创建和部署虚拟化开发环境。它 使用Oracle的开源<a href="https://baike.baidu.com/item/VirtualBox">VirtualBox</a>虚拟化系统，使用 Chef创建自动化虚拟环境。我们可以使用它来干如下这些事：</p>
@@ -1276,25 +1295,6 @@
         <tag>vagrant</tag>
         <tag>virtualbox</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>tls和mtls比较</title>
-    <url>/posts/425c0d17.html</url>
-    <content><![CDATA[<h2 id="TLS"><a href="#TLS" class="headerlink" title="TLS"></a>TLS</h2><p>源于SSL，后改名TLS（Transport Layer Security）</p>
-<ol>
-<li>可以实现通讯双方的身份认证，应用数据加密。</li>
-<li>与上层的应用层协议无耦合，应用层协议能透明地运行在TLS协议构建的安全通道之上。</li>
-</ol>
-<p>TLS由记录层（记录协议， record protocol）和握手协议层（握手协议、密钥变更协议、告警协议，应用数据协议）组成。</p>
-<img src="/posts/425c0d17/image-20210329145853869.png" alt="image-20210329145853869" style="zoom:80%;">
-
-
-
-<p><img src="https://segmentfault.com/img/bVbCCMD/view" alt="preview"></p>
-<p>HTTPS = HTTP over TLS.</p>
-<p>散列函数 Hash、对称加密和非对称加密，其利用非对称加密实现身份认证和密钥协商，对称加密算法采用协商的密钥对数据加密，基于散列函数验证信息的完整性</p>
-<p>mTLS</p>
-]]></content>
   </entry>
   <entry>
     <title>在centos8上使能vca-a卡</title>
