@@ -109,8 +109,10 @@ pjax: true
 deploy:
   type: git
   repo:
-    github: git@github.com:xxinran/xxinran.github.io.git, main
-    gitee: git@gitee.com:xxinran/xxinran.git, master
+    github: git@github.com:xxinran/xxinran.github.io.git
+    branch: main
+    gitee: git@gitee.com:xxinran/xxinran.git
+    branch: master
 
 search:
   path: search.xml
