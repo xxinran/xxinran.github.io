@@ -804,20 +804,6 @@
       </tags>
   </entry>
   <entry>
-    <title>网络虚拟化简介</title>
-    <url>/posts/e41fb1bd.html</url>
-    <content><![CDATA[<img src="/posts/e41fb1bd/image-20210201221242667.png" alt="image-20210201221242667" style="zoom:70%;">
-
-]]></content>
-      <categories>
-        <category>虚拟化</category>
-      </categories>
-      <tags>
-        <tag>network</tag>
-        <tag>virtualization</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>计算机网络概述</title>
     <url>/posts/7c4ca347.html</url>
     <content><![CDATA[<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><h3 id="1-速率相关性能指标"><a href="#1-速率相关性能指标" class="headerlink" title="1. 速率相关性能指标"></a>1. 速率相关性能指标</h3><h4 id="速率"><a href="#速率" class="headerlink" title="速率"></a>速率</h4><p>在数字信道上传输数据位的速度。单位: b/s,Kb/s,Mb/s,Tb/s，<br>如果用字节表示，则是B/s,KB/s,MB/s,TB/s（1Byte=8Bit）</p>
@@ -903,6 +889,20 @@
       </categories>
       <tags>
         <tag>network</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>网络虚拟化简介</title>
+    <url>/posts/e41fb1bd.html</url>
+    <content><![CDATA[<img src="/posts/e41fb1bd/image-20210201221242667.png" alt="image-20210201221242667" style="zoom:70%;">
+
+]]></content>
+      <categories>
+        <category>虚拟化</category>
+      </categories>
+      <tags>
+        <tag>network</tag>
+        <tag>virtualization</tag>
       </tags>
   </entry>
   <entry>
