@@ -53,10 +53,18 @@
 <meta property="og:url" content="http://xxinran.github.io/posts/204fd6f0.html">
 <meta property="og:site_name" content="Xinran&#39;s Blog">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://xxinran.github.io/posts/204fd6f0/image-20210510171623286.png">
+<meta property="og:image" content="http://xxinran.github.io/posts/204fd6f0/image-20210510155013658.png">
+<meta property="og:image" content="http://xxinran.github.io/posts/204fd6f0/image-20210510173004108.png">
+<meta property="og:image" content="http://xxinran.github.io/posts/204fd6f0/image-20210511153846434.png">
+<meta property="og:image" content="http://xxinran.github.io/posts/204fd6f0/image-20210510143350713.png">
 <meta property="article:published_time" content="2021-04-26T02:25:33.000Z">
-<meta property="article:modified_time" content="2021-05-08T09:43:51.701Z">
+<meta property="article:modified_time" content="2021-05-11T08:25:18.257Z">
 <meta property="article:author" content="Xinran Wang">
+<meta property="article:tag" content="GPU">
+<meta property="article:tag" content="虚拟化">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://xxinran.github.io/posts/204fd6f0/image-20210510171623286.png">
 
 <link rel="canonical" href="http://xxinran.github.io/posts/204fd6f0.html">
 
@@ -239,8 +247,19 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-08 17:43:51" itemprop="dateModified" datetime="2021-05-08T17:43:51+08:00">2021-05-08</time>
+                <time title="修改时间：2021-05-11 16:25:18" itemprop="dateModified" datetime="2021-05-11T16:25:18+08:00">2021-05-11</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/LINUX/" itemprop="url" rel="index">
+                    <span itemprop="name">LINUX</span>
+                  </a>
+                </span>
+            </span>
 
           
             <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
@@ -255,14 +274,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.2k</span>
+              <span>2.9k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
+              <span>3 分钟</span>
             </span>
             <div class="post-description"> </div>
 
@@ -275,7 +294,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>目前流行的几种模式：pass through, sriov, 半虚拟化（mdev passthrough： Intel gvt-g, Nvidia GRID vGPU), 全虚拟化（VMware： vSGA）</p>
+        <p>目前流行的几种模式：pass through, sriov(AMD), 半虚拟化（mdev passthrough： Intel gvt-g, Nvidia GRID vGPU), 全虚拟化（VMware： vSGA）</p>
 <p>学习路径</p>
 <p>pci -》 pci dma -》 iommu -》 passthrough</p>
 <p>内存页表 - 》 tlb</p>
@@ -287,11 +306,67 @@
 <p>内核：遍历和配置</p>
 <p>遍历顺序：从host-pci开始，遇到pci bridge就到下一级pci总线继续遍历，直到遍历完成。（深度优先？）</p>
 <p>配置：PCI设备中一般都带有一些RAM和ROM 空间，通常的控制/状态寄存器和数据寄存器也往往以RAM区间的形式出现，而这些区间的地址在设备内部一般都是从0开始编址的，那么当总线上挂接了多个设备时，对这些空间的访问就会产生冲突。所以，这些地址都要先映射到系统总线上，再进一步映射到内核的虚拟地址空间。配置就是通过对PCI配置空间的寄存器进行操作从而完成地址的映射。 device physical address -&gt; system virtual address??</p>
+<p>bar寄存器？？</p>
 <h1 id="DMA"><a href="#DMA" class="headerlink" title="DMA"></a>DMA</h1><p><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1194593">https://cloud.tencent.com/developer/article/1194593</a></p>
+<p>dma controller</p>
+<h2 id="I-O-Memory-Management-Unit-IOMMU"><a href="#I-O-Memory-Management-Unit-IOMMU" class="headerlink" title="I/O Memory Management Unit ( IOMMU )"></a>I/O Memory Management Unit ( IOMMU )</h2><p>translates guest physical addresses to host physical add，一般在north bridge里</p>
+<p>iommu group  -&gt;  类比cgroup，做设备隔离</p>
+<p>一个group对应一个iommu页表。一个group的所有设备的iommu page table是共享的，可以相互修改。</p>
+<h1 id="SRIOV"><a href="#SRIOV" class="headerlink" title="SRIOV"></a>SRIOV</h1><h2 id="VFIO"><a href="#VFIO" class="headerlink" title="VFIO"></a>VFIO</h2><p>一种passthrough的方案。</p>
+<p>user space： 怎么通过vfio框架来使用设备。</p>
+<p>在userspace提供了2个字符文件，用户通过这2个字符文件，通过ioctl来操作设备。</p>
+<img src="/posts/204fd6f0/image-20210510171623286.png" alt="image-20210510171623286" style="zoom:67%;">
+
+<p>container，group的概念，group对应一个iommu group</p>
+<p>操作设备的三种方式：</p>
+<ol>
+<li>中断</li>
+<li>IO</li>
+<li>DMA</li>
+</ol>
+<p>设备角度：怎么通过vfio的框架向上提供设备给user space来用。</p>
+<p>首先，设备所在的总线需要支持vfio框架（platform，pci）</p>
+<p>例子：对于pci设备来说，需要基于vfio的框架实现一个vfio-pci驱动，然后把设备bind到vfio-pci驱动以供userspace使用。</p>
+<img src="/posts/204fd6f0/image-20210510155013658.png" alt="image-20210510155013658" style="zoom:70%;">
+
+<p>现在主要支持：platform, pci, mdev设备。</p>
+<p>mdev不支持iommu</p>
+<p>platform device: 嵌入式系统中的最常见的一种device，没有实际挂载在总线上，需要虚拟一条总线然后挂载在上面。</p>
+<p>新的总线框架。</p>
+<p>device和driver的匹配关系。</p>
+<img src="/posts/204fd6f0/image-20210510173004108.png" alt="image-20210510173004108" style="zoom:70%;">
+
+
+
+<p>设备总线上有一个设备链表和一个驱动链表。</p>
+<p>一个device只能同时对应一个driver，而一个driver可以被多个device绑定。</p>
+<p>但是有unused。</p>
+<h2 id="mdev"><a href="#mdev" class="headerlink" title="mdev"></a>mdev</h2><p>udev？？？</p>
+<p>uio？？</p>
+<p>如果一个设备想利用mdev框架，就需要register一个parent deivce(mdev_register_device)</p>
+<p>然后这个设备目录如下：</p>
+<img src="/posts/204fd6f0/image-20210511153846434.png" alt="image-20210511153846434" style="zoom:80%;">
+
+<p>echo UUID &gt; /sysfs/devices/device_paths/mdev_supported_types/type-id/create 就可以创建一个类型是type-id的mediated device。</p>
+<p>如：</p>
+<p>a是一个pci设备，bind在自己的pci device driver上，如果它支持了mdev，就可以创建多个mdev设备分身，这些mdev设备是绑定在vfio-mdev的driver上的。所以这个设备可以看作即绑定在pci driver上，他的mdev设备又绑定在vfio-mdev driver上。</p>
+<p>mdev解决的问题？</p>
+<p>对于不支持SRIOV的设备，提供一种方式可以使 用户态（VM）复用这个设备。</p>
+<p>物理上不支持VF，但通过mdev可以类似“时分复用”的方式，接近于物理硬件的性能。（但是对于gpu来说，framebuffter这些是不共享复用的)</p>
+<p>便于驱动闭源： 因为有些驱动里体现了硬件的设计思路，不方便开源，所以闭源的驱动只需支持mdev的几个API，就可以实现复用。</p>
 <h2 id="Passthrough"><a href="#Passthrough" class="headerlink" title="Passthrough"></a>Passthrough</h2><p><strong>直通模式</strong>的实现依赖于IOMMU的功能。VTD对IOVA的地址转换使得直通设备可以在硬件层次直接使用GPA（Guest Physical Address）地址。GPU直通技术相对于任何其他设备来说，会有额外的PCI 配置空间模拟和MMIO的拦截（参见QEMU VFIO quirk机制）。比如Hypervisor或者Device Module 不会允许虚拟机对GPU硬件关键寄存器的完全的访问权限，一些高权限的操作会被直接拦截。大家或许已经意识到原来直通设备也是有MMIO模拟和拦截的。这对于我们理解GPU 半虚拟化很有帮助。</p>
 <h3 id="libvirt-layer"><a href="#libvirt-layer" class="headerlink" title="libvirt layer"></a>libvirt layer</h3><p>将PCI设备直接分配给guest os时，如果不先从guest中hot-unplug该设备，将无法进行migration。</p>
 <p>managed: guest启动时会自动从host上detach， guest shutdown时又重新attach回host。（implict）</p>
 <p>unmanged：需要手动从host detach，之后手动re-attach回host。不然libvirt会refuse。（explict）</p>
+<p><strong>直通模式是性能损耗最小的</strong>, Nvidia GPU 直通模式下与物理机的性能对比见下图：（大部分单GPU应用场景的性能对比可以达到96%左右）</p>
+<img src="/posts/204fd6f0/image-20210510143350713.png" alt="image-20210510143350713" style="zoom:80%;">
+
+<h2 id="SRIOV-1"><a href="#SRIOV-1" class="headerlink" title="SRIOV"></a>SRIOV</h2><p>谈起GPU SRIOV那么这个世界上就只有两款产品：S7150和MI25 (AMD)</p>
+<p>GPU SRIOV也是一个分时复用的策略。一个简单的调度就是把一个GPU的时间按照特定时间段分片，每个VM拿到特定的时间片。在这些时间片段中，这个VM享用GPU的硬件的全部资源。</p>
+<p>不同的GPU虚拟化方案在时间片的切片中会采用不同的方法。有些方案会在一个GPU Context的当前BatchBuffer/CMDBuffer 执行结束之后启动调度，并把GPU交由下一个时间片的所有者。而有些方案则会严格要求在特定时间片结束的时候切换，强行打断当前GPU的执行，并交予下一个时间片的所有者。这种方式确保GPU资源被平均分摊到不同VM。AMD采用第二种。</p>
+<p>但是GPU的上下文切换比CPU要慢很多，所以频繁的上下文切换会导致性能下降。</p>
+<p>MDEV</p>
+<p>GVT-g与Nvidia GRID vGPU并不依赖IOMMU。把会影响性能的访问直接passthrough给虚拟机，把性能无关，功能性的MMIO访问做拦截并在mdev模块内做模拟。</p>
 
     </div>
 
@@ -320,6 +395,10 @@
 
 
       <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/GPU/" rel="tag"># GPU</a>
+              <a href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/" rel="tag"># 虚拟化</a>
+          </div>
 
         
   <div class="post-widgets">
@@ -399,7 +478,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#PCI"><span class="nav-number">1.</span> <span class="nav-text">PCI</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DMA"><span class="nav-number">2.</span> <span class="nav-text">DMA</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Passthrough"><span class="nav-number">2.1.</span> <span class="nav-text">Passthrough</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#libvirt-layer"><span class="nav-number">2.1.1.</span> <span class="nav-text">libvirt layer</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#PCI"><span class="nav-number">1.</span> <span class="nav-text">PCI</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DMA"><span class="nav-number">2.</span> <span class="nav-text">DMA</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#I-O-Memory-Management-Unit-IOMMU"><span class="nav-number">2.1.</span> <span class="nav-text">I&#x2F;O Memory Management Unit ( IOMMU )</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SRIOV"><span class="nav-number">3.</span> <span class="nav-text">SRIOV</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#VFIO"><span class="nav-number">3.1.</span> <span class="nav-text">VFIO</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mdev"><span class="nav-number">3.2.</span> <span class="nav-text">mdev</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Passthrough"><span class="nav-number">3.3.</span> <span class="nav-text">Passthrough</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#libvirt-layer"><span class="nav-number">3.3.1.</span> <span class="nav-text">libvirt layer</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SRIOV-1"><span class="nav-number">3.4.</span> <span class="nav-text">SRIOV</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -415,20 +494,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-count">33</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-count">12</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -473,12 +552,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">74k</span>
+    <span title="站点总字数">77k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:07</span>
+    <span title="站点阅读时长">1:10</span>
 </div>
 
         

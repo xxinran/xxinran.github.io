@@ -70,9 +70,8 @@
 <meta property="og:image" content="http://xxinran.github.io/posts/d0683ba8/image-20210429154000972.png">
 <meta property="og:image" content="http://xxinran.github.io/posts/d0683ba8/image-20210429154341590.png">
 <meta property="article:published_time" content="2021-04-26T08:14:23.000Z">
-<meta property="article:modified_time" content="2021-05-08T09:39:32.445Z">
+<meta property="article:modified_time" content="2021-05-10T01:53:00.025Z">
 <meta property="article:author" content="Xinran Wang">
-<meta property="article:tag" content="linux">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://xxinran.github.io/posts/d0683ba8/%E5%AD%98%E5%82%A8%20(1).svg">
 
@@ -257,7 +256,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-08 17:39:32" itemprop="dateModified" datetime="2021-05-08T17:39:32+08:00">2021-05-08</time>
+                <time title="修改时间：2021-05-10 09:53:00" itemprop="dateModified" datetime="2021-05-10T09:53:00+08:00">2021-05-10</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -265,8 +264,8 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/linux/" itemprop="url" rel="index">
-                    <span itemprop="name">linux</span>
+                  <a href="/categories/LINUX/" itemprop="url" rel="index">
+                    <span itemprop="name">LINUX</span>
                   </a>
                 </span>
             </span>
@@ -426,8 +425,6 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> lscpu</span></span><br><span class="line">Architecture:                    x86_64</span><br><span class="line">CPU op-mode(s):                  32-bit, 64-bit</span><br><span class="line">Byte Order:                      Little Endian</span><br><span class="line">Address sizes:                   46 bits physical, 48 bits virtual</span><br><span class="line">CPU(s):                          32  # cores per socket * sockets * thread per core </span><br><span class="line">On-line CPU(s) list:             0-31</span><br><span class="line">Thread(s) per core:              2</span><br><span class="line">Core(s) per socket:              8</span><br><span class="line">Socket(s):                       2</span><br><span class="line">NUMA node(s):                    2</span><br><span class="line">Vendor ID:                       GenuineIntel</span><br><span class="line">CPU family:                      6</span><br><span class="line">Model:                           45</span><br><span class="line">Model name:                      Intel(R) Xeon(R) CPU E5-2670 0 @ 2.60GHz</span><br><span class="line">Stepping:                        7</span><br><span class="line">CPU MHz:                         1207.495</span><br><span class="line">CPU max MHz:                     3300.0000</span><br><span class="line">CPU min MHz:                     1200.0000</span><br><span class="line">BogoMIPS:                        5187.02</span><br><span class="line">Virtualization:                  VT-x</span><br><span class="line">L1d cache:                       512 KiB  # instruction cache</span><br><span class="line">L1i cache:                       512 KiB  # data cache</span><br><span class="line">L2 cache:                        4 MiB</span><br><span class="line">L3 cache:                        40 MiB</span><br><span class="line">NUMA node0 CPU(s):               0-7,16-23</span><br><span class="line">NUMA node1 CPU(s):               8-15,24-31</span><br><span class="line">Vulnerability Itlb multihit:     KVM: Mitigation: Split huge pages</span><br><span class="line">Vulnerability L1tf:              Mitigation; PTE Inversion; VMX conditional cache flushes, SMT vulnerable</span><br><span class="line">Vulnerability Mds:               Mitigation; Clear CPU buffers; SMT vulnerable</span><br><span class="line">Vulnerability Meltdown:          Mitigation; PTI</span><br><span class="line">Vulnerability Spec store bypass: Mitigation; Speculative Store Bypass disabled via prctl and seccomp</span><br><span class="line">Vulnerability Spectre v1:        Mitigation; usercopy/swapgs barriers and __user pointer sanitization</span><br><span class="line">Vulnerability Spectre v2:        Mitigation; Full generic retpoline, IBPB conditional, IBRS_FW, STIBP conditional, RSB filling</span><br><span class="line">Vulnerability Srbds:             Not affected</span><br><span class="line">Vulnerability Tsx async abort:   Not affected</span><br><span class="line">Flags:                           fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxs</span><br><span class="line">                                 r sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good</span><br><span class="line">                                  nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2</span><br><span class="line">                                  ssse3 cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic popcnt tsc_deadline_timer aes xsave avx lahf</span><br><span class="line">                                 _lm epb pti ssbd ibrs ibpb stib</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p><img src="/posts/d0683ba8/image-20210429154000972.png" alt="image-20210429154000972"></p>
 <img src="/posts/d0683ba8/image-20210429154341590.png" alt="image-20210429154341590" style="zoom:67%;">
-
-<h3 id><a href="#" class="headerlink" title></a></h3>
     </div>
 
     
@@ -455,9 +452,6 @@
 
 
       <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/linux/" rel="tag"># linux</a>
-          </div>
 
         
   <div class="post-widgets">
@@ -473,7 +467,10 @@
     <a href="/posts/204fd6f0.html" rel="prev" title="GPU虚拟化">
       <i class="fa fa-chevron-left"></i> GPU虚拟化
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/posts/ff923842.html" rel="next" title="kata-container介绍">
+      kata-container介绍 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -534,7 +531,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BB%E6%B5%81%E5%AD%98%E5%82%A8%E8%AE%BE%E5%A4%87"><span class="nav-number">1.</span> <span class="nav-text">主流存储设备</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%89%A9%E7%90%86%E5%86%85%E5%AD%98"><span class="nav-number">2.</span> <span class="nav-text">物理内存</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%A9%E7%90%86%E5%86%85%E5%AD%983%E4%B8%AA%E7%AE%A1%E7%90%86%E5%8C%BA"><span class="nav-number">2.1.</span> <span class="nav-text">物理内存3个管理区</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ZONE-DMA"><span class="nav-number">2.1.1.</span> <span class="nav-text">ZONE_DMA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ZONE-NORMAL"><span class="nav-number">2.1.2.</span> <span class="nav-text">ZONE_NORMAL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ZONE-HIGHMEM"><span class="nav-number">2.1.3.</span> <span class="nav-text">ZONE_HIGHMEM</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98"><span class="nav-number">3.</span> <span class="nav-text">虚拟内存</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E6%80%81%E5%92%8C%E5%86%85%E6%A0%B8%E6%80%81"><span class="nav-number">3.1.</span> <span class="nav-text">用户态和内核态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E7%A9%BA%E9%97%B4%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98-3GB"><span class="nav-number">3.2.</span> <span class="nav-text">用户空间虚拟内存 - 3GB</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E6%A0%B8%E7%A9%BA%E9%97%B4%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98-1GB"><span class="nav-number">3.3.</span> <span class="nav-text">内核空间虚拟内存 - 1GB</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%80-%E7%89%A9%E7%90%86%E5%9C%B0%E5%9D%80%E7%9A%84%E6%98%A0%E5%B0%84%E5%85%B3%E7%B3%BB%E5%9B%BE"><span class="nav-number">3.4.</span> <span class="nav-text">虚拟地址 -  物理地址的映射关系图</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MMU"><span class="nav-number">4.</span> <span class="nav-text">MMU</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%AE%B5%E6%9C%BA%E5%88%B6"><span class="nav-number">4.1.</span> <span class="nav-text">分段机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E9%A1%B5%E6%9C%BA%E5%88%B6"><span class="nav-number">4.2.</span> <span class="nav-text">分页机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%A9%E7%90%86%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D"><span class="nav-number">4.3.</span> <span class="nav-text">物理内存分配</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%96%E9%83%A8%E7%A2%8E%E7%89%87"><span class="nav-number">4.3.1.</span> <span class="nav-text">外部碎片</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E9%83%A8%E7%A2%8E%E7%89%87"><span class="nav-number">4.3.2.</span> <span class="nav-text">内部碎片</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Buddy%EF%BC%88%E4%BC%99%E4%BC%B4%EF%BC%89%E5%88%86%E9%85%8D%E7%AE%97%E6%B3%95-gt-%E5%A4%96%E9%83%A8%E7%A2%8E%E7%89%87"><span class="nav-number">4.3.3.</span> <span class="nav-text">Buddy（伙伴）分配算法 -&gt; 外部碎片</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#slab%E5%88%86%E9%85%8D%E5%99%A8-gt-%E5%86%85%E9%83%A8%E7%A2%8E%E7%89%87"><span class="nav-number">4.3.4.</span> <span class="nav-text">slab分配器 - &gt; 内部碎片</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#NUMA"><span class="nav-number">5.</span> <span class="nav-text">NUMA</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">5.0.1.</span> <span class="nav-text"></span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BB%E6%B5%81%E5%AD%98%E5%82%A8%E8%AE%BE%E5%A4%87"><span class="nav-number">1.</span> <span class="nav-text">主流存储设备</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%89%A9%E7%90%86%E5%86%85%E5%AD%98"><span class="nav-number">2.</span> <span class="nav-text">物理内存</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%A9%E7%90%86%E5%86%85%E5%AD%983%E4%B8%AA%E7%AE%A1%E7%90%86%E5%8C%BA"><span class="nav-number">2.1.</span> <span class="nav-text">物理内存3个管理区</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ZONE-DMA"><span class="nav-number">2.1.1.</span> <span class="nav-text">ZONE_DMA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ZONE-NORMAL"><span class="nav-number">2.1.2.</span> <span class="nav-text">ZONE_NORMAL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ZONE-HIGHMEM"><span class="nav-number">2.1.3.</span> <span class="nav-text">ZONE_HIGHMEM</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98"><span class="nav-number">3.</span> <span class="nav-text">虚拟内存</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E6%80%81%E5%92%8C%E5%86%85%E6%A0%B8%E6%80%81"><span class="nav-number">3.1.</span> <span class="nav-text">用户态和内核态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E7%A9%BA%E9%97%B4%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98-3GB"><span class="nav-number">3.2.</span> <span class="nav-text">用户空间虚拟内存 - 3GB</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E6%A0%B8%E7%A9%BA%E9%97%B4%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98-1GB"><span class="nav-number">3.3.</span> <span class="nav-text">内核空间虚拟内存 - 1GB</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%80-%E7%89%A9%E7%90%86%E5%9C%B0%E5%9D%80%E7%9A%84%E6%98%A0%E5%B0%84%E5%85%B3%E7%B3%BB%E5%9B%BE"><span class="nav-number">3.4.</span> <span class="nav-text">虚拟地址 -  物理地址的映射关系图</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MMU"><span class="nav-number">4.</span> <span class="nav-text">MMU</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%AE%B5%E6%9C%BA%E5%88%B6"><span class="nav-number">4.1.</span> <span class="nav-text">分段机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E9%A1%B5%E6%9C%BA%E5%88%B6"><span class="nav-number">4.2.</span> <span class="nav-text">分页机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%A9%E7%90%86%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D"><span class="nav-number">4.3.</span> <span class="nav-text">物理内存分配</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%96%E9%83%A8%E7%A2%8E%E7%89%87"><span class="nav-number">4.3.1.</span> <span class="nav-text">外部碎片</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E9%83%A8%E7%A2%8E%E7%89%87"><span class="nav-number">4.3.2.</span> <span class="nav-text">内部碎片</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Buddy%EF%BC%88%E4%BC%99%E4%BC%B4%EF%BC%89%E5%88%86%E9%85%8D%E7%AE%97%E6%B3%95-gt-%E5%A4%96%E9%83%A8%E7%A2%8E%E7%89%87"><span class="nav-number">4.3.3.</span> <span class="nav-text">Buddy（伙伴）分配算法 -&gt; 外部碎片</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#slab%E5%88%86%E9%85%8D%E5%99%A8-gt-%E5%86%85%E9%83%A8%E7%A2%8E%E7%89%87"><span class="nav-number">4.3.4.</span> <span class="nav-text">slab分配器 - &gt; 内部碎片</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#NUMA"><span class="nav-number">5.</span> <span class="nav-text">NUMA</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -550,20 +547,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-count">33</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-count">12</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -608,12 +605,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">74k</span>
+    <span title="站点总字数">77k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:07</span>
+    <span title="站点阅读时长">1:10</span>
 </div>
 
         
