@@ -1,105 +1,163 @@
 <?xml version="1.0" encoding="utf-8"?>
-<search> 
-  
-  
-    
-    <entry>
-      <title>PCIe和SRIOV介绍</title>
-      <link href="posts/939f8fe8.html"/>
-      <url>posts/939f8fe8.html</url>
-      
-        <content type="html"><![CDATA[<h1 id="PCI和PCIe"><a href="#PCI和PCIe" class="headerlink" title="PCI和PCIe"></a>PCI和PCIe</h1><p>configuration space register</p><p>linux support</p><h2 id="PCI"><a href="#PCI" class="headerlink" title="PCI"></a>PCI</h2><p>并行的结构，在一个时钟周期内传输32bits/64bits。</p><p>提高时钟频率，或者提高pci总线的位宽。</p><p>Host bridge隔离内存物理空间和PCI总线空间，负责进行地址转换。</p><h2 id="PCIe"><a href="#PCIe" class="headerlink" title="PCIe"></a>PCIe</h2><p>串行，一个时钟周期只能发送一个bit。所以时钟频率就快的多。</p><p>点对点：</p><p>8 - 5 - 3</p><p>256个bus，32个device， 8个function。</p><p>PCI枚举，设备树。</p><h2 id="configuration-space-register"><a href="#configuration-space-register" class="headerlink" title="configuration space register"></a>configuration space register</h2><p>每个PCI/PCIe设备里都有这张表。</p><p>PCI: 256bytes </p><p>PCIe: 4k bytes</p><p>前256可以通过IO port来访问，后面的只能MMIO。</p><p>MMIO最大要占用的空间： 256 * 32 * 8 * 4K = 256M</p><p>BAR： base address register</p><p>MSI，MSI-x（message signal interrupt）</p>]]></content>
-      
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>rdma介绍</title>
-      <link href="posts/9e990020.html"/>
-      <url>posts/9e990020.html</url>
-      
-        <content type="html"><![CDATA[<h1 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h1><h2 id="DMA"><a href="#DMA" class="headerlink" title="DMA"></a>DMA</h2><p><img src="/posts/9e990020/image-20210511163124035.png" alt="image-20210511163124035"></p><p>在同一台Host上，不通过CPU的move来做数据搬移。 </p><p>Free up CPU</p><h2 id="RDMA"><a href="#RDMA" class="headerlink" title="RDMA"></a>RDMA</h2><p>Remote DMA, cross host. </p><p>secure direct memory to memory data communication without CPU </p><p><img src="/posts/9e990020/image-20210511163734543.png" alt="image-20210511163734543"></p><p>iMC: intergrated memory controller.</p><p>blue dot line: control path, need cpu to setup</p><p>red line: data path, without cpu</p><img src="/posts/9e990020/image-20210511164132817.png" alt="image-20210511164132817" style="zoom:80%;"><p>map NIC hw resource into user space</p><p>verbs API</p><p>message level  </p><h1 id="Protocol-Introduction"><a href="#Protocol-Introduction" class="headerlink" title="Protocol Introduction"></a>Protocol Introduction</h1><p><img src="/posts/9e990020/image-20210511165341492.png" alt="image-20210511165341492"></p><h1 id="Details（ROCEv2）"><a href="#Details（ROCEv2）" class="headerlink" title="Details（ROCEv2）"></a>Details（ROCEv2）</h1>]]></content>
-      
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>kata-container介绍</title>
-      <link href="posts/ff923842.html"/>
-      <url>posts/ff923842.html</url>
-      
-        <content type="html"><![CDATA[<h1 id="起源"><a href="#起源" class="headerlink" title="起源"></a>起源</h1><p>结合了Intel clear container和Hyper runV而衍生出的一个新的项目。提供了轻量级的VM，可以无缝地和</p>]]></content>
-      
-      
+<search>
+  <entry>
+    <title>cpu-microarch</title>
+    <url>/posts/f1d93d2c.html</url>
+    <content><![CDATA[<p><img src="https://en.wikichip.org/w/images/thumb/e/ee/skylake_server_block_diagram.svg/950px-skylake_server_block_diagram.svg.png" alt="skylake server block diagram.svg"></p>
+<p>front end：取值，解码</p>
+<p>execution engine：计算</p>
+<p>memory subsystem： 读写内存</p>
+<p>L1， L2 per core</p>
+]]></content>
       <categories>
-          
-          <category> cloud native </category>
-          
+        <category>计算机组成</category>
       </categories>
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>linux内存管理</title>
-      <link href="posts/d0683ba8.html"/>
-      <url>posts/d0683ba8.html</url>
-      
-        <content type="html"><![CDATA[<h1 id="主流存储设备"><a href="#主流存储设备" class="headerlink" title="主流存储设备"></a>主流存储设备</h1><p><img src="/posts/d0683ba8/%E5%AD%98%E5%82%A8%20(1).svg"></p><h1 id="物理内存"><a href="#物理内存" class="headerlink" title="物理内存"></a>物理内存</h1><p>我们不讨论cache，flash，rom这些，只讨论memory也就是通常所说的主存，现在一般是DDR4.</p><img src="/posts/d0683ba8/image-20210428163238359.png" alt="image-20210428163238359" style="zoom:67%;"><p>内存工作频率 = min(cpu外部频率，主板频率，内存自身频率)</p><p>对于一个32位系统来说，地址总线最多是32bit，它能寻址的最大范围是2^32=4GB，所以也就能插4GB的内存条，插8GB的也没有用。</p><p>64位CPU出现之后，其地址总线位宽一般采用的是36位或者40位，它们寻址的物理地址空间为64GB或者1T（intel）。</p><blockquote><p>注意： 常说的<strong>CPU位宽</strong>指的是<strong>数据总线</strong>位宽，最大寻址范围和CPU位宽无关。</p></blockquote><img src="/posts/d0683ba8/image-20210428174116842.png" alt="image-20210428174116842" style="zoom:67%;"><p>查询系统地址总线位宽：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cat /proc/cpuinfo  | grep address</span><br><span class="line">address sizes   : 46 bits physical, 48 bits virtual</span><br><span class="line"><span class="meta">#</span><span class="bash"> 物理内存寻址范围/虚拟内存寻址范围可以不同</span></span><br></pre></td></tr></table></figure><h2 id="物理内存3个管理区"><a href="#物理内存3个管理区" class="headerlink" title="物理内存3个管理区"></a>物理内存3个管理区</h2><p><code>Linux</code> 内核会将物理内存分为3个管理区，分别是：</p><h3 id="ZONE-DMA"><a href="#ZONE-DMA" class="headerlink" title="ZONE_DMA"></a>ZONE_DMA</h3><p><code>DMA</code>内存区域。包含0MB~16MB之间的内存页框，可以由老式基于<code>ISA</code>的设备通过<code>DMA</code>使用，直接映射到内核的地址空间。</p><h3 id="ZONE-NORMAL"><a href="#ZONE-NORMAL" class="headerlink" title="ZONE_NORMAL"></a>ZONE_NORMAL</h3><p>普通内存区域。包含16MB~896MB之间的内存页框，常规页框，直接映射到内核的地址空间。</p><h3 id="ZONE-HIGHMEM"><a href="#ZONE-HIGHMEM" class="headerlink" title="ZONE_HIGHMEM"></a>ZONE_HIGHMEM</h3><p>高端内存区域。包含896MB以上的内存页框，不进行直接映射，可以通过永久映射和临时映射进行这部分内存页框的访问。</p><img src="/posts/d0683ba8/2.png" alt="Image" style="zoom:80%;"><h1 id="虚拟内存"><a href="#虚拟内存" class="headerlink" title="虚拟内存"></a>虚拟内存</h1><p>对于32位系统来说，为了充分利用和管理系统内存资源，Linux采用虚拟内存管理技术，利用虚拟内存技术让每个进程都有<code>4GB</code> 互不干涉的虚拟地址空间。</p><p>为什么是4GB? </p><p>之所以是 4GB ，是因为在 32 位的操作系统中，一个指针长度是 4 字节 （32位）， 2的32次 方个地址寻址能力是从 0x00000000~0xFFFFFFFF 即为 4GB 大小的容量。</p><p>进程初始化分配和操作的都是基于这个「虚拟地址」，只有当进程需要实际访问内存资源的时候才会建立<strong>虚拟地址和物理地址的映射</strong>，调入物理内存页。</p><img src="/posts/d0683ba8/1.png" alt="Image" style="zoom:80%;"><p>这么做的目的是：</p><ul><li>避免用户直接访问物理内存地址，防止一些破坏性操作，保护操作系统</li><li>每个进程都被分配了4GB的虚拟内存，用户程序可使用比实际物理内存更大的地址空间</li></ul><p>当需进程要实际访问内存的时候，会由内核的「请求分页机制」产生「缺页异常」调入物理内存页。</p><p><strong>64位系统对比：</strong></p><img src="/posts/d0683ba8/64bit.png" alt="Linux的进程地址空间[一]" style="zoom:40%;"><h2 id="用户态和内核态"><a href="#用户态和内核态" class="headerlink" title="用户态和内核态"></a>用户态和内核态</h2><p>用户态切换到内核态的 3 种方式：系统调用、异常、外设中断</p><p>用户态的程序就不能随意操作内核地址空间，具有一定的安全保护作用；内核态线程共享内核地址空间；</p><img src="/posts/d0683ba8/image-20210426162841923.png" alt="image-20210426162841923" style="zoom:78%;"><h2 id="用户空间虚拟内存-3GB"><a href="#用户空间虚拟内存-3GB" class="headerlink" title="用户空间虚拟内存 - 3GB"></a>用户空间虚拟内存 - 3GB</h2><p>用户进程能访问的是「用户空间」，每个进程都有自己独立的用户空间，虚拟地址范围从从 <code>0x00000000</code> 至 <code>0xBFFFFFFF</code> 总容量3G 。</p><p>进程（执行的程序）占用的用户空间按照「 访问属性一致的地址空间存放在一起 」的原则，划分成 <code>5</code>个不同的内存区域。访问属性指的是“可读、可写、可执行等 。</p><p><img src="/posts/d0683ba8/3.png" alt="Image"></p><ul><li><p>代码段</p><p>代码段是用来存放可执行文件的操作指令，可执行程序在内存中的镜像。代码段需要防止在运行时被非法修改，所以<strong>只准许读取操作，它是不可写的</strong>。</p></li><li><p>数据段</p><p>数据段用来存放可执行文件中<strong>已初始化全局变量</strong>，换句话说就是存放程序静态分配的变量和全局变量。</p></li><li><p>BSS段</p><p><code>BSS</code>段包含了程序中<strong>未初始化的全局变量</strong>，在内存中 <code>bss</code> 段全部置零。</p></li><li><p>堆 <code>heap</code></p><p>堆是用于存放进程运行中被<strong>动态分配的内存段</strong>，它的大小并不固定，可动态扩张或缩减。当进程调用malloc等函数分配内存时，新分配的内存就被动态添加到堆上（堆被扩张）；当利用free等函数释放内存时，被释放的内存从堆中被剔除（堆被缩减）</p></li><li><p>栈 <code>stack</code></p><p>栈是用户存放程序<strong>临时创建的局部变量</strong>，也就是函数中定义的变量（但不包括 <code>static</code> 声明的变量，static意味着在数据段中存放变量）。除此以外，在函数被调用时，其参数也会被压入发起调用的进程栈中，并且待到调用结束后，函数的返回值也会被存放回栈中。由于栈的先进先出特点，所以栈特别方便用来保存/恢复调用现场。从这个意义上讲，我们可以把堆栈看成一个寄存、交换临时数据的内存区。</p></li></ul><h2 id="内核空间虚拟内存-1GB"><a href="#内核空间虚拟内存-1GB" class="headerlink" title="内核空间虚拟内存 - 1GB"></a>内核空间虚拟内存 - 1GB</h2><p>在 <code>x86 32</code> 位系统里，Linux 内核地址空间是指虚拟地址从 <code>0xC0000000</code> 开始到 <code>0xFFFFFFFF</code> 为止的高端内存地址空间，总计 <code>1G</code> 的容量， 包括了内核镜像、物理页面表、驱动程序等运行在内核空间 。虚拟空间的1GB怎么对应到物理内存的4GB甚至更多（取决于地址总线最大寻址和插的内存条大小）呢？</p><img src="/posts/d0683ba8/image-20210429173652156.png" alt="image-20210429173652156" style="zoom:50%;"><ul><li><p>直接映射区：线性空间中从 3G 开始到3GB+896M 的区间，直接映射到物理内存的 0 - 896MB（dma zone + normal zone），物理和虚拟中间差一个固定的偏移量：PAGE_OFFSET = 0xC0000000。</p><p>虚拟地址 = <code>PAGE_OFFSET</code> + 物理地址，也可以用 <code>virt_to_phys()</code>函数将内核虚拟空间中的线性地址转化为物理地址。</p></li><li><p>除了直接映射区：还有4G-(3G+896MB) = 128MB的空间要映射到物理内存的其他空间，显然1：1map是不够的。所以内核空间拿出了最后的 128M 地址区间，划分成下面三个高端内存映射区（动态分配，可以重复映射不同的地址）：</p><ul><li>动态内存映射区：该区域由内核函数 vmalloc 来分配，特点是：线性空间连续，但是对应的物理地址空间不一定连续。<code>vmalloc</code> 分配的线性地址所对应的物理页可能处于低端内存，也可能处于高端内存。</li><li>永久内存映射区：该区域可访问高端内存（highmem），访问方法是使用 <code>alloc_page (_GFP_HIGHMEM)</code> 分配高端内存页或者使用<code>kmap</code>函数将分配到的高端内存映射到该区域。</li><li>固定映射区：该区域和 4G 的顶端只有 4k 的隔离带，其每个地址项都服务于特定的用途，如：ACPI_BASE 等</li></ul></li></ul><h2 id="虚拟地址-物理地址的映射关系图"><a href="#虚拟地址-物理地址的映射关系图" class="headerlink" title="虚拟地址 -  物理地址的映射关系图"></a>虚拟地址 -  物理地址的映射关系图</h2><img src="/posts/d0683ba8/image-20210429180241789.png" alt="image-20210429180241789" style="zoom:50%;"><h1 id="MMU"><a href="#MMU" class="headerlink" title="MMU"></a>MMU</h1><p>把虚拟地址转换成内存的物理地址，这中间涉及利用<code>MMU</code> 内存管理单元（Memory Management Unit ) 对虚拟地址分段和分页（段页式）地址转换。</p><ul><li>MMU 是一种硬件电路，它包含两个部件，一个是分段部件，一个是分页部件</li><li>分段机制把一个逻辑地址转换为线性地址</li><li>分页机制把一个线性地址转换为物理地址</li></ul><blockquote><p>单片机是没有mmu的，程序直接访问物理地址。</p></blockquote><img src="/posts/d0683ba8/image-20210427151435405.png" alt="image-20210427151435405" style="zoom:66%;"><h2 id="分段机制"><a href="#分段机制" class="headerlink" title="分段机制"></a>分段机制</h2><h2 id="分页机制"><a href="#分页机制" class="headerlink" title="分页机制"></a>分页机制</h2><p>页表保存在<strong>物理内存中</strong>，<strong>MMU会查找页表来确定一个VA应该映射到什么PA。</strong></p><p><strong>段错误</strong>我们已经遇到过很多次了，它是这样产生的：</p><ol><li>用户程序要访问的一个VA，经MMU检查无权访问。</li><li>MMU产生一个异常，CPU从用户模式切换到特权模式，跳转到内核代码中执行异常服务程序。</li><li>内核把这个异常解释为段错误，把引发异常的进程终止掉。</li></ol><p>page -  4KB</p><p>struct-page </p><p>4G内存一共有4GB/4KB = 2 ^20个 </p><h2 id="物理内存分配"><a href="#物理内存分配" class="headerlink" title="物理内存分配"></a>物理内存分配</h2><h3 id="外部碎片"><a href="#外部碎片" class="headerlink" title="外部碎片"></a>外部碎片</h3><p>当需要分配大块内存的时候，要用好几页组合起来才够，而系统分配物理内存页的时候会尽量分配连续的内存页面，频繁的分配与回收物理页导致大量的小块内存夹杂在已分配页面中间，形成外部碎片，举个例子：</p><p><img src="/posts/d0683ba8/waibu.png" alt="Image"></p><h3 id="内部碎片"><a href="#内部碎片" class="headerlink" title="内部碎片"></a>内部碎片</h3><p>物理内存是按页来分配的，这样当实际只需要很小内存的时候，也会分配至少是 4K 大小的页面，而内核中有很多需要以字节为单位分配内存的场景，这样本来只想要几个字节而已却不得不分配一页内存，除去用掉的字节剩下的就形成了内部碎片。</p><p><img src="/posts/d0683ba8/neibu.pnf" alt="Image"></p><h3 id="Buddy（伙伴）分配算法-gt-外部碎片"><a href="#Buddy（伙伴）分配算法-gt-外部碎片" class="headerlink" title="Buddy（伙伴）分配算法 -&gt; 外部碎片"></a>Buddy（伙伴）分配算法 -&gt; 外部碎片</h3><p>相同大小的页框块用链表串起来，页框块就像手拉手的好伙伴，也是这个算法名字的由来。</p><h3 id="slab分配器-gt-内部碎片"><a href="#slab分配器-gt-内部碎片" class="headerlink" title="slab分配器 - &gt; 内部碎片"></a>slab分配器 - &gt; 内部碎片</h3><p>通过将内存按使用对象不同<strong>再划分</strong>成不同大小的空间，应用于内核对象的缓存。</p><h1 id="NUMA"><a href="#NUMA" class="headerlink" title="NUMA"></a>NUMA</h1><p>Node，Zone，Page</p><p><img src="/posts/d0683ba8/numa.jgp" alt="uma-numa"></p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">cat /proc/zoneinfo | grep Node</span><br><span class="line">Node 0, zone      DMA</span><br><span class="line">Node 0, zone    DMA32 # 64 bit system</span><br><span class="line">Node 0, zone   Normal</span><br><span class="line">Node 0, zone  Movable # 防止内存碎片化的ZONE_MOVABLE</span><br><span class="line">Node 0, zone   Device # 支持设备热插拔的ZONE_DEVICE</span><br><span class="line">Node 1, zone      DMA</span><br><span class="line">Node 1, zone    DMA32</span><br><span class="line">Node 1, zone   Normal</span><br><span class="line">Node 1, zone  Movable</span><br><span class="line">Node 1, zone   Device</span><br><span class="line"><span class="meta">#</span><span class="bash"> 没有 zone highmem， 因为是64位系统，可以直接映射</span></span><br></pre></td></tr></table></figure><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> lscpu</span></span><br><span class="line">Architecture:                    x86_64</span><br><span class="line">CPU op-mode(s):                  32-bit, 64-bit</span><br><span class="line">Byte Order:                      Little Endian</span><br><span class="line">Address sizes:                   46 bits physical, 48 bits virtual</span><br><span class="line">CPU(s):                          32  # cores per socket * sockets * thread per core </span><br><span class="line">On-line CPU(s) list:             0-31</span><br><span class="line">Thread(s) per core:              2</span><br><span class="line">Core(s) per socket:              8</span><br><span class="line">Socket(s):                       2</span><br><span class="line">NUMA node(s):                    2</span><br><span class="line">Vendor ID:                       GenuineIntel</span><br><span class="line">CPU family:                      6</span><br><span class="line">Model:                           45</span><br><span class="line">Model name:                      Intel(R) Xeon(R) CPU E5-2670 0 @ 2.60GHz</span><br><span class="line">Stepping:                        7</span><br><span class="line">CPU MHz:                         1207.495</span><br><span class="line">CPU max MHz:                     3300.0000</span><br><span class="line">CPU min MHz:                     1200.0000</span><br><span class="line">BogoMIPS:                        5187.02</span><br><span class="line">Virtualization:                  VT-x</span><br><span class="line">L1d cache:                       512 KiB  # instruction cache</span><br><span class="line">L1i cache:                       512 KiB  # data cache</span><br><span class="line">L2 cache:                        4 MiB</span><br><span class="line">L3 cache:                        40 MiB</span><br><span class="line">NUMA node0 CPU(s):               0-7,16-23</span><br><span class="line">NUMA node1 CPU(s):               8-15,24-31</span><br><span class="line">Vulnerability Itlb multihit:     KVM: Mitigation: Split huge pages</span><br><span class="line">Vulnerability L1tf:              Mitigation; PTE Inversion; VMX conditional cache flushes, SMT vulnerable</span><br><span class="line">Vulnerability Mds:               Mitigation; Clear CPU buffers; SMT vulnerable</span><br><span class="line">Vulnerability Meltdown:          Mitigation; PTI</span><br><span class="line">Vulnerability Spec store bypass: Mitigation; Speculative Store Bypass disabled via prctl and seccomp</span><br><span class="line">Vulnerability Spectre v1:        Mitigation; usercopy/swapgs barriers and __user pointer sanitization</span><br><span class="line">Vulnerability Spectre v2:        Mitigation; Full generic retpoline, IBPB conditional, IBRS_FW, STIBP conditional, RSB filling</span><br><span class="line">Vulnerability Srbds:             Not affected</span><br><span class="line">Vulnerability Tsx async abort:   Not affected</span><br><span class="line">Flags:                           fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxs</span><br><span class="line">                                 r sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good</span><br><span class="line">                                  nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2</span><br><span class="line">                                  ssse3 cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic popcnt tsc_deadline_timer aes xsave avx lahf</span><br><span class="line">                                 _lm epb pti ssbd ibrs ibpb stib</span><br><span class="line"></span><br></pre></td></tr></table></figure><p><img src="/posts/d0683ba8/image-20210429154000972.png" alt="image-20210429154000972"></p><img src="/posts/d0683ba8/image-20210429154341590.png" alt="image-20210429154341590" style="zoom:67%;">]]></content>
-      
-      
+      <tags>
+        <tag>CPU</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>cpu基础</title>
+    <url>/posts/fe9b70.html</url>
+    <content><![CDATA[<p>cpu运行阶段：取值，解码，执行，写回。</p>
+<p>cpu从内存或者cache里提取指令，放入指令寄存器，并对指令译码，执行。</p>
+<p>主要参数：</p>
+<p>主频：时钟频率</p>
+<p>倍频</p>
+<p>外频：cpu的基准频率，cpu和其他部件通讯的频率，决定着整块主板的运行速度。因为cpu的频率太高，其他部件跟不上。</p>
+<p>超频：</p>
+]]></content>
       <categories>
-          
-          <category> LINUX </category>
-          
+        <category>计算机组成</category>
       </categories>
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>GPU虚拟化</title>
-      <link href="posts/204fd6f0.html"/>
-      <url>posts/204fd6f0.html</url>
-      
-        <content type="html"><![CDATA[<p>目前流行的几种模式：pass through, sriov(AMD), 半虚拟化（mdev passthrough： Intel gvt-g, Nvidia GRID vGPU), 全虚拟化（VMware： vSGA）</p><p>学习路径</p><p>pci -》 pci dma -》 iommu -》 passthrough</p><p>内存页表 - 》 tlb</p><p>cache -》 内存</p><h1 id="PCI"><a href="#PCI" class="headerlink" title="PCI"></a>PCI</h1><p>Linux PCI设备驱动实际包括<strong>Linux PCI设备驱动</strong>和<strong>设备本身驱动</strong>两部分。</p><p>PCI(Periheral Component Interconnect)有三种地址空间：<strong>PCI I/O空间、PCI内存地址空间和PCI配置空间</strong>。</p><p>PCI I/O空间和PCI内存地址空间由设备驱动程序使用</p><p>而PCI配置空间由Linux PCI初始化代码使用，用于配置PCI设备，比如中断号以及I/O或内存基地址。</p><p>内核：遍历和配置</p><p>遍历顺序：从host-pci开始，遇到pci bridge就到下一级pci总线继续遍历，直到遍历完成。（深度优先？）</p><p>配置：PCI设备中一般都带有一些RAM和ROM 空间，通常的控制/状态寄存器和数据寄存器也往往以RAM区间的形式出现，而这些区间的地址在设备内部一般都是从0开始编址的，那么当总线上挂接了多个设备时，对这些空间的访问就会产生冲突。所以，这些地址都要先映射到系统总线上，再进一步映射到内核的虚拟地址空间。配置就是通过对PCI配置空间的寄存器进行操作从而完成地址的映射。 device physical address -&gt; system virtual address??</p><p>bar寄存器？？</p><h1 id="DMA"><a href="#DMA" class="headerlink" title="DMA"></a>DMA</h1><p><a href="https://cloud.tencent.com/developer/article/1194593">https://cloud.tencent.com/developer/article/1194593</a></p><p>dma controller</p><h2 id="I-O-Memory-Management-Unit-IOMMU"><a href="#I-O-Memory-Management-Unit-IOMMU" class="headerlink" title="I/O Memory Management Unit ( IOMMU )"></a>I/O Memory Management Unit ( IOMMU )</h2><p>translates guest physical addresses to host physical add，一般在north bridge里</p><p>iommu group  -&gt;  类比cgroup，做设备隔离</p><p>一个group对应一个iommu页表。一个group的所有设备的iommu page table是共享的，可以相互修改。</p><h1 id="SRIOV"><a href="#SRIOV" class="headerlink" title="SRIOV"></a>SRIOV</h1><h2 id="VFIO"><a href="#VFIO" class="headerlink" title="VFIO"></a>VFIO</h2><p>一种passthrough的方案。</p><p>user space： 怎么通过vfio框架来使用设备。</p><p>在userspace提供了2个字符文件，用户通过这2个字符文件，通过ioctl来操作设备。</p><img src="/posts/204fd6f0/image-20210510171623286.png" alt="image-20210510171623286" style="zoom:67%;"><p>container，group的概念，group对应一个iommu group</p><p>操作设备的三种方式：</p><ol><li>中断</li><li>IO</li><li>DMA</li></ol><p>设备角度：怎么通过vfio的框架向上提供设备给user space来用。</p><p>首先，设备所在的总线需要支持vfio框架（platform，pci）</p><p>例子：对于pci设备来说，需要基于vfio的框架实现一个vfio-pci驱动，然后把设备bind到vfio-pci驱动以供userspace使用。</p><img src="/posts/204fd6f0/image-20210510155013658.png" alt="image-20210510155013658" style="zoom:70%;"><p>现在主要支持：platform, pci, mdev设备。</p><p>mdev不支持iommu</p><p>platform device: 嵌入式系统中的最常见的一种device，没有实际挂载在总线上，需要虚拟一条总线然后挂载在上面。</p><p>新的总线框架。</p><p>device和driver的匹配关系。</p><img src="/posts/204fd6f0/image-20210510173004108.png" alt="image-20210510173004108" style="zoom:70%;"><p>设备总线上有一个设备链表和一个驱动链表。</p><p>一个device只能同时对应一个driver，而一个driver可以被多个device绑定。</p><p>但是有unused。</p><h2 id="mdev"><a href="#mdev" class="headerlink" title="mdev"></a>mdev</h2><p>udev？？？</p><p>uio？？</p><p>如果一个设备想利用mdev框架，就需要register一个parent deivce(mdev_register_device)</p><p>然后这个设备目录如下：</p><img src="/posts/204fd6f0/image-20210511153846434.png" alt="image-20210511153846434" style="zoom:80%;"><p>echo UUID &gt; /sysfs/devices/device_paths/mdev_supported_types/type-id/create 就可以创建一个类型是type-id的mediated device。</p><p>如：</p><p>a是一个pci设备，bind在自己的pci device driver上，如果它支持了mdev，就可以创建多个mdev设备分身，这些mdev设备是绑定在vfio-mdev的driver上的。所以这个设备可以看作即绑定在pci driver上，他的mdev设备又绑定在vfio-mdev driver上。</p><p>mdev解决的问题？</p><p>对于不支持SRIOV的设备，提供一种方式可以使 用户态（VM）复用这个设备。</p><p>物理上不支持VF，但通过mdev可以类似“时分复用”的方式，接近于物理硬件的性能。（但是对于gpu来说，framebuffter这些是不共享复用的)</p><p>便于驱动闭源： 因为有些驱动里体现了硬件的设计思路，不方便开源，所以闭源的驱动只需支持mdev的几个API，就可以实现复用。</p><h2 id="Passthrough"><a href="#Passthrough" class="headerlink" title="Passthrough"></a>Passthrough</h2><p><strong>直通模式</strong>的实现依赖于IOMMU的功能。VTD对IOVA的地址转换使得直通设备可以在硬件层次直接使用GPA（Guest Physical Address）地址。GPU直通技术相对于任何其他设备来说，会有额外的PCI 配置空间模拟和MMIO的拦截（参见QEMU VFIO quirk机制）。比如Hypervisor或者Device Module 不会允许虚拟机对GPU硬件关键寄存器的完全的访问权限，一些高权限的操作会被直接拦截。大家或许已经意识到原来直通设备也是有MMIO模拟和拦截的。这对于我们理解GPU 半虚拟化很有帮助。</p><h3 id="libvirt-layer"><a href="#libvirt-layer" class="headerlink" title="libvirt layer"></a>libvirt layer</h3><p>将PCI设备直接分配给guest os时，如果不先从guest中hot-unplug该设备，将无法进行migration。</p><p>managed: guest启动时会自动从host上detach， guest shutdown时又重新attach回host。（implict）</p><p>unmanged：需要手动从host detach，之后手动re-attach回host。不然libvirt会refuse。（explict）</p><p><strong>直通模式是性能损耗最小的</strong>, Nvidia GPU 直通模式下与物理机的性能对比见下图：（大部分单GPU应用场景的性能对比可以达到96%左右）</p><img src="/posts/204fd6f0/image-20210510143350713.png" alt="image-20210510143350713" style="zoom:80%;"><h2 id="SRIOV-1"><a href="#SRIOV-1" class="headerlink" title="SRIOV"></a>SRIOV</h2><p>谈起GPU SRIOV那么这个世界上就只有两款产品：S7150和MI25 (AMD)</p><p>GPU SRIOV也是一个分时复用的策略。一个简单的调度就是把一个GPU的时间按照特定时间段分片，每个VM拿到特定的时间片。在这些时间片段中，这个VM享用GPU的硬件的全部资源。</p><p>不同的GPU虚拟化方案在时间片的切片中会采用不同的方法。有些方案会在一个GPU Context的当前BatchBuffer/CMDBuffer 执行结束之后启动调度，并把GPU交由下一个时间片的所有者。而有些方案则会严格要求在特定时间片结束的时候切换，强行打断当前GPU的执行，并交予下一个时间片的所有者。这种方式确保GPU资源被平均分摊到不同VM。AMD采用第二种。</p><p>但是GPU的上下文切换比CPU要慢很多，所以频繁的上下文切换会导致性能下降。</p><p>MDEV</p><p>GVT-g与Nvidia GRID vGPU并不依赖IOMMU。把会影响性能的访问直接passthrough给虚拟机，把性能无关，功能性的MMIO访问做拦截并在mdev模块内做模拟。</p>]]></content>
-      
-      
+      <tags>
+        <tag>CPU</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>dapr-intro</title>
+    <url>/posts/c02c2ddc.html</url>
+    <content><![CDATA[<h2 id="dapr简介"><a href="#dapr简介" class="headerlink" title="dapr简介"></a>dapr简介</h2><h2 id="dapr安装"><a href="#dapr安装" class="headerlink" title="dapr安装"></a>dapr安装</h2><p>dapr支持多种运行环境：</p>
+<ol>
+<li>在本机上，相当于一个process</li>
+<li>在kubernetes中，和业务容器在一个pod里，作为sidecar</li>
+</ol>
+<p>我们先尝试在第一种环境里安装dapr。</p>
+<h4 id="Prerequisites"><a href="#Prerequisites" class="headerlink" title="Prerequisites"></a>Prerequisites</h4><p>Docker installed</p>
+<h4 id="安装dapr-CLI"><a href="#安装dapr-CLI" class="headerlink" title="安装dapr CLI"></a>安装dapr CLI</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> wget -q https://raw.githubusercontent.com/dapr/cli/master/install/install.sh -O - | /bin/bash</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> verify</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> dapr --version</span></span><br></pre></td></tr></table></figure>
+<h4 id="初始化dapr"><a href="#初始化dapr" class="headerlink" title="初始化dapr"></a>初始化dapr</h4><p>因为dapr在host上直接运行，相当于需要在host上运行一个process。所以dapr的初始化包括下载dapr二进制包并且安装运行。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> dapr init</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 在k8s上运行 dapr init --kubernetes</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> verify</span> </span><br><span class="line"><span class="meta">$</span><span class="bash"> docker ps</span></span><br><span class="line">CONTAINER ID        IMAGE                                 COMMAND                  CREATED             STATUS                 PORTS                                                                                                                                  NAMES</span><br><span class="line">caa1ac7a14c4        openzipkin/zipkin                     &quot;start-zipkin&quot;           2 hours ago         Up 2 hours (healthy)   9410/tcp, 0.0.0.0:9411-&gt;9411/tcp                                                                                                       dapr_zipkin</span><br><span class="line">1fa7739631a3        redis                                 &quot;docker-entrypoint.s…&quot;   2 hours ago         Up 2 hours             0.0.0.0:6379-&gt;6379/tcp                                                                                                                 dapr_redis</span><br><span class="line">f48ee8e3d872        daprio/dapr                           &quot;./placement&quot;            2 hours ago         Up 2 hours             0.0.0.0:50005-&gt;50005/tcp                                                                                                               dapr_placement</span><br></pre></td></tr></table></figure>
+<p>可以看到有三个容器在运行，Redis容器是做state management和messaging的，Zipkin容器是为了收集traces的。</p>
+<p>在<code>docker init</code>的时候，同时还创建了一些文件。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ls <span class="variable">$HOME</span>/.dapr</span></span><br><span class="line">bin/  components/  config.yaml</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="使用dapr-API，run-sample"><a href="#使用dapr-API，run-sample" class="headerlink" title="使用dapr API，run sample"></a>使用dapr API，run sample</h3><p>业务代码通过调用dapr API来完成一些业务之外的分布式服务的功能，所以我们可以通过直接调用dapr API来看看dapr API是怎么被使用的。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> dapr run --<span class="built_in">help</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Run a Python application that listens to port 3000:</span></span><br><span class="line">  dapr run --app-id myapp --app-port 3000 -- python myapp.py</span><br><span class="line"><span class="meta">#</span><span class="bash"> Run sidecar only:</span></span><br><span class="line">  dapr run --app-id myapp</span><br><span class="line"></span><br><span class="line">Flags:</span><br><span class="line"><span class="meta"> #</span><span class="bash"> 需要研究这个app-id有啥用？？？</span></span><br><span class="line">  -a, --app-id string                   The id for your application, used for service discovery</span><br><span class="line">      --app-max-concurrency int         The concurrency level of the application, otherwise is unlimited (default -1)</span><br><span class="line"><span class="meta"> #</span><span class="bash"> 业务程序监听的端口</span></span><br><span class="line">  -p, --app-port int                    The port your application is listening on (default -1)</span><br><span class="line"><span class="meta"> #</span><span class="bash"> dapr和app之间的protocol</span></span><br><span class="line">  -P, --app-protocol string             The protocol (gRPC or HTTP) Dapr uses to talk to the application (default &quot;http&quot;)</span><br><span class="line">      --app-ssl                         Enable https when Dapr invokes the application</span><br><span class="line">  -d, --components-path string          The path for components directory (default &quot;/home/ubuntu/.dapr/components&quot;)</span><br><span class="line"> -c, --config string                   Dapr configuration file (default &quot;/home/ubuntu/.dapr/config.yaml&quot;)</span><br><span class="line"><span class="meta"> #</span><span class="bash"> dapr程序监听的端口s</span></span><br><span class="line">  -G, --dapr-grpc-port int              The gRPC port for Dapr to listen on (default -1)</span><br><span class="line">  -H, --dapr-http-port int              The HTTP port for Dapr to listen on (default -1)</span><br><span class="line">      --enable-profiling                Enable pprof profiling via an HTTP endpoint</span><br><span class="line">  -h, --help                            Print this help message</span><br><span class="line">      --log-level string                The log verbosity. Valid values are: debug, info, warn, error, fatal, or panic (default &quot;info&quot;)</span><br><span class="line">  -M, --metrics-port int                The port of metrics on dapr (default -1)</span><br><span class="line">      --placement-host-address string   The host on which the placement service resides (default &quot;localhost&quot;)</span><br><span class="line">      --profile-port int                The port for the profile server to listen on (default -1)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> launch a Dapr sidecar that will listen on port 3500 <span class="keyword">for</span> a blank application named myapp</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 因为没有--config和-d，所以用的就是default的`<span class="variable">$HOME</span>/.dapr`下的配置文件。</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> dapr run --app-id myapp --dapr-http-port 3500</span></span><br></pre></td></tr></table></figure>
+<p><strong>调用dapr API去写state，然后读：</strong></p>
+<p>这里是写state，所以url是/v1.0/state/statestore，这个statestore是<code>$HOME/.dapr/components/statestore.yaml</code>里面定义的。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> curl -X POST -H <span class="string">&quot;Content-Type: application/json&quot;</span> -d <span class="string">&#x27;[&#123; &quot;key&quot;: &quot;name&quot;, &quot;value&quot;: &quot;Bruce Wayne&quot;&#125;]&#x27;</span> http://localhost:3500/v1.0/state/statestore</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> curl http://localhost:3500/v1.0/state/statestore/name</span></span><br><span class="line">&quot;Bruce Wayne&quot;</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 进入redis容器查看在redis中的存储形式</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> -it dapr_redis redis-cli</span></span><br><span class="line">127.0.0.1:6379&gt; keys *</span><br><span class="line">1) &quot;myapp||name&quot;   # key使用的是“app的名字||name”</span><br><span class="line">127.0.0.1:6379&gt; hgetall &quot;myapp||name&quot;</span><br><span class="line">1) &quot;data&quot;</span><br><span class="line">2) &quot;\&quot;Bruce Wayne\&quot;&quot;</span><br><span class="line">3) &quot;version&quot;</span><br><span class="line">4) &quot;2&quot;</span><br></pre></td></tr></table></figure>
+<h3 id="自己定义component"><a href="#自己定义component" class="headerlink" title="自己定义component"></a>自己定义component</h3><p>上述我们用的都是dapr init时生成的简单的config例子。现在我们想自己定义新的component并使用dapr API去调用它（们）？</p>
+<p>我们将：</p>
+<ol>
+<li>创建一个本地的json的secret store</li>
+<li>把这个secret store写在component的定义里，向dapr注册。</li>
+<li>通过dapr API获得这个secret store里的内容。</li>
+</ol>
+<h4 id="创建本地secret-store"><a href="#创建本地secret-store" class="headerlink" title="创建本地secret store"></a>创建本地secret store</h4><p>创建json文件</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> cat mysecrets.json</span></span><br><span class="line">&#123;</span><br><span class="line">     &quot;my-secret&quot; : &quot;I&#x27;m Batman&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">~/.dapr/my-components$ cat localSecretStore.yaml</span><br><span class="line">apiVersion: dapr.io/v1alpha1</span><br><span class="line">kind: Component</span><br><span class="line">metadata:</span><br><span class="line">  name: my-secret-store  # secret store的名字，在api调用时要用到</span><br><span class="line">  namespace: default</span><br><span class="line">spec:</span><br><span class="line">  type: secretstores.local.file  # 指定类型时secretstore，而且是本地文件存储</span><br><span class="line">  version: v1</span><br><span class="line">  metadata:</span><br><span class="line">  - name: secretsFile</span><br><span class="line">    value: /home/ubuntu/.dapr/my-components/mysecrets.json</span><br><span class="line">  - name: nestedSeparator</span><br><span class="line">    value: &quot;:&quot;</span><br></pre></td></tr></table></figure>
+<h4 id="运行一个dapr的process"><a href="#运行一个dapr的process" class="headerlink" title="运行一个dapr的process"></a>运行一个dapr的process</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> dapr run --app-id myapp --dapr-http-port 3500 --components-path ./my-components</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> verify</span> </span><br><span class="line"><span class="meta">$</span><span class="bash"> curl localhost:3500/v1.0/secrets/my-secret-store/my-secret</span></span><br><span class="line">&#123;&quot;my-secret&quot;:&quot;I&#x27;m Batman&quot;&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>问题：怎么知道一个component时secret还是state还是别的？</p>
+<p>答：通过yaml文件定义component是指定的type，这样在call API时就知道URL怎么写了。（是/v1.0/secrets还是v1.0/state等等）</p>
+</blockquote>
+<h2 id="在kubernetes集群上安装dapr"><a href="#在kubernetes集群上安装dapr" class="headerlink" title="在kubernetes集群上安装dapr"></a>在kubernetes集群上安装dapr</h2><p>minikube</p>
+<p><img src="/posts/c02c2ddc/Architecture_Diagram.png" alt="Architecture Diagram"></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> dapr init -k</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> dapr status -k</span></span><br><span class="line">  NAME                   NAMESPACE    HEALTHY  STATUS   REPLICAS  VERSION  AGE  CREATED</span><br><span class="line">  dapr-placement-server  dapr-system  True     Running  1         1.0.1    2m   2021-03-09 15:02.06</span><br><span class="line">  dapr-dashboard         dapr-system  True     Running  1         0.6.0    2m   2021-03-09 15:02.05</span><br><span class="line">  dapr-sentry            dapr-system  True     Running  1         1.0.1    2m   2021-03-09 15:02.05</span><br><span class="line">  dapr-sidecar-injector  dapr-system  True     Running  1         1.0.1    2m   2021-03-09 15:02.05</span><br><span class="line">  dapr-operator          dapr-system  True     Running  1         1.0.1    2m   2021-03-09 15:02.05</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 5个dapr的组件</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> k get pods -ndapr-system</span></span><br><span class="line">NAME                                    READY   STATUS    RESTARTS   AGE</span><br><span class="line">dapr-dashboard-6bb75f9645-8f28z         1/1     Running   0          6m24s</span><br><span class="line">dapr-operator-5f84d9fd4-7smdf           1/1     Running   0          6m24s</span><br><span class="line">dapr-placement-server-0                 1/1     Running   0          6m23s</span><br><span class="line">dapr-sentry-5d67bfbfdc-fzsb6            1/1     Running   0          6m24s</span><br><span class="line">dapr-sidecar-injector-7b556f95d-kpxnc   1/1     Running   0          6m24s</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 注意： placment 没有deployment，只有pod和service。</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> k get deploy -ndapr-system</span></span><br><span class="line">NAME                    READY   UP-TO-DATE   AVAILABLE   AGE</span><br><span class="line">dapr-dashboard          1/1     1            1           12d</span><br><span class="line">dapr-operator           1/1     1            1           12d</span><br><span class="line">dapr-sentry             1/1     1            1           12d</span><br><span class="line">dapr-sidecar-injector   1/1     1            1           12d</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="运行helloworld-sample"><a href="#运行helloworld-sample" class="headerlink" title="运行helloworld sample"></a>运行helloworld sample</h3><h4 id="安装redis作为state-store"><a href="#安装redis作为state-store" class="headerlink" title="安装redis作为state store"></a>安装redis作为state store</h4><h5 id="安装helm"><a href="#安装helm" class="headerlink" title="安装helm"></a>安装helm</h5><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl https://baltocdn.com/helm/signing.asc | sudo apt-key add -</span><br><span class="line">sudo apt-get install apt-transport-https --yes</span><br><span class="line">echo &quot;deb https://baltocdn.com/helm/stable/debian/ all main&quot; | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list</span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install helm</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h5 id="安装redis"><a href="#安装redis" class="headerlink" title="安装redis"></a>安装redis</h5><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">helm repo add bitnami https://charts.bitnami.com/bitnami</span><br><span class="line">helm repo update</span><br><span class="line">helm install redis bitnami/redis</span><br><span class="line"></span><br><span class="line">To get your password run:</span><br><span class="line"></span><br><span class="line">    export REDIS_PASSWORD=$(kubectl get secret --namespace default redis -o jsonpath=&quot;&#123;.data.redis-password&#125;&quot; | base64 --decode)</span><br><span class="line"></span><br><span class="line">To connect to your Redis(TM) server:</span><br><span class="line"></span><br><span class="line">1. Run a Redis(TM) pod that you can use as a client:</span><br><span class="line">   kubectl run --namespace default redis-client --rm --tty -i --restart=&#x27;Never&#x27; \</span><br><span class="line">    --env REDIS_PASSWORD=$REDIS_PASSWORD \</span><br><span class="line">   --image docker.io/bitnami/redis:6.0.12-debian-10-r3 -- bash</span><br><span class="line"></span><br><span class="line">2. Connect using the Redis(TM) CLI:</span><br><span class="line">   redis-cli -h redis-master -a $REDIS_PASSWORD</span><br><span class="line">   redis-cli -h redis-slave -a $REDIS_PASSWORD</span><br><span class="line"></span><br><span class="line">To connect to your database from outside the cluster execute the following commands:</span><br><span class="line"></span><br><span class="line">    kubectl port-forward --namespace default svc/redis-master 6379:6379 &amp;</span><br><span class="line">    redis-cli -h 127.0.0.1 -p 6379 -a $REDIS_PASSWORD</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> k get pods</span> </span><br><span class="line">default       redis-headless          ClusterIP   None             &lt;none&gt;        6379/TCP                 96s</span><br><span class="line">default       redis-master            ClusterIP   10.107.253.143   &lt;none&gt;        6379/TCP                 96s</span><br><span class="line">default       redis-slave             ClusterIP   10.102.228.172   &lt;none&gt;        6379/TCP                 96s</span><br><span class="line"><span class="meta">$</span><span class="bash"> k get secrets</span></span><br><span class="line">NAME                          TYPE                                  DATA   AGE</span><br><span class="line">default-token-hnmgm           kubernetes.io/service-account-token   3      155m</span><br><span class="line">redis                         Opaque                                1      3m4s</span><br><span class="line">sh.helm.release.v1.redis.v1   helm.sh/release.v1                    1      3m4s</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> k get svc -owide</span></span><br><span class="line">NAME             TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE     SELECTOR</span><br><span class="line">kubernetes       ClusterIP   10.96.0.1        &lt;none&gt;        443/TCP    5d13h   &lt;none&gt;</span><br><span class="line">redis-headless   ClusterIP   None             &lt;none&gt;        6379/TCP   5d10h   app=redis,release=redis</span><br><span class="line">redis-master     ClusterIP   10.107.253.143   &lt;none&gt;        6379/TCP   5d10h   app=redis,release=redis,role=master</span><br><span class="line">redis-slave      ClusterIP   10.102.228.172   &lt;none&gt;        6379/TCP   5d10h   app=redis,release=redis,role=slave</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash">  k get ep</span></span><br><span class="line">NAME             ENDPOINTS                                          AGE</span><br><span class="line">kubernetes       192.168.49.2:8443                                  5d13h</span><br><span class="line">redis-headless   172.17.0.10:6379,172.17.0.8:6379,172.17.0.9:6379   5d10h</span><br><span class="line">redis-master     172.17.0.9:6379                                    5d10h</span><br><span class="line">redis-slave      172.17.0.10:6379,172.17.0.8:6379                   5d10h</span><br></pre></td></tr></table></figure>
+
+
+
+
+<p><img src="/posts/c02c2ddc/image-20210309233804291.png" alt="image-20210309233804291"></p>
+<p>minikube user</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> minikube service nodeapp</span></span><br><span class="line">|-----------|---------|-------------|---------------------------|</span><br><span class="line">| NAMESPACE |  NAME   | TARGET PORT |            URL            |</span><br><span class="line">|-----------|---------|-------------|---------------------------|</span><br><span class="line">| default   | nodeapp |          80 | http://192.168.49.2:32108 |</span><br><span class="line">|-----------|---------|-------------|---------------------------|</span><br><span class="line">* Opening service default/nodeapp in default browser...</span><br><span class="line">  - http://192.168.49.2:32108</span><br><span class="line">  </span><br><span class="line"><span class="meta">#</span><span class="bash"> curl localhost:32108不通，因为用的是minikube</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> curl http://192.168.49.2:32108/ports</span></span><br><span class="line">&#123;&quot;DAPR_HTTP_PORT&quot;:&quot;3500&quot;,&quot;DAPR_GRPC_PORT&quot;:&quot;50001&quot;&#125;</span><br><span class="line"></span><br><span class="line">export NODE_APP=192.168.49.2:32108</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>Next submit an order to the app</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line">curl <span class="operator">--</span>request <span class="type">POST</span> <span class="operator">--</span>data <span class="string">&quot;&#123;<span class="subst">\&quot;</span>data<span class="subst">\&quot;</span>: &#123; <span class="subst">\&quot;</span>orderId<span class="subst">\&quot;</span>: <span class="subst">\&quot;</span>42<span class="subst">\&quot;</span> &#125; &#125;&quot;</span> <span class="operator">--</span>header <span class="string">&quot;Content-Type:application/json&quot;</span> http:<span class="comment">//$NODE_APP/neworder</span></span><br></pre></td></tr></table></figure>
+<p>Expected output: Empty reply from server</p>
+<p>Confirm the order was persisted by requesting it from the app</p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">curl http:<span class="regexp">//</span><span class="variable">$NODE_APP</span>/order</span><br></pre></td></tr></table></figure>
+<p>Expected output:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;&quot;orderId&quot;:&quot;42&quot;&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+<p>dapr cli</p>
+<p>dapr host</p>
+<p>dapr API</p>
+<p>dapr runtime</p>
+<p>dapr operator </p>
+<p>dapr sidecar injector</p>
+<p>dapr placement service</p>
+<p>dapr sentry</p>
+<p>building blocks</p>
+]]></content>
       <categories>
-          
-          <category> LINUX </category>
-          
+        <category>cloud native</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> GPU </tag>
-            
-            <tag> 虚拟化 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>ebpf-intro</title>
-      <link href="posts/85f2c2fa.html"/>
-      <url>posts/85f2c2fa.html</url>
-      
-        <content type="html"><![CDATA[<p>bpf - bakerly profiling filter</p><p>最早是抓包用的，最经典的应用：tcpdump就用bpf。</p><p>没有bpf之前，抓包要抓nic上所有的包，然后再进行分析</p><p>有了bpf之后，可以插入一段小的代码可以指定tcp port，ip等。</p><p>ebpf - extension bpf</p><p>主要做网络，但远不止网络领域。可以抓system call，linux kernel的function call</p><p>kprobe -&gt; fetch kernel</p><p>uprobe -&gt; fetch user space</p><p>perf events</p><p>XDP/AF_XDP</p><p>bpf vs ebpf vm - &gt; java vm / webassembly</p><p>c  -&gt; 编译成ebpf backend  -&gt; kernel native??</p><p>程序方面：</p><p>bpf只有两个32bit寄存器，16个32bit内存</p><p>ebpf有11个64bit寄存器，512个st�录，只拷贝目录下的文件和目录</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 如果不指定WORKDIR，默认是在跟目录下面</span></span><br><span class="line">[root@e4a55c64ff8f /]# ls</span><br><span class="line">bin  copy01  dev  etc  home  lib  lib64  lost+found  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> COPY可以指定目的路径</span></span><br><span class="line">[root@e4a55c64ff8f home]# ls</span><br><span class="line">copy02</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 不会拷贝目录，只拷贝目录下的文件和目录</span></span><br><span class="line">[root@e8be2eb3f129 /]# ls</span><br><span class="line">bin  copy01  dev  etc  home  lib  lib64  lost+found  media  mnt  opt  proc  root  run  sbin  srv  sub-dir  sys  test1  test2  tmp  usr  var</span><br><span class="line">[root@e8be2eb3f129 /]# cd sub-dir/</span><br><span class="line">[root@e8be2eb3f129 sub-dir]# ls</span><br><span class="line">test3</span><br></pre></td></tr></table></figure>
+      <tags>
+        <tag>dapr</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>如何构建docker image</title>
+    <url>/posts/85a08636.html</url>
+    <content><![CDATA[<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker image inspect ubuntu</span></span><br><span class="line">        &quot;RootFS&quot;: &#123;</span><br><span class="line">            &quot;Type&quot;: &quot;layers&quot;,</span><br><span class="line">            &quot;Layers&quot;: [</span><br><span class="line">                &quot;sha256:bacd3af13903e13a43fe87b6944acd1ff21024132aad6e74b4452d984fb1a99a&quot;,</span><br><span class="line">                &quot;sha256:9069f84dbbe96d4c50a656a05bbe6b6892722b0d1116a8f7fd9d274f4e991bf6&quot;,</span><br><span class="line">                &quot;sha256:f6253634dc78da2f2e3bee9c8063593f880dc35d701307f30f65553e0f50c18c&quot;</span><br><span class="line">            ]</span><br><span class="line">        &#125;,</span><br></pre></td></tr></table></figure>
+
+
+<p>rootfs</p>
+<p>bootfs</p>
+<p>chroot</p>
+<p>aufs</p>
+<p>xfs</p>
+<p>Overlay2</p>
+<p>copy on write </p>
+<p>Writeout </p>
+<p>init-layer - non commit</p>
+<img src="/posts/85a08636/image-20210203234917452.png" alt="image-20210203234917452" style="zoom:70%;">
+
+
+
+<h2 id="如何构建docker-image"><a href="#如何构建docker-image" class="headerlink" title="如何构建docker image"></a>如何构建docker image</h2><p>步骤：</p>
+<ol>
+<li>编写一个dockerfile</li>
+<li>docker build构建镜像</li>
+<li>docker run运行镜像</li>
+<li>docker push发布镜像</li>
+</ol>
+<h3 id="DockerFile构建过程"><a href="#DockerFile构建过程" class="headerlink" title="DockerFile构建过程"></a>DockerFile构建过程</h3><h4 id="基础知识："><a href="#基础知识：" class="headerlink" title="基础知识："></a><strong>基础知识：</strong></h4><ol>
+<li>每个保留关键字都是大写</li>
+<li>顺序执行</li>
+<li>#表示注释</li>
+<li>每一个指令都会创建提交一个新的镜像层。</li>
+</ol>
+<h4 id="DockerFile指令"><a href="#DockerFile指令" class="headerlink" title="DockerFile指令"></a>DockerFile指令</h4><p><img src="/posts/85a08636/image-20210128174810881-1611828531908.png" alt="image-20210128174810881"></p>
+<h4 id="CMD-和-ENTRYPOINT的区别"><a href="#CMD-和-ENTRYPOINT的区别" class="headerlink" title="CMD  和 ENTRYPOINT的区别"></a>CMD  和 ENTRYPOINT的区别</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> docker run image-id</span> </span><br><span class="line">CMD [&quot;ls&quot;,&quot;-a&quot;]  # 指定容器启动时要运行的命令，最后一个有效，可被替代。在docker run时不能被追加参数</span><br><span class="line">ENTRYPOINT [&quot;ls&quot;, [&quot;-a&quot;]] # 指定容器启动时要运行的命令，可以在docker run的时候追加参数</span><br><span class="line"> 													# 比如 docker run xxx &quot;-l&quot;</span><br></pre></td></tr></table></figure>
+<h5 id="测试CMD"><a href="#测试CMD" class="headerlink" title="测试CMD"></a>测试CMD</h5><p>写了两个CMD，在docker run的时候，发现只执行了最后一个，并没有echo出”Hello”，也不能追加参数，会报错。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[vagrant@localhost dockerfile]$ cat docker-cmd-test</span><br><span class="line">FROM centos</span><br><span class="line">CMD [&quot;echo&quot;, &quot;Hello&quot;]</span><br><span class="line">CMD [&quot;ls&quot;, &quot;-a&quot;]</span><br><span class="line"></span><br><span class="line">[vagrant@localhost dockerfile]$ docker run cmdtest</span><br><span class="line">.</span><br><span class="line">..</span><br><span class="line">.dockerenv</span><br><span class="line">bin</span><br><span class="line">dev</span><br><span class="line">etc</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 尝试追加一个参数，想达到ls -al的效果，失败。</span></span><br><span class="line">[vagrant@localhost dockerfile]$ docker run cmdtest -l</span><br><span class="line">docker: Error response from daemon: OCI runtime create failed: container_linux.go:370: starting container process caused: exec: &quot;-l&quot;: executable file not found in $PATH: unknown.</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 但是可以在docker run的后面直接加命令。</span></span><br><span class="line">[vagrant@localhost dockerfile]$ docker run cmdtest ls -al</span><br><span class="line">total 0</span><br><span class="line">drwxr-xr-x.   1 root root   6 Jan 30 11:26 .</span><br><span class="line">drwxr-xr-x.   1 root root   6 Jan 30 11:26 ..</span><br><span class="line">-rwxr-xr-x.   1 root root   0 Jan 30 11:26 .dockerenv</span><br><span class="line">lrwxrwxrwx.   1 root root   7 Nov  3 15:22 bin -&gt; usr/bin</span><br><span class="line">drwxr-xr-x.   5 root root 340 Jan 30 11:26 dev</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<h5 id="测试ENTRYPOINT"><a href="#测试ENTRYPOINT" class="headerlink" title="测试ENTRYPOINT"></a>测试ENTRYPOINT</h5><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[vagrant@localhost dockerfile]$ cat  docker-cmd-entrypoint</span><br><span class="line">FROM centos</span><br><span class="line">ENTRYPOINT [&quot;echo&quot;,&quot;Hello&quot;]</span><br><span class="line">ENTRYPOINT [&quot;ls&quot;,&quot;-a&quot;]</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 发现ENTRYPOINT也是只执行最后一个</span></span><br><span class="line">[vagrant@localhost dockerfile]$ docker run entrypoint</span><br><span class="line">.</span><br><span class="line">..</span><br><span class="line">.dockerenv</span><br><span class="line">bin</span><br><span class="line">dev</span><br><span class="line">etc</span><br><span class="line">home</span><br><span class="line">lib</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 但是ENTRYPOINT可以追加参数</span></span><br><span class="line">[vagrant@localhost dockerfile]$ docker run entrypoint -l</span><br><span class="line">total 0</span><br><span class="line">drwxr-xr-x.   1 root root   6 Jan 30 11:31 .</span><br><span class="line">drwxr-xr-x.   1 root root   6 Jan 30 11:31 ..</span><br><span class="line">-rwxr-xr-x.   1 root root   0 Jan 30 11:31 .dockerenv</span><br><span class="line">lrwxrwxrwx.   1 root root   7 Nov  3 15:22 bin -&gt; usr/bin</span><br><span class="line">drwxr-xr-x.   5 root root 340 Jan 30 11:31 dev</span><br><span class="line">drwxr-xr-x.   1 root root  66 Jan 30 11:31 etc</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="COPY和ADD的区别"><a href="#COPY和ADD的区别" class="headerlink" title="COPY和ADD的区别"></a>COPY和ADD的区别</h4><p>add会自动解压</p>
+<h5 id="COPY测试"><a href="#COPY测试" class="headerlink" title="COPY测试"></a>COPY测试</h5><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[vagrant@localhost dockerfile]$ tree .</span><br><span class="line">.</span><br><span class="line">|-- copy01</span><br><span class="line">|-- copy02</span><br><span class="line">|-- test-dir/</span><br><span class="line">    |-- sub-dir/</span><br><span class="line">    |   |-- test3</span><br><span class="line">    |-- test1</span><br><span class="line">    |-- test2</span><br><span class="line">[vagrant@localhost dockerfile]$ cat docker-copy</span><br><span class="line">FROM centos</span><br><span class="line">COPY copy01 .</span><br><span class="line">COPY copy02 /home</span><br><span class="line">COPY test-dir .  # 不会拷贝目录，只拷贝目录下的文件和目录</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 如果不指定WORKDIR，默认是在跟目录下面</span></span><br><span class="line">[root@e4a55c64ff8f /]# ls</span><br><span class="line">bin  copy01  dev  etc  home  lib  lib64  lost+found  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> COPY可以指定目的路径</span></span><br><span class="line">[root@e4a55c64ff8f home]# ls</span><br><span class="line">copy02</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 不会拷贝目录，只拷贝目录下的文件和目录</span></span><br><span class="line">[root@e8be2eb3f129 /]# ls</span><br><span class="line">bin  copy01  dev  etc  home  lib  lib64  lost+found  media  mnt  opt  proc  root  run  sbin  srv  sub-dir  sys  test1  test2  tmp  usr  var</span><br><span class="line">[root@e8be2eb3f129 /]# cd sub-dir/</span><br><span class="line">[root@e8be2eb3f129 sub-dir]# ls</span><br><span class="line">test3</span><br></pre></td></tr></table></figure>
 <p>此外，COPY还可以用来实现<a href="https://www.cnblogs.com/sparkdev/p/8508435.html">multi-stage(多阶段构建)</a>，就是一个dockerfile里有多个FROM，每个 FROM 指令代表一个 stage 的开始部分。我们可以把一个 stage 的产物拷贝到另一个 stage 中。</p>
 <h5 id="ADD测试"><a href="#ADD测试" class="headerlink" title="ADD测试"></a>ADD测试</h5><p>除了不能用在 multistage 的场景下，ADD 命令可以完成 COPY 命令的所有功能，并且还可以完成两类超酷的功能：</p>
 <ul>
@@ -184,22 +242,6 @@
       </tags>
   </entry>
   <entry>
-    <title>cpu-microarch</title>
-    <url>/posts/f1d93d2c.html</url>
-    <content><![CDATA[<p><img src="https://en.wikichip.org/w/images/thumb/e/ee/skylake_server_block_diagram.svg/950px-skylake_server_block_diagram.svg.png" alt="skylake server block diagram.svg"></p>
-<p>front end：取值，解码</p>
-<p>execution engine：计算</p>
-<p>memory subsystem： 读写内存</p>
-<p>L1， L2 per core</p>
-]]></content>
-      <categories>
-        <category>计算机组成</category>
-      </categories>
-      <tags>
-        <tag>CPU</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>容器volume基本介绍</title>
     <url>/posts/4b81a639.html</url>
     <content><![CDATA[<h2 id="容器volume"><a href="#容器volume" class="headerlink" title="容器volume"></a>容器volume</h2><h3 id="匿名挂载，具名挂载和指定路径挂载"><a href="#匿名挂载，具名挂载和指定路径挂载" class="headerlink" title="匿名挂载，具名挂载和指定路径挂载"></a>匿名挂载，具名挂载和指定路径挂载</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 匿名挂载</span></span><br><span class="line">-v 容器内路径</span><br><span class="line">docker run -d -P --name nginx01 -v /etc/nginx nginx</span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看node 上的volume</span></span><br><span class="line">ubuntu@xinrantest01:~$ docker volume ls</span><br><span class="line">DRIVER              VOLUME NAME</span><br><span class="line">local               cf411242c0f1d323d2d2ab8a81d144caa6d536d992954231f426c35221adf2e3</span><br><span class="line"><span class="meta">#</span><span class="bash"> 可以发现，匿名挂载只写容器里的路径，没有写host上的路径</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 具名挂载</span></span><br><span class="line">-v host路径：容器内路径 （与-p相似）</span><br><span class="line">ubuntu@xinrantest01:~$ docker run -d -P --name nginx02 -v juming-nginx:/etc/nginx nginx</span><br><span class="line">5f61a3a6d01cd8db3bd99fa1738d0b6cfc74df366dc8ba8b1f4cbe0c97b2cc72</span><br><span class="line">ubuntu@xinrantest01:~$ docker volume ls</span><br><span class="line">DRIVER              VOLUME NAME</span><br><span class="line">local               cf411242c0f1d323d2d2ab8a81d144caa6d536d992954231f426c35221adf2e3</span><br><span class="line">local               juming-nginx</span><br><span class="line"><span class="meta">#</span><span class="bash">这里指定了juming-nginx为host上要挂载的目录，这个目录在docker run时被创建</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看volume在host上的路径</span></span><br></pre></td></tr></table></figure>
@@ -231,65 +273,32 @@
       </tags>
   </entry>
   <entry>
-    <title>hexo+github</title>
-    <url>/posts/ebeabd53.html</url>
-    <content><![CDATA[<h3 id="安装nodejs，git"><a href="#安装nodejs，git" class="headerlink" title="安装nodejs，git"></a>安装nodejs，git</h3><figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line">sudo apt <span class="keyword">install</span> npm</span><br><span class="line">sudo apt <span class="keyword">install</span> nodejs</span><br><span class="line">sudo apt <span class="keyword">install</span> git</span><br></pre></td></tr></table></figure>
-<h3 id="注册github帐号，创建github-repo，命名为xxinran-github-io"><a href="#注册github帐号，创建github-repo，命名为xxinran-github-io" class="headerlink" title="注册github帐号，创建github repo，命名为xxinran.github.io"></a>注册github帐号，创建github repo，命名为<code>xxinran.github.io</code></h3><h3 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h3><figure class="highlight avrasm"><table><tr><td class="code"><pre><span class="line">sudo npm install -g hexo-<span class="keyword">cli</span></span><br></pre></td></tr></table></figure>
-<p>检查各项都已经成功安装：</p>
-<figure class="highlight crmsh"><table><tr><td class="code"><pre><span class="line"><span class="keyword">node</span> <span class="title">-v</span></span><br><span class="line">hexo -v</span><br></pre></td></tr></table></figure>
-<h3 id="创建本地博客的repo"><a href="#创建本地博客的repo" class="headerlink" title="创建本地博客的repo"></a>创建本地博客的repo</h3><figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line">hexo <span class="keyword">init</span> blog</span><br></pre></td></tr></table></figure>
-<p>运行后在当前目录下会生成一个blog目录。未来所有的博客主题，博文，配置都在这个目录里。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> blog</span><br></pre></td></tr></table></figure>
-<p>会发现目录结构如下：</p>
-<figure class="highlight haxe"><table><tr><td class="code"><pre><span class="line">├── _config.yml  <span class="meta"># hexo的配置文件，主题，标题，格式等都在这里指定</span></span><br><span class="line">├── db.json</span><br><span class="line">├── node_modules/</span><br><span class="line">├── <span class="keyword">package</span>.json</span><br><span class="line">├── <span class="keyword">package</span>-lock.json</span><br><span class="line">├── <span class="keyword">public</span>/</span><br><span class="line">├── scaffolds/</span><br><span class="line">├── source/ <span class="meta"># 博客的静态页面的源文件，博文的md文件就存放在这里</span></span><br><span class="line">└── themes/ <span class="meta"># 存放各种主题的源码</span></span><br></pre></td></tr></table></figure>
-<p>接下来在<code>blog</code>目录下运行<code>npm install</code> 来安装hexo所需的依赖。</p>
-<p>在<code>blog/source/_posts/hello-world.md</code>里有一个例子，我们先用这个例子，看看效果，运行：</p>
-<figure class="highlight axapta"><table><tr><td class="code"><pre><span class="line">hexo <span class="keyword">server</span> </span><br><span class="line">or</span><br><span class="line">hexo s</span><br></pre></td></tr></table></figure>
-<p>可以看到Hexo运行在本地的4000端口，在浏览器中访问<code>localhost:4000</code>，就会看到上述hello-world的示例页面。</p>
-<p>我们也可以通过 <code>hexo new first-try</code>去创建一个新的md文件，可以在这个md文件里写博文，这时在4000端口我们就可以看到新的博文。（应该是需要重新运行<code>hexo s</code>，这里没有验证）</p>
-<h3 id="连接gihub和hexo"><a href="#连接gihub和hexo" class="headerlink" title="连接gihub和hexo"></a>连接gihub和hexo</h3><h4 id="上传SSH公钥"><a href="#上传SSH公钥" class="headerlink" title="上传SSH公钥"></a>上传SSH公钥</h4><figure class="highlight oxygene"><table><tr><td class="code"><pre><span class="line">ssh-keygen</span><br><span class="line"># <span class="keyword">copy</span> ssh <span class="keyword">public</span> <span class="keyword">to</span> Github Account</span><br></pre></td></tr></table></figure>
-<p>输入<code>ssh -T git@github.com</code>，测试添加ssh是否成功。如果看到Hi后面是你的用户名，就说明成功了.</p>
-<h4 id="在Hexo的配置文件中指定向Github-Page部署"><a href="#在Hexo的配置文件中指定向Github-Page部署" class="headerlink" title="在Hexo的配置文件中指定向Github Page部署"></a>在Hexo的配置文件中指定向Github Page部署</h4><figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">vim ～<span class="regexp">/blog/</span>_config.yml</span><br></pre></td></tr></table></figure>
-<p>在deploy选项中填写Github信息， 例如：</p>
-<figure class="highlight less"><table><tr><td class="code"><pre><span class="line"><span class="attribute">deploy</span>:</span><br><span class="line"><span class="attribute">type</span>: git</span><br><span class="line"><span class="attribute">repository</span>: git<span class="variable">@github</span>.<span class="attribute">com</span>:xxinran/xxinran.github.io.git</span><br><span class="line"><span class="attribute">branch</span>: main # 原来是master</span><br></pre></td></tr></table></figure>
-<h4 id="生成静态文件，并部署到gihub上去。"><a href="#生成静态文件，并部署到gihub上去。" class="headerlink" title="生成静态文件，并部署到gihub上去。"></a>生成静态文件，并部署到gihub上去。</h4><figure class="highlight verilog"><table><tr><td class="code"><pre><span class="line"># <span class="keyword">generate</span> <span class="keyword">static</span> files</span><br><span class="line">hexo <span class="keyword">generate</span></span><br><span class="line"><span class="keyword">or</span> </span><br><span class="line">hexo g</span><br><span class="line"></span><br><span class="line"># deploy to Github</span><br><span class="line">hexo deploy</span><br><span class="line"><span class="keyword">or</span></span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
-<p>这一步有可能会报错<code>Deployer not found: git</code>：</p>
-<ul>
-<li>需要安装<code>npm install hexo-deployer-git --save</code>。</li>
-<li>需要配置gitconfig。</li>
-</ul>
-<h4 id="打开Github-Page验证。"><a href="#打开Github-Page验证。" class="headerlink" title="打开Github Page验证。"></a>打开<a href="https://xxinran.github.io/">Github Page</a>验证。</h4><h3 id="Notes"><a href="#Notes" class="headerlink" title="Notes"></a>Notes</h3><ul>
-<li>每次修改完blog的配置，或者新建删除post，draft等，都需要先<code>hexo clean</code>，在重新<code>hexo g &amp; hexo d</code>。</li>
-</ul>
-<blockquote>
-<p> 参考文档： <a href="https://hexo.io/zh-cn/docs/configuration.html">https://hexo.io/zh-cn/docs/configuration.html</a><br> <a href="https://zhuanlan.zhihu.com/p/71164003">https://zhuanlan.zhihu.com/p/71164003</a></p>
-</blockquote>
-<h1 id="主题配置"><a href="#主题配置" class="headerlink" title="主题配置"></a>主题配置</h1><ul>
-<li>在blog目录下拉取想要应用的主题</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git clone https://github.com/iissnan/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure>
-<ul>
-<li><p>打开站点配置文件 _config.yml，找到 theme 字段，并将其值更改为 next。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">theme: next</span><br></pre></td></tr></table></figure></li>
-<li><p>切换Schema</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">scheme: Pisces</span><br></pre></td></tr></table></figure></li>
-<li><p>更新github上的主题</p>
-<p>改完配置之后都要运行hexo clean &amp; hexo generate &amp; hexo deploy，为了方便，可以在blog目录下加入一个新的脚本deploy.sh：</p>
-<blockquote>
-<p>这里涉及到 “push hexo code”, 在多设备管理中会讲到 ）</p>
-</blockquote>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">DIR=`dirname $0`</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Generate blog</span></span><br><span class="line">echo &quot;Generate and deploy...&quot;</span><br><span class="line">hexo clean</span><br><span class="line">hexo generate &amp; hexo deploy</span><br><span class="line"><span class="meta">#</span><span class="bash"> hexo d -g</span></span><br><span class="line"></span><br><span class="line">sleep 10</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Push hexo code</span></span><br><span class="line">echo &quot;Push hexo code&quot;</span><br><span class="line">git add .</span><br><span class="line">current_date=`date &quot;+%Y-%m-%d %H:%M:%S&quot;`</span><br><span class="line">git commit -m &quot;Blog updated: $current_date&quot;</span><br><span class="line"></span><br><span class="line">sleep 2</span><br><span class="line">git push origin hexo</span><br><span class="line"></span><br><span class="line">echo &quot;=====&gt;Finish!&lt;=====&quot;</span><br></pre></td></tr></table></figure></li>
-<li><p>更新脚本权限：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">chmod 755 deploy.sh</span><br></pre></td></tr></table></figure>
-<p>以后每次推送只要运行./deploy.sh即可。</p>
-</li>
-</ul>
+    <title>ebpf-intro</title>
+    <url>/posts/85f2c2fa.html</url>
+    <content><![CDATA[<p>bpf - bakerly profiling filter</p>
+<p>最早是抓包用的，最经典的应用：tcpdump就用bpf。</p>
+<p>没有bpf之前，抓包要抓nic上所有的包，然后再进行分析</p>
+<p>有了bpf之后，可以插入一段小的代码可以指定tcp port，ip等。</p>
+<p>ebpf - extension bpf</p>
+<p>主要做网络，但远不止网络领域。可以抓system call，linux kernel的function call</p>
+<p>kprobe -&gt; fetch kernel</p>
+<p>uprobe -&gt; fetch user space</p>
+<p>perf events</p>
+<p>XDP/AF_XDP</p>
+<p>bpf vs ebpf vm - &gt; java vm / webassembly</p>
+<p>c  -&gt; 编译成ebpf backend  -&gt; kernel native??</p>
+<p>程序方面：</p>
+<p>bpf只有两个32bit寄存器，16个32bit内存</p>
+<p>ebpf有11个64bit寄存器，512个stack。没有堆的概念，因为在ebpf里面不能new。</p>
+<p><img src="/posts/85f2c2fa/image-20210423154407377.png" alt="image-20210423154407377"></p>
+<p>maps：user space /kernel space shares data through maps (k-v)。</p>
+<p>bpftrace vs bcc vs c program </p>
 ]]></content>
       <categories>
-        <category>hexo</category>
+        <category>LINUX</category>
       </categories>
       <tags>
-        <tag>hexo</tag>
+        <tag>eBPF</tag>
       </tags>
   </entry>
   <entry>
@@ -378,55 +387,66 @@
       </tags>
   </entry>
   <entry>
-    <title>ebpf-intro</title>
-    <url>/posts/85f2c2fa.html</url>
-    <content><![CDATA[<p>bpf - bakerly profiling filter</p>
-<p>最早是抓包用的，最经典的应用：tcpdump就用bpf。</p>
-<p>没有bpf之前，抓包要抓nic上所有的包，然后再进行分析</p>
-<p>有了bpf之后，可以插入一段小的代码可以指定tcp port，ip等。</p>
-<p>ebpf - extension bpf</p>
-<p>主要做网络，但远不止网络领域。可以抓system call，linux kernel的function call</p>
-<p>kprobe -&gt; fetch kernel</p>
-<p>uprobe -&gt; fetch user space</p>
-<p>perf events</p>
-<p>XDP/AF_XDP</p>
-<p>bpf vs ebpf vm - &gt; java vm / webassembly</p>
-<p>c  -&gt; 编译成ebpf backend  -&gt; kernel native??</p>
-<p>程序方面：</p>
-<p>bpf只有两个32bit寄存器，16个32bit内存</p>
-<p>ebpf有11个64bit寄存器，512个stack。没有堆的概念，因为在ebpf里面不能new。</p>
-<p><img src="/posts/85f2c2fa/image-20210423154407377.png" alt="image-20210423154407377"></p>
-<p>maps：user space /kernel space shares data through maps (k-v)。</p>
-<p>bpftrace vs bcc vs c program </p>
+    <title>hexo+github</title>
+    <url>/posts/ebeabd53.html</url>
+    <content><![CDATA[<h3 id="安装nodejs，git"><a href="#安装nodejs，git" class="headerlink" title="安装nodejs，git"></a>安装nodejs，git</h3><figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line">sudo apt <span class="keyword">install</span> npm</span><br><span class="line">sudo apt <span class="keyword">install</span> nodejs</span><br><span class="line">sudo apt <span class="keyword">install</span> git</span><br></pre></td></tr></table></figure>
+<h3 id="注册github帐号，创建github-repo，命名为xxinran-github-io"><a href="#注册github帐号，创建github-repo，命名为xxinran-github-io" class="headerlink" title="注册github帐号，创建github repo，命名为xxinran.github.io"></a>注册github帐号，创建github repo，命名为<code>xxinran.github.io</code></h3><h3 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h3><figure class="highlight avrasm"><table><tr><td class="code"><pre><span class="line">sudo npm install -g hexo-<span class="keyword">cli</span></span><br></pre></td></tr></table></figure>
+<p>检查各项都已经成功安装：</p>
+<figure class="highlight crmsh"><table><tr><td class="code"><pre><span class="line"><span class="keyword">node</span> <span class="title">-v</span></span><br><span class="line">hexo -v</span><br></pre></td></tr></table></figure>
+<h3 id="创建本地博客的repo"><a href="#创建本地博客的repo" class="headerlink" title="创建本地博客的repo"></a>创建本地博客的repo</h3><figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line">hexo <span class="keyword">init</span> blog</span><br></pre></td></tr></table></figure>
+<p>运行后在当前目录下会生成一个blog目录。未来所有的博客主题，博文，配置都在这个目录里。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> blog</span><br></pre></td></tr></table></figure>
+<p>会发现目录结构如下：</p>
+<figure class="highlight haxe"><table><tr><td class="code"><pre><span class="line">├── _config.yml  <span class="meta"># hexo的配置文件，主题，标题，格式等都在这里指定</span></span><br><span class="line">├── db.json</span><br><span class="line">├── node_modules/</span><br><span class="line">├── <span class="keyword">package</span>.json</span><br><span class="line">├── <span class="keyword">package</span>-lock.json</span><br><span class="line">├── <span class="keyword">public</span>/</span><br><span class="line">├── scaffolds/</span><br><span class="line">├── source/ <span class="meta"># 博客的静态页面的源文件，博文的md文件就存放在这里</span></span><br><span class="line">└── themes/ <span class="meta"># 存放各种主题的源码</span></span><br></pre></td></tr></table></figure>
+<p>接下来在<code>blog</code>目录下运行<code>npm install</code> 来安装hexo所需的依赖。</p>
+<p>在<code>blog/source/_posts/hello-world.md</code>里有一个例子，我们先用这个例子，看看效果，运行：</p>
+<figure class="highlight axapta"><table><tr><td class="code"><pre><span class="line">hexo <span class="keyword">server</span> </span><br><span class="line">or</span><br><span class="line">hexo s</span><br></pre></td></tr></table></figure>
+<p>可以看到Hexo运行在本地的4000端口，在浏览器中访问<code>localhost:4000</code>，就会看到上述hello-world的示例页面。</p>
+<p>我们也可以通过 <code>hexo new first-try</code>去创建一个新的md文件，可以在这个md文件里写博文，这时在4000端口我们就可以看到新的博文。（应该是需要重新运行<code>hexo s</code>，这里没有验证）</p>
+<h3 id="连接gihub和hexo"><a href="#连接gihub和hexo" class="headerlink" title="连接gihub和hexo"></a>连接gihub和hexo</h3><h4 id="上传SSH公钥"><a href="#上传SSH公钥" class="headerlink" title="上传SSH公钥"></a>上传SSH公钥</h4><figure class="highlight oxygene"><table><tr><td class="code"><pre><span class="line">ssh-keygen</span><br><span class="line"># <span class="keyword">copy</span> ssh <span class="keyword">public</span> <span class="keyword">to</span> Github Account</span><br></pre></td></tr></table></figure>
+<p>输入<code>ssh -T git@github.com</code>，测试添加ssh是否成功。如果看到Hi后面是你的用户名，就说明成功了.</p>
+<h4 id="在Hexo的配置文件中指定向Github-Page部署"><a href="#在Hexo的配置文件中指定向Github-Page部署" class="headerlink" title="在Hexo的配置文件中指定向Github Page部署"></a>在Hexo的配置文件中指定向Github Page部署</h4><figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">vim ～<span class="regexp">/blog/</span>_config.yml</span><br></pre></td></tr></table></figure>
+<p>在deploy选项中填写Github信息， 例如：</p>
+<figure class="highlight less"><table><tr><td class="code"><pre><span class="line"><span class="attribute">deploy</span>:</span><br><span class="line"><span class="attribute">type</span>: git</span><br><span class="line"><span class="attribute">repository</span>: git<span class="variable">@github</span>.<span class="attribute">com</span>:xxinran/xxinran.github.io.git</span><br><span class="line"><span class="attribute">branch</span>: main # 原来是master</span><br></pre></td></tr></table></figure>
+<h4 id="生成静态文件，并部署到gihub上去。"><a href="#生成静态文件，并部署到gihub上去。" class="headerlink" title="生成静态文件，并部署到gihub上去。"></a>生成静态文件，并部署到gihub上去。</h4><figure class="highlight verilog"><table><tr><td class="code"><pre><span class="line"># <span class="keyword">generate</span> <span class="keyword">static</span> files</span><br><span class="line">hexo <span class="keyword">generate</span></span><br><span class="line"><span class="keyword">or</span> </span><br><span class="line">hexo g</span><br><span class="line"></span><br><span class="line"># deploy to Github</span><br><span class="line">hexo deploy</span><br><span class="line"><span class="keyword">or</span></span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
+<p>这一步有可能会报错<code>Deployer not found: git</code>：</p>
+<ul>
+<li>需要安装<code>npm install hexo-deployer-git --save</code>。</li>
+<li>需要配置gitconfig。</li>
+</ul>
+<h4 id="打开Github-Page验证。"><a href="#打开Github-Page验证。" class="headerlink" title="打开Github Page验证。"></a>打开<a href="https://xxinran.github.io/">Github Page</a>验证。</h4><h3 id="Notes"><a href="#Notes" class="headerlink" title="Notes"></a>Notes</h3><ul>
+<li>每次修改完blog的配置，或者新建删除post，draft等，都需要先<code>hexo clean</code>，在重新<code>hexo g &amp; hexo d</code>。</li>
+</ul>
+<blockquote>
+<p> 参考文档： <a href="https://hexo.io/zh-cn/docs/configuration.html">https://hexo.io/zh-cn/docs/configuration.html</a><br> <a href="https://zhuanlan.zhihu.com/p/71164003">https://zhuanlan.zhihu.com/p/71164003</a></p>
+</blockquote>
+<h1 id="主题配置"><a href="#主题配置" class="headerlink" title="主题配置"></a>主题配置</h1><ul>
+<li>在blog目录下拉取想要应用的主题</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git clone https://github.com/iissnan/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>打开站点配置文件 _config.yml，找到 theme 字段，并将其值更改为 next。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">theme: next</span><br></pre></td></tr></table></figure></li>
+<li><p>切换Schema</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">scheme: Pisces</span><br></pre></td></tr></table></figure></li>
+<li><p>更新github上的主题</p>
+<p>改完配置之后都要运行hexo clean &amp; hexo generate &amp; hexo deploy，为了方便，可以在blog目录下加入一个新的脚本deploy.sh：</p>
+<blockquote>
+<p>这里涉及到 “push hexo code”, 在多设备管理中会讲到 ）</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">DIR=`dirname $0`</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Generate blog</span></span><br><span class="line">echo &quot;Generate and deploy...&quot;</span><br><span class="line">hexo clean</span><br><span class="line">hexo generate &amp; hexo deploy</span><br><span class="line"><span class="meta">#</span><span class="bash"> hexo d -g</span></span><br><span class="line"></span><br><span class="line">sleep 10</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Push hexo code</span></span><br><span class="line">echo &quot;Push hexo code&quot;</span><br><span class="line">git add .</span><br><span class="line">current_date=`date &quot;+%Y-%m-%d %H:%M:%S&quot;`</span><br><span class="line">git commit -m &quot;Blog updated: $current_date&quot;</span><br><span class="line"></span><br><span class="line">sleep 2</span><br><span class="line">git push origin hexo</span><br><span class="line"></span><br><span class="line">echo &quot;=====&gt;Finish!&lt;=====&quot;</span><br></pre></td></tr></table></figure></li>
+<li><p>更新脚本权限：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">chmod 755 deploy.sh</span><br></pre></td></tr></table></figure>
+<p>以后每次推送只要运行./deploy.sh即可。</p>
+</li>
+</ul>
 ]]></content>
       <categories>
-        <category>LINUX</category>
+        <category>hexo</category>
       </categories>
       <tags>
-        <tag>eBPF</tag>
+        <tag>hexo</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>istio-gateway</title>
-    <url>/posts/def4f008.html</url>
-    <content><![CDATA[<p><img src="/posts/def4f008/image-20210309150445057.png" alt="image-20210309150445057"></p>
-<p>serviceentry：也可以访问外部服务。</p>
-<h2 id="gateway简介"><a href="#gateway简介" class="headerlink" title="gateway简介"></a>gateway简介</h2><ol>
-<li><p>L4-L6的负载均衡</p>
-</li>
-<li><p>提供对外的mtls</p>
-</li>
-</ol>
-<p>在istio网格中，gateway可以部署任意多个，可以共用一个，也可以每个租户，namespace单独隔离。</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">networking.istio.io/v1alpha3</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Gateway</span> <span class="comment"># istio的一个CRD对象</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">bookinfo-gateway</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">istio:</span> <span class="string">ingressgateway</span> <span class="comment"># use istio default controller</span></span><br><span class="line">  <span class="attr">servers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">port:</span></span><br><span class="line">      <span class="attr">number:</span> <span class="number">80</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">http</span></span><br><span class="line">      <span class="attr">protocol:</span> <span class="string">HTTP</span></span><br><span class="line">    <span class="attr">hosts:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">bookinfo.com</span>       <span class="comment"># 允许通过外部访问的域名</span></span><br></pre></td></tr></table></figure>
-<p><strong>VirtualService</strong>定义gateway L7路由，为访问bookinfo.com的http流量，提供路由匹配转发策略。</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">networking.istio.io/v1alpha3</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">VirtualService</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">bookinfo</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">hosts:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">bookinfo.com</span>      <span class="comment"># 和上面的host字段一样</span></span><br><span class="line">  <span class="attr">gateways:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">bookinfo-gateway</span>  <span class="comment"># 绑定到上面的gateway</span></span><br><span class="line">  <span class="attr">http:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">match:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">exact:</span> <span class="string">/productpage</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">prefix:</span> <span class="string">/static</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">exact:</span> <span class="string">/login</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">exact:</span> <span class="string">/logout</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">prefix:</span> <span class="string">/api/v1/products</span></span><br><span class="line">    <span class="attr">route:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">destination:</span>   <span class="comment"># 如果上述条件之一满足，则去一个叫“productpage”的destinationrule</span></span><br><span class="line">        <span class="attr">host:</span> <span class="string">productpage</span></span><br><span class="line">        <span class="attr">port:</span></span><br><span class="line">          <span class="attr">number:</span> <span class="number">9080</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p><strong>kubernetes Ingress</strong> vs <strong>Isito gateway</strong></p>
-<p><img src="/posts/def4f008/image-20210309151602156.png" alt="image-20210309151602156"></p>
-<h2 id="gateway原理及实现"><a href="#gateway原理及实现" class="headerlink" title="gateway原理及实现"></a>gateway原理及实现</h2><figure class="highlight haml"><table><tr><td class="code"><pre><span class="line">pilot-agent</span><br><span class="line">-<span class="ruby"> <span class="symbol">args:</span></span></span><br><span class="line"><span class="ruby">   - proxy</span></span><br><span class="line"><span class="ruby">   - router</span></span><br><span class="line"><span class="ruby">   - --domain</span></span><br><span class="line"><span class="ruby">   - <span class="variable">$(</span>POD_NAMESPACE).svc.cluster.local</span></span><br><span class="line"><span class="ruby">   - --proxyLogLevel=warning</span></span><br><span class="line"><span class="ruby">   - --proxyComponentLogLevel=<span class="symbol">misc:</span>error</span></span><br><span class="line"><span class="ruby">   - --log_output_level=<span class="symbol">default:</span>info</span></span><br><span class="line"><span class="ruby">   - --serviceCluster</span></span><br><span class="line"><span class="ruby">   - istio-ingressgateway</span></span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>Istio</category>
-      </categories>
   </entry>
   <entry>
     <title>部署istio+k8s+kiali</title>
@@ -510,71 +530,26 @@
       </tags>
   </entry>
   <entry>
-    <title>kata-container介绍</title>
-    <url>/posts/ff923842.html</url>
-    <content><![CDATA[<h1 id="起源"><a href="#起源" class="headerlink" title="起源"></a>起源</h1><p>结合了Intel clear container和Hyper runV而衍生出的一个新的项目。提供了轻量级的VM，可以无缝地和</p>
-]]></content>
-      <categories>
-        <category>cloud native</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>markdown基本语法</title>
-    <url>/posts/47caaf1e.html</url>
-    <content><![CDATA[<h1 id="一级标题"><a href="#一级标题" class="headerlink" title="一级标题"></a>一级标题</h1><h2 id="二级"><a href="#二级" class="headerlink" title="二级"></a>二级</h2><h3 id="三级-（CTRL-3-或者-）"><a href="#三级-（CTRL-3-或者-）" class="headerlink" title="三级 （CTRL +3 或者 ### ）"></a>三级 （CTRL +3 或者 ### ）</h3><h4 id="四级"><a href="#四级" class="headerlink" title="四级"></a>四级</h4><h6 id="最多支持到六级"><a href="#最多支持到六级" class="headerlink" title="最多支持到六级"></a>最多支持到六级</h6><h2 id="字体"><a href="#字体" class="headerlink" title="字体"></a>字体</h2><p><strong>hello world</strong></p>
-<p>CTRL + B 或者 两边加**</p>
-<p><em>hello world</em></p>
-<p>CTRL + I 或者两边加* </p>
-<p><em><strong>hello world</strong></em></p>
-<p>CTRL + B + I 或者 两边加***</p>
-<p><del>hello world</del></p>
-<p>ALT + SHIFT + 5  或者~~ </p>
-<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><blockquote>
-<p>这是一个引用， 用&gt;开始 </p>
-</blockquote>
-<h2 id="分割线"><a href="#分割线" class="headerlink" title="分割线"></a>分割线</h2><hr>
-<hr>
-<p>三个-， 或者三个*</p>
-<h2 id="图片"><a href="#图片" class="headerlink" title="图片"></a>图片</h2><p><img src="https://www.w3schools.com/images/w3schools_green.jpg" alt="图片名字"></p>
-<p>感叹号[图片名字]+ (图片地址)</p>
-<h2 id="超链接"><a href="#超链接" class="headerlink" title="超链接"></a>超链接</h2><p><a href="https://kubernetes.io/docs/concepts/services-networking/service/#ips-and-vips">超级链接</a></p>
-<p>方括号里面写链接名字，后面加()写链接地址。</p>
-<h2 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h2><h3 id="有序列表"><a href="#有序列表" class="headerlink" title="有序列表"></a>有序列表</h3><ol>
-<li>A</li>
-<li>B</li>
-<li>C</li>
+    <title>istio-gateway</title>
+    <url>/posts/def4f008.html</url>
+    <content><![CDATA[<p><img src="/posts/def4f008/image-20210309150445057.png" alt="image-20210309150445057"></p>
+<p>serviceentry：也可以访问外部服务。</p>
+<h2 id="gateway简介"><a href="#gateway简介" class="headerlink" title="gateway简介"></a>gateway简介</h2><ol>
+<li><p>L4-L6的负载均衡</p>
+</li>
+<li><p>提供对外的mtls</p>
+</li>
 </ol>
-<h3 id="无序列表"><a href="#无序列表" class="headerlink" title="无序列表"></a>无序列表</h3><p>减号 + space</p>
-<ul>
-<li>A</li>
-<li>B</li>
-</ul>
-<p>CTRL + [  回到上一级<br>CTRL + ]  回到下一级</p>
-<h2 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h2><table>
-<thead>
-<tr>
-<th>名字</th>
-<th>性别</th>
-<th>生日</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>张三</td>
-<td>男</td>
-<td>1997.1</td>
-</tr>
-</tbody></table>
-<p>名字 | 性别| 生日|</p>
-<p>–|–|–</p>
-<p>xx|xx|xx|</p>
-<p>进入源代码模式(CTRL + /)，删除行间空行，就可以生成表格了。</p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">public</span><br></pre></td></tr></table></figure>]]></content>
+<p>在istio网格中，gateway可以部署任意多个，可以共用一个，也可以每个租户，namespace单独隔离。</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">networking.istio.io/v1alpha3</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Gateway</span> <span class="comment"># istio的一个CRD对象</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">bookinfo-gateway</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">istio:</span> <span class="string">ingressgateway</span> <span class="comment"># use istio default controller</span></span><br><span class="line">  <span class="attr">servers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">port:</span></span><br><span class="line">      <span class="attr">number:</span> <span class="number">80</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">http</span></span><br><span class="line">      <span class="attr">protocol:</span> <span class="string">HTTP</span></span><br><span class="line">    <span class="attr">hosts:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">bookinfo.com</span>       <span class="comment"># 允许通过外部访问的域名</span></span><br></pre></td></tr></table></figure>
+<p><strong>VirtualService</strong>定义gateway L7路由，为访问bookinfo.com的http流量，提供路由匹配转发策略。</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">networking.istio.io/v1alpha3</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">VirtualService</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">bookinfo</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">hosts:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">bookinfo.com</span>      <span class="comment"># 和上面的host字段一样</span></span><br><span class="line">  <span class="attr">gateways:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">bookinfo-gateway</span>  <span class="comment"># 绑定到上面的gateway</span></span><br><span class="line">  <span class="attr">http:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">match:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">exact:</span> <span class="string">/productpage</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">prefix:</span> <span class="string">/static</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">exact:</span> <span class="string">/login</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">exact:</span> <span class="string">/logout</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">prefix:</span> <span class="string">/api/v1/products</span></span><br><span class="line">    <span class="attr">route:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">destination:</span>   <span class="comment"># 如果上述条件之一满足，则去一个叫“productpage”的destinationrule</span></span><br><span class="line">        <span class="attr">host:</span> <span class="string">productpage</span></span><br><span class="line">        <span class="attr">port:</span></span><br><span class="line">          <span class="attr">number:</span> <span class="number">9080</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><strong>kubernetes Ingress</strong> vs <strong>Isito gateway</strong></p>
+<p><img src="/posts/def4f008/image-20210309151602156.png" alt="image-20210309151602156"></p>
+<h2 id="gateway原理及实现"><a href="#gateway原理及实现" class="headerlink" title="gateway原理及实现"></a>gateway原理及实现</h2><figure class="highlight haml"><table><tr><td class="code"><pre><span class="line">pilot-agent</span><br><span class="line">-<span class="ruby"> <span class="symbol">args:</span></span></span><br><span class="line"><span class="ruby">   - proxy</span></span><br><span class="line"><span class="ruby">   - router</span></span><br><span class="line"><span class="ruby">   - --domain</span></span><br><span class="line"><span class="ruby">   - <span class="variable">$(</span>POD_NAMESPACE).svc.cluster.local</span></span><br><span class="line"><span class="ruby">   - --proxyLogLevel=warning</span></span><br><span class="line"><span class="ruby">   - --proxyComponentLogLevel=<span class="symbol">misc:</span>error</span></span><br><span class="line"><span class="ruby">   - --log_output_level=<span class="symbol">default:</span>info</span></span><br><span class="line"><span class="ruby">   - --serviceCluster</span></span><br><span class="line"><span class="ruby">   - istio-ingressgateway</span></span><br></pre></td></tr></table></figure>]]></content>
       <categories>
-        <category>tools</category>
+        <category>Istio</category>
       </categories>
-      <tags>
-        <tag>markdown</tag>
-      </tags>
   </entry>
   <entry>
     <title>istio学习（1）-pilot</title>
@@ -651,6 +626,15 @@
 ]]></content>
       <categories>
         <category>Istio</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>kata-container介绍</title>
+    <url>/posts/ff923842.html</url>
+    <content><![CDATA[<h1 id="起源"><a href="#起源" class="headerlink" title="起源"></a>起源</h1><p>结合了Intel clear container和Hyper runV而衍生出的一个新的项目。提供了轻量级的VM，可以无缝地和</p>
+]]></content>
+      <categories>
+        <category>cloud native</category>
       </categories>
   </entry>
   <entry>
@@ -781,6 +765,77 @@
       <categories>
         <category>LINUX</category>
       </categories>
+  </entry>
+  <entry>
+    <title>多设备同步hexoy</title>
+    <url>/posts/c9d1870c.html</url>
+    <content><![CDATA[<h1 id="多个设备之间同步hexo"><a href="#多个设备之间同步hexo" class="headerlink" title="多个设备之间同步hexo"></a>多个设备之间同步hexo</h1><p><strong>原理</strong></p>
+<p>hexo deploy会将本地创建好的目录blog里面的文件生成对应的静态文件（html等），并且将它上传到xxx.github.com repo中。<br>在_config.yml中设置了deploy要操作的repo和branch，这里我使用的是xxinran.github.io的main branch。</p>
+]]></content>
+      <categories>
+        <category>hexo</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>markdown基本语法</title>
+    <url>/posts/47caaf1e.html</url>
+    <content><![CDATA[<h1 id="一级标题"><a href="#一级标题" class="headerlink" title="一级标题"></a>一级标题</h1><h2 id="二级"><a href="#二级" class="headerlink" title="二级"></a>二级</h2><h3 id="三级-（CTRL-3-或者-）"><a href="#三级-（CTRL-3-或者-）" class="headerlink" title="三级 （CTRL +3 或者 ### ）"></a>三级 （CTRL +3 或者 ### ）</h3><h4 id="四级"><a href="#四级" class="headerlink" title="四级"></a>四级</h4><h6 id="最多支持到六级"><a href="#最多支持到六级" class="headerlink" title="最多支持到六级"></a>最多支持到六级</h6><h2 id="字体"><a href="#字体" class="headerlink" title="字体"></a>字体</h2><p><strong>hello world</strong></p>
+<p>CTRL + B 或者 两边加**</p>
+<p><em>hello world</em></p>
+<p>CTRL + I 或者两边加* </p>
+<p><em><strong>hello world</strong></em></p>
+<p>CTRL + B + I 或者 两边加***</p>
+<p><del>hello world</del></p>
+<p>ALT + SHIFT + 5  或者~~ </p>
+<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><blockquote>
+<p>这是一个引用， 用&gt;开始 </p>
+</blockquote>
+<h2 id="分割线"><a href="#分割线" class="headerlink" title="分割线"></a>分割线</h2><hr>
+<hr>
+<p>三个-， 或者三个*</p>
+<h2 id="图片"><a href="#图片" class="headerlink" title="图片"></a>图片</h2><p><img src="https://www.w3schools.com/images/w3schools_green.jpg" alt="图片名字"></p>
+<p>感叹号[图片名字]+ (图片地址)</p>
+<h2 id="超链接"><a href="#超链接" class="headerlink" title="超链接"></a>超链接</h2><p><a href="https://kubernetes.io/docs/concepts/services-networking/service/#ips-and-vips">超级链接</a></p>
+<p>方括号里面写链接名字，后面加()写链接地址。</p>
+<h2 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h2><h3 id="有序列表"><a href="#有序列表" class="headerlink" title="有序列表"></a>有序列表</h3><ol>
+<li>A</li>
+<li>B</li>
+<li>C</li>
+</ol>
+<h3 id="无序列表"><a href="#无序列表" class="headerlink" title="无序列表"></a>无序列表</h3><p>减号 + space</p>
+<ul>
+<li>A</li>
+<li>B</li>
+</ul>
+<p>CTRL + [  回到上一级<br>CTRL + ]  回到下一级</p>
+<h2 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h2><table>
+<thead>
+<tr>
+<th>名字</th>
+<th>性别</th>
+<th>生日</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>张三</td>
+<td>男</td>
+<td>1997.1</td>
+</tr>
+</tbody></table>
+<p>名字 | 性别| 生日|</p>
+<p>–|–|–</p>
+<p>xx|xx|xx|</p>
+<p>进入源代码模式(CTRL + /)，删除行间空行，就可以生成表格了。</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">public</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>tools</category>
+      </categories>
+      <tags>
+        <tag>markdown</tag>
+      </tags>
   </entry>
   <entry>
     <title>容器的namespace和cgroups</title>
@@ -923,16 +978,16 @@
       </categories>
   </entry>
   <entry>
-    <title>多设备同步hexoy</title>
-    <url>/posts/c9d1870c.html</url>
-    <content><![CDATA[<h1 id="多个设备之间同步hexo"><a href="#多个设备之间同步hexo" class="headerlink" title="多个设备之间同步hexo"></a>多个设备之间同步hexo</h1><p><strong>原理</strong></p>
-<p>hexo deploy会将本地创建好的目录blog里面的文件生成对应的静态文件（html等），并且将它上传到xxx.github.com repo中。<br>在_config.yml中设置了deploy要操作的repo和branch，这里我使用的是xxinran.github.io的main branch。</p>
+    <title>网络虚拟化简介</title>
+    <url>/posts/e41fb1bd.html</url>
+    <content><![CDATA[<img src="/posts/e41fb1bd/image-20210201221242667.png" alt="image-20210201221242667" style="zoom:70%;">
+
 ]]></content>
       <categories>
-        <category>hexo</category>
+        <category>Network</category>
       </categories>
       <tags>
-        <tag>hexo</tag>
+        <tag>虚拟化</tag>
       </tags>
   </entry>
   <entry>
@@ -971,19 +1026,6 @@
       </categories>
   </entry>
   <entry>
-    <title>网络虚拟化简介</title>
-    <url>/posts/e41fb1bd.html</url>
-    <content><![CDATA[<img src="/posts/e41fb1bd/image-20210201221242667.png" alt="image-20210201221242667" style="zoom:70%;">
-
-]]></content>
-      <categories>
-        <category>Network</category>
-      </categories>
-      <tags>
-        <tag>虚拟化</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>PCIe和SRIOV介绍</title>
     <url>/posts/939f8fe8.html</url>
     <content><![CDATA[<h1 id="PCI和PCIe"><a href="#PCI和PCIe" class="headerlink" title="PCI和PCIe"></a>PCI和PCIe</h1><p>configuration space register</p>
@@ -1004,82 +1046,6 @@
 <p>BAR： base address register</p>
 <p>MSI，MSI-x（message signal interrupt）</p>
 ]]></content>
-  </entry>
-  <entry>
-    <title>进程和线程</title>
-    <url>/posts/6ac22eb.html</url>
-    <content><![CDATA[<img src="/posts/6ac22eb/image-20210225180738908.png" alt="image-20210225180738908" style="zoom:67%;">
-
-<blockquote>
-<p>参考：<a href="https://cloud.tencent.com/developer/article/1688297">https://cloud.tencent.com/developer/article/1688297</a></p>
-</blockquote>
-<h2 id="简单的理解"><a href="#简单的理解" class="headerlink" title="简单的理解"></a>简单的理解</h2><p>对于操作系统来说，一个任务就是一个进程（<strong>Process</strong>），比如打开一个浏览器就是启动一个浏览器进程，打开一个记事本就启动了一个记事本进程，打开两个记事本就启动了两个记事本进程，打开一个Word就启动了一个Word进程。</p>
-<p>有些进程还不止同时干一件事，比如Word，它可以同时进行打字、拼写检查、打印等事情。在一个进程内部，要同时干多件事，就需要同时运行多个“子任务”，我们把进程内的这些“子任务”称为线程（<strong>Thread</strong>）。</p>
-<h2 id="并行和并发"><a href="#并行和并发" class="headerlink" title="并行和并发"></a>并行和并发</h2><p>并行是真正的同时运行，需要多核。</p>
-<p>并发只是看起来同时运行，最常见的就是<strong>时间片轮转调度算法</strong>。</p>
-<h2 id="进程和线程的区别"><a href="#进程和线程的区别" class="headerlink" title="进程和线程的区别"></a>进程和线程的区别</h2><p><strong>共享同一地址空间</strong>（也就是同样的<strong>动态内存，映射文件，目标代码等等</strong>），<strong>打开的文件队列和其他内核资源</strong>。</p>
-<h5 id><a href="#" class="headerlink" title></a></h5><table>
-<thead>
-<tr>
-<th align="center">进程</th>
-<th align="center">线程</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">有独立的地址空间</td>
-<td align="center">有自己的栈和局部变量，但没有单独的地址空间。<br>同一进程中的多个线程共享代码段（代码和常量），数据段（全局变量和静态变量），扩展段（堆存储）。<br>但是每个线程拥有自己的栈段，栈段又叫运行时段，用来存放所有局部变量和临时变量。）</td>
-</tr>
-<tr>
-<td align="center">在保护模式下不会对其它进程产生影响</td>
-<td align="center">一个线程死掉就等于整个进程死掉</td>
-</tr>
-<tr>
-<td align="center">拥有独立的内存单元</td>
-<td align="center">共享进程的内存</td>
-</tr>
-<tr>
-<td align="center">管道、系统IPC（包括<a href="https://cloud.tencent.com/product/cmq?from=10680">消息队列</a>、信号量、信号、共享内存等）、以及套接字socket</td>
-<td align="center">可以直接读写进程数据段和全局变量（互斥锁，信号量）</td>
-</tr>
-<tr>
-<td align="center">上下文切换慢</td>
-<td align="center">进程上下文切换快</td>
-</tr>
-<tr>
-<td align="center"><strong>进程是操作系统分配资源的单位</strong></td>
-<td align="center"><strong>是CPU调度和分派执行的基本单位</strong></td>
-</tr>
-<tr>
-<td align="center">进程编程调试简单可靠性高，但是创建销毁开销大</td>
-<td align="center">线程正相反，开销小，切换速度快，但是编程调试相对复杂</td>
-</tr>
-</tbody></table>
-<p>创建线程的代价比创建进程的代价小很多，如下图：</p>
-<p><img src="/posts/6ac22eb/image-20210225181636565.png" alt="image-20210225181636565"></p>
-]]></content>
-      <categories>
-        <category>LINUX</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>rdma介绍</title>
-    <url>/posts/9e990020.html</url>
-    <content><![CDATA[<h1 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h1><h2 id="DMA"><a href="#DMA" class="headerlink" title="DMA"></a>DMA</h2><p><img src="/posts/9e990020/image-20210511163124035.png" alt="image-20210511163124035"></p>
-<p>在同一台Host上，不通过CPU的move来做数据搬移。 </p>
-<p>Free up CPU</p>
-<h2 id="RDMA"><a href="#RDMA" class="headerlink" title="RDMA"></a>RDMA</h2><p>Remote DMA, cross host. </p>
-<p>secure direct memory to memory data communication without CPU </p>
-<p><img src="/posts/9e990020/image-20210511163734543.png" alt="image-20210511163734543"></p>
-<p>iMC: intergrated memory controller.</p>
-<p>blue dot line: control path, need cpu to setup</p>
-<p>red line: data path, without cpu</p>
-<img src="/posts/9e990020/image-20210511164132817.png" alt="image-20210511164132817" style="zoom:80%;">
-
-<p>map NIC hw resource into user space</p>
-<p>verbs API</p>
-<p>message level  </p>
-<h1 id="Protocol-Introduction"><a href="#Protocol-Introduction" class="headerlink" title="Protocol Introduction"></a>Protocol Introduction</h1><p><img src="/posts/9e990020/image-20210511165341492.png" alt="image-20210511165341492"></p>
-<h1 id="Details（ROCEv2）"><a href="#Details（ROCEv2）" class="headerlink" title="Details（ROCEv2）"></a>Details（ROCEv2）</h1>]]></content>
   </entry>
   <entry>
     <title>containerPort, targetPort, port, nodePort等的区别</title>
@@ -1150,6 +1116,62 @@
 ]]></content>
       <categories>
         <category>cloud native</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>进程和线程</title>
+    <url>/posts/6ac22eb.html</url>
+    <content><![CDATA[<img src="/posts/6ac22eb/image-20210225180738908.png" alt="image-20210225180738908" style="zoom:67%;">
+
+<blockquote>
+<p>参考：<a href="https://cloud.tencent.com/developer/article/1688297">https://cloud.tencent.com/developer/article/1688297</a></p>
+</blockquote>
+<h2 id="简单的理解"><a href="#简单的理解" class="headerlink" title="简单的理解"></a>简单的理解</h2><p>对于操作系统来说，一个任务就是一个进程（<strong>Process</strong>），比如打开一个浏览器就是启动一个浏览器进程，打开一个记事本就启动了一个记事本进程，打开两个记事本就启动了两个记事本进程，打开一个Word就启动了一个Word进程。</p>
+<p>有些进程还不止同时干一件事，比如Word，它可以同时进行打字、拼写检查、打印等事情。在一个进程内部，要同时干多件事，就需要同时运行多个“子任务”，我们把进程内的这些“子任务”称为线程（<strong>Thread</strong>）。</p>
+<h2 id="并行和并发"><a href="#并行和并发" class="headerlink" title="并行和并发"></a>并行和并发</h2><p>并行是真正的同时运行，需要多核。</p>
+<p>并发只是看起来同时运行，最常见的就是<strong>时间片轮转调度算法</strong>。</p>
+<h2 id="进程和线程的区别"><a href="#进程和线程的区别" class="headerlink" title="进程和线程的区别"></a>进程和线程的区别</h2><p><strong>共享同一地址空间</strong>（也就是同样的<strong>动态内存，映射文件，目标代码等等</strong>），<strong>打开的文件队列和其他内核资源</strong>。</p>
+<h5 id><a href="#" class="headerlink" title></a></h5><table>
+<thead>
+<tr>
+<th align="center">进程</th>
+<th align="center">线程</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">有独立的地址空间</td>
+<td align="center">有自己的栈和局部变量，但没有单独的地址空间。<br>同一进程中的多个线程共享代码段（代码和常量），数据段（全局变量和静态变量），扩展段（堆存储）。<br>但是每个线程拥有自己的栈段，栈段又叫运行时段，用来存放所有局部变量和临时变量。）</td>
+</tr>
+<tr>
+<td align="center">在保护模式下不会对其它进程产生影响</td>
+<td align="center">一个线程死掉就等于整个进程死掉</td>
+</tr>
+<tr>
+<td align="center">拥有独立的内存单元</td>
+<td align="center">共享进程的内存</td>
+</tr>
+<tr>
+<td align="center">管道、系统IPC（包括<a href="https://cloud.tencent.com/product/cmq?from=10680">消息队列</a>、信号量、信号、共享内存等）、以及套接字socket</td>
+<td align="center">可以直接读写进程数据段和全局变量（互斥锁，信号量）</td>
+</tr>
+<tr>
+<td align="center">上下文切换慢</td>
+<td align="center">进程上下文切换快</td>
+</tr>
+<tr>
+<td align="center"><strong>进程是操作系统分配资源的单位</strong></td>
+<td align="center"><strong>是CPU调度和分派执行的基本单位</strong></td>
+</tr>
+<tr>
+<td align="center">进程编程调试简单可靠性高，但是创建销毁开销大</td>
+<td align="center">线程正相反，开销小，切换速度快，但是编程调试相对复杂</td>
+</tr>
+</tbody></table>
+<p>创建线程的代价比创建进程的代价小很多，如下图：</p>
+<p><img src="/posts/6ac22eb/image-20210225181636565.png" alt="image-20210225181636565"></p>
+]]></content>
+      <categories>
+        <category>LINUX</category>
       </categories>
   </entry>
   <entry>
@@ -1265,6 +1287,52 @@
       </tags>
   </entry>
   <entry>
+    <title>rdma介绍</title>
+    <url>/posts/9e990020.html</url>
+    <content><![CDATA[<h1 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h1><h2 id="DMA"><a href="#DMA" class="headerlink" title="DMA"></a>DMA</h2><p><img src="/posts/9e990020/image-20210511163124035.png" alt="image-20210511163124035"></p>
+<p>在同一台Host上，不通过CPU的move来做数据搬移。 </p>
+<p>Free up CPU</p>
+<h2 id="RDMA"><a href="#RDMA" class="headerlink" title="RDMA"></a>RDMA</h2><p>Remote DMA, cross host. </p>
+<p>secure direct memory to memory data communication without CPU </p>
+<p><img src="/posts/9e990020/image-20210511163734543.png" alt="image-20210511163734543"></p>
+<p>iMC: intergrated memory controller.</p>
+<p>blue dot line: control path, need cpu to setup</p>
+<p>red line: data path, without cpu</p>
+<img src="/posts/9e990020/image-20210511164132817.png" alt="image-20210511164132817" style="zoom:80%;">
+
+<p>map NIC hw resource into user space</p>
+<p>verbs API</p>
+<p>message level  </p>
+<h1 id="Protocol-Introduction"><a href="#Protocol-Introduction" class="headerlink" title="Protocol Introduction"></a>Protocol Introduction</h1><p><img src="/posts/9e990020/image-20210511165341492.png" alt="image-20210511165341492"></p>
+<h1 id="Details（ROCEv2）"><a href="#Details（ROCEv2）" class="headerlink" title="Details（ROCEv2）"></a>Details（ROCEv2）</h1>]]></content>
+  </entry>
+  <entry>
+    <title>公司内部ssh设置socks代理</title>
+    <url>/posts/a9be766e.html</url>
+    <content><![CDATA[<blockquote>
+<p><a href="https://intelpedia.intel.com/Proxy_at_Intel">Proxy at Intel - Intelpedia</a></p>
+<p>因为公司设置了vpn，所以通过公司电脑访问外网时需要通过代理（http, https, socks等）。</p>
+</blockquote>
+<h4 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h4><p>在部署hexo时，用到了git deployer。这个deployer在每次<code>hexo deploy</code>的时候会通过ssh链接我的github账号的xxx.github.io项目，连接报错。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 看一下hexo的_config.yml文件</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat _config.yml  | grep -A10 deploy</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># Docs: https://hexo.io/docs/one-command-deployment</span></span></span><br><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repository: git@github.com:xxinran/xxinran.github.io.git</span><br><span class="line">  branch: main</span><br></pre></td></tr></table></figure>
+<p>在sshkey上传成功的情况下，测试ssh连接github</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">ssh -T git@github.com  #失败</span><br></pre></td></tr></table></figure>
+<p>后来发现是ssh没有配置代理，有两个方案：</p>
+<ol>
+<li>设置http代理（失败了）</li>
+<li>设置socks代理（成功）</li>
+</ol>
+<h4 id="如何设置socks代理"><a href="#如何设置socks代理" class="headerlink" title="如何设置socks代理"></a>如何设置socks代理</h4><p>在<a href="https://intelpedia.intel.com/Proxy_at_Intel#Using_openssh_to_connect_out_via_SOCKS_proxy">公司文档</a>中看到，可以通过设置socks代理，建立对外部的ssh连接。</p>
+<p>需要修改<code>.ssh/config</code>文件：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> linux</span></span><br><span class="line">Host *</span><br><span class="line">   ProxyCommand nc -X 5 -x proxy-xxx.intel.com:1080 %h %p</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> windows上需要把nc命令改成connect，参数-S表示是socks代理。</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat ~/.ssh/config | tail -5</span></span><br><span class="line">Host github.com</span><br><span class="line">   HostName github.com</span><br><span class="line">   User git</span><br><span class="line">   ProxyCommand connect -S proxy-xxx.intel.com:1080 %h %p</span><br><span class="line">   ForwardAgent yes</span><br></pre></td></tr></table></figure>
+<p>之后就可以成功ssh连接github了。</p>
+<p>但是<code>ping proxy-xxx.intel.com</code>是ping不通的，应该是公司关闭了。</p>
+]]></content>
+      <categories>
+        <category>Notes</category>
+      </categories>
+  </entry>
+  <entry>
     <title>科学上网ssr</title>
     <url>/posts/a838020d.html</url>
     <content><![CDATA[<blockquote>
@@ -1310,72 +1378,6 @@
       <categories>
         <category>Network</category>
       </categories>
-  </entry>
-  <entry>
-    <title>公司内部ssh设置socks代理</title>
-    <url>/posts/a9be766e.html</url>
-    <content><![CDATA[<blockquote>
-<p><a href="https://intelpedia.intel.com/Proxy_at_Intel">Proxy at Intel - Intelpedia</a></p>
-<p>因为公司设置了vpn，所以通过公司电脑访问外网时需要通过代理（http, https, socks等）。</p>
-</blockquote>
-<h4 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h4><p>在部署hexo时，用到了git deployer。这个deployer在每次<code>hexo deploy</code>的时候会通过ssh链接我的github账号的xxx.github.io项目，连接报错。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 看一下hexo的_config.yml文件</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat _config.yml  | grep -A10 deploy</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># Docs: https://hexo.io/docs/one-command-deployment</span></span></span><br><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repository: git@github.com:xxinran/xxinran.github.io.git</span><br><span class="line">  branch: main</span><br></pre></td></tr></table></figure>
-<p>在sshkey上传成功的情况下，测试ssh连接github</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">ssh -T git@github.com  #失败</span><br></pre></td></tr></table></figure>
-<p>后来发现是ssh没有配置代理，有两个方案：</p>
-<ol>
-<li>设置http代理（失败了）</li>
-<li>设置socks代理（成功）</li>
-</ol>
-<h4 id="如何设置socks代理"><a href="#如何设置socks代理" class="headerlink" title="如何设置socks代理"></a>如何设置socks代理</h4><p>在<a href="https://intelpedia.intel.com/Proxy_at_Intel#Using_openssh_to_connect_out_via_SOCKS_proxy">公司文档</a>中看到，可以通过设置socks代理，建立对外部的ssh连接。</p>
-<p>需要修改<code>.ssh/config</code>文件：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> linux</span></span><br><span class="line">Host *</span><br><span class="line">   ProxyCommand nc -X 5 -x proxy-xxx.intel.com:1080 %h %p</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> windows上需要把nc命令改成connect，参数-S表示是socks代理。</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat ~/.ssh/config | tail -5</span></span><br><span class="line">Host github.com</span><br><span class="line">   HostName github.com</span><br><span class="line">   User git</span><br><span class="line">   ProxyCommand connect -S proxy-xxx.intel.com:1080 %h %p</span><br><span class="line">   ForwardAgent yes</span><br></pre></td></tr></table></figure>
-<p>之后就可以成功ssh连接github了。</p>
-<p>但是<code>ping proxy-xxx.intel.com</code>是ping不通的，应该是公司关闭了。</p>
-]]></content>
-      <categories>
-        <category>Notes</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>在mac上用vagrant和virtualbox创建虚拟机</title>
-    <url>/posts/e1d7a8.html</url>
-    <content><![CDATA[<h2 id="vagrant介绍"><a href="#vagrant介绍" class="headerlink" title="vagrant介绍"></a>vagrant介绍</h2><p>基于ruby，用于创建和部署虚拟化开发环境。它 使用Oracle的开源<a href="https://baike.baidu.com/item/VirtualBox">VirtualBox</a>虚拟化系统，使用 Chef创建自动化虚拟环境。我们可以使用它来干如下这些事：</p>
-<ul>
-<li><p>建立和删除虚拟机</p>
-</li>
-<li><p>配置虚拟机运行参数</p>
-</li>
-<li><p>管理虚拟机运行状态</p>
-</li>
-<li><p>自动配置和安装开发环境ß</p>
-</li>
-<li><p>打包和分发虚拟机运行环境</p>
-</li>
-</ul>
-<p>　　Vagrant的运行，需要<strong>依赖</strong>某项具体的<strong>虚拟化技术</strong>，最常见的有VirtualBox以及VMWare两款，早期，Vagrant只支持VirtualBox，后来才加入了VMWare的支持。现在vagrant支持更多的虚拟化系统，包括libvirt，kvm，qemu，vmware，甚至docker。但还是以virtualbox为主。</p>
-<img src="/posts/e1d7a8/image-20210128223212650.png" alt="image-20210128223212650" style="zoom:50%;">
-
-<h3 id="vagrant和virtualbox"><a href="#vagrant和virtualbox" class="headerlink" title="vagrant和virtualbox"></a>vagrant和virtualbox</h3><p>virtualbox本身也可以创建vm，只是相对麻烦，vagrant可以调用virtualbox的接口更加方便的创建vm。</p>
-<h3 id="在mac上安装vagrant-virtualbox"><a href="#在mac上安装vagrant-virtualbox" class="headerlink" title="在mac上安装vagrant+virtualbox"></a>在mac上安装vagrant+virtualbox</h3><h4 id="安装vagrant"><a href="#安装vagrant" class="headerlink" title="安装vagrant"></a>安装vagrant</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">brew install vagrant</span><br><span class="line">vagrant -v</span><br></pre></td></tr></table></figure>
-<h4 id="安装virtualbox"><a href="#安装virtualbox" class="headerlink" title="安装virtualbox"></a>安装virtualbox</h4><p>国外的dmg文件下载很慢，我是国内随便找了一个<a href="https://ftp-new-pc.pconline.com.cn/pub/download/201909/pconline1567810102832.dmg?md5=dLIvaxUfMIGWrr-oloz2Jg&expires=1611979478">源</a>。</p>
-<img src="/posts/e1d7a8/image-20210130123540411.png" alt="image-20210130123540411" style="zoom:50%;">
-
-<p>virtualbox本身也可以创建vm，但是比较复杂。</p>
-<h4 id="下载box"><a href="#下载box" class="headerlink" title="下载box"></a>下载box</h4><p>vagrant中box的概念，类似于docker image。我们可以通过指定box来启动一个vagrant vm。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 先下载box file到本地，再add</span></span><br><span class="line">vagrant box add centos8 /path/to/boxfile</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 直接从网上下载box file，并且add</span></span><br><span class="line">vagrant box add centos8 url_to_box_file</span><br></pre></td></tr></table></figure>
-<p>vagrantbox的官方下载地址从国内连接很慢，我找到了一些国内的源。</p>
-<blockquote>
-<p>centos 8</p>
-<p><a href="http://mirrors.ustc.edu.cn/centos-cloud/centos/8/vagrant/x86_64/images/CentOS-8-Vagrant-8.3.2011-20201204.2.x86_64.vagrant-virtualbox.box">http://mirrors.ustc.edu.cn/centos-cloud/centos/8/vagrant/x86_64/images/CentOS-8-Vagrant-8.3.2011-20201204.2.x86_64.vagrant-virtualbox.box</a></p>
-<p>ubuntu1804</p>
-<p><a href="https://mirrors.tuna.tsinghua.edu.cn/ubuntu-cloud-images/bionic/current/bionic-server-cloudimg-amd64-vagrant.box">https://mirrors.tuna.tsinghua.edu.cn/ubuntu-cloud-images/bionic/current/bionic-server-cloudimg-amd64-vagrant.box</a></p>
-</blockquote>
-<h4 id="启动虚拟机"><a href="#启动虚拟机" class="headerlink" title="启动虚拟机"></a>启动虚拟机</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vagrant box add centos8 http://mirrors.ustc.edu.cn/centos-cloud/centos/8/vagrant/x86_64/images/CentOS-8-Vagrant-8.3.2011-20201204.2.x86_64.vagrant-virtualbox.box</span></span><br><span class="line">==&gt; box: Box file was not detected as metadata. Adding it directly...</span><br><span class="line">==&gt; box: Adding box &#x27;centos8&#x27; (v0) for provider:</span><br><span class="line">    box: Downloading: http://mirrors.ustc.edu.cn/centos-cloud/centos/8/vagrant/x86_64/images/CentOS-8-Vagrant-8.3.2011-20201204.2.x86_64.vagrant-virtualbox.box</span><br><span class="line">==&gt; box: Successfully added box &#x27;centos8&#x27; (v0) for &#x27;virtualbox&#x27;!</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> vagrant box list</span></span><br><span class="line">centos8    (virtualbox, 0)</span><br><span class="line">ubuntu1804 (virtualbox, 0)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 创建本地vagrant目录</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> vagrant</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 这一步会创建一个vm的Vagrantfile，所有关于vm的配置都在这个文件里。</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vagrant init centos8</span></span><br><span class="line">A `Vagrantfile` has been placed in this directory. You are now</span><br><span class="line">ready to `vagrant up` your first virtual environment! Please read</span><br><span class="line">the comments in the Vagrantfile as well as documentation on</span><br><span class="line">`vagrantup.com` for more information on using Vagrant.</span><br><span class="line"> </span><br><span class="line"><span class="meta"> #</span><span class="bash"> 启动vm</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vagrant up</span></span><br><span class="line">Bringing machine &#x27;default&#x27; up with &#x27;virtualbox&#x27; provider...</span><br><span class="line">==&gt; default: Importing base box &#x27;centos8&#x27;...</span><br><span class="line">==&gt; default: Matching MAC address for NAT networking...</span><br><span class="line">==&gt; default: Setting the name of the VM: vagrant_default_1611980890156_41411</span><br><span class="line">==&gt; default: Clearing any previously set network interfaces...</span><br><span class="line">==&gt; default: Preparing network interfaces based on configuration...</span><br><span class="line">    default: Adapter 1: nat</span><br><span class="line">    default: Adapter 2: hostonly</span><br><span class="line">==&gt; default: Forwarding ports...</span><br><span class="line">    default: 22 (guest) =&gt; 2222 (host) (adapter 1)  # 端口映射, 如果起了多个vagrant vm，那么各个</span><br><span class="line">    																								# vm 会映射到host的不同端口</span><br><span class="line">==&gt; default: Booting VM...</span><br><span class="line">==&gt; default: Waiting for machine to boot. This may take a few minutes...</span><br><span class="line">    default: SSH address: 127.0.0.1:2222</span><br><span class="line">    default: SSH username: vagrant</span><br><span class="line">    default: SSH auth method: private key</span><br><span class="line">    default:</span><br><span class="line">    default: Vagrant insecure key detected. Vagrant will automatically replace</span><br><span class="line">    default: this with a newly generated keypair for better security.</span><br><span class="line">    default:</span><br><span class="line">    default: Inserting generated public key within guest...</span><br><span class="line">    default: Removing insecure key from the guest if it&#x27;s present...</span><br><span class="line">    default: Key inserted! Disconnecting and reconnecting using new SSH key...</span><br><span class="line">==&gt; default: Machine booted and ready!</span><br><span class="line">==&gt; default: Checking for guest additions in VM...</span><br><span class="line">    default: No guest additions were detected on the base box for this VM! Guest</span><br><span class="line">    default: additions are required for forwarded ports, shared folders, host only</span><br><span class="line">    default: networking, and more. If SSH fails on this machine, please install</span><br><span class="line">    default: the guest additions and repackage the box to continue.</span><br><span class="line">    default:</span><br><span class="line">    default: This is not an error message; everything may continue to work properly,</span><br><span class="line">    default: in which case you may ignore this message.</span><br><span class="line">==&gt; default: Configuring and enabling network interfaces...</span><br><span class="line">==&gt; default: Rsyncing folder: /Users/xinran/vagrant/ =&gt; /vagrant</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 登入/退出vm</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vagrant ssh</span></span><br><span class="line">Last login: Sat Jan 30 04:28:57 2021 from 10.0.2.2</span><br><span class="line">[vagrant@localhost ~]$ </span><br><span class="line">[vagrant@localhost ~]$ exit</span><br><span class="line">logout</span><br><span class="line">Shared connection to 127.0.0.1 closed.</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看host上的2222端口</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> lsof -i:2222</span></span><br><span class="line">COMMAND     PID   USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME</span><br><span class="line">VBoxHeadl 13238 xinran   16u  IPv4 0x294cd01b85b191f5      0t0  TCP localhost:rockwell-csp2 (LISTEN)</span><br><span class="line">VBoxHeadl 13238 xinran   20u  IPv4 0x294cd01b95fd8815      0t0  TCP localhost:rockwell-csp2-&gt;localhost:63021 (ESTABLISHED)</span><br><span class="line">ssh       13880 xinran    3u  IPv4 0x294cd01b94ae9e35      0t0  TCP localhost:63021-&gt;localhost:rockwell-csp2 (ESTABLISHED)</span><br><span class="line">ssh       13894 xinran    3u  IPv4 0x294cd01b94ae9e35      0t0  TCP localhost:63021-&gt;localhost:rockwell-csp2 (ESTABLISHE</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>Note: 在下载box image时，要找到对应provider的box。我第一次下载成了libvirt provider的box，然后vagrant init就失败了，因为我的host上装的是virtualbox作为provider。</p>
-</blockquote>
-]]></content>
   </entry>
   <entry>
     <title>在centos8上使能vca-a卡</title>
@@ -1442,6 +1444,46 @@
       </categories>
   </entry>
   <entry>
+    <title>在mac上用vagrant和virtualbox创建虚拟机</title>
+    <url>/posts/e1d7a8.html</url>
+    <content><![CDATA[<h2 id="vagrant介绍"><a href="#vagrant介绍" class="headerlink" title="vagrant介绍"></a>vagrant介绍</h2><p>基于ruby，用于创建和部署虚拟化开发环境。它 使用Oracle的开源<a href="https://baike.baidu.com/item/VirtualBox">VirtualBox</a>虚拟化系统，使用 Chef创建自动化虚拟环境。我们可以使用它来干如下这些事：</p>
+<ul>
+<li><p>建立和删除虚拟机</p>
+</li>
+<li><p>配置虚拟机运行参数</p>
+</li>
+<li><p>管理虚拟机运行状态</p>
+</li>
+<li><p>自动配置和安装开发环境ß</p>
+</li>
+<li><p>打包和分发虚拟机运行环境</p>
+</li>
+</ul>
+<p>　　Vagrant的运行，需要<strong>依赖</strong>某项具体的<strong>虚拟化技术</strong>，最常见的有VirtualBox以及VMWare两款，早期，Vagrant只支持VirtualBox，后来才加入了VMWare的支持。现在vagrant支持更多的虚拟化系统，包括libvirt，kvm，qemu，vmware，甚至docker。但还是以virtualbox为主。</p>
+<img src="/posts/e1d7a8/image-20210128223212650.png" alt="image-20210128223212650" style="zoom:50%;">
+
+<h3 id="vagrant和virtualbox"><a href="#vagrant和virtualbox" class="headerlink" title="vagrant和virtualbox"></a>vagrant和virtualbox</h3><p>virtualbox本身也可以创建vm，只是相对麻烦，vagrant可以调用virtualbox的接口更加方便的创建vm。</p>
+<h3 id="在mac上安装vagrant-virtualbox"><a href="#在mac上安装vagrant-virtualbox" class="headerlink" title="在mac上安装vagrant+virtualbox"></a>在mac上安装vagrant+virtualbox</h3><h4 id="安装vagrant"><a href="#安装vagrant" class="headerlink" title="安装vagrant"></a>安装vagrant</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">brew install vagrant</span><br><span class="line">vagrant -v</span><br></pre></td></tr></table></figure>
+<h4 id="安装virtualbox"><a href="#安装virtualbox" class="headerlink" title="安装virtualbox"></a>安装virtualbox</h4><p>国外的dmg文件下载很慢，我是国内随便找了一个<a href="https://ftp-new-pc.pconline.com.cn/pub/download/201909/pconline1567810102832.dmg?md5=dLIvaxUfMIGWrr-oloz2Jg&expires=1611979478">源</a>。</p>
+<img src="/posts/e1d7a8/image-20210130123540411.png" alt="image-20210130123540411" style="zoom:50%;">
+
+<p>virtualbox本身也可以创建vm，但是比较复杂。</p>
+<h4 id="下载box"><a href="#下载box" class="headerlink" title="下载box"></a>下载box</h4><p>vagrant中box的概念，类似于docker image。我们可以通过指定box来启动一个vagrant vm。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 先下载box file到本地，再add</span></span><br><span class="line">vagrant box add centos8 /path/to/boxfile</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 直接从网上下载box file，并且add</span></span><br><span class="line">vagrant box add centos8 url_to_box_file</span><br></pre></td></tr></table></figure>
+<p>vagrantbox的官方下载地址从国内连接很慢，我找到了一些国内的源。</p>
+<blockquote>
+<p>centos 8</p>
+<p><a href="http://mirrors.ustc.edu.cn/centos-cloud/centos/8/vagrant/x86_64/images/CentOS-8-Vagrant-8.3.2011-20201204.2.x86_64.vagrant-virtualbox.box">http://mirrors.ustc.edu.cn/centos-cloud/centos/8/vagrant/x86_64/images/CentOS-8-Vagrant-8.3.2011-20201204.2.x86_64.vagrant-virtualbox.box</a></p>
+<p>ubuntu1804</p>
+<p><a href="https://mirrors.tuna.tsinghua.edu.cn/ubuntu-cloud-images/bionic/current/bionic-server-cloudimg-amd64-vagrant.box">https://mirrors.tuna.tsinghua.edu.cn/ubuntu-cloud-images/bionic/current/bionic-server-cloudimg-amd64-vagrant.box</a></p>
+</blockquote>
+<h4 id="启动虚拟机"><a href="#启动虚拟机" class="headerlink" title="启动虚拟机"></a>启动虚拟机</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vagrant box add centos8 http://mirrors.ustc.edu.cn/centos-cloud/centos/8/vagrant/x86_64/images/CentOS-8-Vagrant-8.3.2011-20201204.2.x86_64.vagrant-virtualbox.box</span></span><br><span class="line">==&gt; box: Box file was not detected as metadata. Adding it directly...</span><br><span class="line">==&gt; box: Adding box &#x27;centos8&#x27; (v0) for provider:</span><br><span class="line">    box: Downloading: http://mirrors.ustc.edu.cn/centos-cloud/centos/8/vagrant/x86_64/images/CentOS-8-Vagrant-8.3.2011-20201204.2.x86_64.vagrant-virtualbox.box</span><br><span class="line">==&gt; box: Successfully added box &#x27;centos8&#x27; (v0) for &#x27;virtualbox&#x27;!</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> vagrant box list</span></span><br><span class="line">centos8    (virtualbox, 0)</span><br><span class="line">ubuntu1804 (virtualbox, 0)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 创建本地vagrant目录</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> vagrant</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 这一步会创建一个vm的Vagrantfile，所有关于vm的配置都在这个文件里。</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vagrant init centos8</span></span><br><span class="line">A `Vagrantfile` has been placed in this directory. You are now</span><br><span class="line">ready to `vagrant up` your first virtual environment! Please read</span><br><span class="line">the comments in the Vagrantfile as well as documentation on</span><br><span class="line">`vagrantup.com` for more information on using Vagrant.</span><br><span class="line"> </span><br><span class="line"><span class="meta"> #</span><span class="bash"> 启动vm</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vagrant up</span></span><br><span class="line">Bringing machine &#x27;default&#x27; up with &#x27;virtualbox&#x27; provider...</span><br><span class="line">==&gt; default: Importing base box &#x27;centos8&#x27;...</span><br><span class="line">==&gt; default: Matching MAC address for NAT networking...</span><br><span class="line">==&gt; default: Setting the name of the VM: vagrant_default_1611980890156_41411</span><br><span class="line">==&gt; default: Clearing any previously set network interfaces...</span><br><span class="line">==&gt; default: Preparing network interfaces based on configuration...</span><br><span class="line">    default: Adapter 1: nat</span><br><span class="line">    default: Adapter 2: hostonly</span><br><span class="line">==&gt; default: Forwarding ports...</span><br><span class="line">    default: 22 (guest) =&gt; 2222 (host) (adapter 1)  # 端口映射, 如果起了多个vagrant vm，那么各个</span><br><span class="line">    																								# vm 会映射到host的不同端口</span><br><span class="line">==&gt; default: Booting VM...</span><br><span class="line">==&gt; default: Waiting for machine to boot. This may take a few minutes...</span><br><span class="line">    default: SSH address: 127.0.0.1:2222</span><br><span class="line">    default: SSH username: vagrant</span><br><span class="line">    default: SSH auth method: private key</span><br><span class="line">    default:</span><br><span class="line">    default: Vagrant insecure key detected. Vagrant will automatically replace</span><br><span class="line">    default: this with a newly generated keypair for better security.</span><br><span class="line">    default:</span><br><span class="line">    default: Inserting generated public key within guest...</span><br><span class="line">    default: Removing insecure key from the guest if it&#x27;s present...</span><br><span class="line">    default: Key inserted! Disconnecting and reconnecting using new SSH key...</span><br><span class="line">==&gt; default: Machine booted and ready!</span><br><span class="line">==&gt; default: Checking for guest additions in VM...</span><br><span class="line">    default: No guest additions were detected on the base box for this VM! Guest</span><br><span class="line">    default: additions are required for forwarded ports, shared folders, host only</span><br><span class="line">    default: networking, and more. If SSH fails on this machine, please install</span><br><span class="line">    default: the guest additions and repackage the box to continue.</span><br><span class="line">    default:</span><br><span class="line">    default: This is not an error message; everything may continue to work properly,</span><br><span class="line">    default: in which case you may ignore this message.</span><br><span class="line">==&gt; default: Configuring and enabling network interfaces...</span><br><span class="line">==&gt; default: Rsyncing folder: /Users/xinran/vagrant/ =&gt; /vagrant</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 登入/退出vm</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vagrant ssh</span></span><br><span class="line">Last login: Sat Jan 30 04:28:57 2021 from 10.0.2.2</span><br><span class="line">[vagrant@localhost ~]$ </span><br><span class="line">[vagrant@localhost ~]$ exit</span><br><span class="line">logout</span><br><span class="line">Shared connection to 127.0.0.1 closed.</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看host上的2222端口</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> lsof -i:2222</span></span><br><span class="line">COMMAND     PID   USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME</span><br><span class="line">VBoxHeadl 13238 xinran   16u  IPv4 0x294cd01b85b191f5      0t0  TCP localhost:rockwell-csp2 (LISTEN)</span><br><span class="line">VBoxHeadl 13238 xinran   20u  IPv4 0x294cd01b95fd8815      0t0  TCP localhost:rockwell-csp2-&gt;localhost:63021 (ESTABLISHED)</span><br><span class="line">ssh       13880 xinran    3u  IPv4 0x294cd01b94ae9e35      0t0  TCP localhost:63021-&gt;localhost:rockwell-csp2 (ESTABLISHED)</span><br><span class="line">ssh       13894 xinran    3u  IPv4 0x294cd01b94ae9e35      0t0  TCP localhost:63021-&gt;localhost:rockwell-csp2 (ESTABLISHE</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Note: 在下载box image时，要找到对应provider的box。我第一次下载成了libvirt provider的box，然后vagrant init就失败了，因为我的host上装的是virtualbox作为provider。</p>
+</blockquote>
+]]></content>
+  </entry>
+  <entry>
     <title>在centos上修改源并安装docker</title>
     <url>/posts/8d209cf6.html</url>
     <content><![CDATA[<h3 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h3><p>在mac上用vagrant起了一个centos8的vm。</p>
@@ -1503,164 +1545,4 @@
         <tag>deploy</tag>
       </tags>
   </entry>
-</search>
-le]$ docker run entrypoint -l</span><br><span class="line">total 0</span><br><span class="line">drwxr-xr-x.   1 root root   6 Jan 30 11:31 .</span><br><span class="line">drwxr-xr-x.   1 root root   6 Jan 30 11:31 ..</span><br><span class="line">-rwxr-xr-x.   1 root root   0 Jan 30 11:31 .dockerenv</span><br><span class="line">lrwxrwxrwx.   1 root root   7 Nov  3 15:22 bin -&gt; usr/bin</span><br><span class="line">drwxr-xr-x.   5 root root 340 Jan 30 11:31 dev</span><br><span class="line">drwxr-xr-x.   1 root root  66 Jan 30 11:31 etc</span><br></pre></td></tr></table></figure><h4 id="COPY和ADD的区别"><a href="#COPY和ADD的区别" class="headerlink" title="COPY和ADD的区别"></a>COPY和ADD的区别</h4><p>add会自动解压</p><h5 id="COPY测试"><a href="#COPY测试" class="headerlink" title="COPY测试"></a>COPY测试</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">[vagrant@localhost dockerfile]$ tree .</span><br><span class="line">.</span><br><span class="line">|-- copy01</span><br><span class="line">|-- copy02</span><br><span class="line">|-- test-dir/</span><br><span class="line">    |-- sub-dir/</span><br><span class="line">    |   |-- test3</span><br><span class="line">    |-- test1</span><br><span class="line">    |-- test2</span><br><span class="line">[vagrant@localhost dockerfile]$ cat docker-copy</span><br><span class="line">FROM centos</span><br><span class="line">COPY copy01 .</span><br><span class="line">COPY copy02 /home</span><br><span class="line">COPY test-dir .  # 不会拷贝目录，只拷贝目录下的文件和目录</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 如果不指定WORKDIR，默认是在跟目录下面</span></span><br><span class="line">[root@e4a55c64ff8f /]# ls</span><br><span class="line">bin  copy01  dev  etc  home  lib  lib64  lost+found  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> COPY可以指定目的路径</span></span><br><span class="line">[root@e4a55c64ff8f home]# ls</span><br><span class="line">copy02</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 不会拷贝目录，只拷贝目录下的文件和目录</span></span><br><span class="line">[root@e8be2eb3f129 /]# ls</span><br><span class="line">bin  copy01  dev  etc  home  lib  lib64  lost+found  media  mnt  opt  proc  root  run  sbin  srv  sub-dir  sys  test1  test2  tmp  usr  var</span><br><span class="line">[root@e8be2eb3f129 /]# cd sub-dir/</span><br><span class="line">[root@e8be2eb3f129 sub-dir]# ls</span><br><span class="line">test3</span><br></pre></td></tr></table></figure><p>此外，COPY还可以用来实现<a href="https://www.cnblogs.com/sparkdev/p/8508435.html">multi-stage(多阶段构建)</a>，就是一个dockerfile里有多个FROM，每个 FROM 指令代表一个 stage 的开始部分。我们可以把一个 stage 的产物拷贝到另一个 stage 中。</p><h5 id="ADD测试"><a href="#ADD测试" class="headerlink" title="ADD测试"></a>ADD测试</h5><p>除了不能用在 multistage 的场景下，ADD 命令可以完成 COPY 命令的所有功能，并且还可以完成两类超酷的功能：</p><ul><li>解压压缩文件并把它们添加到镜像中</li><li>从 url 拷贝文件到镜像中</li></ul><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">WORKDIR /app</span><br><span class="line">ADD nickdir.tar.gz .  </span><br><span class="line"><span class="meta">#</span><span class="bash"> 可以把压缩包自动解压到/app目录下</span></span><br><span class="line">ADD http://example.com/big.tar.xz /usr/src/things/ </span><br><span class="line"><span class="meta">#</span><span class="bash"> 会直接把tar包加入镜像中，不会自动解压，实则增加了镜像的大小，不建议这么做！</span></span><br></pre></td></tr></table></figure><h5 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h5><p>COPY 命令是为最基本的用法设计的，概念清晰，操作简单。而 ADD 命令基本上是 COPY 命令的超集(除了 multistage 场景)，可以实现一些方便、酷炫的拷贝操作。ADD 命令在增加了功能的同时也增加了使用它的复杂度，比如从 url 拷贝压缩文件时弊大于利。</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> cloud native </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> docker </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>在mac上用vagrant和virtualbox创建虚拟机</title>
-      <link href="posts/e1d7a8.html"/>
-      <url>posts/e1d7a8.html</url>
-      
-        <content type="html"><![CDATA[<h2 id="vagrant介绍"><a href="#vagrant介绍" class="headerlink" title="vagrant介绍"></a>vagrant介绍</h2><p>基于ruby，用于创建和部署虚拟化开发环境。它 使用Oracle的开源<a href="https://baike.baidu.com/item/VirtualBox">VirtualBox</a>虚拟化系统，使用 Chef创建自动化虚拟环境。我们可以使用它来干如下这些事：</p><ul><li><p>建立和删除虚拟机</p></li><li><p>配置虚拟机运行参数</p></li><li><p>管理虚拟机运行状态</p></li><li><p>自动配置和安装开发环境ß</p></li><li><p>打包和分发虚拟机运行环境</p></li></ul><p>　　Vagrant的运行，需要<strong>依赖</strong>某项具体的<strong>虚拟化技术</strong>，最常见的有VirtualBox以及VMWare两款，早期，Vagrant只支持VirtualBox，后来才加入了VMWare的支持。现在vagrant支持更多的虚拟化系统，包括libvirt，kvm，qemu，vmware，甚至docker。但还是以virtualbox为主。</p><img src="/posts/e1d7a8/image-20210128223212650.png" alt="image-20210128223212650" style="zoom:50%;"><h3 id="vagrant和virtualbox"><a href="#vagrant和virtualbox" class="headerlink" title="vagrant和virtualbox"></a>vagrant和virtualbox</h3><p>virtualbox本身也可以创建vm，只是相对麻烦，vagrant可以调用virtualbox的接口更加方便的创建vm。</p><h3 id="在mac上安装vagrant-virtualbox"><a href="#在mac上安装vagrant-virtualbox" class="headerlink" title="在mac上安装vagrant+virtualbox"></a>在mac上安装vagrant+virtualbox</h3><h4 id="安装vagrant"><a href="#安装vagrant" class="headerlink" title="安装vagrant"></a>安装vagrant</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">brew install vagrant</span><br><span class="line">vagrant -v</span><br></pre></td></tr></table></figure><h4 id="安装virtualbox"><a href="#安装virtualbox" class="headerlink" title="安装virtualbox"></a>安装virtualbox</h4><p>国外的dmg文件下载很慢，我是国内随便找了一个<a href="https://ftp-new-pc.pconline.com.cn/pub/download/201909/pconline1567810102832.dmg?md5=dLIvaxUfMIGWrr-oloz2Jg&expires=1611979478">源</a>。</p><img src="/posts/e1d7a8/image-20210130123540411.png" alt="image-20210130123540411" style="zoom:50%;"><p>virtualbox本身也可以创建vm，但是比较复杂。</p><h4 id="下载box"><a href="#下载box" class="headerlink" title="下载box"></a>下载box</h4><p>vagrant中box的概念，类似于docker image。我们可以通过指定box来启动一个vagrant vm。</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 先下载box file到本地，再add</span></span><br><span class="line">vagrant box add centos8 /path/to/boxfile</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 直接从网上下载box file，并且add</span></span><br><span class="line">vagrant box add centos8 url_to_box_file</span><br></pre></td></tr></table></figure><p>vagrantbox的官方下载地址从国内连接很慢，我找到了一些国内的源。</p><blockquote><p>centos 8</p><p><a href="http://mirrors.ustc.edu.cn/centos-cloud/centos/8/vagrant/x86_64/images/CentOS-8-Vagrant-8.3.2011-20201204.2.x86_64.vagrant-virtualbox.box">http://mirrors.ustc.edu.cn/centos-cloud/centos/8/vagrant/x86_64/images/CentOS-8-Vagrant-8.3.2011-20201204.2.x86_64.vagrant-virtualbox.box</a></p><p>ubuntu1804</p><p><a href="https://mirrors.tuna.tsinghua.edu.cn/ubuntu-cloud-images/bionic/current/bionic-server-cloudimg-amd64-vagrant.box">https://mirrors.tuna.tsinghua.edu.cn/ubuntu-cloud-images/bionic/current/bionic-server-cloudimg-amd64-vagrant.box</a></p></blockquote><h4 id="启动虚拟机"><a href="#启动虚拟机" class="headerlink" title="启动虚拟机"></a>启动虚拟机</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vagrant box add centos8 http://mirrors.ustc.edu.cn/centos-cloud/centos/8/vagrant/x86_64/images/CentOS-8-Vagrant-8.3.2011-20201204.2.x86_64.vagrant-virtualbox.box</span></span><br><span class="line">==&gt; box: Box file was not detected as metadata. Adding it directly...</span><br><span class="line">==&gt; box: Adding box &#x27;centos8&#x27; (v0) for provider:</span><br><span class="line">    box: Downloading: http://mirrors.ustc.edu.cn/centos-cloud/centos/8/vagrant/x86_64/images/CentOS-8-Vagrant-8.3.2011-20201204.2.x86_64.vagrant-virtualbox.box</span><br><span class="line">==&gt; box: Successfully added box &#x27;centos8&#x27; (v0) for &#x27;virtualbox&#x27;!</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> vagrant box list</span></span><br><span class="line">centos8    (virtualbox, 0)</span><br><span class="line">ubuntu1804 (virtualbox, 0)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 创建本地vagrant目录</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> vagrant</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 这一步会创建一个vm的Vagrantfile，所有关于vm的配置都在这个文件里。</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vagrant init centos8</span></span><br><span class="line">A `Vagrantfile` has been placed in this directory. You are now</span><br><span class="line">ready to `vagrant up` your first virtual environment! Please read</span><br><span class="line">the comments in the Vagrantfile as well as documentation on</span><br><span class="line">`vagrantup.com` for more information on using Vagrant.</span><br><span class="line"> </span><br><span class="line"><span class="meta"> #</span><span class="bash"> 启动vm</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vagrant up</span></span><br><span class="line">Bringing machine &#x27;default&#x27; up with &#x27;virtualbox&#x27; provider...</span><br><span class="line">==&gt; default: Importing base box &#x27;centos8&#x27;...</span><br><span class="line">==&gt; default: Matching MAC address for NAT networking...</span><br><span class="line">==&gt; default: Setting the name of the VM: vagrant_default_1611980890156_41411</span><br><span class="line">==&gt; default: Clearing any previously set network interfaces...</span><br><span class="line">==&gt; default: Preparing network interfaces based on configuration...</span><br><span class="line">    default: Adapter 1: nat</span><br><span class="line">    default: Adapter 2: hostonly</span><br><span class="line">==&gt; default: Forwarding ports...</span><br><span class="line">    default: 22 (guest) =&gt; 2222 (host) (adapter 1)  # 端口映射, 如果起了多个vagrant vm，那么各个</span><br><span class="line">    # vm 会映射到host的不同端口</span><br><span class="line">==&gt; default: Booting VM...</span><br><span class="line">==&gt; default: Waiting for machine to boot. This may take a few minutes...</span><br><span class="line">    default: SSH address: 127.0.0.1:2222</span><br><span class="line">    default: SSH username: vagrant</span><br><span class="line">    default: SSH auth method: private key</span><br><span class="line">    default:</span><br><span class="line">    default: Vagrant insecure key detected. Vagrant will automatically replace</span><br><span class="line">    default: this with a newly generated keypair for better security.</span><br><span class="line">    default:</span><br><span class="line">    default: Inserting generated public key within guest...</span><br><span class="line">    default: Removing insecure key from the guest if it&#x27;s present...</span><br><span class="line">    default: Key inserted! Disconnecting and reconnecting using new SSH key...</span><br><span class="line">==&gt; default: Machine booted and ready!</span><br><span class="line">==&gt; default: Checking for guest additions in VM...</span><br><span class="line">    default: No guest additions were detected on the base box for this VM! Guest</span><br><span class="line">    default: additions are required for forwarded ports, shared folders, host only</span><br><span class="line">    default: networking, and more. If SSH fails on this machine, please install</span><br><span class="line">    default: the guest additions and repackage the box to continue.</span><br><span class="line">    default:</span><br><span class="line">    default: This is not an error message; everything may continue to work properly,</span><br><span class="line">    default: in which case you may ignore this message.</span><br><span class="line">==&gt; default: Configuring and enabling network interfaces...</span><br><span class="line">==&gt; default: Rsyncing folder: /Users/xinran/vagrant/ =&gt; /vagrant</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 登入/退出vm</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vagrant ssh</span></span><br><span class="line">Last login: Sat Jan 30 04:28:57 2021 from 10.0.2.2</span><br><span class="line">[vagrant@localhost ~]$ </span><br><span class="line">[vagrant@localhost ~]$ exit</span><br><span class="line">logout</span><br><span class="line">Shared connection to 127.0.0.1 closed.</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看host上的2222端口</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> lsof -i:2222</span></span><br><span class="line">COMMAND     PID   USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME</span><br><span class="line">VBoxHeadl 13238 xinran   16u  IPv4 0x294cd01b85b191f5      0t0  TCP localhost:rockwell-csp2 (LISTEN)</span><br><span class="line">VBoxHeadl 13238 xinran   20u  IPv4 0x294cd01b95fd8815      0t0  TCP localhost:rockwell-csp2-&gt;localhost:63021 (ESTABLISHED)</span><br><span class="line">ssh       13880 xinran    3u  IPv4 0x294cd01b94ae9e35      0t0  TCP localhost:63021-&gt;localhost:rockwell-csp2 (ESTABLISHED)</span><br><span class="line">ssh       13894 xinran    3u  IPv4 0x294cd01b94ae9e35      0t0  TCP localhost:63021-&gt;localhost:rockwell-csp2 (ESTABLISHE</span><br></pre></td></tr></table></figure><blockquote><p>Note: 在下载box image时，要找到对应provider的box。我第一次下载成了libvirt provider的box，然后vagrant init就失败了，因为我的host上装的是virtualbox作为provider。</p></blockquote>]]></content>
-      
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>容器volume基本介绍</title>
-      <link href="posts/4b81a639.html"/>
-      <url>posts/4b81a639.html</url>
-      
-        <content type="html"><![CDATA[<h2 id="容器volume"><a href="#容器volume" class="headerlink" title="容器volume"></a>容器volume</h2><h3 id="匿名挂载，具名挂载和指定路径挂载"><a href="#匿名挂载，具名挂载和指定路径挂载" class="headerlink" title="匿名挂载，具名挂载和指定路径挂载"></a>匿名挂载，具名挂载和指定路径挂载</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 匿名挂载</span></span><br><span class="line">-v 容器内路径</span><br><span class="line">docker run -d -P --name nginx01 -v /etc/nginx nginx</span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看node 上的volume</span></span><br><span class="line">ubuntu@xinrantest01:~$ docker volume ls</span><br><span class="line">DRIVER              VOLUME NAME</span><br><span class="line">local               cf411242c0f1d323d2d2ab8a81d144caa6d536d992954231f426c35221adf2e3</span><br><span class="line"><span class="meta">#</span><span class="bash"> 可以发现，匿名挂载只写容器里的路径，没有写host上的路径</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 具名挂载</span></span><br><span class="line">-v host路径：容器内路径 （与-p相似）</span><br><span class="line">ubuntu@xinrantest01:~$ docker run -d -P --name nginx02 -v juming-nginx:/etc/nginx nginx</span><br><span class="line">5f61a3a6d01cd8db3bd99fa1738d0b6cfc74df366dc8ba8b1f4cbe0c97b2cc72</span><br><span class="line">ubuntu@xinrantest01:~$ docker volume ls</span><br><span class="line">DRIVER              VOLUME NAME</span><br><span class="line">local               cf411242c0f1d323d2d2ab8a81d144caa6d536d992954231f426c35221adf2e3</span><br><span class="line">local               juming-nginx</span><br><span class="line"><span class="meta">#</span><span class="bash">这里指定了juming-nginx为host上要挂载的目录，这个目录在docker run时被创建</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看volume在host上的路径</span></span><br></pre></td></tr></table></figure><p><img src="/posts/4b81a639/image-20210128164757688.png" alt="image-20210128164757688"></p><p><img src="/posts/4b81a639/image-20210128164837865.png" alt="image-20210128164837865"></p><p>所有docker 容器内的卷，没有指定目录的情况下，都是在<code>/var/lib/docker/volumes/xxxx/_data</code></p><p>大多数情况都是使用具名挂载，方便在host上查找volumes</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 如何确定挂载方式</span></span><br><span class="line">-v container-path    # 匿名挂载</span><br><span class="line">-v host-path：container-path # 指定路径挂载</span><br><span class="line">-v volume-name（临时起的）：container-path #具名挂载</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 限定容器的权限</span></span><br><span class="line">docker run -d -P --name nginx02 -v juming-nginx:/etc/nginx:ro   nginx</span><br><span class="line">docker run -d -P --name nginx02 -v juming-nginx:/etc/nginx:rw   nginx</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> ro 这个volume只能通过host来操作，container里只有<span class="built_in">read</span> only的权限</span></span><br></pre></td></tr></table></figure><h3 id="用DockerFile实现volume"><a href="#用DockerFile实现volume" class="headerlink" title="用DockerFile实现volume"></a>用DockerFile实现volume</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> create a dockerfile</span></span><br><span class="line">FROM centos</span><br><span class="line"></span><br><span class="line">VOLUME [&quot;volume01&quot;,&quot;volume02&quot;&quot;]</span><br><span class="line"></span><br><span class="line">CMD echo &quot;===end===&quot;</span><br><span class="line">CMD /bin/bash</span><br><span class="line"></span><br></pre></td></tr></table></figure><img src="/posts/4b81a639/image-20210128170911709.png" alt="image-20210128170911709" style="zoom:80%;"><p>可以通过在<code>var/lib/docker/volumes/</code>路径下查看对应的目录：</p><p><img src="/posts/4b81a639/image-20210128171143827.png" alt="image-20210128171143827"></p><h3 id="数据卷容器"><a href="#数据卷容器" class="headerlink" title="数据卷容器"></a>数据卷容器</h3><p>要容器与容器之间同步数据。</p><img src="/posts/4b81a639/image-20210128171813726.png" alt="image-20210128171813726" style="zoom:60%;"><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 启动数据卷容器docker01</span></span><br><span class="line">docker run -it --name docker01 xinran/centos:1.0</span><br><span class="line"><span class="meta">#</span><span class="bash"> 启动多个“父容器”docker02，docker03，用--volumes-from指定数据卷容器</span></span><br><span class="line">docker run -it --name docker02  --volumes-from docker01 xinran/centos:1.0</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 可以指定docker02或者docker01为数据卷容器，这几个容器中volumes都是同步的</span></span><br><span class="line">docker run -it --name docker03  --volumes-from docker02 xinran/centos:1.0</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 删除docker01，也不会影响docker02，docker03的volume</span></span><br></pre></td></tr></table></figure><p><img src="/posts/4b81a639/image-20210128172515580.png" alt="image-20210128172515580"></p><p>结论：容器之间配置信息的传递，数据卷容器的生命周期一直持续到没有容器使用为止。</p><p>但是一旦持久话到了本地，即使删除了所有有这个volume的容器，本地的数据是不会删除的。</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> cloud native </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> docker </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>多设备同步hexoy</title>
-      <link href="posts/c9d1870c.html"/>
-      <url>posts/c9d1870c.html</url>
-      
-        <content type="html"><![CDATA[<h1 id="多个设备之间同步hexo"><a href="#多个设备之间同步hexo" class="headerlink" title="多个设备之间同步hexo"></a>多个设备之间同步hexo</h1><p><strong>原理</strong></p><p>hexo deploy会将本地创建好的目录blog里面的文件生成对应的静态文件（html等），并且将它上传到xxx.github.com repo中。<br>在_config.yml中设置了deploy要操作的repo和branch，这里我使用的是xxinran.github.io的main branch。</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> hexo </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> hexo </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>markdown基本语法</title>
-      <link href="posts/47caaf1e.html"/>
-      <url>posts/47caaf1e.html</url>
-      
-        <content type="html"><![CDATA[<h1 id="一级标题"><a href="#一级标题" class="headerlink" title="一级标题"></a>一级标题</h1><h2 id="二级"><a href="#二级" class="headerlink" title="二级"></a>二级</h2><h3 id="三级-（CTRL-3-或者-）"><a href="#三级-（CTRL-3-或者-）" class="headerlink" title="三级 （CTRL +3 或者 ### ）"></a>三级 （CTRL +3 或者 ### ）</h3><h4 id="四级"><a href="#四级" class="headerlink" title="四级"></a>四级</h4><h6 id="最多支持到六级"><a href="#最多支持到六级" class="headerlink" title="最多支持到六级"></a>最多支持到六级</h6><h2 id="字体"><a href="#字体" class="headerlink" title="字体"></a>字体</h2><p><strong>hello world</strong></p><p>CTRL + B 或者 两边加**</p><p><em>hello world</em></p><p>CTRL + I 或者两边加* </p><p><em><strong>hello world</strong></em></p><p>CTRL + B + I 或者 两边加***</p><p><del>hello world</del></p><p>ALT + SHIFT + 5  或者~~ </p><h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><blockquote><p>这是一个引用， 用&gt;开始 </p></blockquote><h2 id="分割线"><a href="#分割线" class="headerlink" title="分割线"></a>分割线</h2><hr><hr><p>三个-， 或者三个*</p><h2 id="图片"><a href="#图片" class="headerlink" title="图片"></a>图片</h2><p><img src="https://www.w3schools.com/images/w3schools_green.jpg" alt="图片名字"></p><p>感叹号[图片名字]+ (图片地址)</p><h2 id="超链接"><a href="#超链接" class="headerlink" title="超链接"></a>超链接</h2><p><a href="https://kubernetes.io/docs/concepts/services-networking/service/#ips-and-vips">超级链接</a></p><p>方括号里面写链接名字，后面加()写链接地址。</p><h2 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h2><h3 id="有序列表"><a href="#有序列表" class="headerlink" title="有序列表"></a>有序列表</h3><ol><li>A</li><li>B</li><li>C</li></ol><h3 id="无序列表"><a href="#无序列表" class="headerlink" title="无序列表"></a>无序列表</h3><p>减号 + space</p><ul><li>A</li><li>B</li></ul><p>CTRL + [  回到上一级<br>CTRL + ]  回到下一级</p><h2 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h2><table><thead><tr><th>名字</th><th>性别</th><th>生日</th></tr></thead><tbody><tr><td>张三</td><td>男</td><td>1997.1</td></tr></tbody></table><p>名字 | 性别| 生日|</p><p>–|–|–</p><p>xx|xx|xx|</p><p>进入源代码模式(CTRL + /)，删除行间空行，就可以生成表格了。</p><h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public</span><br></pre></td></tr></table></figure>]]></content>
-      
-      
-      <categories>
-          
-          <category> tools </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> markdown </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>QAT在Ubuntu18.04上的安装和虚拟化</title>
-      <link href="posts/461bb783.html"/>
-      <url>posts/461bb783.html</url>
-      
-        <content type="html"><![CDATA[<p>本文将介绍QAT c62xx设备在Ubuntu 18.04上的安装部署和虚拟化。</p><blockquote><p>参考网站：<a href="https://01.org/intel-quickassist-technology">https://01.org/intel-quickassist-technology</a></p></blockquote><h3 id="Prerequisite"><a href="#Prerequisite" class="headerlink" title="Prerequisite"></a>Prerequisite</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> uname -a</span></span><br><span class="line">Linux tme-prc002 5.3.0-53-generic #47~18.04.1-Ubuntu SMP Thu May 7 13:10:50 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux</span><br></pre></td></tr></table></figure><h3 id="Updating-grub-Configuration-File"><a href="#Updating-grub-Configuration-File" class="headerlink" title="Updating grub Configuration File"></a>Updating grub Configuration File</h3><p>To enable IOMMU and SRIOV</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/default/grub</span><br></pre></td></tr></table></figure><p>Modify <code>GRUB_CMDLINE_LINUX_DEFAULT=&quot;quiet splash&quot;</code> to <code>&quot;quiet splash intel_iommu=on&quot;</code></p><p>Update grub and reboot:</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">update-grub</span><br><span class="line">sudo reboot</span><br></pre></td></tr></table></figure><h3 id="Building-and-Installing-Software"><a href="#Building-and-Installing-Software" class="headerlink" title="Building and Installing Software"></a>Building and Installing Software</h3><h4 id="Create-a-working-directory-for-the-software-This-directory-can-be-user-defined-but"><a href="#Create-a-working-directory-for-the-software-This-directory-can-be-user-defined-but" class="headerlink" title="Create a working directory for the software. This directory can be user defined, but"></a>Create a working directory for the software. This directory can be user defined, but</h4><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$</span> <span class="built_in">cd</span> <span class="variable">$HOME</span> </span><br><span class="line"><span class="variable">$</span> mkdir /QAT</span><br><span class="line"><span class="variable">$</span> <span class="built_in">cd</span> /QAT</span><br></pre></td></tr></table></figure><h4 id="Download-the-software"><a href="#Download-the-software" class="headerlink" title="Download the software."></a>Download the software.</h4><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -O https:<span class="regexp">//</span><span class="number">01</span>.org<span class="regexp">/sites/</span>default<span class="regexp">/files/</span>downloads<span class="regexp">/intelr-quickassist-technology/</span>qat1.<span class="number">7</span>.l.<span class="number">4.3</span>.<span class="number">0</span>-<span class="number">00033</span>.tar.gz</span><br></pre></td></tr></table></figure><h4 id="Unpack-the-software"><a href="#Unpack-the-software" class="headerlink" title="Unpack the software."></a>Unpack the software.</h4><figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$ </span>tar -zxof &lt;QAT tarball name&gt;  </span><br><span class="line"><span class="variable">$ </span>chmod -R o-rwx *</span><br></pre></td></tr></table></figure><h4 id="Install-dependencies-if-needed"><a href="#Install-dependencies-if-needed" class="headerlink" title="Install dependencies if needed."></a>Install dependencies if needed.</h4><p>For CentOS:</p><figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$ </span>yum -y groupinstall <span class="string">&quot;Development Tools&quot;</span></span><br><span class="line"><span class="variable">$ </span>yum -y install pciutils</span><br><span class="line"><span class="variable">$ </span>yum -y install libudev-devel</span><br><span class="line"><span class="variable">$ </span>yum -y install kernel-devel-<span class="variable">$(</span>uname -r)</span><br><span class="line"><span class="variable">$ </span>yum -y install gcc</span><br><span class="line"><span class="variable">$ </span>yum -y install openssl-devel</span><br></pre></td></tr></table></figure><p>For Ubuntu:</p><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ apt-<span class="builtin-name">get</span> update</span><br><span class="line">$ apt-<span class="builtin-name">get</span> install pciutils-dev</span><br><span class="line">$ apt-<span class="builtin-name">get</span> install g++</span><br><span class="line">$ apt-<span class="builtin-name">get</span> install pkg-config</span><br><span class="line">$ apt-<span class="builtin-name">get</span> install libssl-dev</span><br></pre></td></tr></table></figure><h4 id="configure-make-and-make-install-the-software-packages"><a href="#configure-make-and-make-install-the-software-packages" class="headerlink" title="configure, make and make install the software packages."></a>configure, make and make install the software packages.</h4><figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># suggest to clear up the env if there is a previous or modified version installed</span></span><br><span class="line"><span class="variable">$ </span>make uninstall</span><br><span class="line"><span class="variable">$ </span>./configure --enable-icp-sriov=host  <span class="comment"># It fails if missing dependency package.</span></span><br><span class="line"><span class="variable">$ </span>make</span><br><span class="line"><span class="variable">$ </span>make install  </span><br><span class="line"><span class="variable">$ </span>service qat_service start  </span><br><span class="line"><span class="variable">$ </span>service qat_service_vfs start</span><br></pre></td></tr></table></figure><p>NOTE: in Guest OS, enable the SR-IOV build on the host by using:</p><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="string">./configure</span> <span class="params">--enable-icp-sriov=guest</span></span><br></pre></td></tr></table></figure><h4 id="Verifying-SR-IOV-On-The-Host"><a href="#Verifying-SR-IOV-On-The-Host" class="headerlink" title="Verifying SR-IOV On The Host"></a>Verifying SR-IOV On The Host</h4><figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">$ lspci | grep <span class="number">37</span><span class="keyword">c</span><span class="number">9</span>  </span><br><span class="line"># <span class="keyword">or</span> </span><br><span class="line">$ lspci -d <span class="number">8086</span>:<span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line">$ lspci -d:<span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line">...</span><br><span class="line"><span class="number">01</span>:<span class="number">01.0</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">01.1</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">01.2</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line">...</span><br><span class="line"><span class="number">01</span>:<span class="number">01.7</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">02.0</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">02.1</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line">...</span><br><span class="line"><span class="number">01</span>:<span class="number">02.6</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">02.7</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br></pre></td></tr></table></figure><p>Or using <code>adf_ctl</code></p><figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$ </span>adf_ctl status</span><br></pre></td></tr></table></figure><p>This utility can bring up/down device by ourselves.</p><h4 id="Detailed-SR-IOV-enabling-please-refer-to-the-guide"><a href="#Detailed-SR-IOV-enabling-please-refer-to-the-guide" class="headerlink" title="Detailed SR-IOV enabling please refer to the guide."></a>Detailed SR-IOV enabling please refer to the guide.</h4><p>Please refer to:<br><a href="https://01.org/sites/default/files/downloads/330689qatvirtualizationappnoterev008us.pdf">https://01.org/sites/default/files/downloads/330689qatvirtualizationappnoterev008us.pdf</a></p>]]></content>
-      
-      
-      <categories>
-          
-          <category> Device </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> QAT </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>hexo+github</title>
-      <link href="posts/ebeabd53.html"/>
-      <url>posts/ebeabd53.html</url>
-      
-        <content type="html"><![CDATA[<h3 id="安装nodejs，git"><a href="#安装nodejs，git" class="headerlink" title="安装nodejs，git"></a>安装nodejs，git</h3><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt <span class="keyword">install</span> npm</span><br><span class="line">sudo apt <span class="keyword">install</span> nodejs</span><br><span class="line">sudo apt <span class="keyword">install</span> git</span><br></pre></td></tr></table></figure><h3 id="注册github帐号，创建github-repo，命名为xxinran-github-io"><a href="#注册github帐号，创建github-repo，命名为xxinran-github-io" class="headerlink" title="注册github帐号，创建github repo，命名为xxinran.github.io"></a>注册github帐号，创建github repo，命名为<code>xxinran.github.io</code></h3><h3 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h3><figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo npm install -g hexo-<span class="keyword">cli</span></span><br></pre></td></tr></table></figure><p>检查各项都已经成功安装：</p><figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">node</span> <span class="title">-v</span></span><br><span class="line">hexo -v</span><br></pre></td></tr></table></figure><h3 id="创建本地博客的repo"><a href="#创建本地博客的repo" class="headerlink" title="创建本地博客的repo"></a>创建本地博客的repo</h3><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo <span class="keyword">init</span> blog</span><br></pre></td></tr></table></figure><p>运行后在当前目录下会生成一个blog目录。未来所有的博客主题，博文，配置都在这个目录里。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> blog</span><br></pre></td></tr></table></figure><p>会发现目录结构如下：</p><figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">├── _config.yml  <span class="meta"># hexo的配置文件，主题，标题，格式等都在这里指定</span></span><br><span class="line">├── db.json</span><br><span class="line">├── node_modules/</span><br><span class="line">├── <span class="keyword">package</span>.json</span><br><span class="line">├── <span class="keyword">package</span>-lock.json</span><br><span class="line">├── <span class="keyword">public</span>/</span><br><span class="line">├── scaffolds/</span><br><span class="line">├── source/ <span class="meta"># 博客的静态页面的源文件，博文的md文件就存放在这里</span></span><br><span class="line">└── themes/ <span class="meta"># 存放各种主题的源码</span></span><br></pre></td></tr></table></figure><p>接下来在<code>blog</code>目录下运行<code>npm install</code> 来安装hexo所需的依赖。</p><p>在<code>blog/source/_posts/hello-world.md</code>里有一个例子，我们先用这个例子，看看效果，运行：</p><figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo <span class="keyword">server</span> </span><br><span class="line">or</span><br><span class="line">hexo s</span><br></pre></td></tr></table></figure><p>可以看到Hexo运行在本地的4000端口，在浏览器中访问<code>localhost:4000</code>，就会看到上述hello-world的示例页面。</p><p>我们也可以通过 <code>hexo new first-try</code>去创建一个新的md文件，可以在这个md文件里写博文，这时在4000端口我们就可以看到新的博文。（应该是需要重新运行<code>hexo s</code>，这里没有验证）</p><h3 id="连接gihub和hexo"><a href="#连接gihub和hexo" class="headerlink" title="连接gihub和hexo"></a>连接gihub和hexo</h3><h4 id="上传SSH公钥"><a href="#上传SSH公钥" class="headerlink" title="上传SSH公钥"></a>上传SSH公钥</h4><figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen</span><br><span class="line"># <span class="keyword">copy</span> ssh <span class="keyword">public</span> <span class="keyword">to</span> Github Account</span><br></pre></td></tr></table></figure><p>输入<code>ssh -T git@github.com</code>，测试添加ssh是否成功。如果看到Hi后面是你的用户名，就说明成功了.</p><h4 id="在Hexo的配置文件中指定向Github-Page部署"><a href="#在Hexo的配置文件中指定向Github-Page部署" class="headerlink" title="在Hexo的配置文件中指定向Github Page部署"></a>在Hexo的配置文件中指定向Github Page部署</h4><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ～<span class="regexp">/blog/</span>_config.yml</span><br></pre></td></tr></table></figure><p>在deploy选项中填写Github信息， 例如：</p><figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">deploy</span>:</span><br><span class="line"><span class="attribute">type</span>: git</span><br><span class="line"><span class="attribute">repository</span>: git<span class="variable">@github</span>.<span class="attribute">com</span>:xxinran/xxinran.github.io.git</span><br><span class="line"><span class="attribute">branch</span>: main # 原来是master</span><br></pre></td></tr></table></figure><h4 id="生成静态文件，并部署到gihub上去。"><a href="#生成静态文件，并部署到gihub上去。" class="headerlink" title="生成静态文件，并部署到gihub上去。"></a>生成静态文件，并部署到gihub上去。</h4><figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># <span class="keyword">generate</span> <span class="keyword">static</span> files</span><br><span class="line">hexo <span class="keyword">generate</span></span><br><span class="line"><span class="keyword">or</span> </span><br><span class="line">hexo g</span><br><span class="line"></span><br><span class="line"># deploy to Github</span><br><span class="line">hexo deploy</span><br><span class="line"><span class="keyword">or</span></span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure><p>这一步有可能会报错<code>Deployer not found: git</code>：</p><ul><li>需要安装<code>npm install hexo-deployer-git --save</code>。</li><li>需要配置gitconfig。</li></ul><h4 id="打开Github-Page验证。"><a href="#打开Github-Page验证。" class="headerlink" title="打开Github Page验证。"></a>打开<a href="https://xxinran.github.io/">Github Page</a>验证。</h4><h3 id="Notes"><a href="#Notes" class="headerlink" title="Notes"></a>Notes</h3><ul><li>每次修改完blog的配置，或者新建删除post，draft等，都需要先<code>hexo clean</code>，在重新<code>hexo g &amp; hexo d</code>。</li></ul><blockquote><p> 参考文档： <a href="https://hexo.io/zh-cn/docs/configuration.html">https://hexo.io/zh-cn/docs/configuration.html</a><br> <a href="https://zhuanlan.zhihu.com/p/71164003">https://zhuanlan.zhihu.com/p/71164003</a></p></blockquote><h1 id="主题配置"><a href="#主题配置" class="headerlink" title="主题配置"></a>主题配置</h1><ul><li>在blog目录下拉取想要应用的主题</li></ul><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/iissnan/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure><ul><li><p>打开站点配置文件 _config.yml，找到 theme 字段，并将其值更改为 next。</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">theme: next</span><br></pre></td></tr></table></figure></li><li><p>切换Schema</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scheme: Pisces</span><br></pre></td></tr></table></figure></li><li><p>更新github上的主题</p><p>改完配置之后都要运行hexo clean &amp; hexo generate &amp; hexo deploy，为了方便，可以在blog目录下加入一个新的脚本deploy.sh：</p><blockquote><p>这里涉及到 “push hexo code”, 在多设备管理中会讲到 ）</p></blockquote><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">DIR=`dirname $0`</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Generate blog</span></span><br><span class="line">echo &quot;Generate and deploy...&quot;</span><br><span class="line">hexo clean</span><br><span class="line">hexo generate &amp; hexo deploy</span><br><span class="line"><span class="meta">#</span><span class="bash"> hexo d -g</span></span><br><span class="line"></span><br><span class="line">sleep 10</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Push hexo code</span></span><br><span class="line">echo &quot;Push hexo code&quot;</span><br><span class="line">git add .</span><br><span class="line">current_date=`date &quot;+%Y-%m-%d %H:%M:%S&quot;`</span><br><span class="line">git commit -m &quot;Blog updated: $current_date&quot;</span><br><span class="line"></span><br><span class="line">sleep 2</span><br><span class="line">git push origin hexo</span><br><span class="line"></span><br><span class="line">echo &quot;=====&gt;Finish!&lt;=====&quot;</span><br></pre></td></tr></table></figure></li><li><p>更新脚本权限：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod 755 deploy.sh</span><br></pre></td></tr></table></figure><p>以后每次推送只要运行./deploy.sh即可。</p></li></ul>]]></content>
-      
-      
-      <categories>
-          
-          <category> hexo </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> hexo </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-  
-  
 </search>
