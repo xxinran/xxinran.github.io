@@ -54,3 +54,38 @@ message level
 
 
 # Details（ROCEv2）
+
+
+
+
+
+iscsi/scsi over rdma
+
+RDMA provides Channel based IO.  This channel allows an application using an RDMA device
+to directly read and write remote virtual memory.  
+
+
+
+
+
+The registration process pins the memory pages (to prevent the pages from being swapped out
+and to keep physical <-> virtual mapping).  
+
+
+
+The registration process writes the virtual to physical address table to the network adapter.
+When registering memory, permissions are set for the region. Permissions are local write, remote
+read, remote write, atomic, and bind  
+
+Every MR has a remote and a local key (r_key, l_key). Local keys are used by the local HCA to
+access local memory, such as during a receive operation. Remote keys are given to the remote
+HCA to allow a remote process access to system memory during RDMA operations.  
+
+
+
+
+
+Scatter Gather  - > what's the size??
+
+If we have completion with bad status in a WR, the rest of the completions will be all be bad (and
+the Work Queue will be moved to error state)   - > why ??

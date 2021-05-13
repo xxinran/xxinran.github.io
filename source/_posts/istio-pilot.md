@@ -13,6 +13,20 @@ Service Mesh通过一个个"代理" 来为微服务转发/接收所有流量，�
 
 <img src="istio-pilot/v2-638a9d12e8a7406b7a733f2eadf989f5_1440w.jpg" alt="img" style="zoom:30%;" />
 
+linkerd： control plane + data plane(rust)
+
+Isito: control plane(go)
+
+Envoy: data plane(c ++)
+
+client app 发送http/mysql等L7的请求，然后走到tcp/ip，被iptables截获和转发到envoy的15001端口，然后envoy再转发。到了server端，又由iptables转到envoy，然后在转发到server app。
+
+
+
+envoy的配置文件
+
+listener
+
 ## Istio
 
 Go编写，控制面。对应的数据面是通常是envoy（基于C++）
