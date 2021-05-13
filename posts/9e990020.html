@@ -58,7 +58,7 @@
 <meta property="og:image" content="http://xxinran.github.io/posts/9e990020/image-20210511164132817.png">
 <meta property="og:image" content="http://xxinran.github.io/posts/9e990020/image-20210511165341492.png">
 <meta property="article:published_time" content="2021-05-11T08:29:17.000Z">
-<meta property="article:modified_time" content="2021-05-12T10:17:48.124Z">
+<meta property="article:modified_time" content="2021-05-13T10:11:13.599Z">
 <meta property="article:author" content="Xinran Wang">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://xxinran.github.io/posts/9e990020/image-20210511163124035.png">
@@ -244,7 +244,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-12 18:17:48" itemprop="dateModified" datetime="2021-05-12T18:17:48+08:00">2021-05-12</time>
+                <time title="修改时间：2021-05-13 18:11:13" itemprop="dateModified" datetime="2021-05-13T18:11:13+08:00">2021-05-13</time>
               </span>
 
           
@@ -260,7 +260,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>306</span>
+              <span>1.1k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -295,7 +295,14 @@
 <p>verbs API</p>
 <p>message level  </p>
 <h1 id="Protocol-Introduction"><a href="#Protocol-Introduction" class="headerlink" title="Protocol Introduction"></a>Protocol Introduction</h1><p><img src="/posts/9e990020/image-20210511165341492.png" alt="image-20210511165341492"></p>
-<h1 id="Details（ROCEv2）"><a href="#Details（ROCEv2）" class="headerlink" title="Details（ROCEv2）"></a>Details（ROCEv2）</h1>
+<h1 id="Details（ROCEv2）"><a href="#Details（ROCEv2）" class="headerlink" title="Details（ROCEv2）"></a>Details（ROCEv2）</h1><p>iscsi/scsi over rdma</p>
+<p>RDMA provides Channel based IO.  This channel allows an application using an RDMA device<br>to directly read and write remote virtual memory.  </p>
+<p>The registration process pins the memory pages (to prevent the pages from being swapped out<br>and to keep physical &lt;-&gt; virtual mapping).  </p>
+<p>The registration process writes the virtual to physical address table to the network adapter.<br>When registering memory, permissions are set for the region. Permissions are local write, remote<br>read, remote write, atomic, and bind  </p>
+<p>Every MR has a remote and a local key (r_key, l_key). Local keys are used by the local HCA to<br>access local memory, such as during a receive operation. Remote keys are given to the remote<br>HCA to allow a remote process access to system memory during RDMA operations.  </p>
+<p>Scatter Gather  - &gt; what’s the size??</p>
+<p>If we have completion with bad status in a WR, the rest of the completions will be all be bad (and<br>the Work Queue will be moved to error state)   - &gt; why ??</p>
+
     </div>
 
     
@@ -476,12 +483,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">77k</span>
+    <span title="站点总字数">78k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:10</span>
+    <span title="站点阅读时长">1:11</span>
 </div>
 
         

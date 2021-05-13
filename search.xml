@@ -1,22 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>cpu-microarch</title>
-    <url>/posts/f1d93d2c.html</url>
-    <content><![CDATA[<p><img src="https://en.wikichip.org/w/images/thumb/e/ee/skylake_server_block_diagram.svg/950px-skylake_server_block_diagram.svg.png" alt="skylake server block diagram.svg"></p>
-<p>front end：取值，解码</p>
-<p>execution engine：计算</p>
-<p>memory subsystem： 读写内存</p>
-<p>L1， L2 per core</p>
-]]></content>
-      <categories>
-        <category>计算机组成</category>
-      </categories>
-      <tags>
-        <tag>CPU</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>cpu基础</title>
     <url>/posts/fe9b70.html</url>
     <content><![CDATA[<p>cpu运行阶段：取值，解码，执行，写回。</p>
@@ -115,6 +99,22 @@
       </categories>
       <tags>
         <tag>dapr</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>cpu-microarch</title>
+    <url>/posts/f1d93d2c.html</url>
+    <content><![CDATA[<p><img src="https://en.wikichip.org/w/images/thumb/e/ee/skylake_server_block_diagram.svg/950px-skylake_server_block_diagram.svg.png" alt="skylake server block diagram.svg"></p>
+<p>front end：取值，解码</p>
+<p>execution engine：计算</p>
+<p>memory subsystem： 读写内存</p>
+<p>L1， L2 per core</p>
+]]></content>
+      <categories>
+        <category>计算机组成</category>
+      </categories>
+      <tags>
+        <tag>CPU</tag>
       </tags>
   </entry>
   <entry>
@@ -242,6 +242,35 @@
       </tags>
   </entry>
   <entry>
+    <title>ebpf-intro</title>
+    <url>/posts/85f2c2fa.html</url>
+    <content><![CDATA[<p>bpf - bakerly profiling filter</p>
+<p>最早是抓包用的，最经典的应用：tcpdump就用bpf。</p>
+<p>没有bpf之前，抓包要抓nic上所有的包，然后再进行分析</p>
+<p>有了bpf之后，可以插入一段小的代码可以指定tcp port，ip等。</p>
+<p>ebpf - extension bpf</p>
+<p>主要做网络，但远不止网络领域。可以抓system call，linux kernel的function call</p>
+<p>kprobe -&gt; fetch kernel</p>
+<p>uprobe -&gt; fetch user space</p>
+<p>perf events</p>
+<p>XDP/AF_XDP</p>
+<p>bpf vs ebpf vm - &gt; java vm / webassembly</p>
+<p>c  -&gt; 编译成ebpf backend  -&gt; kernel native??</p>
+<p>程序方面：</p>
+<p>bpf只有两个32bit寄存器，16个32bit内存</p>
+<p>ebpf有11个64bit寄存器，512个stack。没有堆的概念，因为在ebpf里面不能new。</p>
+<p><img src="/posts/85f2c2fa/image-20210423154407377.png" alt="image-20210423154407377"></p>
+<p>maps：user space /kernel space shares data through maps (k-v)。</p>
+<p>bpftrace vs bcc vs c program </p>
+]]></content>
+      <categories>
+        <category>LINUX</category>
+      </categories>
+      <tags>
+        <tag>eBPF</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>容器volume基本介绍</title>
     <url>/posts/4b81a639.html</url>
     <content><![CDATA[<h2 id="容器volume"><a href="#容器volume" class="headerlink" title="容器volume"></a>容器volume</h2><h3 id="匿名挂载，具名挂载和指定路径挂载"><a href="#匿名挂载，具名挂载和指定路径挂载" class="headerlink" title="匿名挂载，具名挂载和指定路径挂载"></a>匿名挂载，具名挂载和指定路径挂载</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 匿名挂载</span></span><br><span class="line">-v 容器内路径</span><br><span class="line">docker run -d -P --name nginx01 -v /etc/nginx nginx</span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看node 上的volume</span></span><br><span class="line">ubuntu@xinrantest01:~$ docker volume ls</span><br><span class="line">DRIVER              VOLUME NAME</span><br><span class="line">local               cf411242c0f1d323d2d2ab8a81d144caa6d536d992954231f426c35221adf2e3</span><br><span class="line"><span class="meta">#</span><span class="bash"> 可以发现，匿名挂载只写容器里的路径，没有写host上的路径</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 具名挂载</span></span><br><span class="line">-v host路径：容器内路径 （与-p相似）</span><br><span class="line">ubuntu@xinrantest01:~$ docker run -d -P --name nginx02 -v juming-nginx:/etc/nginx nginx</span><br><span class="line">5f61a3a6d01cd8db3bd99fa1738d0b6cfc74df366dc8ba8b1f4cbe0c97b2cc72</span><br><span class="line">ubuntu@xinrantest01:~$ docker volume ls</span><br><span class="line">DRIVER              VOLUME NAME</span><br><span class="line">local               cf411242c0f1d323d2d2ab8a81d144caa6d536d992954231f426c35221adf2e3</span><br><span class="line">local               juming-nginx</span><br><span class="line"><span class="meta">#</span><span class="bash">这里指定了juming-nginx为host上要挂载的目录，这个目录在docker run时被创建</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看volume在host上的路径</span></span><br></pre></td></tr></table></figure>
@@ -270,35 +299,6 @@
       </categories>
       <tags>
         <tag>docker</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>ebpf-intro</title>
-    <url>/posts/85f2c2fa.html</url>
-    <content><![CDATA[<p>bpf - bakerly profiling filter</p>
-<p>最早是抓包用的，最经典的应用：tcpdump就用bpf。</p>
-<p>没有bpf之前，抓包要抓nic上所有的包，然后再进行分析</p>
-<p>有了bpf之后，可以插入一段小的代码可以指定tcp port，ip等。</p>
-<p>ebpf - extension bpf</p>
-<p>主要做网络，但远不止网络领域。可以抓system call，linux kernel的function call</p>
-<p>kprobe -&gt; fetch kernel</p>
-<p>uprobe -&gt; fetch user space</p>
-<p>perf events</p>
-<p>XDP/AF_XDP</p>
-<p>bpf vs ebpf vm - &gt; java vm / webassembly</p>
-<p>c  -&gt; 编译成ebpf backend  -&gt; kernel native??</p>
-<p>程序方面：</p>
-<p>bpf只有两个32bit寄存器，16个32bit内存</p>
-<p>ebpf有11个64bit寄存器，512个stack。没有堆的概念，因为在ebpf里面不能new。</p>
-<p><img src="/posts/85f2c2fa/image-20210423154407377.png" alt="image-20210423154407377"></p>
-<p>maps：user space /kernel space shares data through maps (k-v)。</p>
-<p>bpftrace vs bcc vs c program </p>
-]]></content>
-      <categories>
-        <category>LINUX</category>
-      </categories>
-      <tags>
-        <tag>eBPF</tag>
       </tags>
   </entry>
   <entry>
@@ -530,33 +530,17 @@
       </tags>
   </entry>
   <entry>
-    <title>istio-gateway</title>
-    <url>/posts/def4f008.html</url>
-    <content><![CDATA[<p><img src="/posts/def4f008/image-20210309150445057.png" alt="image-20210309150445057"></p>
-<p>serviceentry：也可以访问外部服务。</p>
-<h2 id="gateway简介"><a href="#gateway简介" class="headerlink" title="gateway简介"></a>gateway简介</h2><ol>
-<li><p>L4-L6的负载均衡</p>
-</li>
-<li><p>提供对外的mtls</p>
-</li>
-</ol>
-<p>在istio网格中，gateway可以部署任意多个，可以共用一个，也可以每个租户，namespace单独隔离。</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">networking.istio.io/v1alpha3</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Gateway</span> <span class="comment"># istio的一个CRD对象</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">bookinfo-gateway</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">istio:</span> <span class="string">ingressgateway</span> <span class="comment"># use istio default controller</span></span><br><span class="line">  <span class="attr">servers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">port:</span></span><br><span class="line">      <span class="attr">number:</span> <span class="number">80</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">http</span></span><br><span class="line">      <span class="attr">protocol:</span> <span class="string">HTTP</span></span><br><span class="line">    <span class="attr">hosts:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">bookinfo.com</span>       <span class="comment"># 允许通过外部访问的域名</span></span><br></pre></td></tr></table></figure>
-<p><strong>VirtualService</strong>定义gateway L7路由，为访问bookinfo.com的http流量，提供路由匹配转发策略。</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">networking.istio.io/v1alpha3</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">VirtualService</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">bookinfo</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">hosts:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">bookinfo.com</span>      <span class="comment"># 和上面的host字段一样</span></span><br><span class="line">  <span class="attr">gateways:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">bookinfo-gateway</span>  <span class="comment"># 绑定到上面的gateway</span></span><br><span class="line">  <span class="attr">http:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">match:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">exact:</span> <span class="string">/productpage</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">prefix:</span> <span class="string">/static</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">exact:</span> <span class="string">/login</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">exact:</span> <span class="string">/logout</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">prefix:</span> <span class="string">/api/v1/products</span></span><br><span class="line">    <span class="attr">route:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">destination:</span>   <span class="comment"># 如果上述条件之一满足，则去一个叫“productpage”的destinationrule</span></span><br><span class="line">        <span class="attr">host:</span> <span class="string">productpage</span></span><br><span class="line">        <span class="attr">port:</span></span><br><span class="line">          <span class="attr">number:</span> <span class="number">9080</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p><strong>kubernetes Ingress</strong> vs <strong>Isito gateway</strong></p>
-<p><img src="/posts/def4f008/image-20210309151602156.png" alt="image-20210309151602156"></p>
-<h2 id="gateway原理及实现"><a href="#gateway原理及实现" class="headerlink" title="gateway原理及实现"></a>gateway原理及实现</h2><figure class="highlight haml"><table><tr><td class="code"><pre><span class="line">pilot-agent</span><br><span class="line">-<span class="ruby"> <span class="symbol">args:</span></span></span><br><span class="line"><span class="ruby">   - proxy</span></span><br><span class="line"><span class="ruby">   - router</span></span><br><span class="line"><span class="ruby">   - --domain</span></span><br><span class="line"><span class="ruby">   - <span class="variable">$(</span>POD_NAMESPACE).svc.cluster.local</span></span><br><span class="line"><span class="ruby">   - --proxyLogLevel=warning</span></span><br><span class="line"><span class="ruby">   - --proxyComponentLogLevel=<span class="symbol">misc:</span>error</span></span><br><span class="line"><span class="ruby">   - --log_output_level=<span class="symbol">default:</span>info</span></span><br><span class="line"><span class="ruby">   - --serviceCluster</span></span><br><span class="line"><span class="ruby">   - istio-ingressgateway</span></span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>Istio</category>
-      </categories>
-  </entry>
-  <entry>
     <title>istio学习（1）-pilot</title>
     <url>/posts/a94c45db.html</url>
     <content><![CDATA[<h2 id="service-mesh（服务网格）"><a href="#service-mesh（服务网格）" class="headerlink" title="service mesh（服务网格）"></a>service mesh（服务网格）</h2><p>Service Mesh通过一个个”代理” 来为微服务转发/接收所有流量，通过控制这些代理，就可以实现服务连接，注册，发现，负载均衡，熔断，监控等等一系列服务治理相关功能，从而微服务的代码不再需要服务治理的实现，换句话说，也就是服务治理对于微服务开发者而言是透明的。如下图所示：绿色方块为微服务，蓝色方块为 service mesh 的代理，蓝色线条为服务间通讯。可以看到蓝色的方块和线条组成了整个网格。这个网络就是 Service Mesh。</p>
 <img src="/posts/a94c45db/v2-638a9d12e8a7406b7a733f2eadf989f5_1440w.jpg" alt="img" style="zoom:30%;">
 
+<p>linkerd： control plane + data plane(rust)</p>
+<p>Isito: control plane(go)</p>
+<p>Envoy: data plane(c ++)</p>
+<p>client app 发送http/mysql等L7的请求，然后走到tcp/ip，被iptables截获和转发到envoy的15001端口，然后envoy再转发。到了server端，又由iptables转到envoy，然后在转发到server app。</p>
+<p>envoy的配置文件</p>
+<p>listener</p>
 <h2 id="Istio"><a href="#Istio" class="headerlink" title="Istio"></a>Istio</h2><p>Go编写，控制面。对应的数据面是通常是envoy（基于C++）</p>
 <h3 id="架构图"><a href="#架构图" class="headerlink" title="架构图"></a>架构图</h3><p><img src="/posts/a94c45db/arch.svg" alt="The overall architecture of an Istio-based application."></p>
 <h3 id="基本组件"><a href="#基本组件" class="headerlink" title="基本组件"></a>基本组件</h3><h4 id="envoy"><a href="#envoy" class="headerlink" title="envoy"></a>envoy</h4><p>以sidecar的形式运行在服务所在的pod中，所有service的流量进出都必须通过envoy proxy，用来控制service之间的访问，service是感知不到envoy proxy的存在。</p>
@@ -624,6 +608,28 @@
 <p>192.168.0.196 ci</p>
 <p>192.168.0.199 zhang</p>
 ]]></content>
+      <categories>
+        <category>Istio</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>istio-gateway</title>
+    <url>/posts/def4f008.html</url>
+    <content><![CDATA[<p><img src="/posts/def4f008/image-20210309150445057.png" alt="image-20210309150445057"></p>
+<p>serviceentry：也可以访问外部服务。</p>
+<h2 id="gateway简介"><a href="#gateway简介" class="headerlink" title="gateway简介"></a>gateway简介</h2><ol>
+<li><p>L4-L6的负载均衡</p>
+</li>
+<li><p>提供对外的mtls</p>
+</li>
+</ol>
+<p>在istio网格中，gateway可以部署任意多个，可以共用一个，也可以每个租户，namespace单独隔离。</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">networking.istio.io/v1alpha3</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Gateway</span> <span class="comment"># istio的一个CRD对象</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">bookinfo-gateway</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">istio:</span> <span class="string">ingressgateway</span> <span class="comment"># use istio default controller</span></span><br><span class="line">  <span class="attr">servers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">port:</span></span><br><span class="line">      <span class="attr">number:</span> <span class="number">80</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">http</span></span><br><span class="line">      <span class="attr">protocol:</span> <span class="string">HTTP</span></span><br><span class="line">    <span class="attr">hosts:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">bookinfo.com</span>       <span class="comment"># 允许通过外部访问的域名</span></span><br></pre></td></tr></table></figure>
+<p><strong>VirtualService</strong>定义gateway L7路由，为访问bookinfo.com的http流量，提供路由匹配转发策略。</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">networking.istio.io/v1alpha3</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">VirtualService</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">bookinfo</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">hosts:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">bookinfo.com</span>      <span class="comment"># 和上面的host字段一样</span></span><br><span class="line">  <span class="attr">gateways:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">bookinfo-gateway</span>  <span class="comment"># 绑定到上面的gateway</span></span><br><span class="line">  <span class="attr">http:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">match:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">exact:</span> <span class="string">/productpage</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">prefix:</span> <span class="string">/static</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">exact:</span> <span class="string">/login</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">exact:</span> <span class="string">/logout</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">prefix:</span> <span class="string">/api/v1/products</span></span><br><span class="line">    <span class="attr">route:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">destination:</span>   <span class="comment"># 如果上述条件之一满足，则去一个叫“productpage”的destinationrule</span></span><br><span class="line">        <span class="attr">host:</span> <span class="string">productpage</span></span><br><span class="line">        <span class="attr">port:</span></span><br><span class="line">          <span class="attr">number:</span> <span class="number">9080</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><strong>kubernetes Ingress</strong> vs <strong>Isito gateway</strong></p>
+<p><img src="/posts/def4f008/image-20210309151602156.png" alt="image-20210309151602156"></p>
+<h2 id="gateway原理及实现"><a href="#gateway原理及实现" class="headerlink" title="gateway原理及实现"></a>gateway原理及实现</h2><figure class="highlight haml"><table><tr><td class="code"><pre><span class="line">pilot-agent</span><br><span class="line">-<span class="ruby"> <span class="symbol">args:</span></span></span><br><span class="line"><span class="ruby">   - proxy</span></span><br><span class="line"><span class="ruby">   - router</span></span><br><span class="line"><span class="ruby">   - --domain</span></span><br><span class="line"><span class="ruby">   - <span class="variable">$(</span>POD_NAMESPACE).svc.cluster.local</span></span><br><span class="line"><span class="ruby">   - --proxyLogLevel=warning</span></span><br><span class="line"><span class="ruby">   - --proxyComponentLogLevel=<span class="symbol">misc:</span>error</span></span><br><span class="line"><span class="ruby">   - --log_output_level=<span class="symbol">default:</span>info</span></span><br><span class="line"><span class="ruby">   - --serviceCluster</span></span><br><span class="line"><span class="ruby">   - istio-ingressgateway</span></span><br></pre></td></tr></table></figure>]]></content>
       <categories>
         <category>Istio</category>
       </categories>
@@ -893,6 +899,54 @@
       </tags>
   </entry>
   <entry>
+    <title>网络虚拟化简介</title>
+    <url>/posts/e41fb1bd.html</url>
+    <content><![CDATA[<img src="/posts/e41fb1bd/image-20210201221242667.png" alt="image-20210201221242667" style="zoom:70%;">
+
+]]></content>
+      <categories>
+        <category>Network</category>
+      </categories>
+      <tags>
+        <tag>虚拟化</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Nginx简介</title>
+    <url>/posts/cc1b6e67.html</url>
+    <content><![CDATA[<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><ul>
+<li>反向代理</li>
+<li>负载均衡</li>
+<li>动静分离</li>
+</ul>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo yum install nginx</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo systemctl start nginx.service</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 访问成功</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> curl localhost:80</span></span><br></pre></td></tr></table></figure>
+<p><strong>测试安装成功</strong></p>
+<p>因为我的测试环境是vagrant vm，所以需要做一个端口映射，这样我们可以在host上访问。</p>
+<img src="/posts/cc1b6e67/image-20210201230936553.png" alt="image-20210201230936553" style="zoom:50%;">
+
+<p>成功！</p>
+<img src="/posts/cc1b6e67/image-20210201231043622.png" alt="image-20210201231043622" style="zoom:50%;">
+
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> nginx -h</span></span><br><span class="line">nginx version: nginx/1.14.1</span><br><span class="line">Usage: nginx [-?hvVtTq] [-s signal] [-c filename] [-p prefix] [-g directives]</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">...</span><br><span class="line">  -s signal     : send signal to a master process: stop, quit, reopen, reload</span><br><span class="line">  -p prefix     : set prefix path (default: /usr/share/nginx/)</span><br><span class="line">  -c filename   : set configuration file (default: /etc/nginx/nginx.conf)</span><br><span class="line">  -g directives : set global directives out of configuration file</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> nginx -s stop 停止</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> nginx -s quit 安全退出</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> nginx -s reload 重新加载配置文件</span></span><br></pre></td></tr></table></figure>
+<h3 id="nginx配置文件"><a href="#nginx配置文件" class="headerlink" title="nginx配置文件"></a>nginx配置文件</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vim /etc/nginx/nginx.conf</span></span><br></pre></td></tr></table></figure>
+<p>可以看到nginx server是监听在80端口的，我们可以修改端口，然后用<code>nginx -s reload</code>来生效。</p>
+<img src="/posts/cc1b6e67/image-20210201231634344.png" alt="image-20210201231634344" style="zoom:50%;">
+
+
+
+<h3 id="详解nginx-conf"><a href="#详解nginx-conf" class="headerlink" title="详解nginx.conf"></a>详解nginx.conf</h3><p> 三部分</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">user  www;# 工作进程的属主</span><br><span class="line"> worker_processes  4;# 工作进程数，一般与 CPU 核数等同</span><br><span class="line"> </span><br><span class="line"><span class="meta"> #</span><span class="bash">error_log  logs/error.log;</span></span><br><span class="line"><span class="meta"> #</span><span class="bash">error_log  logs/error.log  notice;</span></span><br><span class="line"><span class="meta"> #</span><span class="bash">error_log  logs/error.log  info;</span></span><br><span class="line"> </span><br><span class="line"><span class="meta"> #</span><span class="bash">pid        logs/nginx.pid;</span></span><br><span class="line"> </span><br><span class="line"> events &#123;</span><br><span class="line">    use epoll;#Linux 下性能最好的 event 模式</span><br><span class="line">    worker_connections  2048;# 每个工作进程允许最大的同时连接数</span><br><span class="line"> &#125;</span><br><span class="line"> </span><br><span class="line"> http &#123;</span><br><span class="line">		upstream xxx&#123;</span><br><span class="line">				server1:port1</span><br><span class="line">				server2:port3</span><br><span class="line">		&#125; </span><br><span class="line">		</span><br><span class="line">		server &#123;</span><br><span class="line">				location / &#123;</span><br><span class="line">						proxy_pass xxx</span><br><span class="line">				&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p><a href="https://www.cnblogs.com/fengzhongzhuzu/p/8848115.html">https://www.cnblogs.com/fengzhongzhuzu/p/8848115.html</a></p>
+<h3 id="Nginx的负载均衡调度算法"><a href="#Nginx的负载均衡调度算法" class="headerlink" title="Nginx的负载均衡调度算法"></a>Nginx的负载均衡调度算法</h3><h4 id="weight轮询-默认，常用"><a href="#weight轮询-默认，常用" class="headerlink" title="weight轮询(默认，常用)"></a>weight轮询(默认，常用)</h4><p>收到的请求<strong>按照权重分配</strong>到不同的后端服务器，即使在使用过程中，某一台后端服务器宕机，Nginx会自动将该服务器剔除出队列，请求受理情况不会受到任何影响。这种方式下，可以给不同的后端服务器设置一个权重值(weight)，用于调整不同的服务器上请求的分配率；权重数据越大，被分配到请求的几率越大；该权重值，主要是针对实际工作环境中不同的后端服务器硬件配置进行调整的。</p>
+<h4 id="ip-hash（常用）"><a href="#ip-hash（常用）" class="headerlink" title="ip_hash（常用）"></a>ip_hash（常用）</h4><p>每个请求按照发起客户端的ip的hash结果进行匹配，这样的算法下一个固定ip地址的客户端总会访问到同一个后端服务器，这也在一定程度上解决了集群部署环境下<strong>session共享的</strong>问题。</p>
+<h4 id="fair智能调整调度算法"><a href="#fair智能调整调度算法" class="headerlink" title="fair智能调整调度算法"></a>fair智能调整调度算法</h4><p>动态的根据后端服务器的请求处理到响应的时间进行均衡分配，响应时间短处理效率高的服务器分配到请求的概率高，响应时间长处理效率低的服务器分配到的请求少；结合了前两者的优点的一种调度算法。但是需要注意的是Nginx默认不支持fair算法，如果要使用这种调度算法，请安装upstream_fair模块。</p>
+<h4 id="url-hash"><a href="#url-hash" class="headerlink" title="url_hash"></a>url_hash</h4><p>按照访问的url的hash结果分配请求，每个请求的url会指向后端固定的某个服务器，可以在Nginx作为静态服务器的情况下提高缓存效率。同样要注意Nginx默认不支持这种调度算法，要使用的话需要安装Nginx的hash软件包。</p>
+]]></content>
+      <categories>
+        <category>Network</category>
+      </categories>
+  </entry>
+  <entry>
     <title>计算机网络概述</title>
     <url>/posts/7c4ca347.html</url>
     <content><![CDATA[<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><h3 id="1-速率相关性能指标"><a href="#1-速率相关性能指标" class="headerlink" title="1. 速率相关性能指标"></a>1. 速率相关性能指标</h3><h4 id="速率"><a href="#速率" class="headerlink" title="速率"></a>速率</h4><p>在数字信道上传输数据位的速度。单位: b/s,Kb/s,Mb/s,Tb/s，<br>如果用字节表示，则是B/s,KB/s,MB/s,TB/s（1Byte=8Bit）</p>
@@ -972,54 +1026,6 @@
 
 
 <p>每个电脑插在集线器的一个端口上。这样每台电脑发送数据都要通过集线器。比如A要给E发消息，那么A发出一个包，这个包到达hub之后，会被hub发往各个端口，BCDE都能收到，只有E收到这个包，发现包头的MAC标识的时自己，于是接收这个包，其他的BCD都丢弃这个包。</p>
-]]></content>
-      <categories>
-        <category>Network</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>网络虚拟化简介</title>
-    <url>/posts/e41fb1bd.html</url>
-    <content><![CDATA[<img src="/posts/e41fb1bd/image-20210201221242667.png" alt="image-20210201221242667" style="zoom:70%;">
-
-]]></content>
-      <categories>
-        <category>Network</category>
-      </categories>
-      <tags>
-        <tag>虚拟化</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Nginx简介</title>
-    <url>/posts/cc1b6e67.html</url>
-    <content><![CDATA[<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><ul>
-<li>反向代理</li>
-<li>负载均衡</li>
-<li>动静分离</li>
-</ul>
-<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo yum install nginx</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo systemctl start nginx.service</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 访问成功</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> curl localhost:80</span></span><br></pre></td></tr></table></figure>
-<p><strong>测试安装成功</strong></p>
-<p>因为我的测试环境是vagrant vm，所以需要做一个端口映射，这样我们可以在host上访问。</p>
-<img src="/posts/cc1b6e67/image-20210201230936553.png" alt="image-20210201230936553" style="zoom:50%;">
-
-<p>成功！</p>
-<img src="/posts/cc1b6e67/image-20210201231043622.png" alt="image-20210201231043622" style="zoom:50%;">
-
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> nginx -h</span></span><br><span class="line">nginx version: nginx/1.14.1</span><br><span class="line">Usage: nginx [-?hvVtTq] [-s signal] [-c filename] [-p prefix] [-g directives]</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">...</span><br><span class="line">  -s signal     : send signal to a master process: stop, quit, reopen, reload</span><br><span class="line">  -p prefix     : set prefix path (default: /usr/share/nginx/)</span><br><span class="line">  -c filename   : set configuration file (default: /etc/nginx/nginx.conf)</span><br><span class="line">  -g directives : set global directives out of configuration file</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> nginx -s stop 停止</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> nginx -s quit 安全退出</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> nginx -s reload 重新加载配置文件</span></span><br></pre></td></tr></table></figure>
-<h3 id="nginx配置文件"><a href="#nginx配置文件" class="headerlink" title="nginx配置文件"></a>nginx配置文件</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vim /etc/nginx/nginx.conf</span></span><br></pre></td></tr></table></figure>
-<p>可以看到nginx server是监听在80端口的，我们可以修改端口，然后用<code>nginx -s reload</code>来生效。</p>
-<img src="/posts/cc1b6e67/image-20210201231634344.png" alt="image-20210201231634344" style="zoom:50%;">
-
-
-
-<h3 id="详解nginx-conf"><a href="#详解nginx-conf" class="headerlink" title="详解nginx.conf"></a>详解nginx.conf</h3><p> 三部分</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">user  www;# 工作进程的属主</span><br><span class="line"> worker_processes  4;# 工作进程数，一般与 CPU 核数等同</span><br><span class="line"> </span><br><span class="line"><span class="meta"> #</span><span class="bash">error_log  logs/error.log;</span></span><br><span class="line"><span class="meta"> #</span><span class="bash">error_log  logs/error.log  notice;</span></span><br><span class="line"><span class="meta"> #</span><span class="bash">error_log  logs/error.log  info;</span></span><br><span class="line"> </span><br><span class="line"><span class="meta"> #</span><span class="bash">pid        logs/nginx.pid;</span></span><br><span class="line"> </span><br><span class="line"> events &#123;</span><br><span class="line">    use epoll;#Linux 下性能最好的 event 模式</span><br><span class="line">    worker_connections  2048;# 每个工作进程允许最大的同时连接数</span><br><span class="line"> &#125;</span><br><span class="line"> </span><br><span class="line"> http &#123;</span><br><span class="line">		upstream xxx&#123;</span><br><span class="line">				server1:port1</span><br><span class="line">				server2:port3</span><br><span class="line">		&#125; </span><br><span class="line">		</span><br><span class="line">		server &#123;</span><br><span class="line">				location / &#123;</span><br><span class="line">						proxy_pass xxx</span><br><span class="line">				&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
-<p><a href="https://www.cnblogs.com/fengzhongzhuzu/p/8848115.html">https://www.cnblogs.com/fengzhongzhuzu/p/8848115.html</a></p>
-<h3 id="Nginx的负载均衡调度算法"><a href="#Nginx的负载均衡调度算法" class="headerlink" title="Nginx的负载均衡调度算法"></a>Nginx的负载均衡调度算法</h3><h4 id="weight轮询-默认，常用"><a href="#weight轮询-默认，常用" class="headerlink" title="weight轮询(默认，常用)"></a>weight轮询(默认，常用)</h4><p>收到的请求<strong>按照权重分配</strong>到不同的后端服务器，即使在使用过程中，某一台后端服务器宕机，Nginx会自动将该服务器剔除出队列，请求受理情况不会受到任何影响。这种方式下，可以给不同的后端服务器设置一个权重值(weight)，用于调整不同的服务器上请求的分配率；权重数据越大，被分配到请求的几率越大；该权重值，主要是针对实际工作环境中不同的后端服务器硬件配置进行调整的。</p>
-<h4 id="ip-hash（常用）"><a href="#ip-hash（常用）" class="headerlink" title="ip_hash（常用）"></a>ip_hash（常用）</h4><p>每个请求按照发起客户端的ip的hash结果进行匹配，这样的算法下一个固定ip地址的客户端总会访问到同一个后端服务器，这也在一定程度上解决了集群部署环境下<strong>session共享的</strong>问题。</p>
-<h4 id="fair智能调整调度算法"><a href="#fair智能调整调度算法" class="headerlink" title="fair智能调整调度算法"></a>fair智能调整调度算法</h4><p>动态的根据后端服务器的请求处理到响应的时间进行均衡分配，响应时间短处理效率高的服务器分配到请求的概率高，响应时间长处理效率低的服务器分配到的请求少；结合了前两者的优点的一种调度算法。但是需要注意的是Nginx默认不支持fair算法，如果要使用这种调度算法，请安装upstream_fair模块。</p>
-<h4 id="url-hash"><a href="#url-hash" class="headerlink" title="url_hash"></a>url_hash</h4><p>按照访问的url的hash结果分配请求，每个请求的url会指向后端固定的某个服务器，可以在Nginx作为静态服务器的情况下提高缓存效率。同样要注意Nginx默认不支持这种调度算法，要使用的话需要安装Nginx的hash软件包。</p>
 ]]></content>
       <categories>
         <category>Network</category>
@@ -1251,6 +1257,59 @@
       </tags>
   </entry>
   <entry>
+    <title>rdma介绍</title>
+    <url>/posts/9e990020.html</url>
+    <content><![CDATA[<h1 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h1><h2 id="DMA"><a href="#DMA" class="headerlink" title="DMA"></a>DMA</h2><p><img src="/posts/9e990020/image-20210511163124035.png" alt="image-20210511163124035"></p>
+<p>在同一台Host上，不通过CPU的move来做数据搬移。 </p>
+<p>Free up CPU</p>
+<h2 id="RDMA"><a href="#RDMA" class="headerlink" title="RDMA"></a>RDMA</h2><p>Remote DMA, cross host. </p>
+<p>secure direct memory to memory data communication without CPU </p>
+<p><img src="/posts/9e990020/image-20210511163734543.png" alt="image-20210511163734543"></p>
+<p>iMC: intergrated memory controller.</p>
+<p>blue dot line: control path, need cpu to setup</p>
+<p>red line: data path, without cpu</p>
+<img src="/posts/9e990020/image-20210511164132817.png" alt="image-20210511164132817" style="zoom:80%;">
+
+<p>map NIC hw resource into user space</p>
+<p>verbs API</p>
+<p>message level  </p>
+<h1 id="Protocol-Introduction"><a href="#Protocol-Introduction" class="headerlink" title="Protocol Introduction"></a>Protocol Introduction</h1><p><img src="/posts/9e990020/image-20210511165341492.png" alt="image-20210511165341492"></p>
+<h1 id="Details（ROCEv2）"><a href="#Details（ROCEv2）" class="headerlink" title="Details（ROCEv2）"></a>Details（ROCEv2）</h1><p>iscsi/scsi over rdma</p>
+<p>RDMA provides Channel based IO.  This channel allows an application using an RDMA device<br>to directly read and write remote virtual memory.  </p>
+<p>The registration process pins the memory pages (to prevent the pages from being swapped out<br>and to keep physical &lt;-&gt; virtual mapping).  </p>
+<p>The registration process writes the virtual to physical address table to the network adapter.<br>When registering memory, permissions are set for the region. Permissions are local write, remote<br>read, remote write, atomic, and bind  </p>
+<p>Every MR has a remote and a local key (r_key, l_key). Local keys are used by the local HCA to<br>access local memory, such as during a receive operation. Remote keys are given to the remote<br>HCA to allow a remote process access to system memory during RDMA operations.  </p>
+<p>Scatter Gather  - &gt; what’s the size??</p>
+<p>If we have completion with bad status in a WR, the rest of the completions will be all be bad (and<br>the Work Queue will be moved to error state)   - &gt; why ??</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>公司内部ssh设置socks代理</title>
+    <url>/posts/a9be766e.html</url>
+    <content><![CDATA[<blockquote>
+<p><a href="https://intelpedia.intel.com/Proxy_at_Intel">Proxy at Intel - Intelpedia</a></p>
+<p>因为公司设置了vpn，所以通过公司电脑访问外网时需要通过代理（http, https, socks等）。</p>
+</blockquote>
+<h4 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h4><p>在部署hexo时，用到了git deployer。这个deployer在每次<code>hexo deploy</code>的时候会通过ssh链接我的github账号的xxx.github.io项目，连接报错。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 看一下hexo的_config.yml文件</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat _config.yml  | grep -A10 deploy</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># Docs: https://hexo.io/docs/one-command-deployment</span></span></span><br><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repository: git@github.com:xxinran/xxinran.github.io.git</span><br><span class="line">  branch: main</span><br></pre></td></tr></table></figure>
+<p>在sshkey上传成功的情况下，测试ssh连接github</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">ssh -T git@github.com  #失败</span><br></pre></td></tr></table></figure>
+<p>后来发现是ssh没有配置代理，有两个方案：</p>
+<ol>
+<li>设置http代理（失败了）</li>
+<li>设置socks代理（成功）</li>
+</ol>
+<h4 id="如何设置socks代理"><a href="#如何设置socks代理" class="headerlink" title="如何设置socks代理"></a>如何设置socks代理</h4><p>在<a href="https://intelpedia.intel.com/Proxy_at_Intel#Using_openssh_to_connect_out_via_SOCKS_proxy">公司文档</a>中看到，可以通过设置socks代理，建立对外部的ssh连接。</p>
+<p>需要修改<code>.ssh/config</code>文件：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> linux</span></span><br><span class="line">Host *</span><br><span class="line">   ProxyCommand nc -X 5 -x proxy-xxx.intel.com:1080 %h %p</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> windows上需要把nc命令改成connect，参数-S表示是socks代理。</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat ~/.ssh/config | tail -5</span></span><br><span class="line">Host github.com</span><br><span class="line">   HostName github.com</span><br><span class="line">   User git</span><br><span class="line">   ProxyCommand connect -S proxy-xxx.intel.com:1080 %h %p</span><br><span class="line">   ForwardAgent yes</span><br></pre></td></tr></table></figure>
+<p>之后就可以成功ssh连接github了。</p>
+<p>但是<code>ping proxy-xxx.intel.com</code>是ping不通的，应该是公司关闭了。</p>
+]]></content>
+      <categories>
+        <category>Notes</category>
+      </categories>
+  </entry>
+  <entry>
     <title>QAT在Ubuntu18.04上的安装和虚拟化</title>
     <url>/posts/461bb783.html</url>
     <content><![CDATA[<p>本文将介绍QAT c62xx设备在Ubuntu 18.04上的安装部署和虚拟化。</p>
@@ -1273,48 +1332,7 @@
 <h4 id="configure-make-and-make-install-the-software-packages"><a href="#configure-make-and-make-install-the-software-packages" class="headerlink" title="configure, make and make install the software packages."></a>configure, make and make install the software packages.</h4><figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="comment"># suggest to clear up the env if there is a previous or modified version installed</span></span><br><span class="line"><span class="variable">$ </span>make uninstall</span><br><span class="line"><span class="variable">$ </span>./configure --enable-icp-sriov=host  <span class="comment"># It fails if missing dependency package.</span></span><br><span class="line"><span class="variable">$ </span>make</span><br><span class="line"><span class="variable">$ </span>make install  </span><br><span class="line"><span class="variable">$ </span>service qat_service start  </span><br><span class="line"><span class="variable">$ </span>service qat_service_vfs start</span><br></pre></td></tr></table></figure>
 <p>NOTE: in Guest OS, enable the SR-IOV build on the host by using:</p>
 <figure class="highlight jboss-cli"><table><tr><td class="code"><pre><span class="line">$ <span class="string">./configure</span> <span class="params">--enable-icp-sriov=guest</span></span><br></pre></td></tr></table></figure>
-<h4 id="Verifying-SR-IOV-On-The-Host"><a href="#Verifying-SR-IOV-On-The-Host" class="headerlink" title="Verifying SR-IOV On The Host"></a>Verifying SR-IOV On The Host</h4><figure class="highlight llvm"><table><tr><td class="code"><pre><span class="line">$ lspci | grep <span class="number">37</span><span class="keyword">c</span><span class="number">9</span>  </span><br><span class="line"># <span class="keyword">or</span> </span><br><span class="line">$ lspci -d <span class="number">8086</span>:<span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line">$ lspci -d:<span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line">...</span><br><span class="line"><span class="number">01</span>:<span class="number">01.0</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">01.1</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">01.2</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line">...</span><br><span class="line"><span class="number">01</span>:<span class="number">01.7</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">02.0</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">02.1</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line">...</span><br><span class="line"><span class="number">01</span>:<span class="number">02.6</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">02.7</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br></pre></td></tr></table></figure>
-<p>Or using <code>adf_ctl</code></p>
-<figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>adf_ctl status</span><br></pre></td></tr></table></figure>
-<p>This utility can bring up/down device by ourselves.</p>
-<h4 id="Detailed-SR-IOV-enabling-please-refer-to-the-guide"><a href="#Detailed-SR-IOV-enabling-please-refer-to-the-guide" class="headerlink" title="Detailed SR-IOV enabling please refer to the guide."></a>Detailed SR-IOV enabling please refer to the guide.</h4><p>Please refer to:<br><a href="https://01.org/sites/default/files/downloads/330689qatvirtualizationappnoterev008us.pdf">https://01.org/sites/default/files/downloads/330689qatvirtualizationappnoterev008us.pdf</a></p>
-]]></content>
-      <categories>
-        <category>Device</category>
-      </categories>
-      <tags>
-        <tag>QAT</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>rdma介绍</title>
-    <url>/posts/9e990020.html</url>
-    <content><![CDATA[<h1 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h1><h2 id="DMA"><a href="#DMA" class="headerlink" title="DMA"></a>DMA</h2><p><img src="/posts/9e990020/image-20210511163124035.png" alt="image-20210511163124035"></p>
-<p>在同一台Host上，不通过CPU的move来做数据搬移。 </p>
-<p>Free up CPU</p>
-<h2 id="RDMA"><a href="#RDMA" class="headerlink" title="RDMA"></a>RDMA</h2><p>Remote DMA, cross host. </p>
-<p>secure direct memory to memory data communication without CPU </p>
-<p><img src="/posts/9e990020/image-20210511163734543.png" alt="image-20210511163734543"></p>
-<p>iMC: intergrated memory controller.</p>
-<p>blue dot line: control path, need cpu to setup</p>
-<p>red line: data path, without cpu</p>
-<img src="/posts/9e990020/image-20210511164132817.png" alt="image-20210511164132817" style="zoom:80%;">
-
-<p>map NIC hw resource into user space</p>
-<p>verbs API</p>
-<p>message level  </p>
-<h1 id="Protocol-Introduction"><a href="#Protocol-Introduction" class="headerlink" title="Protocol Introduction"></a>Protocol Introduction</h1><p><img src="/posts/9e990020/image-20210511165341492.png" alt="image-20210511165341492"></p>
-<h1 id="Details（ROCEv2）"><a href="#Details（ROCEv2）" class="headerlink" title="Details（ROCEv2）"></a>Details（ROCEv2）</h1>]]></content>
-  </entry>
-  <entry>
-    <title>公司内部ssh设置socks代理</title>
-    <url>/posts/a9be766e.html</url>
-    <content><![CDATA[<blockquote>
-<p><a href="https://intelpedia.intel.com/Proxy_at_Intel">Proxy at Intel - Intelpedia</a></p>
-<p>因为公司设置了vpn，所以通过公司电脑访问外网时需要通过代理（http, https, socks等）。</p>
-</blockquote>
-<h4 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h4><p>在部署hexo时，用到了git deployer。这个deployer在每次<code>hexo deploy</code>的时候会通过ssh链接我的github账号的xxx.github.io项目，连接报错。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 看一下hexo的_config.yml文件</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat _config.yml  | grep -A10 deploy</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># Docs: https://hexo.io/docs/one-command-deployment</span></span></span><br><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repository: git@github.com:xxinran/xxinran.github.io.git</span><br><span class="line">  branch: main</span><br></pre></td></tr></table></figure>
+<h4 id="Verifying-SR-IOV-On-The-Host"><a href="#Verifying-SR-IOV-On-The-Host" class="headerlink" title="Verifying SR-IOV On The Host"></a>Verifying SR-IOV On The Host</h4><figure class="highlight llvm"><table><tr><td class="code"><pre><span class="line">$ lspci | grep <span class="number">37</span><span class="keyword">c</span><span class="number">9</span>  </span><br><span class="line"># <span class="keyword">or</span> </span><br><span class="line">$ lspci -d <span class="number">8086</span>:<span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line">$ lspci -d:<span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line">...</span><br><span class="line"><span class="number">01</span>:<span class="number">01.0</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">01.1</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">01.2</span> Co-processor: Intel Corporation Device <span clacommand-deployment</span></span></span><br><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repository: git@github.com:xxinran/xxinran.github.io.git</span><br><span class="line">  branch: main</span><br></pre></td></tr></table></figure>
 <p>在sshkey上传成功的情况下，测试ssh连接github</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">ssh -T git@github.com  #失败</span><br></pre></td></tr></table></figure>
 <p>后来发现是ssh没有配置代理，有两个方案：</p>
@@ -1380,6 +1398,46 @@
       </categories>
   </entry>
   <entry>
+    <title>在mac上用vagrant和virtualbox创建虚拟机</title>
+    <url>/posts/e1d7a8.html</url>
+    <content><![CDATA[<h2 id="vagrant介绍"><a href="#vagrant介绍" class="headerlink" title="vagrant介绍"></a>vagrant介绍</h2><p>基于ruby，用于创建和部署虚拟化开发环境。它 使用Oracle的开源<a href="https://baike.baidu.com/item/VirtualBox">VirtualBox</a>虚拟化系统，使用 Chef创建自动化虚拟环境。我们可以使用它来干如下这些事：</p>
+<ul>
+<li><p>建立和删除虚拟机</p>
+</li>
+<li><p>配置虚拟机运行参数</p>
+</li>
+<li><p>管理虚拟机运行状态</p>
+</li>
+<li><p>自动配置和安装开发环境ß</p>
+</li>
+<li><p>打包和分发虚拟机运行环境</p>
+</li>
+</ul>
+<p>　　Vagrant的运行，需要<strong>依赖</strong>某项具体的<strong>虚拟化技术</strong>，最常见的有VirtualBox以及VMWare两款，早期，Vagrant只支持VirtualBox，后来才加入了VMWare的支持。现在vagrant支持更多的虚拟化系统，包括libvirt，kvm，qemu，vmware，甚至docker。但还是以virtualbox为主。</p>
+<img src="/posts/e1d7a8/image-20210128223212650.png" alt="image-20210128223212650" style="zoom:50%;">
+
+<h3 id="vagrant和virtualbox"><a href="#vagrant和virtualbox" class="headerlink" title="vagrant和virtualbox"></a>vagrant和virtualbox</h3><p>virtualbox本身也可以创建vm，只是相对麻烦，vagrant可以调用virtualbox的接口更加方便的创建vm。</p>
+<h3 id="在mac上安装vagrant-virtualbox"><a href="#在mac上安装vagrant-virtualbox" class="headerlink" title="在mac上安装vagrant+virtualbox"></a>在mac上安装vagrant+virtualbox</h3><h4 id="安装vagrant"><a href="#安装vagrant" class="headerlink" title="安装vagrant"></a>安装vagrant</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">brew install vagrant</span><br><span class="line">vagrant -v</span><br></pre></td></tr></table></figure>
+<h4 id="安装virtualbox"><a href="#安装virtualbox" class="headerlink" title="安装virtualbox"></a>安装virtualbox</h4><p>国外的dmg文件下载很慢，我是国内随便找了一个<a href="https://ftp-new-pc.pconline.com.cn/pub/download/201909/pconline1567810102832.dmg?md5=dLIvaxUfMIGWrr-oloz2Jg&expires=1611979478">源</a>。</p>
+<img src="/posts/e1d7a8/image-20210130123540411.png" alt="image-20210130123540411" style="zoom:50%;">
+
+<p>virtualbox本身也可以创建vm，但是比较复杂。</p>
+<h4 id="下载box"><a href="#下载box" class="headerlink" title="下载box"></a>下载box</h4><p>vagrant中box的概念，类似于docker image。我们可以通过指定box来启动一个vagrant vm。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 先下载box file到本地，再add</span></span><br><span class="line">vagrant box add centos8 /path/to/boxfile</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 直接从网上下载box file，并且add</span></span><br><span class="line">vagrant box add centos8 url_to_box_file</span><br></pre></td></tr></table></figure>
+<p>vagrantbox的官方下载地址从国内连接很慢，我找到了一些国内的源。</p>
+<blockquote>
+<p>centos 8</p>
+<p><a href="http://mirrors.ustc.edu.cn/centos-cloud/centos/8/vagrant/x86_64/images/CentOS-8-Vagrant-8.3.2011-20201204.2.x86_64.vagrant-virtualbox.box">http://mirrors.ustc.edu.cn/centos-cloud/centos/8/vagrant/x86_64/images/CentOS-8-Vagrant-8.3.2011-20201204.2.x86_64.vagrant-virtualbox.box</a></p>
+<p>ubuntu1804</p>
+<p><a href="https://mirrors.tuna.tsinghua.edu.cn/ubuntu-cloud-images/bionic/current/bionic-server-cloudimg-amd64-vagrant.box">https://mirrors.tuna.tsinghua.edu.cn/ubuntu-cloud-images/bionic/current/bionic-server-cloudimg-amd64-vagrant.box</a></p>
+</blockquote>
+<h4 id="启动虚拟机"><a href="#启动虚拟机" class="headerlink" title="启动虚拟机"></a>启动虚拟机</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vagrant box add centos8 http://mirrors.ustc.edu.cn/centos-cloud/centos/8/vagrant/x86_64/images/CentOS-8-Vagrant-8.3.2011-20201204.2.x86_64.vagrant-virtualbox.box</span></span><br><span class="line">==&gt; box: Box file was not detected as metadata. Adding it directly...</span><br><span class="line">==&gt; box: Adding box &#x27;centos8&#x27; (v0) for provider:</span><br><span class="line">    box: Downloading: http://mirrors.ustc.edu.cn/centos-cloud/centos/8/vagrant/x86_64/images/CentOS-8-Vagrant-8.3.2011-20201204.2.x86_64.vagrant-virtualbox.box</span><br><span class="line">==&gt; box: Successfully added box &#x27;centos8&#x27; (v0) for &#x27;virtualbox&#x27;!</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> vagrant box list</span></span><br><span class="line">centos8    (virtualbox, 0)</span><br><span class="line">ubuntu1804 (virtualbox, 0)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 创建本地vagrant目录</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> vagrant</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 这一步会创建一个vm的Vagrantfile，所有关于vm的配置都在这个文件里。</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vagrant init centos8</span></span><br><span class="line">A `Vagrantfile` has been placed in this directory. You are now</span><br><span class="line">ready to `vagrant up` your first virtual environment! Please read</span><br><span class="line">the comments in the Vagrantfile as well as documentation on</span><br><span class="line">`vagrantup.com` for more information on using Vagrant.</span><br><span class="line"> </span><br><span class="line"><span class="meta"> #</span><span class="bash"> 启动vm</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vagrant up</span></span><br><span class="line">Bringing machine &#x27;default&#x27; up with &#x27;virtualbox&#x27; provider...</span><br><span class="line">==&gt; default: Importing base box &#x27;centos8&#x27;...</span><br><span class="line">==&gt; default: Matching MAC address for NAT networking...</span><br><span class="line">==&gt; default: Setting the name of the VM: vagrant_default_1611980890156_41411</span><br><span class="line">==&gt; default: Clearing any previously set network interfaces...</span><br><span class="line">==&gt; default: Preparing network interfaces based on configuration...</span><br><span class="line">    default: Adapter 1: nat</span><br><span class="line">    default: Adapter 2: hostonly</span><br><span class="line">==&gt; default: Forwarding ports...</span><br><span class="line">    default: 22 (guest) =&gt; 2222 (host) (adapter 1)  # 端口映射, 如果起了多个vagrant vm，那么各个</span><br><span class="line">    																								# vm 会映射到host的不同端口</span><br><span class="line">==&gt; default: Booting VM...</span><br><span class="line">==&gt; default: Waiting for machine to boot. This may take a few minutes...</span><br><span class="line">    default: SSH address: 127.0.0.1:2222</span><br><span class="line">    default: SSH username: vagrant</span><br><span class="line">    default: SSH auth method: private key</span><br><span class="line">    default:</span><br><span class="line">    default: Vagrant insecure key detected. Vagrant will automatically replace</span><br><span class="line">    default: this with a newly generated keypair for better security.</span><br><span class="line">    default:</span><br><span class="line">    default: Inserting generated public key within guest...</span><br><span class="line">    default: Removing insecure key from the guest if it&#x27;s present...</span><br><span class="line">    default: Key inserted! Disconnecting and reconnecting using new SSH key...</span><br><span class="line">==&gt; default: Machine booted and ready!</span><br><span class="line">==&gt; default: Checking for guest additions in VM...</span><br><span class="line">    default: No guest additions were detected on the base box for this VM! Guest</span><br><span class="line">    default: additions are required for forwarded ports, shared folders, host only</span><br><span class="line">    default: networking, and more. If SSH fails on this machine, please install</span><br><span class="line">    default: the guest additions and repackage the box to continue.</span><br><span class="line">    default:</span><br><span class="line">    default: This is not an error message; everything may continue to work properly,</span><br><span class="line">    default: in which case you may ignore this message.</span><br><span class="line">==&gt; default: Configuring and enabling network interfaces...</span><br><span class="line">==&gt; default: Rsyncing folder: /Users/xinran/vagrant/ =&gt; /vagrant</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 登入/退出vm</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vagrant ssh</span></span><br><span class="line">Last login: Sat Jan 30 04:28:57 2021 from 10.0.2.2</span><br><span class="line">[vagrant@localhost ~]$ </span><br><span class="line">[vagrant@localhost ~]$ exit</span><br><span class="line">logout</span><br><span class="line">Shared connection to 127.0.0.1 closed.</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看host上的2222端口</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> lsof -i:2222</span></span><br><span class="line">COMMAND     PID   USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME</span><br><span class="line">VBoxHeadl 13238 xinran   16u  IPv4 0x294cd01b85b191f5      0t0  TCP localhost:rockwell-csp2 (LISTEN)</span><br><span class="line">VBoxHeadl 13238 xinran   20u  IPv4 0x294cd01b95fd8815      0t0  TCP localhost:rockwell-csp2-&gt;localhost:63021 (ESTABLISHED)</span><br><span class="line">ssh       13880 xinran    3u  IPv4 0x294cd01b94ae9e35      0t0  TCP localhost:63021-&gt;localhost:rockwell-csp2 (ESTABLISHED)</span><br><span class="line">ssh       13894 xinran    3u  IPv4 0x294cd01b94ae9e35      0t0  TCP localhost:63021-&gt;localhost:rockwell-csp2 (ESTABLISHE</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Note: 在下载box image时，要找到对应provider的box。我第一次下载成了libvirt provider的box，然后vagrant init就失败了，因为我的host上装的是virtualbox作为provider。</p>
+</blockquote>
+]]></content>
+  </entry>
+  <entry>
     <title>在centos8上使能vca-a卡</title>
     <url>/posts/dd7abf56.html</url>
     <content><![CDATA[<h2 id="vca卡的内部结构"><a href="#vca卡的内部结构" class="headerlink" title="vca卡的内部结构"></a>vca卡的内部结构</h2><p><img src="/posts/dd7abf56/image-20210202160154068.png" alt="image-20210202160154068"></p>
@@ -1442,46 +1500,6 @@
       <categories>
         <category>Device</category>
       </categories>
-  </entry>
-  <entry>
-    <title>在mac上用vagrant和virtualbox创建虚拟机</title>
-    <url>/posts/e1d7a8.html</url>
-    <content><![CDATA[<h2 id="vagrant介绍"><a href="#vagrant介绍" class="headerlink" title="vagrant介绍"></a>vagrant介绍</h2><p>基于ruby，用于创建和部署虚拟化开发环境。它 使用Oracle的开源<a href="https://baike.baidu.com/item/VirtualBox">VirtualBox</a>虚拟化系统，使用 Chef创建自动化虚拟环境。我们可以使用它来干如下这些事：</p>
-<ul>
-<li><p>建立和删除虚拟机</p>
-</li>
-<li><p>配置虚拟机运行参数</p>
-</li>
-<li><p>管理虚拟机运行状态</p>
-</li>
-<li><p>自动配置和安装开发环境ß</p>
-</li>
-<li><p>打包和分发虚拟机运行环境</p>
-</li>
-</ul>
-<p>　　Vagrant的运行，需要<strong>依赖</strong>某项具体的<strong>虚拟化技术</strong>，最常见的有VirtualBox以及VMWare两款，早期，Vagrant只支持VirtualBox，后来才加入了VMWare的支持。现在vagrant支持更多的虚拟化系统，包括libvirt，kvm，qemu，vmware，甚至docker。但还是以virtualbox为主。</p>
-<img src="/posts/e1d7a8/image-20210128223212650.png" alt="image-20210128223212650" style="zoom:50%;">
-
-<h3 id="vagrant和virtualbox"><a href="#vagrant和virtualbox" class="headerlink" title="vagrant和virtualbox"></a>vagrant和virtualbox</h3><p>virtualbox本身也可以创建vm，只是相对麻烦，vagrant可以调用virtualbox的接口更加方便的创建vm。</p>
-<h3 id="在mac上安装vagrant-virtualbox"><a href="#在mac上安装vagrant-virtualbox" class="headerlink" title="在mac上安装vagrant+virtualbox"></a>在mac上安装vagrant+virtualbox</h3><h4 id="安装vagrant"><a href="#安装vagrant" class="headerlink" title="安装vagrant"></a>安装vagrant</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">brew install vagrant</span><br><span class="line">vagrant -v</span><br></pre></td></tr></table></figure>
-<h4 id="安装virtualbox"><a href="#安装virtualbox" class="headerlink" title="安装virtualbox"></a>安装virtualbox</h4><p>国外的dmg文件下载很慢，我是国内随便找了一个<a href="https://ftp-new-pc.pconline.com.cn/pub/download/201909/pconline1567810102832.dmg?md5=dLIvaxUfMIGWrr-oloz2Jg&expires=1611979478">源</a>。</p>
-<img src="/posts/e1d7a8/image-20210130123540411.png" alt="image-20210130123540411" style="zoom:50%;">
-
-<p>virtualbox本身也可以创建vm，但是比较复杂。</p>
-<h4 id="下载box"><a href="#下载box" class="headerlink" title="下载box"></a>下载box</h4><p>vagrant中box的概念，类似于docker image。我们可以通过指定box来启动一个vagrant vm。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 先下载box file到本地，再add</span></span><br><span class="line">vagrant box add centos8 /path/to/boxfile</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 直接从网上下载box file，并且add</span></span><br><span class="line">vagrant box add centos8 url_to_box_file</span><br></pre></td></tr></table></figure>
-<p>vagrantbox的官方下载地址从国内连接很慢，我找到了一些国内的源。</p>
-<blockquote>
-<p>centos 8</p>
-<p><a href="http://mirrors.ustc.edu.cn/centos-cloud/centos/8/vagrant/x86_64/images/CentOS-8-Vagrant-8.3.2011-20201204.2.x86_64.vagrant-virtualbox.box">http://mirrors.ustc.edu.cn/centos-cloud/centos/8/vagrant/x86_64/images/CentOS-8-Vagrant-8.3.2011-20201204.2.x86_64.vagrant-virtualbox.box</a></p>
-<p>ubuntu1804</p>
-<p><a href="https://mirrors.tuna.tsinghua.edu.cn/ubuntu-cloud-images/bionic/current/bionic-server-cloudimg-amd64-vagrant.box">https://mirrors.tuna.tsinghua.edu.cn/ubuntu-cloud-images/bionic/current/bionic-server-cloudimg-amd64-vagrant.box</a></p>
-</blockquote>
-<h4 id="启动虚拟机"><a href="#启动虚拟机" class="headerlink" title="启动虚拟机"></a>启动虚拟机</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vagrant box add centos8 http://mirrors.ustc.edu.cn/centos-cloud/centos/8/vagrant/x86_64/images/CentOS-8-Vagrant-8.3.2011-20201204.2.x86_64.vagrant-virtualbox.box</span></span><br><span class="line">==&gt; box: Box file was not detected as metadata. Adding it directly...</span><br><span class="line">==&gt; box: Adding box &#x27;centos8&#x27; (v0) for provider:</span><br><span class="line">    box: Downloading: http://mirrors.ustc.edu.cn/centos-cloud/centos/8/vagrant/x86_64/images/CentOS-8-Vagrant-8.3.2011-20201204.2.x86_64.vagrant-virtualbox.box</span><br><span class="line">==&gt; box: Successfully added box &#x27;centos8&#x27; (v0) for &#x27;virtualbox&#x27;!</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> vagrant box list</span></span><br><span class="line">centos8    (virtualbox, 0)</span><br><span class="line">ubuntu1804 (virtualbox, 0)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 创建本地vagrant目录</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> vagrant</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 这一步会创建一个vm的Vagrantfile，所有关于vm的配置都在这个文件里。</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vagrant init centos8</span></span><br><span class="line">A `Vagrantfile` has been placed in this directory. You are now</span><br><span class="line">ready to `vagrant up` your first virtual environment! Please read</span><br><span class="line">the comments in the Vagrantfile as well as documentation on</span><br><span class="line">`vagrantup.com` for more information on using Vagrant.</span><br><span class="line"> </span><br><span class="line"><span class="meta"> #</span><span class="bash"> 启动vm</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vagrant up</span></span><br><span class="line">Bringing machine &#x27;default&#x27; up with &#x27;virtualbox&#x27; provider...</span><br><span class="line">==&gt; default: Importing base box &#x27;centos8&#x27;...</span><br><span class="line">==&gt; default: Matching MAC address for NAT networking...</span><br><span class="line">==&gt; default: Setting the name of the VM: vagrant_default_1611980890156_41411</span><br><span class="line">==&gt; default: Clearing any previously set network interfaces...</span><br><span class="line">==&gt; default: Preparing network interfaces based on configuration...</span><br><span class="line">    default: Adapter 1: nat</span><br><span class="line">    default: Adapter 2: hostonly</span><br><span class="line">==&gt; default: Forwarding ports...</span><br><span class="line">    default: 22 (guest) =&gt; 2222 (host) (adapter 1)  # 端口映射, 如果起了多个vagrant vm，那么各个</span><br><span class="line">    																								# vm 会映射到host的不同端口</span><br><span class="line">==&gt; default: Booting VM...</span><br><span class="line">==&gt; default: Waiting for machine to boot. This may take a few minutes...</span><br><span class="line">    default: SSH address: 127.0.0.1:2222</span><br><span class="line">    default: SSH username: vagrant</span><br><span class="line">    default: SSH auth method: private key</span><br><span class="line">    default:</span><br><span class="line">    default: Vagrant insecure key detected. Vagrant will automatically replace</span><br><span class="line">    default: this with a newly generated keypair for better security.</span><br><span class="line">    default:</span><br><span class="line">    default: Inserting generated public key within guest...</span><br><span class="line">    default: Removing insecure key from the guest if it&#x27;s present...</span><br><span class="line">    default: Key inserted! Disconnecting and reconnecting using new SSH key...</span><br><span class="line">==&gt; default: Machine booted and ready!</span><br><span class="line">==&gt; default: Checking for guest additions in VM...</span><br><span class="line">    default: No guest additions were detected on the base box for this VM! Guest</span><br><span class="line">    default: additions are required for forwarded ports, shared folders, host only</span><br><span class="line">    default: networking, and more. If SSH fails on this machine, please install</span><br><span class="line">    default: the guest additions and repackage the box to continue.</span><br><span class="line">    default:</span><br><span class="line">    default: This is not an error message; everything may continue to work properly,</span><br><span class="line">    default: in which case you may ignore this message.</span><br><span class="line">==&gt; default: Configuring and enabling network interfaces...</span><br><span class="line">==&gt; default: Rsyncing folder: /Users/xinran/vagrant/ =&gt; /vagrant</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 登入/退出vm</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vagrant ssh</span></span><br><span class="line">Last login: Sat Jan 30 04:28:57 2021 from 10.0.2.2</span><br><span class="line">[vagrant@localhost ~]$ </span><br><span class="line">[vagrant@localhost ~]$ exit</span><br><span class="line">logout</span><br><span class="line">Shared connection to 127.0.0.1 closed.</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看host上的2222端口</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> lsof -i:2222</span></span><br><span class="line">COMMAND     PID   USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME</span><br><span class="line">VBoxHeadl 13238 xinran   16u  IPv4 0x294cd01b85b191f5      0t0  TCP localhost:rockwell-csp2 (LISTEN)</span><br><span class="line">VBoxHeadl 13238 xinran   20u  IPv4 0x294cd01b95fd8815      0t0  TCP localhost:rockwell-csp2-&gt;localhost:63021 (ESTABLISHED)</span><br><span class="line">ssh       13880 xinran    3u  IPv4 0x294cd01b94ae9e35      0t0  TCP localhost:63021-&gt;localhost:rockwell-csp2 (ESTABLISHED)</span><br><span class="line">ssh       13894 xinran    3u  IPv4 0x294cd01b94ae9e35      0t0  TCP localhost:63021-&gt;localhost:rockwell-csp2 (ESTABLISHE</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>Note: 在下载box image时，要找到对应provider的box。我第一次下载成了libvirt provider的box，然后vagrant init就失败了，因为我的host上装的是virtualbox作为provider。</p>
-</blockquote>
-]]></content>
   </entry>
   <entry>
     <title>在centos上修改源并安装docker</title>
