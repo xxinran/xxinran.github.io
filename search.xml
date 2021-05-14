@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>cpu基础</title>
-    <url>/posts/fe9b70.html</url>
-    <content><![CDATA[<p>cpu运行阶段：取值，解码，执行，写回。</p>
-<p>cpu从内存或者cache里提取指令，放入指令寄存器，并对指令译码，执行。</p>
-<p>主要参数：</p>
-<p>主频：时钟频率</p>
-<p>倍频</p>
-<p>外频：cpu的基准频率，cpu和其他部件通讯的频率，决定着整块主板的运行速度。因为cpu的频率太高，其他部件跟不上。</p>
-<p>超频：</p>
+    <title>cpu-microarch</title>
+    <url>/posts/f1d93d2c.html</url>
+    <content><![CDATA[<p><img src="https://en.wikichip.org/w/images/thumb/e/ee/skylake_server_block_diagram.svg/950px-skylake_server_block_diagram.svg.png" alt="skylake server block diagram.svg"></p>
+<p>front end：取值，解码</p>
+<p>execution engine：计算</p>
+<p>memory subsystem： 读写内存</p>
+<p>L1， L2 per core</p>
 ]]></content>
       <categories>
         <category>计算机组成</category>
@@ -19,96 +17,15 @@
       </tags>
   </entry>
   <entry>
-    <title>dapr-intro</title>
-    <url>/posts/c02c2ddc.html</url>
-    <content><![CDATA[<h2 id="dapr简介"><a href="#dapr简介" class="headerlink" title="dapr简介"></a>dapr简介</h2><h2 id="dapr安装"><a href="#dapr安装" class="headerlink" title="dapr安装"></a>dapr安装</h2><p>dapr支持多种运行环境：</p>
-<ol>
-<li>在本机上，相当于一个process</li>
-<li>在kubernetes中，和业务容器在一个pod里，作为sidecar</li>
-</ol>
-<p>我们先尝试在第一种环境里安装dapr。</p>
-<h4 id="Prerequisites"><a href="#Prerequisites" class="headerlink" title="Prerequisites"></a>Prerequisites</h4><p>Docker installed</p>
-<h4 id="安装dapr-CLI"><a href="#安装dapr-CLI" class="headerlink" title="安装dapr CLI"></a>安装dapr CLI</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> wget -q https://raw.githubusercontent.com/dapr/cli/master/install/install.sh -O - | /bin/bash</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> verify</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> dapr --version</span></span><br></pre></td></tr></table></figure>
-<h4 id="初始化dapr"><a href="#初始化dapr" class="headerlink" title="初始化dapr"></a>初始化dapr</h4><p>因为dapr在host上直接运行，相当于需要在host上运行一个process。所以dapr的初始化包括下载dapr二进制包并且安装运行。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> dapr init</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 在k8s上运行 dapr init --kubernetes</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> verify</span> </span><br><span class="line"><span class="meta">$</span><span class="bash"> docker ps</span></span><br><span class="line">CONTAINER ID        IMAGE                                 COMMAND                  CREATED             STATUS                 PORTS                                                                                                                                  NAMES</span><br><span class="line">caa1ac7a14c4        openzipkin/zipkin                     &quot;start-zipkin&quot;           2 hours ago         Up 2 hours (healthy)   9410/tcp, 0.0.0.0:9411-&gt;9411/tcp                                                                                                       dapr_zipkin</span><br><span class="line">1fa7739631a3        redis                                 &quot;docker-entrypoint.s…&quot;   2 hours ago         Up 2 hours             0.0.0.0:6379-&gt;6379/tcp                                                                                                                 dapr_redis</span><br><span class="line">f48ee8e3d872        daprio/dapr                           &quot;./placement&quot;            2 hours ago         Up 2 hours             0.0.0.0:50005-&gt;50005/tcp                                                                                                               dapr_placement</span><br></pre></td></tr></table></figure>
-<p>可以看到有三个容器在运行，Redis容器是做state management和messaging的，Zipkin容器是为了收集traces的。</p>
-<p>在<code>docker init</code>的时候，同时还创建了一些文件。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ls <span class="variable">$HOME</span>/.dapr</span></span><br><span class="line">bin/  components/  config.yaml</span><br></pre></td></tr></table></figure>
-
-
-<h3 id="使用dapr-API，run-sample"><a href="#使用dapr-API，run-sample" class="headerlink" title="使用dapr API，run sample"></a>使用dapr API，run sample</h3><p>业务代码通过调用dapr API来完成一些业务之外的分布式服务的功能，所以我们可以通过直接调用dapr API来看看dapr API是怎么被使用的。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> dapr run --<span class="built_in">help</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Run a Python application that listens to port 3000:</span></span><br><span class="line">  dapr run --app-id myapp --app-port 3000 -- python myapp.py</span><br><span class="line"><span class="meta">#</span><span class="bash"> Run sidecar only:</span></span><br><span class="line">  dapr run --app-id myapp</span><br><span class="line"></span><br><span class="line">Flags:</span><br><span class="line"><span class="meta"> #</span><span class="bash"> 需要研究这个app-id有啥用？？？</span></span><br><span class="line">  -a, --app-id string                   The id for your application, used for service discovery</span><br><span class="line">      --app-max-concurrency int         The concurrency level of the application, otherwise is unlimited (default -1)</span><br><span class="line"><span class="meta"> #</span><span class="bash"> 业务程序监听的端口</span></span><br><span class="line">  -p, --app-port int                    The port your application is listening on (default -1)</span><br><span class="line"><span class="meta"> #</span><span class="bash"> dapr和app之间的protocol</span></span><br><span class="line">  -P, --app-protocol string             The protocol (gRPC or HTTP) Dapr uses to talk to the application (default &quot;http&quot;)</span><br><span class="line">      --app-ssl                         Enable https when Dapr invokes the application</span><br><span class="line">  -d, --components-path string          The path for components directory (default &quot;/home/ubuntu/.dapr/components&quot;)</span><br><span class="line"> -c, --config string                   Dapr configuration file (default &quot;/home/ubuntu/.dapr/config.yaml&quot;)</span><br><span class="line"><span class="meta"> #</span><span class="bash"> dapr程序监听的端口s</span></span><br><span class="line">  -G, --dapr-grpc-port int              The gRPC port for Dapr to listen on (default -1)</span><br><span class="line">  -H, --dapr-http-port int              The HTTP port for Dapr to listen on (default -1)</span><br><span class="line">      --enable-profiling                Enable pprof profiling via an HTTP endpoint</span><br><span class="line">  -h, --help                            Print this help message</span><br><span class="line">      --log-level string                The log verbosity. Valid values are: debug, info, warn, error, fatal, or panic (default &quot;info&quot;)</span><br><span class="line">  -M, --metrics-port int                The port of metrics on dapr (default -1)</span><br><span class="line">      --placement-host-address string   The host on which the placement service resides (default &quot;localhost&quot;)</span><br><span class="line">      --profile-port int                The port for the profile server to listen on (default -1)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> launch a Dapr sidecar that will listen on port 3500 <span class="keyword">for</span> a blank application named myapp</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 因为没有--config和-d，所以用的就是default的`<span class="variable">$HOME</span>/.dapr`下的配置文件。</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> dapr run --app-id myapp --dapr-http-port 3500</span></span><br></pre></td></tr></table></figure>
-<p><strong>调用dapr API去写state，然后读：</strong></p>
-<p>这里是写state，所以url是/v1.0/state/statestore，这个statestore是<code>$HOME/.dapr/components/statestore.yaml</code>里面定义的。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> curl -X POST -H <span class="string">&quot;Content-Type: application/json&quot;</span> -d <span class="string">&#x27;[&#123; &quot;key&quot;: &quot;name&quot;, &quot;value&quot;: &quot;Bruce Wayne&quot;&#125;]&#x27;</span> http://localhost:3500/v1.0/state/statestore</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> curl http://localhost:3500/v1.0/state/statestore/name</span></span><br><span class="line">&quot;Bruce Wayne&quot;</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 进入redis容器查看在redis中的存储形式</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> -it dapr_redis redis-cli</span></span><br><span class="line">127.0.0.1:6379&gt; keys *</span><br><span class="line">1) &quot;myapp||name&quot;   # key使用的是“app的名字||name”</span><br><span class="line">127.0.0.1:6379&gt; hgetall &quot;myapp||name&quot;</span><br><span class="line">1) &quot;data&quot;</span><br><span class="line">2) &quot;\&quot;Bruce Wayne\&quot;&quot;</span><br><span class="line">3) &quot;version&quot;</span><br><span class="line">4) &quot;2&quot;</span><br></pre></td></tr></table></figure>
-<h3 id="自己定义component"><a href="#自己定义component" class="headerlink" title="自己定义component"></a>自己定义component</h3><p>上述我们用的都是dapr init时生成的简单的config例子。现在我们想自己定义新的component并使用dapr API去调用它（们）？</p>
-<p>我们将：</p>
-<ol>
-<li>创建一个本地的json的secret store</li>
-<li>把这个secret store写在component的定义里，向dapr注册。</li>
-<li>通过dapr API获得这个secret store里的内容。</li>
-</ol>
-<h4 id="创建本地secret-store"><a href="#创建本地secret-store" class="headerlink" title="创建本地secret store"></a>创建本地secret store</h4><p>创建json文件</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> cat mysecrets.json</span></span><br><span class="line">&#123;</span><br><span class="line">     &quot;my-secret&quot; : &quot;I&#x27;m Batman&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">~/.dapr/my-components$ cat localSecretStore.yaml</span><br><span class="line">apiVersion: dapr.io/v1alpha1</span><br><span class="line">kind: Component</span><br><span class="line">metadata:</span><br><span class="line">  name: my-secret-store  # secret store的名字，在api调用时要用到</span><br><span class="line">  namespace: default</span><br><span class="line">spec:</span><br><span class="line">  type: secretstores.local.file  # 指定类型时secretstore，而且是本地文件存储</span><br><span class="line">  version: v1</span><br><span class="line">  metadata:</span><br><span class="line">  - name: secretsFile</span><br><span class="line">    value: /home/ubuntu/.dapr/my-components/mysecrets.json</span><br><span class="line">  - name: nestedSeparator</span><br><span class="line">    value: &quot;:&quot;</span><br></pre></td></tr></table></figure>
-<h4 id="运行一个dapr的process"><a href="#运行一个dapr的process" class="headerlink" title="运行一个dapr的process"></a>运行一个dapr的process</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> dapr run --app-id myapp --dapr-http-port 3500 --components-path ./my-components</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> verify</span> </span><br><span class="line"><span class="meta">$</span><span class="bash"> curl localhost:3500/v1.0/secrets/my-secret-store/my-secret</span></span><br><span class="line">&#123;&quot;my-secret&quot;:&quot;I&#x27;m Batman&quot;&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>问题：怎么知道一个component时secret还是state还是别的？</p>
-<p>答：通过yaml文件定义component是指定的type，这样在call API时就知道URL怎么写了。（是/v1.0/secrets还是v1.0/state等等）</p>
-</blockquote>
-<h2 id="在kubernetes集群上安装dapr"><a href="#在kubernetes集群上安装dapr" class="headerlink" title="在kubernetes集群上安装dapr"></a>在kubernetes集群上安装dapr</h2><p>minikube</p>
-<p><img src="/posts/c02c2ddc/Architecture_Diagram.png" alt="Architecture Diagram"></p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> dapr init -k</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> dapr status -k</span></span><br><span class="line">  NAME                   NAMESPACE    HEALTHY  STATUS   REPLICAS  VERSION  AGE  CREATED</span><br><span class="line">  dapr-placement-server  dapr-system  True     Running  1         1.0.1    2m   2021-03-09 15:02.06</span><br><span class="line">  dapr-dashboard         dapr-system  True     Running  1         0.6.0    2m   2021-03-09 15:02.05</span><br><span class="line">  dapr-sentry            dapr-system  True     Running  1         1.0.1    2m   2021-03-09 15:02.05</span><br><span class="line">  dapr-sidecar-injector  dapr-system  True     Running  1         1.0.1    2m   2021-03-09 15:02.05</span><br><span class="line">  dapr-operator          dapr-system  True     Running  1         1.0.1    2m   2021-03-09 15:02.05</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 5个dapr的组件</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> k get pods -ndapr-system</span></span><br><span class="line">NAME                                    READY   STATUS    RESTARTS   AGE</span><br><span class="line">dapr-dashboard-6bb75f9645-8f28z         1/1     Running   0          6m24s</span><br><span class="line">dapr-operator-5f84d9fd4-7smdf           1/1     Running   0          6m24s</span><br><span class="line">dapr-placement-server-0                 1/1     Running   0          6m23s</span><br><span class="line">dapr-sentry-5d67bfbfdc-fzsb6            1/1     Running   0          6m24s</span><br><span class="line">dapr-sidecar-injector-7b556f95d-kpxnc   1/1     Running   0          6m24s</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 注意： placment 没有deployment，只有pod和service。</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> k get deploy -ndapr-system</span></span><br><span class="line">NAME                    READY   UP-TO-DATE   AVAILABLE   AGE</span><br><span class="line">dapr-dashboard          1/1     1            1           12d</span><br><span class="line">dapr-operator           1/1     1            1           12d</span><br><span class="line">dapr-sentry             1/1     1            1           12d</span><br><span class="line">dapr-sidecar-injector   1/1     1            1           12d</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="运行helloworld-sample"><a href="#运行helloworld-sample" class="headerlink" title="运行helloworld sample"></a>运行helloworld sample</h3><h4 id="安装redis作为state-store"><a href="#安装redis作为state-store" class="headerlink" title="安装redis作为state store"></a>安装redis作为state store</h4><h5 id="安装helm"><a href="#安装helm" class="headerlink" title="安装helm"></a>安装helm</h5><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl https://baltocdn.com/helm/signing.asc | sudo apt-key add -</span><br><span class="line">sudo apt-get install apt-transport-https --yes</span><br><span class="line">echo &quot;deb https://baltocdn.com/helm/stable/debian/ all main&quot; | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list</span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install helm</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h5 id="安装redis"><a href="#安装redis" class="headerlink" title="安装redis"></a>安装redis</h5><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">helm repo add bitnami https://charts.bitnami.com/bitnami</span><br><span class="line">helm repo update</span><br><span class="line">helm install redis bitnami/redis</span><br><span class="line"></span><br><span class="line">To get your password run:</span><br><span class="line"></span><br><span class="line">    export REDIS_PASSWORD=$(kubectl get secret --namespace default redis -o jsonpath=&quot;&#123;.data.redis-password&#125;&quot; | base64 --decode)</span><br><span class="line"></span><br><span class="line">To connect to your Redis(TM) server:</span><br><span class="line"></span><br><span class="line">1. Run a Redis(TM) pod that you can use as a client:</span><br><span class="line">   kubectl run --namespace default redis-client --rm --tty -i --restart=&#x27;Never&#x27; \</span><br><span class="line">    --env REDIS_PASSWORD=$REDIS_PASSWORD \</span><br><span class="line">   --image docker.io/bitnami/redis:6.0.12-debian-10-r3 -- bash</span><br><span class="line"></span><br><span class="line">2. Connect using the Redis(TM) CLI:</span><br><span class="line">   redis-cli -h redis-master -a $REDIS_PASSWORD</span><br><span class="line">   redis-cli -h redis-slave -a $REDIS_PASSWORD</span><br><span class="line"></span><br><span class="line">To connect to your database from outside the cluster execute the following commands:</span><br><span class="line"></span><br><span class="line">    kubectl port-forward --namespace default svc/redis-master 6379:6379 &amp;</span><br><span class="line">    redis-cli -h 127.0.0.1 -p 6379 -a $REDIS_PASSWORD</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> k get pods</span> </span><br><span class="line">default       redis-headless          ClusterIP   None             &lt;none&gt;        6379/TCP                 96s</span><br><span class="line">default       redis-master            ClusterIP   10.107.253.143   &lt;none&gt;        6379/TCP                 96s</span><br><span class="line">default       redis-slave             ClusterIP   10.102.228.172   &lt;none&gt;        6379/TCP                 96s</span><br><span class="line"><span class="meta">$</span><span class="bash"> k get secrets</span></span><br><span class="line">NAME                          TYPE                                  DATA   AGE</span><br><span class="line">default-token-hnmgm           kubernetes.io/service-account-token   3      155m</span><br><span class="line">redis                         Opaque                                1      3m4s</span><br><span class="line">sh.helm.release.v1.redis.v1   helm.sh/release.v1                    1      3m4s</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> k get svc -owide</span></span><br><span class="line">NAME             TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE     SELECTOR</span><br><span class="line">kubernetes       ClusterIP   10.96.0.1        &lt;none&gt;        443/TCP    5d13h   &lt;none&gt;</span><br><span class="line">redis-headless   ClusterIP   None             &lt;none&gt;        6379/TCP   5d10h   app=redis,release=redis</span><br><span class="line">redis-master     ClusterIP   10.107.253.143   &lt;none&gt;        6379/TCP   5d10h   app=redis,release=redis,role=master</span><br><span class="line">redis-slave      ClusterIP   10.102.228.172   &lt;none&gt;        6379/TCP   5d10h   app=redis,release=redis,role=slave</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash">  k get ep</span></span><br><span class="line">NAME             ENDPOINTS                                          AGE</span><br><span class="line">kubernetes       192.168.49.2:8443                                  5d13h</span><br><span class="line">redis-headless   172.17.0.10:6379,172.17.0.8:6379,172.17.0.9:6379   5d10h</span><br><span class="line">redis-master     172.17.0.9:6379                                    5d10h</span><br><span class="line">redis-slave      172.17.0.10:6379,172.17.0.8:6379                   5d10h</span><br></pre></td></tr></table></figure>
-
-
-
-
-<p><img src="/posts/c02c2ddc/image-20210309233804291.png" alt="image-20210309233804291"></p>
-<p>minikube user</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> minikube service nodeapp</span></span><br><span class="line">|-----------|---------|-------------|---------------------------|</span><br><span class="line">| NAMESPACE |  NAME   | TARGET PORT |            URL            |</span><br><span class="line">|-----------|---------|-------------|---------------------------|</span><br><span class="line">| default   | nodeapp |          80 | http://192.168.49.2:32108 |</span><br><span class="line">|-----------|---------|-------------|---------------------------|</span><br><span class="line">* Opening service default/nodeapp in default browser...</span><br><span class="line">  - http://192.168.49.2:32108</span><br><span class="line">  </span><br><span class="line"><span class="meta">#</span><span class="bash"> curl localhost:32108不通，因为用的是minikube</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> curl http://192.168.49.2:32108/ports</span></span><br><span class="line">&#123;&quot;DAPR_HTTP_PORT&quot;:&quot;3500&quot;,&quot;DAPR_GRPC_PORT&quot;:&quot;50001&quot;&#125;</span><br><span class="line"></span><br><span class="line">export NODE_APP=192.168.49.2:32108</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>Next submit an order to the app</p>
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line">curl <span class="operator">--</span>request <span class="type">POST</span> <span class="operator">--</span>data <span class="string">&quot;&#123;<span class="subst">\&quot;</span>data<span class="subst">\&quot;</span>: &#123; <span class="subst">\&quot;</span>orderId<span class="subst">\&quot;</span>: <span class="subst">\&quot;</span>42<span class="subst">\&quot;</span> &#125; &#125;&quot;</span> <span class="operator">--</span>header <span class="string">&quot;Content-Type:application/json&quot;</span> http:<span class="comment">//$NODE_APP/neworder</span></span><br></pre></td></tr></table></figure>
-<p>Expected output: Empty reply from server</p>
-<p>Confirm the order was persisted by requesting it from the app</p>
-<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">curl http:<span class="regexp">//</span><span class="variable">$NODE_APP</span>/order</span><br></pre></td></tr></table></figure>
-<p>Expected output:</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;&quot;orderId&quot;:&quot;42&quot;&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-
-
-
-<p>dapr cli</p>
-<p>dapr host</p>
-<p>dapr API</p>
-<p>dapr runtime</p>
-<p>dapr operator </p>
-<p>dapr sidecar injector</p>
-<p>dapr placement service</p>
-<p>dapr sentry</p>
-<p>building blocks</p>
-]]></content>
-      <categories>
-        <category>cloud native</category>
-      </categories>
-      <tags>
-        <tag>dapr</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>cpu-microarch</title>
-    <url>/posts/f1d93d2c.html</url>
-    <content><![CDATA[<p><img src="https://en.wikichip.org/w/images/thumb/e/ee/skylake_server_block_diagram.svg/950px-skylake_server_block_diagram.svg.png" alt="skylake server block diagram.svg"></p>
-<p>front end：取值，解码</p>
-<p>execution engine：计算</p>
-<p>memory subsystem： 读写内存</p>
-<p>L1， L2 per core</p>
+    <title>cpu基础</title>
+    <url>/posts/fe9b70.html</url>
+    <content><![CDATA[<p>cpu运行阶段：取值，解码，执行，写回。</p>
+<p>cpu从内存或者cache里提取指令，放入指令寄存器，并对指令译码，执行。</p>
+<p>主要参数：</p>
+<p>主频：时钟频率</p>
+<p>倍频</p>
+<p>外频：cpu的基准频率，cpu和其他部件通讯的频率，决定着整块主板的运行速度。因为cpu的频率太高，其他部件跟不上。</p>
+<p>超频：</p>
 ]]></content>
       <categories>
         <category>计算机组成</category>
@@ -158,6 +75,66 @@
 
 <h4 id="COPY和ADD的区别"><a href="#COPY和ADD的区别" class="headerlink" title="COPY和ADD的区别"></a>COPY和ADD的区别</h4><p>add会自动解压</p>
 <h5 id="COPY测试"><a href="#COPY测试" class="headerlink" title="COPY测试"></a>COPY测试</h5><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[vagrant@localhost dockerfile]$ tree .</span><br><span class="line">.</span><br><span class="line">|-- copy01</span><br><span class="line">|-- copy02</span><br><span class="line">|-- test-dir/</span><br><span class="line">    |-- sub-dir/</span><br><span class="line">    |   |-- test3</span><br><span class="line">    |-- test1</span><br><span class="line">    |-- test2</span><br><span class="line">[vagrant@localhost dockerfile]$ cat docker-copy</span><br><span class="line">FROM centos</span><br><span class="line">COPY copy01 .</span><br><span class="line">COPY copy02 /home</span><br><span class="line">COPY test-dir .  # 不会拷贝目录，只拷贝目录下的文件和目录</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 如果不指定WORKDIR，默认是在跟目录下面</span></span><br><span class="line">[root@e4a55c64ff8f /]# ls</span><br><span class="line">bin  copy01  dev  etc  home  lib  lib64  lost+found  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> COPY可以指定目的路径</span></span><br><span class="line">[root@e4a55c64ff8f home]# ls</span><br><span class="line">copy02</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 不会拷贝目录，只拷贝目录下的文件和目录</span></span><br><span class="line">[root@e8be2eb3f129 /]# ls</span><br><span class="line">bin  copy01  dev  etc  home  lib  lib64  lost+found  media  mnt  opt  proc  root  run  sbin  srv  sub-dir  sys  test1  test2  tmp  usr  var</span><br><span class="line">[root@e8be2eb3f129 /]# cd sub-dir/</span><br><span class="line">[root@e8be2eb3f129 sub-dir]# ls</span><br><span class="line">test3</span><br></pre></td></tr></table></figure>
+<p>此外，COPY还可以用来实现<a href="https://www.cnblogs.com/sparkdev/p/8508435.html">multi-stage(多阶段构建)</a>，就是一个dockerfile里有多个FROM，每个 FROM 指令代表一个 stage 的开始部分。我们可以把一个 stage 的产物拷贝到另一个 stage 中。</p>
+<h5 id="ADD测试"><a href="#ADD测试" class="headerlink" title="ADD测试"></a>ADD测试</h5><p>除了不能用在 multistage 的场景下，ADD 命令可以完成 COPY 命令的所有功能，并且还可以完成两类超酷的功能：</p>
+<ul>
+<li>解压压缩文件并把它们添加到镜像中</li>
+<li>从 url 拷贝文件到镜像中</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">WORKDIR /app</span><br><span class="line">ADD nickdir.tar.gz .  </span><br><span class="line"><span class="meta">#</span><span class="bash"> 可以把压缩包自动解压到/app目录下</span></span><br><span class="line">ADD http://example.com/big.tar.xz /usr/src/things/ </span><br><span class="line"><span class="meta">#</span><span class="bash"> 会直接把tar包加入镜像中，不会自动解压，实则增加了镜像的大小，不建议这么做！</span></span><br></pre></td></tr></table></figure>
+<h5 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h5><p>COPY 命令是为最基本的用法设计的，概念清晰，操作简单。而 ADD 命令基本上是 COPY 命令的超集(除了 multistage 场景)，可以实现一些方便、酷炫的拷贝操作。ADD 命令在增加了功能的同时也增加了使用它的复杂度，比如从 url 拷贝压缩文件时弊大于利。</p>
+]]></content>
+      <categories>
+        <category>cloud native</category>
+      </categories>
+      <tags>
+        <tag>docker</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>dapr-intro</title>
+    <url>/posts/c02c2ddc.html</url>
+    <content><![CDATA[<h2 id="dapr简介"><a href="#dapr简介" class="headerlink" title="dapr简介"></a>dapr简介</h2><h2 id="dapr安装"><a href="#dapr安装" class="headerlink" title="dapr安装"></a>dapr安装</h2><p>dapr支持多种运行环境：</p>
+<ol>
+<li>在本机上，相当于一个process</li>
+<li>在kubernetes中，和业务容器在一个pod里，作为sidecar</li>
+</ol>
+<p>我们先尝试在第一种环境里安装dapr。</p>
+<h4 id="Prerequisites"><a href="#Prerequisites" class="headerlink" title="Prerequisites"></a>Prerequisites</h4><p>Docker installed</p>
+<h4 id="安装dapr-CLI"><a href="#安装dapr-CLI" class="headerlink" title="安装dapr CLI"></a>安装dapr CLI</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> wget -q https://raw.githubusercontent.com/dapr/cli/master/install/install.sh -O - | /bin/bash</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> verify</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> dapr --version</span></span><br></pre></td></tr></table></figure>
+<h4 id="初始化dapr"><a href="#初始化dapr" class="headerlink" title="初始化dapr"></a>初始化dapr</h4><p>因为dapr在host上直接运行，相当于需要在host上运行一个process。所以dapr的初始化包括下载dapr二进制包并且安装运行。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> dapr init</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 在k8s上运行 dapr init --kubernetes</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> verify</span> </span><br><span class="line"><span class="meta">$</span><span class="bash"> docker ps</span></span><br><span class="line">CONTAINER ID        IMAGE                                 COMMAND                  CREATED             STATUS                 PORTS                                                                                                                                  NAMES</span><br><span class="line">caa1ac7a14c4        openzipkin/zipkin                     &quot;start-zipkin&quot;           2 hours ago         Up 2 hours (healthy)   9410/tcp, 0.0.0.0:9411-&gt;9411/tcp                                                                                                       dapr_zipkin</span><br><span class="line">1fa7739631a3        redis                                 &quot;docker-entrypoint.s…&quot;   2 hours ago         Up 2 hours             0.0.0.0:6379-&gt;6379/tcp                                                                                                                 dapr_redis</span><br><span class="line">f48ee8e3d872        daprio/dapr                           &quot;./placement&quot;            2 hours ago         Up 2 hours             0.0.0.0:50005-&gt;50005/tcp                                                                                                               dapr_placement</span><br></pre></td></tr></table></figure>
+<p>可以看到有三个容器在运行，Redis容器是做state management和messaging的，Zipkin容器是为了收集traces的。</p>
+<p>在<code>docker init</code>的时候，同时还创建了一些文件。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ls <span class="variable">$HOME</span>/.dapr</span></span><br><span class="line">bin/  components/  config.yaml</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="使用dapr-API，run-sample"><a href="#使用dapr-API，run-sample" class="headerlink" title="使用dapr API，run sample"></a>使用dapr API，run sample</h3><p>业务代码通过调用dapr API来完成一些业务之外的分布式服务的功能，所以我们可以通过直接调用dapr API来看看dapr API是怎么被使用的。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> dapr run --<span class="built_in">help</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Run a Python application that listens to port 3000:</span></span><br><span class="line">  dapr run --app-id myapp --app-port 3000 -- python myapp.py</span><br><span class="line"><span class="meta">#</span><span class="bash"> Run sidecar only:</span></span><br><span class="line">  dapr run --app-id myapp</span><br><span class="line"></span><br><span class="line">Flags:</span><br><span class="line"><span class="meta"> #</span><span class="bash"> 需要研究这个app-id有啥用？？？</span></span><br><span class="line">  -a, --app-id string                   The id for your application, used for service discovery</span><br><span class="line">      --app-max-concurrency int         The concurrency level of the application, otherwise is unlimited (default -1)</span><br><span class="line"><span class="meta"> #</span><span class="bash"> 业务程序监听的端口</span></span><br><span class="line">  -p, --app-port int                    The port your application is listening on (default -1)</span><br><span class="line"><span class="meta"> #</span><span class="bash"> dapr和app之间的protocol</span></span><br><span class="line">  -P, --app-protocol string             The protocol (gRPC or HTTP) Dapr uses to talk to the application (default &quot;http&quot;)</span><br><span class="line">      --app-ssl                         Enable https when Dapr invokes the application</span><br><span class="line">  -d, --components-path string          The path for components directory (default &quot;/home/ubuntu/.dapr/components&quot;)</span><br><span class="line"> -c, --config string                   Dapr configuration file (default &quot;/home/ubuntu/.dapr/config.yaml&quot;)</span><br><span class="line"><span class="meta"> #</span><span class="bash"> dapr程序监听的端口s</span></span><br><span class="line">  -G, --dapr-grpc-port int              The gRPC port for Dapr to listen on (default -1)</span><br><span class="line">  -H, --dapr-http-port int              The HTTP port for Dapr to listen on (default -1)</span><br><span class="line">      --enable-profiling                Enable pprof profiling via an HTTP endpoint</span><br><span class="line">  -h, --help                            Print this help message</span><br><span class="line">      --log-level string                The log verbosity. Valid values are: debug, info, warn, error, fatal, or panic (default &quot;info&quot;)</span><br><span class="line">  -M, --metrics-port int                The port of metrics on dapr (default -1)</span><br><span class="line">      --placement-host-address string   The host on which the placement service resides (default &quot;localhost&quot;)</span><br><span class="line">      --profile-port int                The port for the profile server to listen on (default -1)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> launch a Dapr sidecar that will listen on port 3500 <span class="keyword">for</span> a blank application named myapp</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 因为没有--config和-d，所以用的就是default的`<span class="variable">$HOME</span>/.dapr`下的配置文件。</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> dapr run --app-id myapp --dapr-http-port 3500</span></span><br></pre></td></tr></table></figure>
+<p><strong>调用dapr API去写state，然后读：</strong></p>
+<p>这里是写state，所以url是/v1.0/state/statestore，这个statestore是<code>$HOME/.dapr/components/statestore.yaml</code>里面定义的。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> curl -X POST -H <span class="string">&quot;Content-Type: application/json&quot;</span> -d <span class="string">&#x27;[&#123; &quot;key&quot;: &quot;name&quot;, &quot;value&quot;: &quot;Bruce Wayne&quot;&#125;]&#x27;</span> http://localhost:3500/v1.0/state/statestore</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> curl http://localhost:3500/v1.0/state/statestore/name</span></span><br><span class="line">&quot;Bruce Wayne&quot;</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 进入redis容器查看在redis中的存储形式</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> -it dapr_redis redis-cli</span></span><br><span class="line">127.0.0.1:6379&gt; keys *</span><br><span class="line">1) &quot;myapp||name&quot;   # key使用的是“app的名字||name”</span><br><span class="line">127.0.0.1:6379&gt; hgetall &quot;myapp||name&quot;</span><br><span class="line">1) &quot;data&quot;</span><br><span class="line">2) &quot;\&quot;Bruce Wayne\&quot;&quot;</span><br><span class="line">3) &quot;version&quot;</span><br><span class="line">4) &quot;2&quot;</span><br></pre></td></tr></table></figure>
+<h3 id="自己定义component"><a href="#自己定义component" class="headerlink" title="自己定义component"></a>自己定义component</h3><p>上述我们用的都是dapr init时生成的简单的config例子。现在我们想自己定义新的component并使用dapr API去调用它（们）？</p>
+<p>我们将：</p>
+<ol>
+<li>创建一个本地的json的secret store</li>
+<li>把这个secret store写在component的定义里，向dapr注册。</li>
+<li>通过dapr API获得这个secret store里的内容。</li>
+</ol>
+<h4 id="创建本地secret-store"><a href="#创建本地secret-store" class="headerlink" title="创建本地secret store"></a>创建本地secret store</h4><p>创建json文件</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> cat mysecrets.json</span></span><br><span class="line">&#123;</span><br><span class="line">     &quot;my-secret&quot; : &quot;I&#x27;m Batman&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">~/.dapr/my-components$ cat localSecretStore.yaml</span><br><span class="line">apiVersion: dapr.io/v1alpha1</span><br><span class="line">kind: Component</span><br><span class="line">metadata:</span><br><span class="line">  name: my-secret-store  # secret store的名字，在api调用时要用到</span><br><span class="line">  namespace: default</span><br><span class="line">spec:</span><br><span class="line">  type: secretstores.local.file  # 指定类型时secretstore，而且是本地文件存储</span><br><span class="line">  version: v1</span><br><span class="line">  metadata:</span><br><span class="line">  - name: secretsFile</span><br><span class="line">    value: /home/ubuntu/.dapr/my-components/mysecrets.json</span><br><span class="line">  - name: nestedSeparator</span><br><span class="line">    value: &quot;:&quot;</span><br></pre></td></tr></table></figure>
+<h4 id="运行一个dapr的process"><a href="#运行一个dapr的process" class="headerlink" title="运行一个dapr的process"></a>运行一个dapr的process</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> dapr run --app-id myapp --dapr-http-port 3500 --components-path ./my-components</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> verify</span> </span><br><span class="line"><span class="meta">$</span><span class="bash"> curl localhost:3500/v1.0/secrets/my-secret-store/my-secret</span></span><br><span class="line">&#123;&quot;my-secret&quot;:&quot;I&#x27;m Batman&quot;&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>问题：怎么知道一个component时secret还是state还是别的？</p>
+<p>答：通过yaml文件定义component是指定的type，这样在call API时就知道URL怎么写了。（是/v1.0/secrets还是v1.0/state等等）</p>
+</blockquote>
+<h2 id="在kubernetes集群上安装dapr"><a href="#在kubernetes集群上安装dapr" class="headerlink" title="在kubernetes集群上安装dapr"></a>在kubernetes集群上安装dapr</h2><p>minikube</p>
+<p><img src="/posts/c02c2ddc/Architecture_Diagram.png" alt="Architecture Diagram"></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> dapr init -k</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> dapr status -k</span></span><br><span class="line">  NAME                   NAMESPACE    HEALTHY  STATUS   REPLICAS  VERSION  AGE  CREATED</span><br><span class="line">  dapr-placement-server  dapr-system  True     Running  1         1.0.1    2m   2021-03-09 15:02.06</span><br><span class="line">  dapr-dashboard         dapr-system  True     Running  1         0.6.0    2m   2021-03-09 15:02.05</span><br><span class="line">  dapr-sentry            dapr-system  True     Running  1         1.0.1    2m   2021-03-09 15:02.05</span><br><span class="line">  dapr-sidecar-injector  dapr-system  True     Running  1         1.0.1    2m   2021-03-09 15:02.05</span><br><span class="line">  dapr-operator          dapr-system  True     Running  1         1.0.1    2m   2021-03-09 15:02.05</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 5个dapr的组件</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> k get pods -ndapr-system</span></span><br><span class="line">NAME                                    READY   STATUS    RESTARTS   AGE</span><br><span class="line">dapr-dashboard-6bb75f9645-8f28z         1/1     Running   0          6m24s</span><br><span class="line">dapr-operator-5f84d9fd4-7smdf           1/1     Running   0          6m24s</span><br><span class="line">dapr-placement-server-0                 1/1     Running   0          6m23s</span><br><span class="line">dapr-sentry-5d67bfbfdc-fzsb6            1/1     Running   0          6m24s</span><br><span class="line">dapr-sidecar-injector-7b556f95d-kpxnc   1/1     Running   0          6m24s</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 注意： placment 没有deployment，只有pod和service。</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> k get deploy -ndapr-system</span></span><br><span class="line">NAME                    READY   UP-TO-DATE   AVAILABLE   AGE</span><br><span class="line">dapr-dashboard          1/1     1            1           12d</span><br><span class="line">dapr-operator           1/1     1            1           12d</span><br><span class="line">dapr-sentry             1/1     1            1           12d</span><br><span class="line">dapr-sidecar-injector   1/1     1            1           12d</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="运行helloworld-sample"><a href="#运行helloworld-sample" class="headerlink" title="运行helloworld sample"></a>运行helloworld sample</h3><h4 id="安装redis作为state-store"><a href="#安装redis作为state-store" class="headerlink" title="安装redis作为state store"></a>安装redis作为state store</h4><h5 id="安装helm"><a href="#安装helm" class="headerlink" title="安装helm"></a>安装helm</h5><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl https://baltocdn.com/helm/signing.asc | sudo apt-key add -</span><br><span class="line">sudo apt-get install apt-transport-https --yes</span><br><span class="line">echo &quot;deb https://baltocdn.com/helm/stable/debian/ all main&quot; | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list</span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install helm</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h5 id="安装redis"><a href="#安装redis" class="headerlink" title="安装redis"></a>安装redis</h5><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">helm repo add bitnami https://charts.bitnami.com/bitnami</span><br><span class="line">helm repo update</span><br><span class="line">helm install redis bitnami/redis</span><br><span class="line"></span><br><span class="line">To get your password run:</span><br><span class="line"></span><br><span class="line">    export REDIS_PASSWORD=$(kubectl get secret --namespace default redis -o jsonpath=&quot;&#123;.data.redis-password&#125;&quot; | base64 --decode)</span><br><span class="line"></span><br><span class="line">To connect to your Redis(TM) server:</span><br><span class="line"></span><br><span class="line">1. Run a Redis(TM) pod that you can use as a client:</span><br><span class="line">   kubectl run --namespace default redis-client --rm --tty -i --restart=&#x27;Never&#x27; \</span><br><span class="line">    --env REDIS_PASSWORD=$REDIS_PASSWORD \</span><br><span class="line">   --image docker.io/bitnami/redis:6.0.12-debian-10-r3 -- bash</span><br><span class="line"></span><br><span class="line">2. Connect using the Redis(TM) CLI:</span><br><span class="line">   redis-cli -h redis-master -a $REDIS_PASSWORD</span><br><span class="line">   redis-cli -h redis-slave -a $REDIS_PASSWORD</span><br><span class="line"></span><br><span class="line">To connect to your database from outside the cluster execute the following commands:</span><br><span class="line"></span><br><span class="line">    kubectl port-forward --namespace default svc/redis-master 6379:6379 &amp;</span><br><span class="line">    redis-cli -h 127.0.0.1 -p 6379 -a $REDIS_PASSWORD</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> k get pods</span> </span><br><span class="line">default       redis-headless          ClusterIP   None             &lt;none&gt;        6379/TCP                 96s</span><br><span class="line">default       redis-master            ClusterIP   10.107.253.143   &lt;none&gt;        6379/TCP                 96s</span><br><span class="line">default       redis-slave             ClusterIP   10.102.228.172   &lt;none&gt;        6379/TCP                 96s</span><br><span class="line"><span class="meta">$</span><span class="bash"> k get secrets</span></span><br><span class="line">NAME                          TYPE                                  DATA   AGE</span><br><span class="line">default-token-hnmgm           kubernetes.io/service-account-token   3      155m</span><br><span class="line">redis                         Opaque                                1      3m4s</span><br><span class="line">sh.helm.release.v1.redis.v1   helm.sh/release.v1                    1      3m4s</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> k get svc -owide</span></span><br><span class="line">NAME             TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE     SELECTOR</span><br><span class="line">kubernetes       ClusterIP   10.96.0.1        &lt;none&gt;        443/TCP    5d13h   &lt;none&gt;</span><br><span class="line">redis-headless   ClusterIP   None             &lt;none&gt;        6379/TCP   5d10h   app=redis,release=redis</span><br><span class="line">redis-master     ClusterIP   10.107.253.143   &lt;none&gt;        6379/TCP   5d10h   app=redis,release=redis,role=master</span><br><span class="line">redis-slave      ClusterIP   10.102.228.172   &lt;none&gt;        6379/TCP   5d10h   app=redis,release=redis,role=slave</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash">  k get ep</span></span><br><spspan><br><span class="line">|-- copy01</span><br><span class="line">|-- copy02</span><br><span class="line">|-- test-dir/</span><br><span class="line">    |-- sub-dir/</span><br><span class="line">    |   |-- test3</span><br><span class="line">    |-- test1</span><br><span class="line">    |-- test2</span><br><span class="line">[vagrant@localhost dockerfile]$ cat docker-copy</span><br><span class="line">FROM centos</span><br><span class="line">COPY copy01 .</span><br><span class="line">COPY copy02 /home</span><br><span class="line">COPY test-dir .  # 不会拷贝目录，只拷贝目录下的文件和目录</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 如果不指定WORKDIR，默认是在跟目录下面</span></span><br><span class="line">[root@e4a55c64ff8f /]# ls</span><br><span class="line">bin  copy01  dev  etc  home  lib  lib64  lost+found  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> COPY可以指定目的路径</span></span><br><span class="line">[root@e4a55c64ff8f home]# ls</span><br><span class="line">copy02</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 不会拷贝目录，只拷贝目录下的文件和目录</span></span><br><span class="line">[root@e8be2eb3f129 /]# ls</span><br><span class="line">bin  copy01  dev  etc  home  lib  lib64  lost+found  media  mnt  opt  proc  root  run  sbin  srv  sub-dir  sys  test1  test2  tmp  usr  var</span><br><span class="line">[root@e8be2eb3f129 /]# cd sub-dir/</span><br><span class="line">[root@e8be2eb3f129 sub-dir]# ls</span><br><span class="line">test3</span><br></pre></td></tr></table></figure>
 <p>此外，COPY还可以用来实现<a href="https://www.cnblogs.com/sparkdev/p/8508435.html">multi-stage(多阶段构建)</a>，就是一个dockerfile里有多个FROM，每个 FROM 指令代表一个 stage 的开始部分。我们可以把一个 stage 的产物拷贝到另一个 stage 中。</p>
 <h5 id="ADD测试"><a href="#ADD测试" class="headerlink" title="ADD测试"></a>ADD测试</h5><p>除了不能用在 multistage 的场景下，ADD 命令可以完成 COPY 命令的所有功能，并且还可以完成两类超酷的功能：</p>
 <ul>
@@ -242,35 +219,6 @@
       </tags>
   </entry>
   <entry>
-    <title>ebpf-intro</title>
-    <url>/posts/85f2c2fa.html</url>
-    <content><![CDATA[<p>bpf - bakerly profiling filter</p>
-<p>最早是抓包用的，最经典的应用：tcpdump就用bpf。</p>
-<p>没有bpf之前，抓包要抓nic上所有的包，然后再进行分析</p>
-<p>有了bpf之后，可以插入一段小的代码可以指定tcp port，ip等。</p>
-<p>ebpf - extension bpf</p>
-<p>主要做网络，但远不止网络领域。可以抓system call，linux kernel的function call</p>
-<p>kprobe -&gt; fetch kernel</p>
-<p>uprobe -&gt; fetch user space</p>
-<p>perf events</p>
-<p>XDP/AF_XDP</p>
-<p>bpf vs ebpf vm - &gt; java vm / webassembly</p>
-<p>c  -&gt; 编译成ebpf backend  -&gt; kernel native??</p>
-<p>程序方面：</p>
-<p>bpf只有两个32bit寄存器，16个32bit内存</p>
-<p>ebpf有11个64bit寄存器，512个stack。没有堆的概念，因为在ebpf里面不能new。</p>
-<p><img src="/posts/85f2c2fa/image-20210423154407377.png" alt="image-20210423154407377"></p>
-<p>maps：user space /kernel space shares data through maps (k-v)。</p>
-<p>bpftrace vs bcc vs c program </p>
-]]></content>
-      <categories>
-        <category>LINUX</category>
-      </categories>
-      <tags>
-        <tag>eBPF</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>容器volume基本介绍</title>
     <url>/posts/4b81a639.html</url>
     <content><![CDATA[<h2 id="容器volume"><a href="#容器volume" class="headerlink" title="容器volume"></a>容器volume</h2><h3 id="匿名挂载，具名挂载和指定路径挂载"><a href="#匿名挂载，具名挂载和指定路径挂载" class="headerlink" title="匿名挂载，具名挂载和指定路径挂载"></a>匿名挂载，具名挂载和指定路径挂载</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 匿名挂载</span></span><br><span class="line">-v 容器内路径</span><br><span class="line">docker run -d -P --name nginx01 -v /etc/nginx nginx</span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看node 上的volume</span></span><br><span class="line">ubuntu@xinrantest01:~$ docker volume ls</span><br><span class="line">DRIVER              VOLUME NAME</span><br><span class="line">local               cf411242c0f1d323d2d2ab8a81d144caa6d536d992954231f426c35221adf2e3</span><br><span class="line"><span class="meta">#</span><span class="bash"> 可以发现，匿名挂载只写容器里的路径，没有写host上的路径</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 具名挂载</span></span><br><span class="line">-v host路径：容器内路径 （与-p相似）</span><br><span class="line">ubuntu@xinrantest01:~$ docker run -d -P --name nginx02 -v juming-nginx:/etc/nginx nginx</span><br><span class="line">5f61a3a6d01cd8db3bd99fa1738d0b6cfc74df366dc8ba8b1f4cbe0c97b2cc72</span><br><span class="line">ubuntu@xinrantest01:~$ docker volume ls</span><br><span class="line">DRIVER              VOLUME NAME</span><br><span class="line">local               cf411242c0f1d323d2d2ab8a81d144caa6d536d992954231f426c35221adf2e3</span><br><span class="line">local               juming-nginx</span><br><span class="line"><span class="meta">#</span><span class="bash">这里指定了juming-nginx为host上要挂载的目录，这个目录在docker run时被创建</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看volume在host上的路径</span></span><br></pre></td></tr></table></figure>
@@ -299,6 +247,35 @@
       </categories>
       <tags>
         <tag>docker</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ebpf-intro</title>
+    <url>/posts/85f2c2fa.html</url>
+    <content><![CDATA[<p>bpf - bakerly profiling filter</p>
+<p>最早是抓包用的，最经典的应用：tcpdump就用bpf。</p>
+<p>没有bpf之前，抓包要抓nic上所有的包，然后再进行分析</p>
+<p>有了bpf之后，可以插入一段小的代码可以指定tcp port，ip等。</p>
+<p>ebpf - extension bpf</p>
+<p>主要做网络，但远不止网络领域。可以抓system call，linux kernel的function call</p>
+<p>kprobe -&gt; fetch kernel</p>
+<p>uprobe -&gt; fetch user space</p>
+<p>perf events</p>
+<p>XDP/AF_XDP</p>
+<p>bpf vs ebpf vm - &gt; java vm / webassembly</p>
+<p>c  -&gt; 编译成ebpf backend  -&gt; kernel native??</p>
+<p>程序方面：</p>
+<p>bpf只有两个32bit寄存器，16个32bit内存</p>
+<p>ebpf有11个64bit寄存器，512个stack。没有堆的概念，因为在ebpf里面不能new。</p>
+<p><img src="/posts/85f2c2fa/image-20210423154407377.png" alt="image-20210423154407377"></p>
+<p>maps：user space /kernel space shares data through maps (k-v)。</p>
+<p>bpftrace vs bcc vs c program </p>
+]]></content>
+      <categories>
+        <category>LINUX</category>
+      </categories>
+      <tags>
+        <tag>eBPF</tag>
       </tags>
   </entry>
   <entry>
@@ -530,6 +507,28 @@
       </tags>
   </entry>
   <entry>
+    <title>istio-gateway</title>
+    <url>/posts/def4f008.html</url>
+    <content><![CDATA[<p><img src="/posts/def4f008/image-20210309150445057.png" alt="image-20210309150445057"></p>
+<p>serviceentry：也可以访问外部服务。</p>
+<h2 id="gateway简介"><a href="#gateway简介" class="headerlink" title="gateway简介"></a>gateway简介</h2><ol>
+<li><p>L4-L6的负载均衡</p>
+</li>
+<li><p>提供对外的mtls</p>
+</li>
+</ol>
+<p>在istio网格中，gateway可以部署任意多个，可以共用一个，也可以每个租户，namespace单独隔离。</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">networking.istio.io/v1alpha3</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Gateway</span> <span class="comment"># istio的一个CRD对象</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">bookinfo-gateway</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">istio:</span> <span class="string">ingressgateway</span> <span class="comment"># use istio default controller</span></span><br><span class="line">  <span class="attr">servers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">port:</span></span><br><span class="line">      <span class="attr">number:</span> <span class="number">80</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">http</span></span><br><span class="line">      <span class="attr">protocol:</span> <span class="string">HTTP</span></span><br><span class="line">    <span class="attr">hosts:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">bookinfo.com</span>       <span class="comment"># 允许通过外部访问的域名</span></span><br></pre></td></tr></table></figure>
+<p><strong>VirtualService</strong>定义gateway L7路由，为访问bookinfo.com的http流量，提供路由匹配转发策略。</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">networking.istio.io/v1alpha3</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">VirtualService</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">bookinfo</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">hosts:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">bookinfo.com</span>      <span class="comment"># 和上面的host字段一样</span></span><br><span class="line">  <span class="attr">gateways:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">bookinfo-gateway</span>  <span class="comment"># 绑定到上面的gateway</span></span><br><span class="line">  <span class="attr">http:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">match:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">exact:</span> <span class="string">/productpage</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">prefix:</span> <span class="string">/static</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">exact:</span> <span class="string">/login</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">exact:</span> <span class="string">/logout</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">prefix:</span> <span class="string">/api/v1/products</span></span><br><span class="line">    <span class="attr">route:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">destination:</span>   <span class="comment"># 如果上述条件之一满足，则去一个叫“productpage”的destinationrule</span></span><br><span class="line">        <span class="attr">host:</span> <span class="string">productpage</span></span><br><span class="line">        <span class="attr">port:</span></span><br><span class="line">          <span class="attr">number:</span> <span class="number">9080</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><strong>kubernetes Ingress</strong> vs <strong>Isito gateway</strong></p>
+<p><img src="/posts/def4f008/image-20210309151602156.png" alt="image-20210309151602156"></p>
+<h2 id="gateway原理及实现"><a href="#gateway原理及实现" class="headerlink" title="gateway原理及实现"></a>gateway原理及实现</h2><figure class="highlight haml"><table><tr><td class="code"><pre><span class="line">pilot-agent</span><br><span class="line">-<span class="ruby"> <span class="symbol">args:</span></span></span><br><span class="line"><span class="ruby">   - proxy</span></span><br><span class="line"><span class="ruby">   - router</span></span><br><span class="line"><span class="ruby">   - --domain</span></span><br><span class="line"><span class="ruby">   - <span class="variable">$(</span>POD_NAMESPACE).svc.cluster.local</span></span><br><span class="line"><span class="ruby">   - --proxyLogLevel=warning</span></span><br><span class="line"><span class="ruby">   - --proxyComponentLogLevel=<span class="symbol">misc:</span>error</span></span><br><span class="line"><span class="ruby">   - --log_output_level=<span class="symbol">default:</span>info</span></span><br><span class="line"><span class="ruby">   - --serviceCluster</span></span><br><span class="line"><span class="ruby">   - istio-ingressgateway</span></span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Istio</category>
+      </categories>
+  </entry>
+  <entry>
     <title>istio学习（1）-pilot</title>
     <url>/posts/a94c45db.html</url>
     <content><![CDATA[<h2 id="service-mesh（服务网格）"><a href="#service-mesh（服务网格）" class="headerlink" title="service mesh（服务网格）"></a>service mesh（服务网格）</h2><p>Service Mesh通过一个个”代理” 来为微服务转发/接收所有流量，通过控制这些代理，就可以实现服务连接，注册，发现，负载均衡，熔断，监控等等一系列服务治理相关功能，从而微服务的代码不再需要服务治理的实现，换句话说，也就是服务治理对于微服务开发者而言是透明的。如下图所示：绿色方块为微服务，蓝色方块为 service mesh 的代理，蓝色线条为服务间通讯。可以看到蓝色的方块和线条组成了整个网格。这个网络就是 Service Mesh。</p>
@@ -608,28 +607,6 @@
 <p>192.168.0.196 ci</p>
 <p>192.168.0.199 zhang</p>
 ]]></content>
-      <categories>
-        <category>Istio</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>istio-gateway</title>
-    <url>/posts/def4f008.html</url>
-    <content><![CDATA[<p><img src="/posts/def4f008/image-20210309150445057.png" alt="image-20210309150445057"></p>
-<p>serviceentry：也可以访问外部服务。</p>
-<h2 id="gateway简介"><a href="#gateway简介" class="headerlink" title="gateway简介"></a>gateway简介</h2><ol>
-<li><p>L4-L6的负载均衡</p>
-</li>
-<li><p>提供对外的mtls</p>
-</li>
-</ol>
-<p>在istio网格中，gateway可以部署任意多个，可以共用一个，也可以每个租户，namespace单独隔离。</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">networking.istio.io/v1alpha3</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Gateway</span> <span class="comment"># istio的一个CRD对象</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">bookinfo-gateway</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">istio:</span> <span class="string">ingressgateway</span> <span class="comment"># use istio default controller</span></span><br><span class="line">  <span class="attr">servers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">port:</span></span><br><span class="line">      <span class="attr">number:</span> <span class="number">80</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">http</span></span><br><span class="line">      <span class="attr">protocol:</span> <span class="string">HTTP</span></span><br><span class="line">    <span class="attr">hosts:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">bookinfo.com</span>       <span class="comment"># 允许通过外部访问的域名</span></span><br></pre></td></tr></table></figure>
-<p><strong>VirtualService</strong>定义gateway L7路由，为访问bookinfo.com的http流量，提供路由匹配转发策略。</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">networking.istio.io/v1alpha3</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">VirtualService</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">bookinfo</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">hosts:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">bookinfo.com</span>      <span class="comment"># 和上面的host字段一样</span></span><br><span class="line">  <span class="attr">gateways:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">bookinfo-gateway</span>  <span class="comment"># 绑定到上面的gateway</span></span><br><span class="line">  <span class="attr">http:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">match:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">exact:</span> <span class="string">/productpage</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">prefix:</span> <span class="string">/static</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">exact:</span> <span class="string">/login</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">exact:</span> <span class="string">/logout</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">prefix:</span> <span class="string">/api/v1/products</span></span><br><span class="line">    <span class="attr">route:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">destination:</span>   <span class="comment"># 如果上述条件之一满足，则去一个叫“productpage”的destinationrule</span></span><br><span class="line">        <span class="attr">host:</span> <span class="string">productpage</span></span><br><span class="line">        <span class="attr">port:</span></span><br><span class="line">          <span class="attr">number:</span> <span class="number">9080</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p><strong>kubernetes Ingress</strong> vs <strong>Isito gateway</strong></p>
-<p><img src="/posts/def4f008/image-20210309151602156.png" alt="image-20210309151602156"></p>
-<h2 id="gateway原理及实现"><a href="#gateway原理及实现" class="headerlink" title="gateway原理及实现"></a>gateway原理及实现</h2><figure class="highlight haml"><table><tr><td class="code"><pre><span class="line">pilot-agent</span><br><span class="line">-<span class="ruby"> <span class="symbol">args:</span></span></span><br><span class="line"><span class="ruby">   - proxy</span></span><br><span class="line"><span class="ruby">   - router</span></span><br><span class="line"><span class="ruby">   - --domain</span></span><br><span class="line"><span class="ruby">   - <span class="variable">$(</span>POD_NAMESPACE).svc.cluster.local</span></span><br><span class="line"><span class="ruby">   - --proxyLogLevel=warning</span></span><br><span class="line"><span class="ruby">   - --proxyComponentLogLevel=<span class="symbol">misc:</span>error</span></span><br><span class="line"><span class="ruby">   - --log_output_level=<span class="symbol">default:</span>info</span></span><br><span class="line"><span class="ruby">   - --serviceCluster</span></span><br><span class="line"><span class="ruby">   - istio-ingressgateway</span></span><br></pre></td></tr></table></figure>]]></content>
       <categories>
         <category>Istio</category>
       </categories>
@@ -773,19 +750,6 @@
       </categories>
   </entry>
   <entry>
-    <title>多设备同步hexoy</title>
-    <url>/posts/c9d1870c.html</url>
-    <content><![CDATA[<h1 id="多个设备之间同步hexo"><a href="#多个设备之间同步hexo" class="headerlink" title="多个设备之间同步hexo"></a>多个设备之间同步hexo</h1><p><strong>原理</strong></p>
-<p>hexo deploy会将本地创建好的目录blog里面的文件生成对应的静态文件（html等），并且将它上传到xxx.github.com repo中。<br>在_config.yml中设置了deploy要操作的repo和branch，这里我使用的是xxinran.github.io的main branch。</p>
-]]></content>
-      <categories>
-        <category>hexo</category>
-      </categories>
-      <tags>
-        <tag>hexo</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>markdown基本语法</title>
     <url>/posts/47caaf1e.html</url>
     <content><![CDATA[<h1 id="一级标题"><a href="#一级标题" class="headerlink" title="一级标题"></a>一级标题</h1><h2 id="二级"><a href="#二级" class="headerlink" title="二级"></a>二级</h2><h3 id="三级-（CTRL-3-或者-）"><a href="#三级-（CTRL-3-或者-）" class="headerlink" title="三级 （CTRL +3 或者 ### ）"></a>三级 （CTRL +3 或者 ### ）</h3><h4 id="四级"><a href="#四级" class="headerlink" title="四级"></a>四级</h4><h6 id="最多支持到六级"><a href="#最多支持到六级" class="headerlink" title="最多支持到六级"></a>最多支持到六级</h6><h2 id="字体"><a href="#字体" class="headerlink" title="字体"></a>字体</h2><p><strong>hello world</strong></p>
@@ -844,6 +808,19 @@
       </tags>
   </entry>
   <entry>
+    <title>多设备同步hexoy</title>
+    <url>/posts/c9d1870c.html</url>
+    <content><![CDATA[<h1 id="多个设备之间同步hexo"><a href="#多个设备之间同步hexo" class="headerlink" title="多个设备之间同步hexo"></a>多个设备之间同步hexo</h1><p><strong>原理</strong></p>
+<p>hexo deploy会将本地创建好的目录blog里面的文件生成对应的静态文件（html等），并且将它上传到xxx.github.com repo中。<br>在_config.yml中设置了deploy要操作的repo和branch，这里我使用的是xxinran.github.io的main branch。</p>
+]]></content>
+      <categories>
+        <category>hexo</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>容器的namespace和cgroups</title>
     <url>/posts/b56963ac.html</url>
     <content><![CDATA[<h2 id="namespace"><a href="#namespace" class="headerlink" title="namespace"></a>namespace</h2><h4 id="PID-namespace"><a href="#PID-namespace" class="headerlink" title="PID namespace"></a>PID namespace</h4><p>一个容器就是是一个进程，在启动下面的容器的时候：</p>
@@ -897,54 +874,6 @@
         <tag>docker</tag>
         <tag>linux</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>网络虚拟化简介</title>
-    <url>/posts/e41fb1bd.html</url>
-    <content><![CDATA[<img src="/posts/e41fb1bd/image-20210201221242667.png" alt="image-20210201221242667" style="zoom:70%;">
-
-]]></content>
-      <categories>
-        <category>Network</category>
-      </categories>
-      <tags>
-        <tag>虚拟化</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Nginx简介</title>
-    <url>/posts/cc1b6e67.html</url>
-    <content><![CDATA[<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><ul>
-<li>反向代理</li>
-<li>负载均衡</li>
-<li>动静分离</li>
-</ul>
-<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo yum install nginx</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo systemctl start nginx.service</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 访问成功</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> curl localhost:80</span></span><br></pre></td></tr></table></figure>
-<p><strong>测试安装成功</strong></p>
-<p>因为我的测试环境是vagrant vm，所以需要做一个端口映射，这样我们可以在host上访问。</p>
-<img src="/posts/cc1b6e67/image-20210201230936553.png" alt="image-20210201230936553" style="zoom:50%;">
-
-<p>成功！</p>
-<img src="/posts/cc1b6e67/image-20210201231043622.png" alt="image-20210201231043622" style="zoom:50%;">
-
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> nginx -h</span></span><br><span class="line">nginx version: nginx/1.14.1</span><br><span class="line">Usage: nginx [-?hvVtTq] [-s signal] [-c filename] [-p prefix] [-g directives]</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">...</span><br><span class="line">  -s signal     : send signal to a master process: stop, quit, reopen, reload</span><br><span class="line">  -p prefix     : set prefix path (default: /usr/share/nginx/)</span><br><span class="line">  -c filename   : set configuration file (default: /etc/nginx/nginx.conf)</span><br><span class="line">  -g directives : set global directives out of configuration file</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> nginx -s stop 停止</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> nginx -s quit 安全退出</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> nginx -s reload 重新加载配置文件</span></span><br></pre></td></tr></table></figure>
-<h3 id="nginx配置文件"><a href="#nginx配置文件" class="headerlink" title="nginx配置文件"></a>nginx配置文件</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vim /etc/nginx/nginx.conf</span></span><br></pre></td></tr></table></figure>
-<p>可以看到nginx server是监听在80端口的，我们可以修改端口，然后用<code>nginx -s reload</code>来生效。</p>
-<img src="/posts/cc1b6e67/image-20210201231634344.png" alt="image-20210201231634344" style="zoom:50%;">
-
-
-
-<h3 id="详解nginx-conf"><a href="#详解nginx-conf" class="headerlink" title="详解nginx.conf"></a>详解nginx.conf</h3><p> 三部分</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">user  www;# 工作进程的属主</span><br><span class="line"> worker_processes  4;# 工作进程数，一般与 CPU 核数等同</span><br><span class="line"> </span><br><span class="line"><span class="meta"> #</span><span class="bash">error_log  logs/error.log;</span></span><br><span class="line"><span class="meta"> #</span><span class="bash">error_log  logs/error.log  notice;</span></span><br><span class="line"><span class="meta"> #</span><span class="bash">error_log  logs/error.log  info;</span></span><br><span class="line"> </span><br><span class="line"><span class="meta"> #</span><span class="bash">pid        logs/nginx.pid;</span></span><br><span class="line"> </span><br><span class="line"> events &#123;</span><br><span class="line">    use epoll;#Linux 下性能最好的 event 模式</span><br><span class="line">    worker_connections  2048;# 每个工作进程允许最大的同时连接数</span><br><span class="line"> &#125;</span><br><span class="line"> </span><br><span class="line"> http &#123;</span><br><span class="line">		upstream xxx&#123;</span><br><span class="line">				server1:port1</span><br><span class="line">				server2:port3</span><br><span class="line">		&#125; </span><br><span class="line">		</span><br><span class="line">		server &#123;</span><br><span class="line">				location / &#123;</span><br><span class="line">						proxy_pass xxx</span><br><span class="line">				&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
-<p><a href="https://www.cnblogs.com/fengzhongzhuzu/p/8848115.html">https://www.cnblogs.com/fengzhongzhuzu/p/8848115.html</a></p>
-<h3 id="Nginx的负载均衡调度算法"><a href="#Nginx的负载均衡调度算法" class="headerlink" title="Nginx的负载均衡调度算法"></a>Nginx的负载均衡调度算法</h3><h4 id="weight轮询-默认，常用"><a href="#weight轮询-默认，常用" class="headerlink" title="weight轮询(默认，常用)"></a>weight轮询(默认，常用)</h4><p>收到的请求<strong>按照权重分配</strong>到不同的后端服务器，即使在使用过程中，某一台后端服务器宕机，Nginx会自动将该服务器剔除出队列，请求受理情况不会受到任何影响。这种方式下，可以给不同的后端服务器设置一个权重值(weight)，用于调整不同的服务器上请求的分配率；权重数据越大，被分配到请求的几率越大；该权重值，主要是针对实际工作环境中不同的后端服务器硬件配置进行调整的。</p>
-<h4 id="ip-hash（常用）"><a href="#ip-hash（常用）" class="headerlink" title="ip_hash（常用）"></a>ip_hash（常用）</h4><p>每个请求按照发起客户端的ip的hash结果进行匹配，这样的算法下一个固定ip地址的客户端总会访问到同一个后端服务器，这也在一定程度上解决了集群部署环境下<strong>session共享的</strong>问题。</p>
-<h4 id="fair智能调整调度算法"><a href="#fair智能调整调度算法" class="headerlink" title="fair智能调整调度算法"></a>fair智能调整调度算法</h4><p>动态的根据后端服务器的请求处理到响应的时间进行均衡分配，响应时间短处理效率高的服务器分配到请求的概率高，响应时间长处理效率低的服务器分配到的请求少；结合了前两者的优点的一种调度算法。但是需要注意的是Nginx默认不支持fair算法，如果要使用这种调度算法，请安装upstream_fair模块。</p>
-<h4 id="url-hash"><a href="#url-hash" class="headerlink" title="url_hash"></a>url_hash</h4><p>按照访问的url的hash结果分配请求，每个请求的url会指向后端固定的某个服务器，可以在Nginx作为静态服务器的情况下提高缓存效率。同样要注意Nginx默认不支持这种调度算法，要使用的话需要安装Nginx的hash软件包。</p>
-]]></content>
-      <categories>
-        <category>Network</category>
-      </categories>
   </entry>
   <entry>
     <title>计算机网络概述</title>
@@ -1026,6 +955,54 @@
 
 
 <p>每个电脑插在集线器的一个端口上。这样每台电脑发送数据都要通过集线器。比如A要给E发消息，那么A发出一个包，这个包到达hub之后，会被hub发往各个端口，BCDE都能收到，只有E收到这个包，发现包头的MAC标识的时自己，于是接收这个包，其他的BCD都丢弃这个包。</p>
+]]></content>
+      <categories>
+        <category>Network</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>网络虚拟化简介</title>
+    <url>/posts/e41fb1bd.html</url>
+    <content><![CDATA[<img src="/posts/e41fb1bd/image-20210201221242667.png" alt="image-20210201221242667" style="zoom:70%;">
+
+]]></content>
+      <categories>
+        <category>Network</category>
+      </categories>
+      <tags>
+        <tag>虚拟化</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Nginx简介</title>
+    <url>/posts/cc1b6e67.html</url>
+    <content><![CDATA[<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><ul>
+<li>反向代理</li>
+<li>负载均衡</li>
+<li>动静分离</li>
+</ul>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo yum install nginx</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo systemctl start nginx.service</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 访问成功</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> curl localhost:80</span></span><br></pre></td></tr></table></figure>
+<p><strong>测试安装成功</strong></p>
+<p>因为我的测试环境是vagrant vm，所以需要做一个端口映射，这样我们可以在host上访问。</p>
+<img src="/posts/cc1b6e67/image-20210201230936553.png" alt="image-20210201230936553" style="zoom:50%;">
+
+<p>成功！</p>
+<img src="/posts/cc1b6e67/image-20210201231043622.png" alt="image-20210201231043622" style="zoom:50%;">
+
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> nginx -h</span></span><br><span class="line">nginx version: nginx/1.14.1</span><br><span class="line">Usage: nginx [-?hvVtTq] [-s signal] [-c filename] [-p prefix] [-g directives]</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">...</span><br><span class="line">  -s signal     : send signal to a master process: stop, quit, reopen, reload</span><br><span class="line">  -p prefix     : set prefix path (default: /usr/share/nginx/)</span><br><span class="line">  -c filename   : set configuration file (default: /etc/nginx/nginx.conf)</span><br><span class="line">  -g directives : set global directives out of configuration file</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> nginx -s stop 停止</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> nginx -s quit 安全退出</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> nginx -s reload 重新加载配置文件</span></span><br></pre></td></tr></table></figure>
+<h3 id="nginx配置文件"><a href="#nginx配置文件" class="headerlink" title="nginx配置文件"></a>nginx配置文件</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vim /etc/nginx/nginx.conf</span></span><br></pre></td></tr></table></figure>
+<p>可以看到nginx server是监听在80端口的，我们可以修改端口，然后用<code>nginx -s reload</code>来生效。</p>
+<img src="/posts/cc1b6e67/image-20210201231634344.png" alt="image-20210201231634344" style="zoom:50%;">
+
+
+
+<h3 id="详解nginx-conf"><a href="#详解nginx-conf" class="headerlink" title="详解nginx.conf"></a>详解nginx.conf</h3><p> 三部分</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">user  www;# 工作进程的属主</span><br><span class="line"> worker_processes  4;# 工作进程数，一般与 CPU 核数等同</span><br><span class="line"> </span><br><span class="line"><span class="meta"> #</span><span class="bash">error_log  logs/error.log;</span></span><br><span class="line"><span class="meta"> #</span><span class="bash">error_log  logs/error.log  notice;</span></span><br><span class="line"><span class="meta"> #</span><span class="bash">error_log  logs/error.log  info;</span></span><br><span class="line"> </span><br><span class="line"><span class="meta"> #</span><span class="bash">pid        logs/nginx.pid;</span></span><br><span class="line"> </span><br><span class="line"> events &#123;</span><br><span class="line">    use epoll;#Linux 下性能最好的 event 模式</span><br><span class="line">    worker_connections  2048;# 每个工作进程允许最大的同时连接数</span><br><span class="line"> &#125;</span><br><span class="line"> </span><br><span class="line"> http &#123;</span><br><span class="line">		upstream xxx&#123;</span><br><span class="line">				server1:port1</span><br><span class="line">				server2:port3</span><br><span class="line">		&#125; </span><br><span class="line">		</span><br><span class="line">		server &#123;</span><br><span class="line">				location / &#123;</span><br><span class="line">						proxy_pass xxx</span><br><span class="line">				&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p><a href="https://www.cnblogs.com/fengzhongzhuzu/p/8848115.html">https://www.cnblogs.com/fengzhongzhuzu/p/8848115.html</a></p>
+<h3 id="Nginx的负载均衡调度算法"><a href="#Nginx的负载均衡调度算法" class="headerlink" title="Nginx的负载均衡调度算法"></a>Nginx的负载均衡调度算法</h3><h4 id="weight轮询-默认，常用"><a href="#weight轮询-默认，常用" class="headerlink" title="weight轮询(默认，常用)"></a>weight轮询(默认，常用)</h4><p>收到的请求<strong>按照权重分配</strong>到不同的后端服务器，即使在使用过程中，某一台后端服务器宕机，Nginx会自动将该服务器剔除出队列，请求受理情况不会受到任何影响。这种方式下，可以给不同的后端服务器设置一个权重值(weight)，用于调整不同的服务器上请求的分配率；权重数据越大，被分配到请求的几率越大；该权重值，主要是针对实际工作环境中不同的后端服务器硬件配置进行调整的。</p>
+<h4 id="ip-hash（常用）"><a href="#ip-hash（常用）" class="headerlink" title="ip_hash（常用）"></a>ip_hash（常用）</h4><p>每个请求按照发起客户端的ip的hash结果进行匹配，这样的算法下一个固定ip地址的客户端总会访问到同一个后端服务器，这也在一定程度上解决了集群部署环境下<strong>session共享的</strong>问题。</p>
+<h4 id="fair智能调整调度算法"><a href="#fair智能调整调度算法" class="headerlink" title="fair智能调整调度算法"></a>fair智能调整调度算法</h4><p>动态的根据后端服务器的请求处理到响应的时间进行均衡分配，响应时间短处理效率高的服务器分配到请求的概率高，响应时间长处理效率低的服务器分配到的请求少；结合了前两者的优点的一种调度算法。但是需要注意的是Nginx默认不支持fair算法，如果要使用这种调度算法，请安装upstream_fair模块。</p>
+<h4 id="url-hash"><a href="#url-hash" class="headerlink" title="url_hash"></a>url_hash</h4><p>按照访问的url的hash结果分配请求，每个请求的url会指向后端固定的某个服务器，可以在Nginx作为静态服务器的情况下提高缓存效率。同样要注意Nginx默认不支持这种调度算法，要使用的话需要安装Nginx的hash软件包。</p>
 ]]></content>
       <categories>
         <category>Network</category>
@@ -1257,6 +1234,42 @@
       </tags>
   </entry>
   <entry>
+    <title>QAT在Ubuntu18.04上的安装和虚拟化</title>
+    <url>/posts/461bb783.html</url>
+    <content><![CDATA[<p>本文将介绍QAT c62xx设备在Ubuntu 18.04上的安装部署和虚拟化。</p>
+<blockquote>
+<p>参考网站：<a href="https://01.org/intel-quickassist-technology">https://01.org/intel-quickassist-technology</a></p>
+</blockquote>
+<h3 id="Prerequisite"><a href="#Prerequisite" class="headerlink" title="Prerequisite"></a>Prerequisite</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> uname -a</span></span><br><span class="line">Linux tme-prc002 5.3.0-53-generic #47~18.04.1-Ubuntu SMP Thu May 7 13:10:50 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux</span><br></pre></td></tr></table></figure>
+<h3 id="Updating-grub-Configuration-File"><a href="#Updating-grub-Configuration-File" class="headerlink" title="Updating grub Configuration File"></a>Updating grub Configuration File</h3><p>To enable IOMMU and SRIOV</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo vim /etc/default/grub</span><br></pre></td></tr></table></figure>
+<p>Modify <code>GRUB_CMDLINE_LINUX_DEFAULT=&quot;quiet splash&quot;</code> to <code>&quot;quiet splash intel_iommu=on&quot;</code></p>
+<p>Update grub and reboot:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">update-grub</span><br><span class="line">sudo reboot</span><br></pre></td></tr></table></figure>
+<h3 id="Building-and-Installing-Software"><a href="#Building-and-Installing-Software" class="headerlink" title="Building and Installing Software"></a>Building and Installing Software</h3><h4 id="Create-a-working-directory-for-the-software-This-directory-can-be-user-defined-but"><a href="#Create-a-working-directory-for-the-software-This-directory-can-be-user-defined-but" class="headerlink" title="Create a working directory for the software. This directory can be user defined, but"></a>Create a working directory for the software. This directory can be user defined, but</h4><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="variable">$</span> <span class="built_in">cd</span> <span class="variable">$HOME</span> </span><br><span class="line"><span class="variable">$</span> mkdir /QAT</span><br><span class="line"><span class="variable">$</span> <span class="built_in">cd</span> /QAT</span><br></pre></td></tr></table></figure>
+<h4 id="Download-the-software"><a href="#Download-the-software" class="headerlink" title="Download the software."></a>Download the software.</h4><figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">curl -O https:<span class="regexp">//</span><span class="number">01</span>.org<span class="regexp">/sites/</span>default<span class="regexp">/files/</span>downloads<span class="regexp">/intelr-quickassist-technology/</span>qat1.<span class="number">7</span>.l.<span class="number">4.3</span>.<span class="number">0</span>-<span class="number">00033</span>.tar.gz</span><br></pre></td></tr></table></figure>
+<h4 id="Unpack-the-software"><a href="#Unpack-the-software" class="headerlink" title="Unpack the software."></a>Unpack the software.</h4><figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>tar -zxof &lt;QAT tarball name&gt;  </span><br><span class="line"><span class="variable">$ </span>chmod -R o-rwx *</span><br></pre></td></tr></table></figure>
+<h4 id="Install-dependencies-if-needed"><a href="#Install-dependencies-if-needed" class="headerlink" title="Install dependencies if needed."></a>Install dependencies if needed.</h4><p>For CentOS:</p>
+<figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>yum -y groupinstall <span class="string">&quot;Development Tools&quot;</span></span><br><span class="line"><span class="variable">$ </span>yum -y install pciutils</span><br><span class="line"><span class="variable">$ </span>yum -y install libudev-devel</span><br><span class="line"><span class="variable">$ </span>yum -y install kernel-devel-<span class="variable">$(</span>uname -r)</span><br><span class="line"><span class="variable">$ </span>yum -y install gcc</span><br><span class="line"><span class="variable">$ </span>yum -y install openssl-devel</span><br></pre></td></tr></table></figure>
+<p>For Ubuntu:</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">$ apt-<span class="builtin-name">get</span> update</span><br><span class="line">$ apt-<span class="builtin-name">get</span> install pciutils-dev</span><br><span class="line">$ apt-<span class="builtin-name">get</span> install g++</span><br><span class="line">$ apt-<span class="builtin-name">get</span> install pkg-config</span><br><span class="line">$ apt-<span class="builtin-name">get</span> install libssl-dev</span><br></pre></td></tr></table></figure>
+<h4 id="configure-make-and-make-install-the-software-packages"><a href="#configure-make-and-make-install-the-software-packages" class="headerlink" title="configure, make and make install the software packages."></a>configure, make and make install the software packages.</h4><figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="comment"># suggest to clear up the env if there is a previous or modified version installed</span></span><br><span class="line"><span class="variable">$ </span>make uninstall</span><br><span class="line"><span class="variable">$ </span>./configure --enable-icp-sriov=host  <span class="comment"># It fails if missing dependency package.</span></span><br><span class="line"><span class="variable">$ </span>make</span><br><span class="line"><span class="variable">$ </span>make install  </span><br><span class="line"><span class="variable">$ </span>service qat_service start  </span><br><span class="line"><span class="variable">$ </span>service qat_service_vfs start</span><br></pre></td></tr></table></figure>
+<p>NOTE: in Guest OS, enable the SR-IOV build on the host by using:</p>
+<figure class="highlight jboss-cli"><table><tr><td class="code"><pre><span class="line">$ <span class="string">./configure</span> <span class="params">--enable-icp-sriov=guest</span></span><br></pre></td></tr></table></figure>
+<h4 id="Verifying-SR-IOV-On-The-Host"><a href="#Verifying-SR-IOV-On-The-Host" class="headerlink" title="Verifying SR-IOV On The Host"></a>Verifying SR-IOV On The Host</h4><figure class="highlight llvm"><table><tr><td class="code"><pre><span class="line">$ lspci | grep <span class="number">37</span><span class="keyword">c</span><span class="number">9</span>  </span><br><span class="line"># <span class="keyword">or</span> </span><br><span class="line">$ lspci -d <span class="number">8086</span>:<span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line">$ lspci -d:<span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line">...</span><br><span class="line"><span class="number">01</span>:<span class="number">01.0</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">01.1</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">01.2</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line">...</span><br><span class="line"><span class="number">01</span>:<span class="number">01.7</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">02.0</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">02.1</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line">...</span><br><span class="line"><span class="number">01</span>:<span class="number">02.6</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">02.7</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br></pre></td></tr></table></figure>
+<p>Or using <code>adf_ctl</code></p>
+<figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>adf_ctl status</span><br></pre></td></tr></table></figure>
+<p>This utility can bring up/down device by ourselves.</p>
+<h4 id="Detailed-SR-IOV-enabling-please-refer-to-the-guide"><a href="#Detailed-SR-IOV-enabling-please-refer-to-the-guide" class="headerlink" title="Detailed SR-IOV enabling please refer to the guide."></a>Detailed SR-IOV enabling please refer to the guide.</h4><p>Please refer to:<br><a href="https://01.org/sites/default/files/downloads/330689qatvirtualizationappnoterev008us.pdf">https://01.org/sites/default/files/downloads/330689qatvirtualizationappnoterev008us.pdf</a></p>
+]]></content>
+      <categories>
+        <category>Device</category>
+      </categories>
+      <tags>
+        <tag>QAT</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>rdma介绍</title>
     <url>/posts/9e990020.html</url>
     <content><![CDATA[<h1 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h1><h2 id="DMA"><a href="#DMA" class="headerlink" title="DMA"></a>DMA</h2><p><img src="/posts/9e990020/image-20210511163124035.png" alt="image-20210511163124035"></p>
@@ -1284,6 +1297,58 @@
 ]]></content>
   </entry>
   <entry>
+    <title>openstack里oslo.rootwrap和oslo.privsep</title>
+    <url>/posts/ca6d2f2.html</url>
+    <content><![CDATA[<h2 id="rootwrap"><a href="#rootwrap" class="headerlink" title="rootwrap"></a>rootwrap</h2><p>rootwrap是一个控制nova,neutron等普通用户权限，并且帮助提权的工具。</p>
+<p>“以普通用户运行，只对<strong>特定命令</strong>提供免密执行权限”。</p>
+<p><strong>原因：</strong><br>例如就network服务而言就有:<code>ip</code>,<code>ovs-vsctl</code>,<code>iptables</code>,<code>dnsmasq</code>,<code>brctl</code>等等，这些命令在linux中都是需要以root身份来运行的,如果是普通用户(space)通常的做法是在命令前加<code>sudo</code>切换到root身份再执行这些命令，但是这个方法在执行命令的时候需要输入密码确认操作，为了避免输入密码，我们需要配置一下sudoers。</p>
+<p><strong>缺点：</strong></p>
+<ol>
+<li>command多了，权限各不相同，会造成/etc/sudoers.d/的大量修改。</li>
+<li>而且我们只希望在执行个别command（或者传递个别参数）的时候进行提权。</li>
+</ol>
+<p>所以rootwrap应运而生。</p>
+<h2 id="neutron如何使用rootwrap"><a href="#neutron如何使用rootwrap" class="headerlink" title="neutron如何使用rootwrap"></a>neutron如何使用rootwrap</h2><p>以neutron为例详解；</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo systemctl status devstack@q-agt.service</span><br><span class="line">● devstack@q-agt.service - Devstack devstack@q-agt.service</span><br><span class="line">   Loaded: loaded (/etc/systemd/system/devstack@q-agt.service; enabled; vendor preset: disabled)</span><br><span class="line">   Active: active (running) since Mon 2021-02-08 05:41:41 UTC; 3 months 3 days ago</span><br><span class="line"> Main PID: 1107451 (neutron-openvsw)</span><br><span class="line">    Tasks: 4 (limit: 1229056)</span><br><span class="line">   Memory: 134.0M</span><br><span class="line">   CGroup: /system.slice/system-devstack.slice/devstack@q-agt.service</span><br><span class="line">           ├─1107451 neutron-openvswitch-agent (/usr/bin/python3.6 /usr/local/bin/neutron-openvswitch-agent --config-file /etc/n&gt;</span><br><span class="line">           └─1107518 ovsdb-client monitor tcp:127.0.0.1:6640 Interface name,ofport,external_ids --format=json</span><br></pre></td></tr></table></figure>
+<p>可以看到q-agt的service所在路径为<code>/etc/systemd/system/devstack@q-agt.service</code>, 内容如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description = Devstack devstack@q-agt.service</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">ExecReload = /usr/bin/kill -HUP $MAINPID</span><br><span class="line">TimeoutStopSec = 300</span><br><span class="line">KillMode = process</span><br><span class="line">ExecStart = /usr/local/bin/neutron-openvswitch-agent --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugins/ml2/ml2_conf.ini</span><br><span class="line">User = space # 以space用户运行</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy = multi-user.target</span><br></pre></td></tr></table></figure>
+
+<p>建议的方法是在/etc/sudoers.d/目录下新建一个文件，例如：neutron_sudoers</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">cat /etc/sudoers.d/neutron-rootwrap</span><br><span class="line">space ALL=(root) NOPASSWD: /usr/local/bin/neutron-rootwrap /etc/neutron/rootwrap.conf *</span><br><span class="line">space ALL=(root) NOPASSWD: /usr/local/bin/neutron-rootwrap-daemon /etc/neutron/rootwrap.conf</span><br></pre></td></tr></table></figure>
+<p>意思是： space在所有主机上（ALL）可以以root身份运行 <code>/usr/local/bin/nova-rootwrap /etc/nova/rootwrap.conf + 任何命令</code> ，而且不需要密码。  这就是wrap的意思，当nova service想要运行一些root权限的命令时，就会这个wrapper来完成提权。</p>
+<img src="/posts/ca6d2f2/image-20210514172041744.png" alt="image-20210514172041744" style="zoom:60%;">
+
+<h3 id="filters"><a href="#filters" class="headerlink" title="filters"></a>filters</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">cat /etc/nova/rootwrap.conf</span><br><span class="line"></span><br><span class="line">[DEFAULT]</span><br><span class="line">filters_path=/etc/neutron/rootwrap.d  # 命令filter所在目录</span><br><span class="line">exec_dirs=/sbin,/usr/sbin,/bin,/usr/bin,/usr/local/bin,/usr/local/sbin,/etc/neutron/kill_scripts,/usr/local/bin # 命令的PATH，默认是OS_PATH</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>以openvswtich.filters为例：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">cat /etc/neutron/rootwrap.d/openvswitch-plugin.filters</span><br><span class="line">[Filters]</span><br><span class="line"><span class="meta">#</span><span class="bash"> openvswitch-agent</span></span><br><span class="line">ovs-ofctl: CommandFilter, ovs-ofctl, root</span><br><span class="line">kill_ovsdb_client: KillFilter, root, /usr/bin/ovsdb-client, -9</span><br><span class="line">ovsdb-client: CommandFilter, ovsdb-client, root</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> ip_lib</span></span><br><span class="line">ip: IpFilter, ip, root</span><br><span class="line">ip_exec: IpNetnsExecFilter, ip, root</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> needed <span class="keyword">for</span> FDB extension</span></span><br><span class="line">bridge: CommandFilter, bridge, root</span><br></pre></td></tr></table></figure>
+<p>filters有几类：</p>
+<p>CommandFilter, RegExpFilter, KillFilter, PathFilter, EnvFilter, ReadFileFilter, KillFilter, IpFilter,  IpNetnsExecFilter, IpNetnsExecFilter</p>
+<p>rootwrap的运行模式有两种：</p>
+<ol>
+<li>Stand alone</li>
+<li>daemon （常见）</li>
+</ol>
+<p>解释第二种：</p>
+<p>从1.3.0版本开始，oslo.rootwrap支持“daemon”模式。 在这种模式下，rootwrap将启动，读取config并等待以root特权运行的命令到来。</p>
+<p>它的构造函数需要一个可以传递给Popen(process open)的列表，以创建rootwrap守护进程。 例如，它将是<code>[“ sudo”，“ nova-rootwrap-daemon”，“ /etc/neutron/rootwrap.conf”]</code>这个list传入构造函数。</p>
+<h3 id="rootwrap启动入口"><a href="#rootwrap启动入口" class="headerlink" title="rootwrap启动入口"></a>rootwrap启动入口</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[entry_points]</span><br><span class="line">console_scripts =</span><br><span class="line">    neutron-rootwrap = oslo_rootwrap.cmd:main</span><br><span class="line">    neutron-rootwrap-daemon = oslo_rootwrap.cmd:daemon</span><br></pre></td></tr></table></figure>
+<h2 id="后继者-oslo-privsep"><a href="#后继者-oslo-privsep" class="headerlink" title="后继者 oslo.privsep"></a>后继者 oslo.privsep</h2><p>oslo.rootwrap的缺点：虽然能做到针对个别command提权，但是提权之后在哪里都可以root运行这些command，会造成一个安全问题。 </p>
+<p>oslo.privsep限制了可以提权的context。 nova现在都是用oslo.privsep这种方式提权的。</p>
+<h3 id="nova如何用privsep函数替换rootwrap"><a href="#nova如何用privsep函数替换rootwrap" class="headerlink" title="nova如何用privsep函数替换rootwrap"></a>nova如何用privsep函数替换rootwrap</h3><h4 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h4><figure class="highlight perl"><table><tr><td class="code"><pre><span class="line"><span class="keyword">chmod</span>: CommandFilter, <span class="keyword">chmod</span>, root</span><br></pre></td></tr></table></figure>
+<p>上面的chmod过滤器可以替换为调用os.chmod（）的函数， 最好将每个chmod rootwrap调用替换为一个狭窄的privsep函数，以将其限制为特定文件。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">/opt/stack/nova/nova/privsep/__init__.py</span><br><span class="line"></span><br><span class="line"><span class="string">&quot;&quot;&quot;Setup privsep decorator.&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> oslo_privsep <span class="keyword">import</span> capabilities</span><br><span class="line"><span class="keyword">from</span> oslo_privsep <span class="keyword">import</span> priv_context</span><br><span class="line"></span><br><span class="line">sys_admin_pctxt = priv_context.PrivContext(</span><br><span class="line">    <span class="string">&#x27;nova&#x27;</span>,                                      <span class="comment"># prefix, 如果不以nova开头就报错</span></span><br><span class="line">    cfg_section=<span class="string">&#x27;nova_sys_admin&#x27;</span>,                </span><br><span class="line">    pypath=__name__ + <span class="string">&#x27;.sys_admin_pctxt&#x27;</span>,</span><br><span class="line">    capabilities=[capabilities.CAP_CHOWN,</span><br><span class="line">                  capabilities.CAP_DAC_OVERRIDE,</span><br><span class="line">                  capabilities.CAP_DAC_READ_SEARCH,</span><br><span class="line">                  capabilities.CAP_FOWNER,</span><br><span class="line">                  capabilities.CAP_NET_ADMIN,</span><br><span class="line">                  capabilities.CAP_SYS_ADMIN], <span class="comment"># == sudo right</span></span><br><span class="line">) </span><br><span class="line"></span><br><span class="line"><span class="comment"># 同时这个文件里还定义了entrypoint这个装饰器</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">@nova.privsep.sys_admin_pctxt.entrypoint  </span><span class="comment"># entrypoint是privsep的一个decorator，用来</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">mount</span>(<span class="params">fstype, device, mountpoint, options</span>):</span></span><br><span class="line">    mount_cmd = [<span class="string">&#x27;mount&#x27;</span>]</span><br><span class="line">    <span class="keyword">if</span> fstype:</span><br><span class="line">        mount_cmd.extend([<span class="string">&#x27;-t&#x27;</span>, fstype])</span><br><span class="line">    <span class="keyword">if</span> options <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">        mount_cmd.extend(options)</span><br><span class="line">    mount_cmd.extend([device, mountpoint])</span><br><span class="line">    <span class="keyword">return</span> processutils.execute(*mount_cmd)</span><br></pre></td></tr></table></figure>
+<p>把mount这个动作放在一个narrow的函数里，加<code>@nova.privsep.sys_admin_pctxt.entrypoint </code>来提权，这样可以防止过度提权。 </p>
+<blockquote>
+<p> As an example, this <a href="https://review.openstack.org/#/q/project:openstack/nova+branch:master+topic:my-own-personal-alternative-universe">patch series</a> is work-in-progress to transition Nova from rootwrap to privsep.</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">vim /etc/nova/rootwrap.d/compute.filters</span><br><span class="line"><span class="meta">#</span><span class="bash"> nova-rootwrap <span class="built_in">command</span> filters <span class="keyword">for</span> compute nodes</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> This file should be owned by (and only-writeable by) the root user</span></span><br><span class="line"></span><br><span class="line">[Filters]</span><br><span class="line"><span class="meta">#</span><span class="bash"> os_brick.privileged.default oslo.privsep context</span></span><br><span class="line">privsep-rootwrap-os_brick: RegExpFilter, privsep-helper, root, privsep-helper, --config-file, /etc/(?!\.\.).*, --privsep_context, os_brick.privileged.default, --privsep_sock_path, /tmp/.*</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> nova.privsep.sys_admin_pctxt oslo.privsep context</span></span><br><span class="line">privsep-rootwrap-sys_admin: RegExpFilter, privsep-helper, root, privsep-helper, --config-file, /etc/(?!\.\.).*, --privsep_context, nova.privsep.sys_admin_pctxt, --privsep_sock_path, /tmp/.*</span><br><span class="line">~</span><br><span class="line"><span class="meta">#</span><span class="bash">  privsep-helper = oslo_privsep.daemon:helper_main</span> </span><br><span class="line"><span class="meta">#</span><span class="bash">  <span class="string">&quot;&quot;</span><span class="string">&quot;Start privileged process, serving requests over a Unix socket.&quot;</span><span class="string">&quot;&quot;</span></span></span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>OpenStack</category>
+      </categories>
+  </entry>
+  <entry>
     <title>公司内部ssh设置socks代理</title>
     <url>/posts/a9be766e.html</url>
     <content><![CDATA[<blockquote>
@@ -1292,47 +1357,6 @@
 </blockquote>
 <h4 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h4><p>在部署hexo时，用到了git deployer。这个deployer在每次<code>hexo deploy</code>的时候会通过ssh链接我的github账号的xxx.github.io项目，连接报错。</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 看一下hexo的_config.yml文件</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat _config.yml  | grep -A10 deploy</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># Docs: https://hexo.io/docs/one-command-deployment</span></span></span><br><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repository: git@github.com:xxinran/xxinran.github.io.git</span><br><span class="line">  branch: main</span><br></pre></td></tr></table></figure>
-<p>在sshkey上传成功的情况下，测试ssh连接github</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">ssh -T git@github.com  #失败</span><br></pre></td></tr></table></figure>
-<p>后来发现是ssh没有配置代理，有两个方案：</p>
-<ol>
-<li>设置http代理（失败了）</li>
-<li>设置socks代理（成功）</li>
-</ol>
-<h4 id="如何设置socks代理"><a href="#如何设置socks代理" class="headerlink" title="如何设置socks代理"></a>如何设置socks代理</h4><p>在<a href="https://intelpedia.intel.com/Proxy_at_Intel#Using_openssh_to_connect_out_via_SOCKS_proxy">公司文档</a>中看到，可以通过设置socks代理，建立对外部的ssh连接。</p>
-<p>需要修改<code>.ssh/config</code>文件：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> linux</span></span><br><span class="line">Host *</span><br><span class="line">   ProxyCommand nc -X 5 -x proxy-xxx.intel.com:1080 %h %p</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> windows上需要把nc命令改成connect，参数-S表示是socks代理。</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat ~/.ssh/config | tail -5</span></span><br><span class="line">Host github.com</span><br><span class="line">   HostName github.com</span><br><span class="line">   User git</span><br><span class="line">   ProxyCommand connect -S proxy-xxx.intel.com:1080 %h %p</span><br><span class="line">   ForwardAgent yes</span><br></pre></td></tr></table></figure>
-<p>之后就可以成功ssh连接github了。</p>
-<p>但是<code>ping proxy-xxx.intel.com</code>是ping不通的，应该是公司关闭了。</p>
-]]></content>
-      <categories>
-        <category>Notes</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>QAT在Ubuntu18.04上的安装和虚拟化</title>
-    <url>/posts/461bb783.html</url>
-    <content><![CDATA[<p>本文将介绍QAT c62xx设备在Ubuntu 18.04上的安装部署和虚拟化。</p>
-<blockquote>
-<p>参考网站：<a href="https://01.org/intel-quickassist-technology">https://01.org/intel-quickassist-technology</a></p>
-</blockquote>
-<h3 id="Prerequisite"><a href="#Prerequisite" class="headerlink" title="Prerequisite"></a>Prerequisite</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> uname -a</span></span><br><span class="line">Linux tme-prc002 5.3.0-53-generic #47~18.04.1-Ubuntu SMP Thu May 7 13:10:50 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux</span><br></pre></td></tr></table></figure>
-<h3 id="Updating-grub-Configuration-File"><a href="#Updating-grub-Configuration-File" class="headerlink" title="Updating grub Configuration File"></a>Updating grub Configuration File</h3><p>To enable IOMMU and SRIOV</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo vim /etc/default/grub</span><br></pre></td></tr></table></figure>
-<p>Modify <code>GRUB_CMDLINE_LINUX_DEFAULT=&quot;quiet splash&quot;</code> to <code>&quot;quiet splash intel_iommu=on&quot;</code></p>
-<p>Update grub and reboot:</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">update-grub</span><br><span class="line">sudo reboot</span><br></pre></td></tr></table></figure>
-<h3 id="Building-and-Installing-Software"><a href="#Building-and-Installing-Software" class="headerlink" title="Building and Installing Software"></a>Building and Installing Software</h3><h4 id="Create-a-working-directory-for-the-software-This-directory-can-be-user-defined-but"><a href="#Create-a-working-directory-for-the-software-This-directory-can-be-user-defined-but" class="headerlink" title="Create a working directory for the software. This directory can be user defined, but"></a>Create a working directory for the software. This directory can be user defined, but</h4><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="variable">$</span> <span class="built_in">cd</span> <span class="variable">$HOME</span> </span><br><span class="line"><span class="variable">$</span> mkdir /QAT</span><br><span class="line"><span class="variable">$</span> <span class="built_in">cd</span> /QAT</span><br></pre></td></tr></table></figure>
-<h4 id="Download-the-software"><a href="#Download-the-software" class="headerlink" title="Download the software."></a>Download the software.</h4><figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">curl -O https:<span class="regexp">//</span><span class="number">01</span>.org<span class="regexp">/sites/</span>default<span class="regexp">/files/</span>downloads<span class="regexp">/intelr-quickassist-technology/</span>qat1.<span class="number">7</span>.l.<span class="number">4.3</span>.<span class="number">0</span>-<span class="number">00033</span>.tar.gz</span><br></pre></td></tr></table></figure>
-<h4 id="Unpack-the-software"><a href="#Unpack-the-software" class="headerlink" title="Unpack the software."></a>Unpack the software.</h4><figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>tar -zxof &lt;QAT tarball name&gt;  </span><br><span class="line"><span class="variable">$ </span>chmod -R o-rwx *</span><br></pre></td></tr></table></figure>
-<h4 id="Install-dependencies-if-needed"><a href="#Install-dependencies-if-needed" class="headerlink" title="Install dependencies if needed."></a>Install dependencies if needed.</h4><p>For CentOS:</p>
-<figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>yum -y groupinstall <span class="string">&quot;Development Tools&quot;</span></span><br><span class="line"><span class="variable">$ </span>yum -y install pciutils</span><br><span class="line"><span class="variable">$ </span>yum -y install libudev-devel</span><br><span class="line"><span class="variable">$ </span>yum -y install kernel-devel-<span class="variable">$(</span>uname -r)</span><br><span class="line"><span class="variable">$ </span>yum -y install gcc</span><br><span class="line"><span class="variable">$ </span>yum -y install openssl-devel</span><br></pre></td></tr></table></figure>
-<p>For Ubuntu:</p>
-<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">$ apt-<span class="builtin-name">get</span> update</span><br><span class="line">$ apt-<span class="builtin-name">get</span> install pciutils-dev</span><br><span class="line">$ apt-<span class="builtin-name">get</span> install g++</span><br><span class="line">$ apt-<span class="builtin-name">get</span> install pkg-config</span><br><span class="line">$ apt-<span class="builtin-name">get</span> install libssl-dev</span><br></pre></td></tr></table></figure>
-<h4 id="configure-make-and-make-install-the-software-packages"><a href="#configure-make-and-make-install-the-software-packages" class="headerlink" title="configure, make and make install the software packages."></a>configure, make and make install the software packages.</h4><figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="comment"># suggest to clear up the env if there is a previous or modified version installed</span></span><br><span class="line"><span class="variable">$ </span>make uninstall</span><br><span class="line"><span class="variable">$ </span>./configure --enable-icp-sriov=host  <span class="comment"># It fails if missing dependency package.</span></span><br><span class="line"><span class="variable">$ </span>make</span><br><span class="line"><span class="variable">$ </span>make install  </span><br><span class="line"><span class="variable">$ </span>service qat_service start  </span><br><span class="line"><span class="variable">$ </span>service qat_service_vfs start</span><br></pre></td></tr></table></figure>
-<p>NOTE: in Guest OS, enable the SR-IOV build on the host by using:</p>
-<figure class="highlight jboss-cli"><table><tr><td class="code"><pre><span class="line">$ <span class="string">./configure</span> <span class="params">--enable-icp-sriov=guest</span></span><br></pre></td></tr></table></figure>
-<h4 id="Verifying-SR-IOV-On-The-Host"><a href="#Verifying-SR-IOV-On-The-Host" class="headerlink" title="Verifying SR-IOV On The Host"></a>Verifying SR-IOV On The Host</h4><figure class="highlight llvm"><table><tr><td class="code"><pre><span class="line">$ lspci | grep <span class="number">37</span><span class="keyword">c</span><span class="number">9</span>  </span><br><span class="line"># <span class="keyword">or</span> </span><br><span class="line">$ lspci -d <span class="number">8086</span>:<span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line">$ lspci -d:<span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line">...</span><br><span class="line"><span class="number">01</span>:<span class="number">01.0</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">01.1</span> Co-processor: Intel Corporation Device <span class="number">37</span><span class="keyword">c</span><span class="number">9</span></span><br><span class="line"><span class="number">01</span>:<span class="number">01.2</span> Co-processor: Intel Corporation Device <span clacommand-deployment</span></span></span><br><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repository: git@github.com:xxinran/xxinran.github.io.git</span><br><span class="line">  branch: main</span><br></pre></td></tr></table></figure>
 <p>在sshkey上传成功的情况下，测试ssh连接github</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">ssh -T git@github.com  #失败</span><br></pre></td></tr></table></figure>
 <p>后来发现是ssh没有配置代理，有两个方案：</p>
