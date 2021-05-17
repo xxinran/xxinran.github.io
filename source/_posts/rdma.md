@@ -89,3 +89,18 @@ Scatter Gather  - > what's the size??
 
 If we have completion with bad status in a WR, the rest of the completions will be all be bad (and
 the Work Queue will be moved to error state)   - > why ??
+
+
+
+
+
+![address](http://www.wowotech.net/content/uploadfile/201707/ffb6f273054d88a342a85f159c72247320170720112335.gif)
+
+cpu-device: mmio, port io
+
+device -> cpu: interrupt
+
+mmio: memory and device share the addr bus, this can slow memory access, bacause io device is much slowe than memory.
+
+port io: seperate space
+
