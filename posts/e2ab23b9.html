@@ -48,15 +48,17 @@
   };
 </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Xinran&#39;s Blog">
-<meta property="og:url" content="http://xxinran.github.io/archives/page/2/index.html">
+  <meta property="og:type" content="article">
+<meta property="og:title" content="knative介绍">
+<meta property="og:url" content="http://xxinran.github.io/posts/e2ab23b9.html">
 <meta property="og:site_name" content="Xinran&#39;s Blog">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-05-17T09:15:36.000Z">
+<meta property="article:modified_time" content="2021-05-17T10:15:43.123Z">
 <meta property="article:author" content="Xinran Wang">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://xxinran.github.io/archives/page/2/">
+<link rel="canonical" href="http://xxinran.github.io/posts/e2ab23b9.html">
 
 
 <script id="page-configurations">
@@ -64,11 +66,11 @@
   CONFIG.page = {
     sidebar: "",
     isHome: false,
-    isPost: false
+    isPost: true
   };
 </script>
 
-  <title>归档 | Xinran's Blog</title>
+  <title>knative介绍 | Xinran's Blog</title>
   
 
 
@@ -202,237 +204,158 @@
           <div class="content">
             
 
+  <div class="posts-expand">
+      
   
   
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        
-        <span class="collection-header">还行! 目前共计 35 篇日志。 继续努力。</span>
-      </div>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://xxinran.github.io/posts/e2ab23b9.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/a.jpg">
+      <meta itemprop="name" content="Xinran Wang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xinran's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          knative介绍
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-05-17 17:15:36 / 修改时间：18:15:43" itemprop="dateCreated datePublished" datetime="2021-05-17T17:15:36+08:00">2021-05-17</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/service-mesh/" itemprop="url" rel="index">
+                    <span itemprop="name">service mesh</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>445</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+            <div class="post-description"> </div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <h1 class="collection-header">2021</h1>
+        <h2 id="Serverless"><a href="#Serverless" class="headerlink" title="Serverless"></a>Serverless</h2><p>function as a service</p>
+<p>backend as a service</p>
+<p>stateless</p>
+<p>short lived</p>
+<p>api gateway trigger/event trigger -&gt; event driven</p>
+<p>auto scaled /scaled to zero</p>
+<p>reduced cost</p>
+<p>stateless: 没有任何session的信息，每次执行都是一样的结果，没有前后依赖关系。</p>
+<h2 id="Knative"><a href="#Knative" class="headerlink" title="Knative"></a>Knative</h2><p>k8s-based</p>
+<p>0-1启动</p>
+<p>event-driven</p>
+<p>source code - &gt; run container</p>
+<h3 id="Serving"><a href="#Serving" class="headerlink" title="Serving"></a>Serving</h3><p>runtime组件，管理，运行serverless的container</p>
+<p>take care of networking, autoscaling and revision(version) tracking</p>
+<h3 id="Eventing"><a href="#Eventing" class="headerlink" title="Eventing"></a>Eventing</h3><p>事件的定义，订阅和触发</p>
+<h3 id="Networking"><a href="#Networking" class="headerlink" title="Networking"></a>Networking</h3><p>Ingress</p>
+<p>TLS</p>
+<h3 id="Building（tekton）"><a href="#Building（tekton）" class="headerlink" title="Building（tekton）"></a>Building（tekton）</h3><p>gitub source code build into container image</p>
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-03-29T10:35:41+08:00"
-              content="2021-03-29">
-          03-29
-        </time>
+    
+    
+    
+        <div class="reward-container">
+  <div>🤣~疯狂暗示~🤣</div>
+  <button disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="Xinran Wang 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="Xinran Wang 支付宝">
+        <p>支付宝</p>
       </div>
 
-      <h2 class="post-title">
-          <a class="post-title-link" href="/posts/fe9b70.html" itemprop="url">
-            <span itemprop="name">cpu基础</span>
-          </a>
-      </h2>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-03-09T19:13:28+08:00"
-              content="2021-03-09">
-          03-09
-        </time>
-      </div>
-
-      <h2 class="post-title">
-          <a class="post-title-link" href="/posts/c02c2ddc.html" itemprop="url">
-            <span itemprop="name">dapr-intro</span>
-          </a>
-      </h2>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-03-09T15:04:29+08:00"
-              content="2021-03-09">
-          03-09
-        </time>
-      </div>
-
-      <h2 class="post-title">
-          <a class="post-title-link" href="/posts/def4f008.html" itemprop="url">
-            <span itemprop="name">istio-gateway</span>
-          </a>
-      </h2>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-03-08T18:18:24+08:00"
-              content="2021-03-08">
-          03-08
-        </time>
-      </div>
-
-      <h2 class="post-title">
-          <a class="post-title-link" href="/posts/3836ec52.html" itemprop="url">
-            <span itemprop="name">containerPort, targetPort, port, nodePort等的区别</span>
-          </a>
-      </h2>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-03-04T18:00:34+08:00"
-              content="2021-03-04">
-          03-04
-        </time>
-      </div>
-
-      <h2 class="post-title">
-          <a class="post-title-link" href="/posts/702f5168.html" itemprop="url">
-            <span itemprop="name">istio开发环境搭建</span>
-          </a>
-      </h2>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-03-01T17:30:27+08:00"
-              content="2021-03-01">
-          03-01
-        </time>
-      </div>
-
-      <h2 class="post-title">
-          <a class="post-title-link" href="/posts/f5beba55.html" itemprop="url">
-            <span itemprop="name">部署istio+k8s+kiali</span>
-          </a>
-      </h2>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-02-26T15:31:45+08:00"
-              content="2021-02-26">
-          02-26
-        </time>
-      </div>
-
-      <h2 class="post-title">
-          <a class="post-title-link" href="/posts/a94c45db.html" itemprop="url">
-            <span itemprop="name">istio学习（1）-pilot</span>
-          </a>
-      </h2>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-02-25T17:26:41+08:00"
-              content="2021-02-25">
-          02-25
-        </time>
-      </div>
-
-      <h2 class="post-title">
-          <a class="post-title-link" href="/posts/6ac22eb.html" itemprop="url">
-            <span itemprop="name">进程和线程</span>
-          </a>
-      </h2>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-02-20T16:26:09+08:00"
-              content="2021-02-20">
-          02-20
-        </time>
-      </div>
-
-      <h2 class="post-title">
-          <a class="post-title-link" href="/posts/a838020d.html" itemprop="url">
-            <span itemprop="name">科学上网ssr</span>
-          </a>
-      </h2>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-02-08T11:03:35+08:00"
-              content="2021-02-08">
-          02-08
-        </time>
-      </div>
-
-      <h2 class="post-title">
-          <a class="post-title-link" href="/posts/7c4ca347.html" itemprop="url">
-            <span itemprop="name">计算机网络概述</span>
-          </a>
-      </h2>
-
-    </header>
-  </article>
+  </div>
+</div>
 
 
+      <footer class="post-footer">
+
+        
+  <div class="post-widgets">
+    <div class="wp_rating">
+      <div id="wpac-rating"></div>
     </div>
   </div>
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/ca6d2f2.html" rel="prev" title="openstack里oslo.rootwrap和oslo.privsep">
+      <i class="fa fa-chevron-left"></i> openstack里oslo.rootwrap和oslo.privsep
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
   
   
   
 
-  
-  <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/archives/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/archives/">1</a><span class="page-number current">2</span><a class="page-number" href="/archives/page/3/">3</a><a class="page-number" href="/archives/page/4/">4</a><a class="extend next" rel="next" href="/archives/page/3/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
-  </nav>
-
+  </div>
 
 
           </div>
           
+    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -479,6 +402,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Serverless"><span class="nav-number">1.</span> <span class="nav-text">Serverless</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Knative"><span class="nav-number">2.</span> <span class="nav-text">Knative</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Serving"><span class="nav-number">2.1.</span> <span class="nav-text">Serving</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Eventing"><span class="nav-number">2.2.</span> <span class="nav-text">Eventing</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Networking"><span class="nav-number">2.3.</span> <span class="nav-text">Networking</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Building%EF%BC%88tekton%EF%BC%89"><span class="nav-number">2.4.</span> <span class="nav-text">Building（tekton）</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -666,6 +590,25 @@
 
   
 
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID: 'dfe7e5d0a0c58dc0140a',
+      clientSecret: 'd7007693e675c7d1417eee1258251af2503968f7',
+      repo: 'xxinran.github.io',
+      owner: 'xxinran',
+      admin: ['xxinran'],
+      id: 'df41eab990f2122cd0547c37d75fdaa5',
+        language: '',
+      distractionFreeMode: 'true'
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
 
 </body>
 </html>

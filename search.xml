@@ -1,22 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>cpu-microarch</title>
-    <url>/posts/f1d93d2c.html</url>
-    <content><![CDATA[<p><img src="https://en.wikichip.org/w/images/thumb/e/ee/skylake_server_block_diagram.svg/950px-skylake_server_block_diagram.svg.png" alt="skylake server block diagram.svg"></p>
-<p>front end：取值，解码</p>
-<p>execution engine：计算</p>
-<p>memory subsystem： 读写内存</p>
-<p>L1， L2 per core</p>
-]]></content>
-      <categories>
-        <category>计算机组成</category>
-      </categories>
-      <tags>
-        <tag>CPU</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>cpu基础</title>
     <url>/posts/fe9b70.html</url>
     <content><![CDATA[<p>cpu运行阶段：取值，解码，执行，写回。</p>
@@ -35,60 +19,19 @@
       </tags>
   </entry>
   <entry>
-    <title>如何构建docker image</title>
-    <url>/posts/85a08636.html</url>
-    <content><![CDATA[<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker image inspect ubuntu</span></span><br><span class="line">        &quot;RootFS&quot;: &#123;</span><br><span class="line">            &quot;Type&quot;: &quot;layers&quot;,</span><br><span class="line">            &quot;Layers&quot;: [</span><br><span class="line">                &quot;sha256:bacd3af13903e13a43fe87b6944acd1ff21024132aad6e74b4452d984fb1a99a&quot;,</span><br><span class="line">                &quot;sha256:9069f84dbbe96d4c50a656a05bbe6b6892722b0d1116a8f7fd9d274f4e991bf6&quot;,</span><br><span class="line">                &quot;sha256:f6253634dc78da2f2e3bee9c8063593f880dc35d701307f30f65553e0f50c18c&quot;</span><br><span class="line">            ]</span><br><span class="line">        &#125;,</span><br></pre></td></tr></table></figure>
-
-
-<p>rootfs</p>
-<p>bootfs</p>
-<p>chroot</p>
-<p>aufs</p>
-<p>xfs</p>
-<p>Overlay2</p>
-<p>copy on write </p>
-<p>Writeout </p>
-<p>init-layer - non commit</p>
-<img src="/posts/85a08636/image-20210203234917452.png" alt="image-20210203234917452" style="zoom:70%;">
-
-
-
-<h2 id="如何构建docker-image"><a href="#如何构建docker-image" class="headerlink" title="如何构建docker image"></a>如何构建docker image</h2><p>步骤：</p>
-<ol>
-<li>编写一个dockerfile</li>
-<li>docker build构建镜像</li>
-<li>docker run运行镜像</li>
-<li>docker push发布镜像</li>
-</ol>
-<h3 id="DockerFile构建过程"><a href="#DockerFile构建过程" class="headerlink" title="DockerFile构建过程"></a>DockerFile构建过程</h3><h4 id="基础知识："><a href="#基础知识：" class="headerlink" title="基础知识："></a><strong>基础知识：</strong></h4><ol>
-<li>每个保留关键字都是大写</li>
-<li>顺序执行</li>
-<li>#表示注释</li>
-<li>每一个指令都会创建提交一个新的镜像层。</li>
-</ol>
-<h4 id="DockerFile指令"><a href="#DockerFile指令" class="headerlink" title="DockerFile指令"></a>DockerFile指令</h4><p><img src="/posts/85a08636/image-20210128174810881-1611828531908.png" alt="image-20210128174810881"></p>
-<h4 id="CMD-和-ENTRYPOINT的区别"><a href="#CMD-和-ENTRYPOINT的区别" class="headerlink" title="CMD  和 ENTRYPOINT的区别"></a>CMD  和 ENTRYPOINT的区别</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> docker run image-id</span> </span><br><span class="line">CMD [&quot;ls&quot;,&quot;-a&quot;]  # 指定容器启动时要运行的命令，最后一个有效，可被替代。在docker run时不能被追加参数</span><br><span class="line">ENTRYPOINT [&quot;ls&quot;, [&quot;-a&quot;]] # 指定容器启动时要运行的命令，可以在docker run的时候追加参数</span><br><span class="line"> 													# 比如 docker run xxx &quot;-l&quot;</span><br></pre></td></tr></table></figure>
-<h5 id="测试CMD"><a href="#测试CMD" class="headerlink" title="测试CMD"></a>测试CMD</h5><p>写了两个CMD，在docker run的时候，发现只执行了最后一个，并没有echo出”Hello”，也不能追加参数，会报错。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[vagrant@localhost dockerfile]$ cat docker-cmd-test</span><br><span class="line">FROM centos</span><br><span class="line">CMD [&quot;echo&quot;, &quot;Hello&quot;]</span><br><span class="line">CMD [&quot;ls&quot;, &quot;-a&quot;]</span><br><span class="line"></span><br><span class="line">[vagrant@localhost dockerfile]$ docker run cmdtest</span><br><span class="line">.</span><br><span class="line">..</span><br><span class="line">.dockerenv</span><br><span class="line">bin</span><br><span class="line">dev</span><br><span class="line">etc</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 尝试追加一个参数，想达到ls -al的效果，失败。</span></span><br><span class="line">[vagrant@localhost dockerfile]$ docker run cmdtest -l</span><br><span class="line">docker: Error response from daemon: OCI runtime create failed: container_linux.go:370: starting container process caused: exec: &quot;-l&quot;: executable file not found in $PATH: unknown.</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 但是可以在docker run的后面直接加命令。</span></span><br><span class="line">[vagrant@localhost dockerfile]$ docker run cmdtest ls -al</span><br><span class="line">total 0</span><br><span class="line">drwxr-xr-x.   1 root root   6 Jan 30 11:26 .</span><br><span class="line">drwxr-xr-x.   1 root root   6 Jan 30 11:26 ..</span><br><span class="line">-rwxr-xr-x.   1 root root   0 Jan 30 11:26 .dockerenv</span><br><span class="line">lrwxrwxrwx.   1 root root   7 Nov  3 15:22 bin -&gt; usr/bin</span><br><span class="line">drwxr-xr-x.   5 root root 340 Jan 30 11:26 dev</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-<h5 id="测试ENTRYPOINT"><a href="#测试ENTRYPOINT" class="headerlink" title="测试ENTRYPOINT"></a>测试ENTRYPOINT</h5><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[vagrant@localhost dockerfile]$ cat  docker-cmd-entrypoint</span><br><span class="line">FROM centos</span><br><span class="line">ENTRYPOINT [&quot;echo&quot;,&quot;Hello&quot;]</span><br><span class="line">ENTRYPOINT [&quot;ls&quot;,&quot;-a&quot;]</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 发现ENTRYPOINT也是只执行最后一个</span></span><br><span class="line">[vagrant@localhost dockerfile]$ docker run entrypoint</span><br><span class="line">.</span><br><span class="line">..</span><br><span class="line">.dockerenv</span><br><span class="line">bin</span><br><span class="line">dev</span><br><span class="line">etc</span><br><span class="line">home</span><br><span class="line">lib</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 但是ENTRYPOINT可以追加参数</span></span><br><span class="line">[vagrant@localhost dockerfile]$ docker run entrypoint -l</span><br><span class="line">total 0</span><br><span class="line">drwxr-xr-x.   1 root root   6 Jan 30 11:31 .</span><br><span class="line">drwxr-xr-x.   1 root root   6 Jan 30 11:31 ..</span><br><span class="line">-rwxr-xr-x.   1 root root   0 Jan 30 11:31 .dockerenv</span><br><span class="line">lrwxrwxrwx.   1 root root   7 Nov  3 15:22 bin -&gt; usr/bin</span><br><span class="line">drwxr-xr-x.   5 root root 340 Jan 30 11:31 dev</span><br><span class="line">drwxr-xr-x.   1 root root  66 Jan 30 11:31 etc</span><br></pre></td></tr></table></figure>
-
-
-<h4 id="COPY和ADD的区别"><a href="#COPY和ADD的区别" class="headerlink" title="COPY和ADD的区别"></a>COPY和ADD的区别</h4><p>add会自动解压</p>
-<h5 id="COPY测试"><a href="#COPY测试" class="headerlink" title="COPY测试"></a>COPY测试</h5><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[vagrant@localhost dockerfile]$ tree .</span><br><span class="line">.</span><br><span class="line">|-- copy01</span><br><span class="line">|-- copy02</span><br><span class="line">|-- test-dir/</span><br><span class="line">    |-- sub-dir/</span><br><span class="line">    |   |-- test3</span><br><span class="line">    |-- test1</span><br><span class="line">    |-- test2</span><br><span class="line">[vagrant@localhost dockerfile]$ cat docker-copy</span><br><span class="line">FROM centos</span><br><span class="line">COPY copy01 .</span><br><span class="line">COPY copy02 /home</span><br><span class="line">COPY test-dir .  # 不会拷贝目录，只拷贝目录下的文件和目录</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 如果不指定WORKDIR，默认是在跟目录下面</span></span><br><span class="line">[root@e4a55c64ff8f /]# ls</span><br><span class="line">bin  copy01  dev  etc  home  lib  lib64  lost+found  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> COPY可以指定目的路径</span></span><br><span class="line">[root@e4a55c64ff8f home]# ls</span><br><span class="line">copy02</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 不会拷贝目录，只拷贝目录下的文件和目录</span></span><br><span class="line">[root@e8be2eb3f129 /]# ls</span><br><span class="line">bin  copy01  dev  etc  home  lib  lib64  lost+found  media  mnt  opt  proc  root  run  sbin  srv  sub-dir  sys  test1  test2  tmp  usr  var</span><br><span class="line">[root@e8be2eb3f129 /]# cd sub-dir/</span><br><span class="line">[root@e8be2eb3f129 sub-dir]# ls</span><br><span class="line">test3</span><br></pre></td></tr></table></figure>
-<p>此外，COPY还可以用来实现<a href="https://www.cnblogs.com/sparkdev/p/8508435.html">multi-stage(多阶段构建)</a>，就是一个dockerfile里有多个FROM，每个 FROM 指令代表一个 stage 的开始部分。我们可以把一个 stage 的产物拷贝到另一个 stage 中。</p>
-<h5 id="ADD测试"><a href="#ADD测试" class="headerlink" title="ADD测试"></a>ADD测试</h5><p>除了不能用在 multistage 的场景下，ADD 命令可以完成 COPY 命令的所有功能，并且还可以完成两类超酷的功能：</p>
-<ul>
-<li>解压压缩文件并把它们添加到镜像中</li>
-<li>从 url 拷贝文件到镜像中</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">WORKDIR /app</span><br><span class="line">ADD nickdir.tar.gz .  </span><br><span class="line"><span class="meta">#</span><span class="bash"> 可以把压缩包自动解压到/app目录下</span></span><br><span class="line">ADD http://example.com/big.tar.xz /usr/src/things/ </span><br><span class="line"><span class="meta">#</span><span class="bash"> 会直接把tar包加入镜像中，不会自动解压，实则增加了镜像的大小，不建议这么做！</span></span><br></pre></td></tr></table></figure>
-<h5 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h5><p>COPY 命令是为最基本的用法设计的，概念清晰，操作简单。而 ADD 命令基本上是 COPY 命令的超集(除了 multistage 场景)，可以实现一些方便、酷炫的拷贝操作。ADD 命令在增加了功能的同时也增加了使用它的复杂度，比如从 url 拷贝压缩文件时弊大于利。</p>
+    <title>cpu-microarch</title>
+    <url>/posts/f1d93d2c.html</url>
+    <content><![CDATA[<p><img src="https://en.wikichip.org/w/images/thumb/e/ee/skylake_server_block_diagram.svg/950px-skylake_server_block_diagram.svg.png" alt="skylake server block diagram.svg"></p>
+<p>front end：取值，解码</p>
+<p>execution engine：计算</p>
+<p>memory subsystem： 读写内存</p>
+<p>L1， L2 per core</p>
 ]]></content>
       <categories>
-        <category>cloud native</category>
+        <category>计算机组成</category>
       </categories>
       <tags>
-        <tag>docker</tag>
+        <tag>CPU</tag>
       </tags>
   </entry>
   <entry>
@@ -134,7 +77,87 @@
 <p><img src="/posts/c02c2ddc/Architecture_Diagram.png" alt="Architecture Diagram"></p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> dapr init -k</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> dapr status -k</span></span><br><span class="line">  NAME                   NAMESPACE    HEALTHY  STATUS   REPLICAS  VERSION  AGE  CREATED</span><br><span class="line">  dapr-placement-server  dapr-system  True     Running  1         1.0.1    2m   2021-03-09 15:02.06</span><br><span class="line">  dapr-dashboard         dapr-system  True     Running  1         0.6.0    2m   2021-03-09 15:02.05</span><br><span class="line">  dapr-sentry            dapr-system  True     Running  1         1.0.1    2m   2021-03-09 15:02.05</span><br><span class="line">  dapr-sidecar-injector  dapr-system  True     Running  1         1.0.1    2m   2021-03-09 15:02.05</span><br><span class="line">  dapr-operator          dapr-system  True     Running  1         1.0.1    2m   2021-03-09 15:02.05</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 5个dapr的组件</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> k get pods -ndapr-system</span></span><br><span class="line">NAME                                    READY   STATUS    RESTARTS   AGE</span><br><span class="line">dapr-dashboard-6bb75f9645-8f28z         1/1     Running   0          6m24s</span><br><span class="line">dapr-operator-5f84d9fd4-7smdf           1/1     Running   0          6m24s</span><br><span class="line">dapr-placement-server-0                 1/1     Running   0          6m23s</span><br><span class="line">dapr-sentry-5d67bfbfdc-fzsb6            1/1     Running   0          6m24s</span><br><span class="line">dapr-sidecar-injector-7b556f95d-kpxnc   1/1     Running   0          6m24s</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 注意： placment 没有deployment，只有pod和service。</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> k get deploy -ndapr-system</span></span><br><span class="line">NAME                    READY   UP-TO-DATE   AVAILABLE   AGE</span><br><span class="line">dapr-dashboard          1/1     1            1           12d</span><br><span class="line">dapr-operator           1/1     1            1           12d</span><br><span class="line">dapr-sentry             1/1     1            1           12d</span><br><span class="line">dapr-sidecar-injector   1/1     1            1           12d</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <h3 id="运行helloworld-sample"><a href="#运行helloworld-sample" class="headerlink" title="运行helloworld sample"></a>运行helloworld sample</h3><h4 id="安装redis作为state-store"><a href="#安装redis作为state-store" class="headerlink" title="安装redis作为state store"></a>安装redis作为state store</h4><h5 id="安装helm"><a href="#安装helm" class="headerlink" title="安装helm"></a>安装helm</h5><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl https://baltocdn.com/helm/signing.asc | sudo apt-key add -</span><br><span class="line">sudo apt-get install apt-transport-https --yes</span><br><span class="line">echo &quot;deb https://baltocdn.com/helm/stable/debian/ all main&quot; | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list</span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install helm</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h5 id="安装redis"><a href="#安装redis" class="headerlink" title="安装redis"></a>安装redis</h5><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">helm repo add bitnami https://charts.bitnami.com/bitnami</span><br><span class="line">helm repo update</span><br><span class="line">helm install redis bitnami/redis</span><br><span class="line"></span><br><span class="line">To get your password run:</span><br><span class="line"></span><br><span class="line">    export REDIS_PASSWORD=$(kubectl get secret --namespace default redis -o jsonpath=&quot;&#123;.data.redis-password&#125;&quot; | base64 --decode)</span><br><span class="line"></span><br><span class="line">To connect to your Redis(TM) server:</span><br><span class="line"></span><br><span class="line">1. Run a Redis(TM) pod that you can use as a client:</span><br><span class="line">   kubectl run --namespace default redis-client --rm --tty -i --restart=&#x27;Never&#x27; \</span><br><span class="line">    --env REDIS_PASSWORD=$REDIS_PASSWORD \</span><br><span class="line">   --image docker.io/bitnami/redis:6.0.12-debian-10-r3 -- bash</span><br><span class="line"></span><br><span class="line">2. Connect using the Redis(TM) CLI:</span><br><span class="line">   redis-cli -h redis-master -a $REDIS_PASSWORD</span><br><span class="line">   redis-cli -h redis-slave -a $REDIS_PASSWORD</span><br><span class="line"></span><br><span class="line">To connect to your database from outside the cluster execute the following commands:</span><br><span class="line"></span><br><span class="line">    kubectl port-forward --namespace default svc/redis-master 6379:6379 &amp;</span><br><span class="line">    redis-cli -h 127.0.0.1 -p 6379 -a $REDIS_PASSWORD</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> k get pods</span> </span><br><span class="line">default       redis-headless          ClusterIP   None             &lt;none&gt;        6379/TCP                 96s</span><br><span class="line">default       redis-master            ClusterIP   10.107.253.143   &lt;none&gt;        6379/TCP                 96s</span><br><span class="line">default       redis-slave             ClusterIP   10.102.228.172   &lt;none&gt;        6379/TCP                 96s</span><br><span class="line"><span class="meta">$</span><span class="bash"> k get secrets</span></span><br><span class="line">NAME                          TYPE                                  DATA   AGE</span><br><span class="line">default-token-hnmgm           kubernetes.io/service-account-token   3      155m</span><br><span class="line">redis                         Opaque                                1      3m4s</span><br><span class="line">sh.helm.release.v1.redis.v1   helm.sh/release.v1                    1      3m4s</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> k get svc -owide</span></span><br><span class="line">NAME             TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE     SELECTOR</span><br><span class="line">kubernetes       ClusterIP   10.96.0.1        &lt;none&gt;        443/TCP    5d13h   &lt;none&gt;</span><br><span class="line">redis-headless   ClusterIP   None             &lt;none&gt;        6379/TCP   5d10h   app=redis,release=redis</span><br><span class="line">redis-master     ClusterIP   10.107.253.143   &lt;none&gt;        6379/TCP   5d10h   app=redis,release=redis,role=master</span><br><span class="line">redis-slave      ClusterIP   10.102.228.172   &lt;none&gt;        6379/TCP   5d10h   app=redis,release=redis,role=slave</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash">  k get ep</span></span><br><spspan><br><span class="line">|-- copy01</span><br><span class="line">|-- copy02</span><br><span class="line">|-- test-dir/</span><br><span class="line">    |-- sub-dir/</span><br><span class="line">    |   |-- test3</span><br><span class="line">    |-- test1</span><br><span class="line">    |-- test2</span><br><span class="line">[vagrant@localhost dockerfile]$ cat docker-copy</span><br><span class="line">FROM centos</span><br><span class="line">COPY copy01 .</span><br><span class="line">COPY copy02 /home</span><br><span class="line">COPY test-dir .  # 不会拷贝目录，只拷贝目录下的文件和目录</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 如果不指定WORKDIR，默认是在跟目录下面</span></span><br><span class="line">[root@e4a55c64ff8f /]# ls</span><br><span class="line">bin  copy01  dev  etc  home  lib  lib64  lost+found  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> COPY可以指定目的路径</span></span><br><span class="line">[root@e4a55c64ff8f home]# ls</span><br><span class="line">copy02</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 不会拷贝目录，只拷贝目录下的文件和目录</span></span><br><span class="line">[root@e8be2eb3f129 /]# ls</span><br><span class="line">bin  copy01  dev  etc  home  lib  lib64  lost+found  media  mnt  opt  proc  root  run  sbin  srv  sub-dir  sys  test1  test2  tmp  usr  var</span><br><span class="line">[root@e8be2eb3f129 /]# cd sub-dir/</span><br><span class="line">[root@e8be2eb3f129 sub-dir]# ls</span><br><span class="line">test3</span><br></pre></td></tr></table></figure>
+<h5 id="安装redis"><a href="#安装redis" class="headerlink" title="安装redis"></a>安装redis</h5><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">helm repo add bitnami https://charts.bitnami.com/bitnami</span><br><span class="line">helm repo update</span><br><span class="line">helm install redis bitnami/redis</span><br><span class="line"></span><br><span class="line">To get your password run:</span><br><span class="line"></span><br><span class="line">    export REDIS_PASSWORD=$(kubectl get secret --namespace default redis -o jsonpath=&quot;&#123;.data.redis-password&#125;&quot; | base64 --decode)</span><br><span class="line"></span><br><span class="line">To connect to your Redis(TM) server:</span><br><span class="line"></span><br><span class="line">1. Run a Redis(TM) pod that you can use as a client:</span><br><span class="line">   kubectl run --namespace default redis-client --rm --tty -i --restart=&#x27;Never&#x27; \</span><br><span class="line">    --env REDIS_PASSWORD=$REDIS_PASSWORD \</span><br><span class="line">   --image docker.io/bitnami/redis:6.0.12-debian-10-r3 -- bash</span><br><span class="line"></span><br><span class="line">2. Connect using the Redis(TM) CLI:</span><br><span class="line">   redis-cli -h redis-master -a $REDIS_PASSWORD</span><br><span class="line">   redis-cli -h redis-slave -a $REDIS_PASSWORD</span><br><span class="line"></span><br><span class="line">To connect to your database from outside the cluster execute the following commands:</span><br><span class="line"></span><br><span class="line">    kubectl port-forward --namespace default svc/redis-master 6379:6379 &amp;</span><br><span class="line">    redis-cli -h 127.0.0.1 -p 6379 -a $REDIS_PASSWORD</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> k get pods</span> </span><br><span class="line">default       redis-headless          ClusterIP   None             &lt;none&gt;        6379/TCP                 96s</span><br><span class="line">default       redis-master            ClusterIP   10.107.253.143   &lt;none&gt;        6379/TCP                 96s</span><br><span class="line">default       redis-slave             ClusterIP   10.102.228.172   &lt;none&gt;        6379/TCP                 96s</span><br><span class="line"><span class="meta">$</span><span class="bash"> k get secrets</span></span><br><span class="line">NAME                          TYPE                                  DATA   AGE</span><br><span class="line">default-token-hnmgm           kubernetes.io/service-account-token   3      155m</span><br><span class="line">redis                         Opaque                                1      3m4s</span><br><span class="line">sh.helm.release.v1.redis.v1   helm.sh/release.v1                    1      3m4s</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> k get svc -owide</span></span><br><span class="line">NAME             TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE     SELECTOR</span><br><span class="line">kubernetes       ClusterIP   10.96.0.1        &lt;none&gt;        443/TCP    5d13h   &lt;none&gt;</span><br><span class="line">redis-headless   ClusterIP   None             &lt;none&gt;        6379/TCP   5d10h   app=redis,release=redis</span><br><span class="line">redis-master     ClusterIP   10.107.253.143   &lt;none&gt;        6379/TCP   5d10h   app=redis,release=redis,role=master</span><br><span class="line">redis-slave      ClusterIP   10.102.228.172   &lt;none&gt;        6379/TCP   5d10h   app=redis,release=redis,role=slave</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash">  k get ep</span></span><br><span class="line">NAME             ENDPOINTS                                          AGE</span><br><span class="line">kubernetes       192.168.49.2:8443                                  5d13h</span><br><span class="line">redis-headless   172.17.0.10:6379,172.17.0.8:6379,172.17.0.9:6379   5d10h</span><br><span class="line">redis-master     172.17.0.9:6379                                    5d10h</span><br><span class="line">redis-slave      172.17.0.10:6379,172.17.0.8:6379                   5d10h</span><br></pre></td></tr></table></figure>
+
+
+
+
+<p><img src="/posts/c02c2ddc/image-20210309233804291.png" alt="image-20210309233804291"></p>
+<p>minikube user</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> minikube service nodeapp</span></span><br><span class="line">|-----------|---------|-------------|---------------------------|</span><br><span class="line">| NAMESPACE |  NAME   | TARGET PORT |            URL            |</span><br><span class="line">|-----------|---------|-------------|---------------------------|</span><br><span class="line">| default   | nodeapp |          80 | http://192.168.49.2:32108 |</span><br><span class="line">|-----------|---------|-------------|---------------------------|</span><br><span class="line">* Opening service default/nodeapp in default browser...</span><br><span class="line">  - http://192.168.49.2:32108</span><br><span class="line">  </span><br><span class="line"><span class="meta">#</span><span class="bash"> curl localhost:32108不通，因为用的是minikube</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> curl http://192.168.49.2:32108/ports</span></span><br><span class="line">&#123;&quot;DAPR_HTTP_PORT&quot;:&quot;3500&quot;,&quot;DAPR_GRPC_PORT&quot;:&quot;50001&quot;&#125;</span><br><span class="line"></span><br><span class="line">export NODE_APP=192.168.49.2:32108</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>Next submit an order to the app</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line">curl <span class="operator">--</span>request <span class="type">POST</span> <span class="operator">--</span>data <span class="string">&quot;&#123;<span class="subst">\&quot;</span>data<span class="subst">\&quot;</span>: &#123; <span class="subst">\&quot;</span>orderId<span class="subst">\&quot;</span>: <span class="subst">\&quot;</span>42<span class="subst">\&quot;</span> &#125; &#125;&quot;</span> <span class="operator">--</span>header <span class="string">&quot;Content-Type:application/json&quot;</span> http:<span class="comment">//$NODE_APP/neworder</span></span><br></pre></td></tr></table></figure>
+<p>Expected output: Empty reply from server</p>
+<p>Confirm the order was persisted by requesting it from the app</p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">curl http:<span class="regexp">//</span><span class="variable">$NODE_APP</span>/order</span><br></pre></td></tr></table></figure>
+<p>Expected output:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;&quot;orderId&quot;:&quot;42&quot;&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+<p>dapr cli</p>
+<p>dapr host</p>
+<p>dapr API</p>
+<p>dapr runtime</p>
+<p>dapr operator </p>
+<p>dapr sidecar injector</p>
+<p>dapr placement service</p>
+<p>dapr sentry</p>
+<p>building blocks</p>
+]]></content>
+      <categories>
+        <category>cloud native</category>
+      </categories>
+      <tags>
+        <tag>dapr</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>如何构建docker image</title>
+    <url>/posts/85a08636.html</url>
+    <content><![CDATA[<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker image inspect ubuntu</span></span><br><span class="line">        &quot;RootFS&quot;: &#123;</span><br><span class="line">            &quot;Type&quot;: &quot;layers&quot;,</span><br><span class="line">            &quot;Layers&quot;: [</span><br><span class="line">                &quot;sha256:bacd3af13903e13a43fe87b6944acd1ff21024132aad6e74b4452d984fb1a99a&quot;,</span><br><span class="line">                &quot;sha256:9069f84dbbe96d4c50a656a05bbe6b6892722b0d1116a8f7fd9d274f4e991bf6&quot;,</span><br><span class="line">                &quot;sha256:f6253634dc78da2f2e3bee9c8063593f880dc35d701307f30f65553e0f50c18c&quot;</span><br><span class="line">            ]</span><br><span class="line">        &#125;,</span><br></pre></td></tr></table></figure>
+
+
+<p>rootfs</p>
+<p>bootfs</p>
+<p>chroot</p>
+<p>aufs</p>
+<p>xfs</p>
+<p>Overlay2</p>
+<p>copy on write </p>
+<p>Writeout </p>
+<p>init-layer - non commit</p>
+<img src="/posts/85a08636/image-20210203234917452.png" alt="image-20210203234917452" style="zoom:70%;">
+
+
+
+<h2 id="如何构建docker-image"><a href="#如何构建docker-image" class="headerlink" title="如何构建docker image"></a>如何构建docker image</h2><p>步骤：</p>
+<ol>
+<li>编写一个dockerfile</li>
+<li>docker build构建镜像</li>
+<li>docker run运行镜像</li>
+<li>docker push发布镜像</li>
+</ol>
+<h3 id="DockerFile构建过程"><a href="#DockerFile构建过程" class="headerlink" title="DockerFile构建过程"></a>DockerFile构建过程</h3><h4 id="基础知识："><a href="#基础知识：" class="headerlink" title="基础知识："></a><strong>基础知识：</strong></h4><ol>
+<li>每个保留关键字都是大写</li>
+<li>顺序执行</li>
+<li>#表示注释</li>
+<li>每一个指令都会创建提交一个新的镜像层。</li>
+</ol>
+<h4 id="DockerFile指令"><a href="#DockerFile指令" class="headerlink" title="DockerFile指令"></a>DockerFile指令</h4><p><img src="/posts/85a08636/image-20210128174810881-1611828531908.png" alt="image-20210128174810881"></p>
+<h4 id="CMD-和-ENTRYPOINT的区别"><a href="#CMD-和-ENTRYPOINT的区别" class="headerlink" title="CMD  和 ENTRYPOINT的区别"></a>CMD  和 ENTRYPOINT的区别</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> docker run image-id</span> </span><br><span class="line">CMD [&quot;ls&quot;,&quot;-a&quot;]  # 指定容器启动时要运行的命令，最后一个有效，可被替代。在docker run时不能被追加参数</span><br><span class="line">ENTRYPOINT [&quot;ls&quot;, [&quot;-a&quot;]] # 指定容器启动时要运行的命令，可以在docker run的时候追加参数</span><br><span class="line"> 													# 比如 docker run xxx &quot;-l&quot;</span><br></pre></td></tr></table></figure>
+<h5 id="测试CMD"><a href="#测试CMD" class="headerlink" title="测试CMD"></a>测试CMD</h5><p>写了两个CMD，在docker run的时候，发现只执行了最后一个，并没有echo出”Hello”，也不能追加参数，会报错。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[vagrant@localhost dockerfile]$ cat docker-cmd-test</span><br><span class="line">FROM centos</span><br><span class="line">CMD [&quot;echo&quot;, &quot;Hello&quot;]</span><br><span class="line">CMD [&quot;ls&quot;, &quot;-a&quot;]</span><br><span class="line"></span><br><span class="line">[vagrant@localhost dockerfile]$ docker run cmdtest</span><br><span class="line">.</span><br><span class="line">..</span><br><span class="line">.dockerenv</span><br><span class="line">bin</span><br><span class="line">dev</span><br><span class="line">etc</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 尝试追加一个参数，想达到ls -al的效果，失败。</span></span><br><span class="line">[vagrant@localhost dockerfile]$ docker run cmdtest -l</span><br><span class="line">docker: Error response from daemon: OCI runtime create failed: container_linux.go:370: starting container process caused: exec: &quot;-l&quot;: executable file not found in $PATH: unknown.</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 但是可以在docker run的后面直接加命令。</span></span><br><span class="line">[vagrant@localhost dockerfile]$ docker run cmdtest ls -al</span><br><span class="line">total 0</span><br><span class="line">drwxr-xr-x.   1 root root   6 Jan 30 11:26 .</span><br><span class="line">drwxr-xr-x.   1 root root   6 Jan 30 11:26 ..</span><br><span class="line">-rwxr-xr-x.   1 root root   0 Jan 30 11:26 .dockerenv</span><br><span class="line">lrwxrwxrwx.   1 root root   7 Nov  3 15:22 bin -&gt; usr/bin</span><br><span class="line">drwxr-xr-x.   5 root root 340 Jan 30 11:26 dev</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<h5 id="测试ENTRYPOINT"><a href="#测试ENTRYPOINT" class="headerlink" title="测试ENTRYPOINT"></a>测试ENTRYPOINT</h5><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[vagrant@localhost dockerfile]$ cat  docker-cmd-entrypoint</span><br><span class="line">FROM centos</span><br><span class="line">ENTRYPOINT [&quot;echo&quot;,&quot;Hello&quot;]</span><br><span class="line">ENTRYPOINT [&quot;ls&quot;,&quot;-a&quot;]</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 发现ENTRYPOINT也是只执行最后一个</span></span><br><span class="line">[vagrant@localhost dockerfile]$ docker run entrypoint</span><br><span class="line">.</span><br><span class="line">..</span><br><span class="line">.dockerenv</span><br><span class="line">bin</span><br><span class="line">dev</span><br><span class="line">etc</span><br><span class="line">home</span><br><span class="line">lib</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 但是ENTRYPOINT可以追加参数</span></span><br><span class="line">[vagrant@localhost dockerfile]$ docker run entrypoint -l</span><br><span class="line">total 0</span><br><span class="line">drwxr-xr-x.   1 root root   6 Jan 30 11:31 .</span><br><span class="line">drwxr-xr-x.   1 root root   6 Jan 30 11:31 ..</span><br><span class="line">-rwxr-xr-x.   1 root root   0 Jan 30 11:31 .dockerenv</span><br><span class="line">lrwxrwxrwx.   1 root root   7 Nov  3 15:22 bin -&gt; usr/bin</span><br><span class="line">drwxr-xr-x.   5 root root 340 Jan 30 11:31 dev</span><br><span class="line">drwxr-xr-x.   1 root root  66 Jan 30 11:31 etc</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="COPY和ADD的区别"><a href="#COPY和ADD的区别" class="headerlink" title="COPY和ADD的区别"></a>COPY和ADD的区别</h4><p>add会自动解压</p>
+<h5 id="COPY测试"><a href="#COPY测试" class="headerlink" title="COPY测试"></a>COPY测试</h5><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[vagrant@localhost dockerfile]$ tree .</span><br><span class="line">.</span><br><span class="line">|-- copy01</span><br><span class="line">|-- copy02</span><br><span class="line">|-- test-dir/</span><br><span class="line">    |-- sub-dir/</span><br><span class="line">    |   |-- test3</span><br><span class="line">    |-- test1</span><br><span class="line">    |-- test2</span><br><span class="line">[vagrant@localhost dockerfile]$ cat docker-copy</span><br><span class="line">FROM centos</span><br><span class="line">COPY copy01 .</span><br><span class="line">COPY copy02 /home</span><br><span class="line">COPY test-dir .  # 不会拷贝目录，只拷贝目录下的文件和目录</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 如果不指定WORKDIR，默认是在跟目录下面</span></span><br><span class="line">[root@e4a55c64ff8f /]# ls</span><br><span class="line">bin  copy01  dev  etc  home  lib  lib64  lost+found  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> COPY可以指定目的路径</span></span><br><span class="line">[root@e4a55c64ff8f home]# ls</span><br><span class="line">copy02</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 不会拷贝目录，只拷贝目录下的文件和目录</span></span><br><span class="line">[root@e8be2eb3f129 /]# ls</span><br><span class="line">bin  copy01  dev  etc  home  lib  lib64  lost+found  media  mnt  opt  proc  root  run  sbin  srv  sub-dir  sys  test1  test2  tmp  usr  var</span><br><span class="line">[root@e8be2eb3f129 /]# cd sub-dir/</span><br><span class="line">[root@e8be2eb3f129 sub-dir]# ls</span><br><span class="line">test3</span><br></pre></td></tr></table></figure>
 <p>此外，COPY还可以用来实现<a href="https://www.cnblogs.com/sparkdev/p/8508435.html">multi-stage(多阶段构建)</a>，就是一个dockerfile里有多个FROM，每个 FROM 指令代表一个 stage 的开始部分。我们可以把一个 stage 的产物拷贝到另一个 stage 中。</p>
 <h5 id="ADD测试"><a href="#ADD测试" class="headerlink" title="ADD测试"></a>ADD测试</h5><p>除了不能用在 multistage 的场景下，ADD 命令可以完成 COPY 命令的所有功能，并且还可以完成两类超酷的功能：</p>
 <ul>
@@ -250,35 +273,6 @@
       </tags>
   </entry>
   <entry>
-    <title>ebpf-intro</title>
-    <url>/posts/85f2c2fa.html</url>
-    <content><![CDATA[<p>bpf - bakerly profiling filter</p>
-<p>最早是抓包用的，最经典的应用：tcpdump就用bpf。</p>
-<p>没有bpf之前，抓包要抓nic上所有的包，然后再进行分析</p>
-<p>有了bpf之后，可以插入一段小的代码可以指定tcp port，ip等。</p>
-<p>ebpf - extension bpf</p>
-<p>主要做网络，但远不止网络领域。可以抓system call，linux kernel的function call</p>
-<p>kprobe -&gt; fetch kernel</p>
-<p>uprobe -&gt; fetch user space</p>
-<p>perf events</p>
-<p>XDP/AF_XDP</p>
-<p>bpf vs ebpf vm - &gt; java vm / webassembly</p>
-<p>c  -&gt; 编译成ebpf backend  -&gt; kernel native??</p>
-<p>程序方面：</p>
-<p>bpf只有两个32bit寄存器，16个32bit内存</p>
-<p>ebpf有11个64bit寄存器，512个stack。没有堆的概念，因为在ebpf里面不能new。</p>
-<p><img src="/posts/85f2c2fa/image-20210423154407377.png" alt="image-20210423154407377"></p>
-<p>maps：user space /kernel space shares data through maps (k-v)。</p>
-<p>bpftrace vs bcc vs c program </p>
-]]></content>
-      <categories>
-        <category>LINUX</category>
-      </categories>
-      <tags>
-        <tag>eBPF</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>GPU虚拟化</title>
     <url>/posts/204fd6f0.html</url>
     <content><![CDATA[<p>目前流行的几种模式：pass through, sriov(AMD), 半虚拟化（mdev passthrough： Intel gvt-g, Nvidia GRID vGPU), 全虚拟化（VMware： vSGA）</p>
@@ -361,6 +355,35 @@
       <tags>
         <tag>GPU</tag>
         <tag>虚拟化</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ebpf-intro</title>
+    <url>/posts/85f2c2fa.html</url>
+    <content><![CDATA[<p>bpf - bakerly profiling filter</p>
+<p>最早是抓包用的，最经典的应用：tcpdump就用bpf。</p>
+<p>没有bpf之前，抓包要抓nic上所有的包，然后再进行分析</p>
+<p>有了bpf之后，可以插入一段小的代码可以指定tcp port，ip等。</p>
+<p>ebpf - extension bpf</p>
+<p>主要做网络，但远不止网络领域。可以抓system call，linux kernel的function call</p>
+<p>kprobe -&gt; fetch kernel</p>
+<p>uprobe -&gt; fetch user space</p>
+<p>perf events</p>
+<p>XDP/AF_XDP</p>
+<p>bpf vs ebpf vm - &gt; java vm / webassembly</p>
+<p>c  -&gt; 编译成ebpf backend  -&gt; kernel native??</p>
+<p>程序方面：</p>
+<p>bpf只有两个32bit寄存器，16个32bit内存</p>
+<p>ebpf有11个64bit寄存器，512个stack。没有堆的概念，因为在ebpf里面不能new。</p>
+<p><img src="/posts/85f2c2fa/image-20210423154407377.png" alt="image-20210423154407377"></p>
+<p>maps：user space /kernel space shares data through maps (k-v)。</p>
+<p>bpftrace vs bcc vs c program </p>
+]]></content>
+      <categories>
+        <category>LINUX</category>
+      </categories>
+      <tags>
+        <tag>eBPF</tag>
       </tags>
   </entry>
   <entry>
@@ -470,6 +493,28 @@
       </tags>
   </entry>
   <entry>
+    <title>istio-gateway</title>
+    <url>/posts/def4f008.html</url>
+    <content><![CDATA[<p><img src="/posts/def4f008/image-20210309150445057.png" alt="image-20210309150445057"></p>
+<p>serviceentry：也可以访问外部服务。</p>
+<h2 id="gateway简介"><a href="#gateway简介" class="headerlink" title="gateway简介"></a>gateway简介</h2><ol>
+<li><p>L4-L6的负载均衡</p>
+</li>
+<li><p>提供对外的mtls</p>
+</li>
+</ol>
+<p>在istio网格中，gateway可以部署任意多个，可以共用一个，也可以每个租户，namespace单独隔离。</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">networking.istio.io/v1alpha3</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Gateway</span> <span class="comment"># istio的一个CRD对象</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">bookinfo-gateway</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">istio:</span> <span class="string">ingressgateway</span> <span class="comment"># use istio default controller</span></span><br><span class="line">  <span class="attr">servers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">port:</span></span><br><span class="line">      <span class="attr">number:</span> <span class="number">80</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">http</span></span><br><span class="line">      <span class="attr">protocol:</span> <span class="string">HTTP</span></span><br><span class="line">    <span class="attr">hosts:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">bookinfo.com</span>       <span class="comment"># 允许通过外部访问的域名</span></span><br></pre></td></tr></table></figure>
+<p><strong>VirtualService</strong>定义gateway L7路由，为访问bookinfo.com的http流量，提供路由匹配转发策略。</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">networking.istio.io/v1alpha3</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">VirtualService</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">bookinfo</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">hosts:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">bookinfo.com</span>      <span class="comment"># 和上面的host字段一样</span></span><br><span class="line">  <span class="attr">gateways:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">bookinfo-gateway</span>  <span class="comment"># 绑定到上面的gateway</span></span><br><span class="line">  <span class="attr">http:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">match:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">exact:</span> <span class="string">/productpage</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">prefix:</span> <span class="string">/static</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">exact:</span> <span class="string">/login</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">exact:</span> <span class="string">/logout</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">prefix:</span> <span class="string">/api/v1/products</span></span><br><span class="line">    <span class="attr">route:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">destination:</span>   <span class="comment"># 如果上述条件之一满足，则去一个叫“productpage”的destinationrule</span></span><br><span class="line">        <span class="attr">host:</span> <span class="string">productpage</span></span><br><span class="line">        <span class="attr">port:</span></span><br><span class="line">          <span class="attr">number:</span> <span class="number">9080</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><strong>kubernetes Ingress</strong> vs <strong>Isito gateway</strong></p>
+<p><img src="/posts/def4f008/image-20210309151602156.png" alt="image-20210309151602156"></p>
+<h2 id="gateway原理及实现"><a href="#gateway原理及实现" class="headerlink" title="gateway原理及实现"></a>gateway原理及实现</h2><figure class="highlight haml"><table><tr><td class="code"><pre><span class="line">pilot-agent</span><br><span class="line">-<span class="ruby"> <span class="symbol">args:</span></span></span><br><span class="line"><span class="ruby">   - proxy</span></span><br><span class="line"><span class="ruby">   - router</span></span><br><span class="line"><span class="ruby">   - --domain</span></span><br><span class="line"><span class="ruby">   - <span class="variable">$(</span>POD_NAMESPACE).svc.cluster.local</span></span><br><span class="line"><span class="ruby">   - --proxyLogLevel=warning</span></span><br><span class="line"><span class="ruby">   - --proxyComponentLogLevel=<span class="symbol">misc:</span>error</span></span><br><span class="line"><span class="ruby">   - --log_output_level=<span class="symbol">default:</span>info</span></span><br><span class="line"><span class="ruby">   - --serviceCluster</span></span><br><span class="line"><span class="ruby">   - istio-ingressgateway</span></span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Istio</category>
+      </categories>
+  </entry>
+  <entry>
     <title>istio开发环境搭建</title>
     <url>/posts/702f5168.html</url>
     <content><![CDATA[<p>之前搭建了istio的生产环境，这次搭建开发环境。</p>
@@ -505,28 +550,6 @@
       <tags>
         <tag>deploy</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>istio-gateway</title>
-    <url>/posts/def4f008.html</url>
-    <content><![CDATA[<p><img src="/posts/def4f008/image-20210309150445057.png" alt="image-20210309150445057"></p>
-<p>serviceentry：也可以访问外部服务。</p>
-<h2 id="gateway简介"><a href="#gateway简介" class="headerlink" title="gateway简介"></a>gateway简介</h2><ol>
-<li><p>L4-L6的负载均衡</p>
-</li>
-<li><p>提供对外的mtls</p>
-</li>
-</ol>
-<p>在istio网格中，gateway可以部署任意多个，可以共用一个，也可以每个租户，namespace单独隔离。</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">networking.istio.io/v1alpha3</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Gateway</span> <span class="comment"># istio的一个CRD对象</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">bookinfo-gateway</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">istio:</span> <span class="string">ingressgateway</span> <span class="comment"># use istio default controller</span></span><br><span class="line">  <span class="attr">servers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">port:</span></span><br><span class="line">      <span class="attr">number:</span> <span class="number">80</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">http</span></span><br><span class="line">      <span class="attr">protocol:</span> <span class="string">HTTP</span></span><br><span class="line">    <span class="attr">hosts:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">bookinfo.com</span>       <span class="comment"># 允许通过外部访问的域名</span></span><br></pre></td></tr></table></figure>
-<p><strong>VirtualService</strong>定义gateway L7路由，为访问bookinfo.com的http流量，提供路由匹配转发策略。</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">networking.istio.io/v1alpha3</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">VirtualService</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">bookinfo</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">hosts:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">bookinfo.com</span>      <span class="comment"># 和上面的host字段一样</span></span><br><span class="line">  <span class="attr">gateways:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">bookinfo-gateway</span>  <span class="comment"># 绑定到上面的gateway</span></span><br><span class="line">  <span class="attr">http:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">match:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">exact:</span> <span class="string">/productpage</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">prefix:</span> <span class="string">/static</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">exact:</span> <span class="string">/login</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">exact:</span> <span class="string">/logout</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uri:</span></span><br><span class="line">        <span class="attr">prefix:</span> <span class="string">/api/v1/products</span></span><br><span class="line">    <span class="attr">route:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">destination:</span>   <span class="comment"># 如果上述条件之一满足，则去一个叫“productpage”的destinationrule</span></span><br><span class="line">        <span class="attr">host:</span> <span class="string">productpage</span></span><br><span class="line">        <span class="attr">port:</span></span><br><span class="line">          <span class="attr">number:</span> <span class="number">9080</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p><strong>kubernetes Ingress</strong> vs <strong>Isito gateway</strong></p>
-<p><img src="/posts/def4f008/image-20210309151602156.png" alt="image-20210309151602156"></p>
-<h2 id="gateway原理及实现"><a href="#gateway原理及实现" class="headerlink" title="gateway原理及实现"></a>gateway原理及实现</h2><figure class="highlight haml"><table><tr><td class="code"><pre><span class="line">pilot-agent</span><br><span class="line">-<span class="ruby"> <span class="symbol">args:</span></span></span><br><span class="line"><span class="ruby">   - proxy</span></span><br><span class="line"><span class="ruby">   - router</span></span><br><span class="line"><span class="ruby">   - --domain</span></span><br><span class="line"><span class="ruby">   - <span class="variable">$(</span>POD_NAMESPACE).svc.cluster.local</span></span><br><span class="line"><span class="ruby">   - --proxyLogLevel=warning</span></span><br><span class="line"><span class="ruby">   - --proxyComponentLogLevel=<span class="symbol">misc:</span>error</span></span><br><span class="line"><span class="ruby">   - --log_output_level=<span class="symbol">default:</span>info</span></span><br><span class="line"><span class="ruby">   - --serviceCluster</span></span><br><span class="line"><span class="ruby">   - istio-ingressgateway</span></span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>Istio</category>
-      </categories>
   </entry>
   <entry>
     <title>istio学习（1）-pilot</title>
@@ -619,6 +642,90 @@
       <categories>
         <category>cloud native</category>
       </categories>
+  </entry>
+  <entry>
+    <title>knative介绍</title>
+    <url>/posts/e2ab23b9.html</url>
+    <content><![CDATA[<h2 id="Serverless"><a href="#Serverless" class="headerlink" title="Serverless"></a>Serverless</h2><p>function as a service</p>
+<p>backend as a service</p>
+<p>stateless</p>
+<p>short lived</p>
+<p>api gateway trigger/event trigger -&gt; event driven</p>
+<p>auto scaled /scaled to zero</p>
+<p>reduced cost</p>
+<p>stateless: 没有任何session的信息，每次执行都是一样的结果，没有前后依赖关系。</p>
+<h2 id="Knative"><a href="#Knative" class="headerlink" title="Knative"></a>Knative</h2><p>k8s-based</p>
+<p>0-1启动</p>
+<p>event-driven</p>
+<p>source code - &gt; run container</p>
+<h3 id="Serving"><a href="#Serving" class="headerlink" title="Serving"></a>Serving</h3><p>runtime组件，管理，运行serverless的container</p>
+<p>take care of networking, autoscaling and revision(version) tracking</p>
+<h3 id="Eventing"><a href="#Eventing" class="headerlink" title="Eventing"></a>Eventing</h3><p>事件的定义，订阅和触发</p>
+<h3 id="Networking"><a href="#Networking" class="headerlink" title="Networking"></a>Networking</h3><p>Ingress</p>
+<p>TLS</p>
+<h3 id="Building（tekton）"><a href="#Building（tekton）" class="headerlink" title="Building（tekton）"></a>Building（tekton）</h3><p>gitub source code build into container image</p>
+]]></content>
+      <categories>
+        <category>service mesh</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>markdown基本语法</title>
+    <url>/posts/47caaf1e.html</url>
+    <content><![CDATA[<h1 id="一级标题"><a href="#一级标题" class="headerlink" title="一级标题"></a>一级标题</h1><h2 id="二级"><a href="#二级" class="headerlink" title="二级"></a>二级</h2><h3 id="三级-（CTRL-3-或者-）"><a href="#三级-（CTRL-3-或者-）" class="headerlink" title="三级 （CTRL +3 或者 ### ）"></a>三级 （CTRL +3 或者 ### ）</h3><h4 id="四级"><a href="#四级" class="headerlink" title="四级"></a>四级</h4><h6 id="最多支持到六级"><a href="#最多支持到六级" class="headerlink" title="最多支持到六级"></a>最多支持到六级</h6><h2 id="字体"><a href="#字体" class="headerlink" title="字体"></a>字体</h2><p><strong>hello world</strong></p>
+<p>CTRL + B 或者 两边加**</p>
+<p><em>hello world</em></p>
+<p>CTRL + I 或者两边加* </p>
+<p><em><strong>hello world</strong></em></p>
+<p>CTRL + B + I 或者 两边加***</p>
+<p><del>hello world</del></p>
+<p>ALT + SHIFT + 5  或者~~ </p>
+<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><blockquote>
+<p>这是一个引用， 用&gt;开始 </p>
+</blockquote>
+<h2 id="分割线"><a href="#分割线" class="headerlink" title="分割线"></a>分割线</h2><hr>
+<hr>
+<p>三个-， 或者三个*</p>
+<h2 id="图片"><a href="#图片" class="headerlink" title="图片"></a>图片</h2><p><img src="https://www.w3schools.com/images/w3schools_green.jpg" alt="图片名字"></p>
+<p>感叹号[图片名字]+ (图片地址)</p>
+<h2 id="超链接"><a href="#超链接" class="headerlink" title="超链接"></a>超链接</h2><p><a href="https://kubernetes.io/docs/concepts/services-networking/service/#ips-and-vips">超级链接</a></p>
+<p>方括号里面写链接名字，后面加()写链接地址。</p>
+<h2 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h2><h3 id="有序列表"><a href="#有序列表" class="headerlink" title="有序列表"></a>有序列表</h3><ol>
+<li>A</li>
+<li>B</li>
+<li>C</li>
+</ol>
+<h3 id="无序列表"><a href="#无序列表" class="headerlink" title="无序列表"></a>无序列表</h3><p>减号 + space</p>
+<ul>
+<li>A</li>
+<li>B</li>
+</ul>
+<p>CTRL + [  回到上一级<br>CTRL + ]  回到下一级</p>
+<h2 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h2><table>
+<thead>
+<tr>
+<th>名字</th>
+<th>性别</th>
+<th>生日</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>张三</td>
+<td>男</td>
+<td>1997.1</td>
+</tr>
+</tbody></table>
+<p>名字 | 性别| 生日|</p>
+<p>–|–|–</p>
+<p>xx|xx|xx|</p>
+<p>进入源代码模式(CTRL + /)，删除行间空行，就可以生成表格了。</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">public</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>tools</category>
+      </categories>
+      <tags>
+        <tag>markdown</tag>
+      </tags>
   </entry>
   <entry>
     <title>linux内存管理</title>
@@ -748,64 +855,6 @@
       <categories>
         <category>LINUX</category>
       </categories>
-  </entry>
-  <entry>
-    <title>markdown基本语法</title>
-    <url>/posts/47caaf1e.html</url>
-    <content><![CDATA[<h1 id="一级标题"><a href="#一级标题" class="headerlink" title="一级标题"></a>一级标题</h1><h2 id="二级"><a href="#二级" class="headerlink" title="二级"></a>二级</h2><h3 id="三级-（CTRL-3-或者-）"><a href="#三级-（CTRL-3-或者-）" class="headerlink" title="三级 （CTRL +3 或者 ### ）"></a>三级 （CTRL +3 或者 ### ）</h3><h4 id="四级"><a href="#四级" class="headerlink" title="四级"></a>四级</h4><h6 id="最多支持到六级"><a href="#最多支持到六级" class="headerlink" title="最多支持到六级"></a>最多支持到六级</h6><h2 id="字体"><a href="#字体" class="headerlink" title="字体"></a>字体</h2><p><strong>hello world</strong></p>
-<p>CTRL + B 或者 两边加**</p>
-<p><em>hello world</em></p>
-<p>CTRL + I 或者两边加* </p>
-<p><em><strong>hello world</strong></em></p>
-<p>CTRL + B + I 或者 两边加***</p>
-<p><del>hello world</del></p>
-<p>ALT + SHIFT + 5  或者~~ </p>
-<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><blockquote>
-<p>这是一个引用， 用&gt;开始 </p>
-</blockquote>
-<h2 id="分割线"><a href="#分割线" class="headerlink" title="分割线"></a>分割线</h2><hr>
-<hr>
-<p>三个-， 或者三个*</p>
-<h2 id="图片"><a href="#图片" class="headerlink" title="图片"></a>图片</h2><p><img src="https://www.w3schools.com/images/w3schools_green.jpg" alt="图片名字"></p>
-<p>感叹号[图片名字]+ (图片地址)</p>
-<h2 id="超链接"><a href="#超链接" class="headerlink" title="超链接"></a>超链接</h2><p><a href="https://kubernetes.io/docs/concepts/services-networking/service/#ips-and-vips">超级链接</a></p>
-<p>方括号里面写链接名字，后面加()写链接地址。</p>
-<h2 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h2><h3 id="有序列表"><a href="#有序列表" class="headerlink" title="有序列表"></a>有序列表</h3><ol>
-<li>A</li>
-<li>B</li>
-<li>C</li>
-</ol>
-<h3 id="无序列表"><a href="#无序列表" class="headerlink" title="无序列表"></a>无序列表</h3><p>减号 + space</p>
-<ul>
-<li>A</li>
-<li>B</li>
-</ul>
-<p>CTRL + [  回到上一级<br>CTRL + ]  回到下一级</p>
-<h2 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h2><table>
-<thead>
-<tr>
-<th>名字</th>
-<th>性别</th>
-<th>生日</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>张三</td>
-<td>男</td>
-<td>1997.1</td>
-</tr>
-</tbody></table>
-<p>名字 | 性别| 生日|</p>
-<p>–|–|–</p>
-<p>xx|xx|xx|</p>
-<p>进入源代码模式(CTRL + /)，删除行间空行，就可以生成表格了。</p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">public</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>tools</category>
-      </categories>
-      <tags>
-        <tag>markdown</tag>
-      </tags>
   </entry>
   <entry>
     <title>多设备同步hexoy</title>
@@ -1031,6 +1080,62 @@
 ]]></content>
   </entry>
   <entry>
+    <title>进程和线程</title>
+    <url>/posts/6ac22eb.html</url>
+    <content><![CDATA[<img src="/posts/6ac22eb/image-20210225180738908.png" alt="image-20210225180738908" style="zoom:67%;">
+
+<blockquote>
+<p>参考：<a href="https://cloud.tencent.com/developer/article/1688297">https://cloud.tencent.com/developer/article/1688297</a></p>
+</blockquote>
+<h2 id="简单的理解"><a href="#简单的理解" class="headerlink" title="简单的理解"></a>简单的理解</h2><p>对于操作系统来说，一个任务就是一个进程（<strong>Process</strong>），比如打开一个浏览器就是启动一个浏览器进程，打开一个记事本就启动了一个记事本进程，打开两个记事本就启动了两个记事本进程，打开一个Word就启动了一个Word进程。</p>
+<p>有些进程还不止同时干一件事，比如Word，它可以同时进行打字、拼写检查、打印等事情。在一个进程内部，要同时干多件事，就需要同时运行多个“子任务”，我们把进程内的这些“子任务”称为线程（<strong>Thread</strong>）。</p>
+<h2 id="并行和并发"><a href="#并行和并发" class="headerlink" title="并行和并发"></a>并行和并发</h2><p>并行是真正的同时运行，需要多核。</p>
+<p>并发只是看起来同时运行，最常见的就是<strong>时间片轮转调度算法</strong>。</p>
+<h2 id="进程和线程的区别"><a href="#进程和线程的区别" class="headerlink" title="进程和线程的区别"></a>进程和线程的区别</h2><p><strong>共享同一地址空间</strong>（也就是同样的<strong>动态内存，映射文件，目标代码等等</strong>），<strong>打开的文件队列和其他内核资源</strong>。</p>
+<h5 id><a href="#" class="headerlink" title></a></h5><table>
+<thead>
+<tr>
+<th align="center">进程</th>
+<th align="center">线程</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">有独立的地址空间</td>
+<td align="center">有自己的栈和局部变量，但没有单独的地址空间。<br>同一进程中的多个线程共享代码段（代码和常量），数据段（全局变量和静态变量），扩展段（堆存储）。<br>但是每个线程拥有自己的栈段，栈段又叫运行时段，用来存放所有局部变量和临时变量。）</td>
+</tr>
+<tr>
+<td align="center">在保护模式下不会对其它进程产生影响</td>
+<td align="center">一个线程死掉就等于整个进程死掉</td>
+</tr>
+<tr>
+<td align="center">拥有独立的内存单元</td>
+<td align="center">共享进程的内存</td>
+</tr>
+<tr>
+<td align="center">管道、系统IPC（包括<a href="https://cloud.tencent.com/product/cmq?from=10680">消息队列</a>、信号量、信号、共享内存等）、以及套接字socket</td>
+<td align="center">可以直接读写进程数据段和全局变量（互斥锁，信号量）</td>
+</tr>
+<tr>
+<td align="center">上下文切换慢</td>
+<td align="center">进程上下文切换快</td>
+</tr>
+<tr>
+<td align="center"><strong>进程是操作系统分配资源的单位</strong></td>
+<td align="center"><strong>是CPU调度和分派执行的基本单位</strong></td>
+</tr>
+<tr>
+<td align="center">进程编程调试简单可靠性高，但是创建销毁开销大</td>
+<td align="center">线程正相反，开销小，切换速度快，但是编程调试相对复杂</td>
+</tr>
+</tbody></table>
+<p>创建线程的代价比创建进程的代价小很多，如下图：</p>
+<p><img src="/posts/6ac22eb/image-20210225181636565.png" alt="image-20210225181636565"></p>
+]]></content>
+      <categories>
+        <category>LINUX</category>
+      </categories>
+  </entry>
+  <entry>
     <title>containerPort, targetPort, port, nodePort等的区别</title>
     <url>/posts/3836ec52.html</url>
     <content><![CDATA[<p>本文会通过container中的应用的几种访问方式来解释containerPort, targetPort, port, nodePort的关系和区别。</p>
@@ -1102,138 +1207,6 @@
       </categories>
   </entry>
   <entry>
-    <title>进程和线程</title>
-    <url>/posts/6ac22eb.html</url>
-    <content><![CDATA[<img src="/posts/6ac22eb/image-20210225180738908.png" alt="image-20210225180738908" style="zoom:67%;">
-
-<blockquote>
-<p>参考：<a href="https://cloud.tencent.com/developer/article/1688297">https://cloud.tencent.com/developer/article/1688297</a></p>
-</blockquote>
-<h2 id="简单的理解"><a href="#简单的理解" class="headerlink" title="简单的理解"></a>简单的理解</h2><p>对于操作系统来说，一个任务就是一个进程（<strong>Process</strong>），比如打开一个浏览器就是启动一个浏览器进程，打开一个记事本就启动了一个记事本进程，打开两个记事本就启动了两个记事本进程，打开一个Word就启动了一个Word进程。</p>
-<p>有些进程还不止同时干一件事，比如Word，它可以同时进行打字、拼写检查、打印等事情。在一个进程内部，要同时干多件事，就需要同时运行多个“子任务”，我们把进程内的这些“子任务”称为线程（<strong>Thread</strong>）。</p>
-<h2 id="并行和并发"><a href="#并行和并发" class="headerlink" title="并行和并发"></a>并行和并发</h2><p>并行是真正的同时运行，需要多核。</p>
-<p>并发只是看起来同时运行，最常见的就是<strong>时间片轮转调度算法</strong>。</p>
-<h2 id="进程和线程的区别"><a href="#进程和线程的区别" class="headerlink" title="进程和线程的区别"></a>进程和线程的区别</h2><p><strong>共享同一地址空间</strong>（也就是同样的<strong>动态内存，映射文件，目标代码等等</strong>），<strong>打开的文件队列和其他内核资源</strong>。</p>
-<h5 id><a href="#" class="headerlink" title></a></h5><table>
-<thead>
-<tr>
-<th align="center">进程</th>
-<th align="center">线程</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">有独立的地址空间</td>
-<td align="center">有自己的栈和局部变量，但没有单独的地址空间。<br>同一进程中的多个线程共享代码段（代码和常量），数据段（全局变量和静态变量），扩展段（堆存储）。<br>但是每个线程拥有自己的栈段，栈段又叫运行时段，用来存放所有局部变量和临时变量。）</td>
-</tr>
-<tr>
-<td align="center">在保护模式下不会对其它进程产生影响</td>
-<td align="center">一个线程死掉就等于整个进程死掉</td>
-</tr>
-<tr>
-<td align="center">拥有独立的内存单元</td>
-<td align="center">共享进程的内存</td>
-</tr>
-<tr>
-<td align="center">管道、系统IPC（包括<a href="https://cloud.tencent.com/product/cmq?from=10680">消息队列</a>、信号量、信号、共享内存等）、以及套接字socket</td>
-<td align="center">可以直接读写进程数据段和全局变量（互斥锁，信号量）</td>
-</tr>
-<tr>
-<td align="center">上下文切换慢</td>
-<td align="center">进程上下文切换快</td>
-</tr>
-<tr>
-<td align="center"><strong>进程是操作系统分配资源的单位</strong></td>
-<td align="center"><strong>是CPU调度和分派执行的基本单位</strong></td>
-</tr>
-<tr>
-<td align="center">进程编程调试简单可靠性高，但是创建销毁开销大</td>
-<td align="center">线程正相反，开销小，切换速度快，但是编程调试相对复杂</td>
-</tr>
-</tbody></table>
-<p>创建线程的代价比创建进程的代价小很多，如下图：</p>
-<p><img src="/posts/6ac22eb/image-20210225181636565.png" alt="image-20210225181636565"></p>
-]]></content>
-      <categories>
-        <category>LINUX</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>代理服务器基本介绍</title>
-    <url>/posts/65bbead6.html</url>
-    <content><![CDATA[<h2 id="为什么需要proxy-server"><a href="#为什么需要proxy-server" class="headerlink" title="为什么需要proxy server?"></a>为什么需要proxy server?</h2><ol>
-<li><p>监控，内容过滤</p>
-<ul>
-<li>公司的proxy server可以清楚的知道，你的流量要访问什么网站。proxy server可以禁掉一些网址，或者redirect到一些提示页面。</li>
-<li>公司的proxy server可以监控你每天都在访问什么网站，花了多长时间。</li>
-</ul>
-</li>
-<li><p>节约带宽，节省成本</p>
-<ul>
-<li>在proxy server上会有一些cache，里面存放了最近访问的website的数据，如果有1000个request通过同一个proxy server访问website A，这时如果proxy server上有website A的最新数据在cache里，就可以直接返回给这1000个client。如果proxy server上没有，也只需要发一个website A的请求，然后把返回数据放在cache里。</li>
-</ul>
-</li>
-<li><p>提高性能</p>
-<ul>
-<li>通过代理服务器的缓存（比如 CDN）和负载均衡（比如 nginx lb）功能，服务器端可以加速请求的访问，在更快的时间内返回结果）</li>
-</ul>
-</li>
-<li><p>安全和隐私</p>
-<ul>
-<li><p>有一些proxy server可以隐藏掉client的IP等个人信息，这样通过proxy访问网站，web server并不能知道是谁在真正的访问它。</p>
-</li>
-<li><p>公司可以在内网和外网之间通过代理进行转发，这样不仅对外隐藏了实现的细节，而且可以在代理层对爬虫、病毒性请求进行过滤，保护内部服务。</p>
-</li>
-<li><p>还可以加密数据</p>
-</li>
-</ul>
-</li>
-</ol>
-<blockquote>
-<p>风险：</p>
-<p>因为所有client的请求都要通过proxy server访问internet，所以有数据泄露的风险。也有一些技术可以实现数据加密，规避这种risk，后面会讲到。</p>
-</blockquote>
-<h2 id="代理服务器的分类："><a href="#代理服务器的分类：" class="headerlink" title="代理服务器的分类："></a>代理服务器的分类：</h2><ol>
-<li><h4 id="按照匿名功能分类（是否具有隐藏IP的功能）"><a href="#按照匿名功能分类（是否具有隐藏IP的功能）" class="headerlink" title="按照匿名功能分类（是否具有隐藏IP的功能）"></a>按照匿名功能分类（是否具有隐藏IP的功能）</h4><ul>
-<li><p>非匿名（和透明代理的区别？？？）</p>
-</li>
-<li><p>匿名：使用此种代理时，虽然被访问的网站不能知道你的 IP 地址，但仍然可 以知道你在使用代理，有些侦测 IP 的网页也仍然可以查到你的 IP。</p>
-</li>
-<li><p>高度匿名：使用此种代理时，被访问的网站不知道你的 IP 地址，也不知道你在使用代理进行访问。此种代理的隐藏 IP 地址的功能最强。</p>
-</li>
-<li><p>透明代理（简单代理）：透明代理的意思是客户端根本不需要知道有代理服务器的存在，它改编你的 request fields（报文），并会传送真实 IP。web server会直接获得client的IP，并且知道client是通过proxy访问的它。</p>
-</li>
-</ul>
-</li>
-<li><h4 id="按代理服务器的用途分类"><a href="#按代理服务器的用途分类" class="headerlink" title="按代理服务器的用途分类"></a>按代理服务器的用途分类</h4><ul>
-<li>HTTP代理</li>
-<li>SSL代理</li>
-<li>HTTP CONNECT代理</li>
-<li>FTP代理</li>
-<li>POP3代理</li>
-<li>Telnet代理</li>
-<li>Socks代理</li>
-<li>等等等等</li>
-</ul>
-</li>
-<li><h4 id="按照相对于client-server的角色分类"><a href="#按照相对于client-server的角色分类" class="headerlink" title="按照相对于client-server的角色分类"></a>按照相对于client-server的角色分类</h4><h5 id="正向代理"><a href="#正向代理" class="headerlink" title="正向代理"></a>正向代理</h5><p>代理对客户端不是透明的，客户端需要知道代理的地址并且手动配置。配置了代理，浏览器在发送请求的时候会对报文做特殊的修改。</p>
-<h5 id="反向代理"><a href="#反向代理" class="headerlink" title="反向代理"></a>反向代理</h5><p>说客户端一般不知道代理的存在，认为自己是直接和服务器通信。我们大部分访问的网站就是反向代理服务器，反向代理服务器会转发到真正的服务器，一般在反向代理这一层实现<strong>负载均衡</strong>和<strong>高可用</strong>的功能。而且这里也可以看到，客户端是不会知道真正服务器端的 ip 地址和端口的，这在一定程度上起到了安全保护的作用。</p>
-<img src="/posts/65bbead6/image-20210129182705751.png" alt="image-20210129182705751" style="zoom:60%;"></li>
-</ol>
-<h2 id="代理具体做什么？"><a href="#代理具体做什么？" class="headerlink" title="代理具体做什么？"></a>代理具体做什么？</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">- 修改 HTTP 请求：url、header、body  </span><br><span class="line">- 过滤请求：根据一定的规则丢弃、过滤请求 </span><br><span class="line">- 决定转发到哪个后端（可以是静态定义的，也可以是动态决定） #nginx etc.</span><br><span class="line">- 保存服务器的应答，后续的请求可以直接使用保存的应答 # cache on proxy server</span><br><span class="line">- 修改应答：对应答做一些格式的转换，修改数据，甚至返回完全不一样的应答数据  #security issue?</span><br><span class="line">- 重试机制，如果后端服务器暂时无法响应，隔一段时间重试</span><br><span class="line">- ……</span><br></pre></td></tr></table></figure>
-
-
-
-<p>普通代理</p>
-<p>隧道代理</p>
-<h2 id="代理和网关的区别"><a href="#代理和网关的区别" class="headerlink" title="代理和网关的区别"></a>代理和网关的区别</h2>]]></content>
-      <categories>
-        <category>Network</category>
-      </categories>
-      <tags>
-        <tag>proxy</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>QAT在Ubuntu18.04上的安装和虚拟化</title>
     <url>/posts/461bb783.html</url>
     <content><![CDATA[<p>本文将介绍QAT c62xx设备在Ubuntu 18.04上的安装部署和虚拟化。</p>
@@ -1294,6 +1267,11 @@
 <p>Every MR has a remote and a local key (r_key, l_key). Local keys are used by the local HCA to<br>access local memory, such as during a receive operation. Remote keys are given to the remote<br>HCA to allow a remote process access to system memory during RDMA operations.  </p>
 <p>Scatter Gather  - &gt; what’s the size??</p>
 <p>If we have completion with bad status in a WR, the rest of the completions will be all be bad (and<br>the Work Queue will be moved to error state)   - &gt; why ??</p>
+<p><img src="http://www.wowotech.net/content/uploadfile/201707/ffb6f273054d88a342a85f159c72247320170720112335.gif" alt="address"></p>
+<p>cpu-device: mmio, port io</p>
+<p>device -&gt; cpu: interrupt</p>
+<p>mmio: memory and device share the addr bus, this can slow memory access, bacause io device is much slowe than memory.</p>
+<p>port io: seperate space</p>
 ]]></content>
   </entry>
   <entry>
@@ -1375,6 +1353,28 @@
       </categories>
   </entry>
   <entry>
+    <title>tls和mtls比较</title>
+    <url>/posts/425c0d17.html</url>
+    <content><![CDATA[<h2 id="TLS"><a href="#TLS" class="headerlink" title="TLS"></a>TLS</h2><p>源于SSL，后改名TLS（Transport Layer Security）</p>
+<ol>
+<li>可以实现通讯双方的身份认证，应用数据加密。</li>
+<li>与上层的应用层协议无耦合，应用层协议能透明地运行在TLS协议构建的安全通道之上。</li>
+</ol>
+<p>TLS由记录层（记录协议， record protocol）和握手协议层（握手协议、密钥变更协议、告警协议，应用数据协议）组成。</p>
+<img src="/posts/425c0d17/image-20210329145853869.png" alt="image-20210329145853869" style="zoom:80%;">
+
+
+
+<p><img src="https://segmentfault.com/img/bVbCCMD/view" alt="preview"></p>
+<p>HTTPS = HTTP over TLS.</p>
+<p>散列函数 Hash、对称加密和非对称加密，其利用非对称加密实现身份认证和密钥协商，对称加密算法采用协商的密钥对数据加密，基于散列函数验证信息的完整性</p>
+<p>mTLS</p>
+]]></content>
+      <categories>
+        <category>Network</category>
+      </categories>
+  </entry>
+  <entry>
     <title>科学上网ssr</title>
     <url>/posts/a838020d.html</url>
     <content><![CDATA[<blockquote>
@@ -1397,28 +1397,6 @@
 ]]></content>
       <categories>
         <category>Notes</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>tls和mtls比较</title>
-    <url>/posts/425c0d17.html</url>
-    <content><![CDATA[<h2 id="TLS"><a href="#TLS" class="headerlink" title="TLS"></a>TLS</h2><p>源于SSL，后改名TLS（Transport Layer Security）</p>
-<ol>
-<li>可以实现通讯双方的身份认证，应用数据加密。</li>
-<li>与上层的应用层协议无耦合，应用层协议能透明地运行在TLS协议构建的安全通道之上。</li>
-</ol>
-<p>TLS由记录层（记录协议， record protocol）和握手协议层（握手协议、密钥变更协议、告警协议，应用数据协议）组成。</p>
-<img src="/posts/425c0d17/image-20210329145853869.png" alt="image-20210329145853869" style="zoom:80%;">
-
-
-
-<p><img src="https://segmentfault.com/img/bVbCCMD/view" alt="preview"></p>
-<p>HTTPS = HTTP over TLS.</p>
-<p>散列函数 Hash、对称加密和非对称加密，其利用非对称加密实现身份认证和密钥协商，对称加密算法采用协商的密钥对数据加密，基于散列函数验证信息的完整性</p>
-<p>mTLS</p>
-]]></content>
-      <categories>
-        <category>Network</category>
       </categories>
   </entry>
   <entry>
@@ -1585,6 +1563,82 @@
       <tags>
         <tag>docker</tag>
         <tag>deploy</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>代理服务器基本介绍</title>
+    <url>/posts/65bbead6.html</url>
+    <content><![CDATA[<h2 id="为什么需要proxy-server"><a href="#为什么需要proxy-server" class="headerlink" title="为什么需要proxy server?"></a>为什么需要proxy server?</h2><ol>
+<li><p>监控，内容过滤</p>
+<ul>
+<li>公司的proxy server可以清楚的知道，你的流量要访问什么网站。proxy server可以禁掉一些网址，或者redirect到一些提示页面。</li>
+<li>公司的proxy server可以监控你每天都在访问什么网站，花了多长时间。</li>
+</ul>
+</li>
+<li><p>节约带宽，节省成本</p>
+<ul>
+<li>在proxy server上会有一些cache，里面存放了最近访问的website的数据，如果有1000个request通过同一个proxy server访问website A，这时如果proxy server上有website A的最新数据在cache里，就可以直接返回给这1000个client。如果proxy server上没有，也只需要发一个website A的请求，然后把返回数据放在cache里。</li>
+</ul>
+</li>
+<li><p>提高性能</p>
+<ul>
+<li>通过代理服务器的缓存（比如 CDN）和负载均衡（比如 nginx lb）功能，服务器端可以加速请求的访问，在更快的时间内返回结果）</li>
+</ul>
+</li>
+<li><p>安全和隐私</p>
+<ul>
+<li><p>有一些proxy server可以隐藏掉client的IP等个人信息，这样通过proxy访问网站，web server并不能知道是谁在真正的访问它。</p>
+</li>
+<li><p>公司可以在内网和外网之间通过代理进行转发，这样不仅对外隐藏了实现的细节，而且可以在代理层对爬虫、病毒性请求进行过滤，保护内部服务。</p>
+</li>
+<li><p>还可以加密数据</p>
+</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>风险：</p>
+<p>因为所有client的请求都要通过proxy server访问internet，所以有数据泄露的风险。也有一些技术可以实现数据加密，规避这种risk，后面会讲到。</p>
+</blockquote>
+<h2 id="代理服务器的分类："><a href="#代理服务器的分类：" class="headerlink" title="代理服务器的分类："></a>代理服务器的分类：</h2><ol>
+<li><h4 id="按照匿名功能分类（是否具有隐藏IP的功能）"><a href="#按照匿名功能分类（是否具有隐藏IP的功能）" class="headerlink" title="按照匿名功能分类（是否具有隐藏IP的功能）"></a>按照匿名功能分类（是否具有隐藏IP的功能）</h4><ul>
+<li><p>非匿名（和透明代理的区别？？？）</p>
+</li>
+<li><p>匿名：使用此种代理时，虽然被访问的网站不能知道你的 IP 地址，但仍然可 以知道你在使用代理，有些侦测 IP 的网页也仍然可以查到你的 IP。</p>
+</li>
+<li><p>高度匿名：使用此种代理时，被访问的网站不知道你的 IP 地址，也不知道你在使用代理进行访问。此种代理的隐藏 IP 地址的功能最强。</p>
+</li>
+<li><p>透明代理（简单代理）：透明代理的意思是客户端根本不需要知道有代理服务器的存在，它改编你的 request fields（报文），并会传送真实 IP。web server会直接获得client的IP，并且知道client是通过proxy访问的它。</p>
+</li>
+</ul>
+</li>
+<li><h4 id="按代理服务器的用途分类"><a href="#按代理服务器的用途分类" class="headerlink" title="按代理服务器的用途分类"></a>按代理服务器的用途分类</h4><ul>
+<li>HTTP代理</li>
+<li>SSL代理</li>
+<li>HTTP CONNECT代理</li>
+<li>FTP代理</li>
+<li>POP3代理</li>
+<li>Telnet代理</li>
+<li>Socks代理</li>
+<li>等等等等</li>
+</ul>
+</li>
+<li><h4 id="按照相对于client-server的角色分类"><a href="#按照相对于client-server的角色分类" class="headerlink" title="按照相对于client-server的角色分类"></a>按照相对于client-server的角色分类</h4><h5 id="正向代理"><a href="#正向代理" class="headerlink" title="正向代理"></a>正向代理</h5><p>代理对客户端不是透明的，客户端需要知道代理的地址并且手动配置。配置了代理，浏览器在发送请求的时候会对报文做特殊的修改。</p>
+<h5 id="反向代理"><a href="#反向代理" class="headerlink" title="反向代理"></a>反向代理</h5><p>说客户端一般不知道代理的存在，认为自己是直接和服务器通信。我们大部分访问的网站就是反向代理服务器，反向代理服务器会转发到真正的服务器，一般在反向代理这一层实现<strong>负载均衡</strong>和<strong>高可用</strong>的功能。而且这里也可以看到，客户端是不会知道真正服务器端的 ip 地址和端口的，这在一定程度上起到了安全保护的作用。</p>
+<img src="/posts/65bbead6/image-20210129182705751.png" alt="image-20210129182705751" style="zoom:60%;"></li>
+</ol>
+<h2 id="代理具体做什么？"><a href="#代理具体做什么？" class="headerlink" title="代理具体做什么？"></a>代理具体做什么？</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">- 修改 HTTP 请求：url、header、body  </span><br><span class="line">- 过滤请求：根据一定的规则丢弃、过滤请求 </span><br><span class="line">- 决定转发到哪个后端（可以是静态定义的，也可以是动态决定） #nginx etc.</span><br><span class="line">- 保存服务器的应答，后续的请求可以直接使用保存的应答 # cache on proxy server</span><br><span class="line">- 修改应答：对应答做一些格式的转换，修改数据，甚至返回完全不一样的应答数据  #security issue?</span><br><span class="line">- 重试机制，如果后端服务器暂时无法响应，隔一段时间重试</span><br><span class="line">- ……</span><br></pre></td></tr></table></figure>
+
+
+
+<p>普通代理</p>
+<p>隧道代理</p>
+<h2 id="代理和网关的区别"><a href="#代理和网关的区别" class="headerlink" title="代理和网关的区别"></a>代理和网关的区别</h2>]]></content>
+      <categories>
+        <category>Network</category>
+      </categories>
+      <tags>
+        <tag>proxy</tag>
       </tags>
   </entry>
 </search>
